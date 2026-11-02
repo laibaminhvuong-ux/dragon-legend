@@ -199,3 +199,9 @@ kbd.key { font: 11px ui-monospace, monospace; padding: 2px 7px; border-radius: 5
 .screen-rpg {z-index:5}.screen-pause {z-index:20}
 .rpg-overlay:has(.rpg-dialogue:not([hidden])) .rpg-tracker {pointer-events:none;opacity:.35}
 .rpg-overlay:has(.rpg-dialogue:not([hidden])) .rpg-tracker button {pointer-events:none}
+
+.rpg-stats {display:grid;gap:6px;margin:8px 0 12px}
+.rpg-stat-row {display:grid;grid-template-columns:5.6em 2.8em minmax(0,1fr) repeat(4,3.3em);align-items:center;gap:5px;background:#1b2638;border-radius:6px;padding:4px 8px}
+.rpg-stat-name {font-weight:700}.rpg-stat-points {text-align:right;font-variant-numeric:tabular-nums;color:#ffd166}.rpg-stat-effect {color:#b9c6dc;font-size:.9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rpg-stat-row button {padding:4px 0;min-width:0;width:100%}
+@media (max-width:640px){.rpg-stat-row {grid-template-columns:1fr auto;}.rpg-stat-effect {grid-column:1 / -1}}

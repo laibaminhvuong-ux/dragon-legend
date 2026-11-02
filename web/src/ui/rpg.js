@@ -4,7 +4,8 @@ import { FACES, BUILDS, HAIR_COLORS, TINTS } from '../data/appearance.js';
 import { ACCESSORIES, accessoryAvailable } from '../data/accessories.js';
 import { FORM_PATHS, formAvailable } from '../game/forms.js';
 import { masteryProgress } from '../game/mastery.js';
-import { MAX_LEVEL } from '../data/stats.js';
+import { MAX_LEVEL, POINTS_PER_LEVEL } from '../data/stats.js';
+import { derive, points } from '../game/progression.js';
 // Interaction, dialogue and the action-RPG quest/combat overlay. Commands go to game/story APIs.
 import { h, btn } from './dom.js';
 import { MOVES } from '../data/moves.js';
@@ -59,14 +60,14 @@ export function rpg(app) {
     }
     modal.append(btn('Continue',close));
   }
-  const tabNames=['Character','Accessories','Skills','Forms','Techniques'];
+  const tabNames=['Character','Accessories','Stats','Forms','Techniques'];
   function tell(error){if(error)app.events.emit('notify',{text:error});else app.saveNow();}
   function picker(label,options,value,command){
     const wrap=h('label');wrap.append(h('p','',label));const select=h('select');select.setAttribute('aria-label',label);
     for(const [id,name] of options){const option=h('option','',name);option.value=String(id);option.selected=String(id)===String(value);select.append(option);}
     select.onchange=()=>command(select.value);wrap.append(select);return wrap;
   }
-  function showJournal(){showTab('Skills');}
+  function showJournal(){showTab('Stats');}
   function showTab(tab){
     const slot=app.game.slot,race=RACES[slot.race];
     open(`Fighter · ${tab}`,`Level ${slot.level} / ${MAX_LEVEL} · ${race.name}`);
@@ -91,9 +92,27 @@ export function rpg(app) {
         const equip=btn(slot.loadout.accessory===id?'Equipped':'Equip',()=>{tell(app.game.equipAccessory(id));showTab(tab);});equip.disabled=!available || slot.loadout.accessory===id;card.append(equip);
         if(!available)card.append(h('p','rpg-muted',`Unlock quest: ${item.after}`));modal.append(card);
       }
-    }else if(tab==='Skills'){
-      modal.append(h('h3','',`${slot.statPoints} unspent stat points`));const stats=h('div','rpg-stat-buttons');
-      for(const stat of ['Health','Ki','Strength','KiPower','Speed'])stats.append(btn(`+ ${stat}`,()=>{tell(app.game.spendStatPoint(stat));showTab(tab);}));modal.append(stats);
+    }else if(tab==='Stats'){
+      // Stats: points in each (race bonus included), what they give now, and +1 / +10 / +100 / all-in buttons.
+      const d=derive(slot),pct=x=>`+${Math.round((x-1)*100)}%`;
+      const STAT_ROWS=[['Health','Health',`${d.maxHealth} max health`],['Ki','Ki',`${d.maxKi} max ki`],['Strength','Strength',`${pct(d.strength)} melee damage`],
+        ['KiPower','Ki Power',`${pct(d.kiPower)} ki attack damage`],['Speed','Speed',`${d.runSpeed.toFixed(1)} run speed`]];
+      modal.append(h('h3','',`Stats · ${slot.statPoints} unspent point${slot.statPoints===1?'':'s'} · Power level ${d.powerLevel.toLocaleString()}`));
+      const table=h('div','rpg-stats');
+      modal.append(h('p','rpg-muted',`Earn ${POINTS_PER_LEVEL} stat points every level. Health and Ki raise your pools; Strength and Ki Power raise damage; Speed raises run speed.`));
+      for(const [stat,label,effect] of STAT_ROWS){
+        const row=h('div','rpg-stat-row');
+        row.append(h('span','rpg-stat-name',label),h('span','rpg-stat-points',String(points(slot,stat))),h('span','rpg-stat-effect',effect));
+        for(const n of [1,10,100]){
+          const b=btn(`+${n}`,()=>{tell(app.game.spendStatPoint(stat,n));showTab(tab);});
+          b.setAttribute('aria-label',n===1?`+ ${stat}`:`Add ${n} to ${label}`);b.disabled=slot.statPoints<n;row.append(b);
+        }
+        const all=btn('All',()=>{tell(app.game.spendStatPoint(stat,slot.statPoints));showTab(tab);});
+        all.setAttribute('aria-label',`Put all points in ${label}`);all.disabled=slot.statPoints<1;row.append(all);
+        table.append(row);
+      }
+      modal.append(table);
+      modal.append(h('h3','','Skills'));
       for(const id of app.story.journal().moves)modal.append(h('p','rpg-muted',`${MOVES[id]?.name || id}: ${MOVES[id]?.desc || ''}`));
       modal.append(btn(`Use Recovery Capsule (${app.story.journal().items.capsule || 0})`,()=>{if(app.story.useItem('capsule')){app.saveNow();showTab(tab);}else tell('A capsule requires missing health or ki.');}));
       if(app.story.interaction()?.id.startsWith('guide_'))modal.append(btn('Guide shop',showShop));
