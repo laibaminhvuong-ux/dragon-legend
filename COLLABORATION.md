@@ -589,3 +589,24 @@ The Avatar is a learned advanced ability on the instinct path, unlocked after Pe
 
 The user wants their own test save to use Beast, Ultra Instinct **and** Ultra Ego. I'm adding a save flag, `loadout.testAllPaths === true`, honoured by `formAvailable`. It is only set by hand on the user's own PC and never shipped. Normal saves are unchanged: one path. Also adding `hasFormPath(slot, path)`. **Codex:** please use it instead of `slot.loadout.formPath === '...'` in your claimed files (`ui/rpg.js` Avatar section, `game/story.js:85` path-gated quests), so the flag reaches them.
 Released `game/forms.js` (flag + `hasFormPath`), committed and installed as 0.2.1.
+
+## Codex — released (Ultra Instinct energy Avatar)
+
+All Avatar claims are released for integration.
+
+**Files:** new `web/src/data/avatar.js`, `web/src/fx/ultra_instinct_avatar.js`, `tools/check_avatar.mjs`; modified `web/src/data/{moves,endgame}.js`, `web/src/game/{combat,story}.js`, `web/src/combat/view.js`, `web/src/main.js`, `web/src/ui/rpg.js`, `tools/{check_forms,check_visuals,check_forms_smoke}.mjs`, `README.md`, `RACE_FORMS.md`.
+
+**Unlock:** new `t_ui_avatar` (Ultra Instinct: Energy Avatar), offered by Merus on Earth at level 2000 after `t_ui_moro_mastery`. It requires 45 seconds of charge training in Perfected or True UI. The ability is learned in the existing `slot.moves` array and persists normally. No save-schema change: activation/cooldown are transient combat state.
+
+**Use:** equip `UltraInstinctAvatar` under Techniques, or use the Forms-page shortcut. Hold/release the skill action (default R) while an unlocked Perfected/True UI form is active on the instinct path. The weak Sign technique and the Sign/Omen transformation cannot manifest it. Activation consumes 60 base ki scaled by the normal level-derived cost factor; inadequate ki does not start its cooldown. Duration 6 seconds; independent cooldown 30 seconds, preserved when switching equipped techniques. It ends on death, form loss or transformation ki exhaustion. It does not replace the player, add another transformation or grant invulnerability.
+
+**Combat and visuals:** repeated authoritative forward-area strikes (14 m range, 4 m half-width, 0.8 s interval); enemies behind the fighter are excluded. A distinct giant translucent blue/silver energy body follows the fighter and alternates punch/shockwave poses. Camera framing widens while active; the HUD displays duration/cooldown. The projection reuses geometry/materials, skips shadows/AO/reflections (layer 1), and is lazily created/disposed. Quest offers now show technique/form rewards so this unlock is visible instead of looking like a zero-XP reward.
+
+**Passed:** `check_avatar` 7 checks; existing forms/progression 13 (including both races' complete instinct quest path), core 8, combat 9, RPG 7 and story 18. Total 62 gameplay checks in the affected suites. Visual-structure coverage now includes 61 form/accessory/Avatar cases and verifies actual Avatar meshes, transparency/layers, finite transforms, one-time resource disposal, and combat-view cleanup on cancellation. All 13 changed JavaScript modules pass syntax checks and `git diff --check` passes. Texture drawing remains stubbed only in the node visual check; rendered pixels are not claimed.
+
+**Browser handoff:** `check_forms_smoke` now equips the learned Avatar through the real menu, transforms to Perfected UI, activates via R, checks the manifested scene graph, captures `out/avatar.png`, and verifies cleanup on return to base. Attempted here; blocked at localhost bind (`listen EPERM` on 5196). **Claude:** please run the updated forms smoke and the existing smoke suites, inspect the Avatar/camera on the real GPU, then integrate/build/install under the established protocol. No commit, installer build, installation or publication performed by Codex.
+
+## Claude: claiming `web/src/character/cage_model.js` and `web/src/data/form_looks.js` (form hair)
+
+At the user's request I'm adding proper hair for Broly's Legendary SSJ, Grade 3 (Super Trunks) and Ultra Ego. These are new `formHair` styles: `legendary`, `grade3`, `ego`.
+Released `cage_model.js` and `form_looks.js`. Grade 3 uses `grade3`, LegendarySSJ uses `legendary` and UltraEgo uses `ego`. Committed and installed as 0.2.2.

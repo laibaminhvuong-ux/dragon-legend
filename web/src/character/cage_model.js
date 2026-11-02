@@ -123,7 +123,8 @@ function spikyHair(style, mat) {
 /**
  * Transformation hair (data/form_looks.js): ssj1 = tall golden spikes swept up with a few bangs,
  * ssj2 = sharper, more upright, a single lone bang, ssj3 = a mane to the waist, beast = a towering
- * swept-up crest. Vegeta-style flame hair keeps its flame shape in Super Saiyan 1/2, as in the story.
+ * swept-up crest, grade3 = swollen stiff SSJ spikes (Super Trunks), legendary = Broly's huge wild mane,
+ * ego = Vegeta's tall sharp Ultra Ego flame. Vegeta-style flame hair keeps its flame shape in Super Saiyan 1/2, as in the story.
  */
 function formHair(style, baseStyle, mat) {
   if (style === "same") return spikyHair(baseStyle || "goku", mat);
@@ -176,6 +177,27 @@ function formHair(style, baseStyle, mat) {
       const side = Math.sin(a);
       add(spike(0.36 + ((i * 7) % 4) * 0.04, 0.055, V(side * 0.6, -0.7, Math.cos(a) * 0.3 - 0.6), 0.1), side * 0.075, 0.08, Math.cos(a) * 0.06 - 0.04);
     }
+  } else if (style === "grade3") {
+    // Super Trunks / Grade 3: SSJ1's shape grown stiff and swollen, thick spikes fanned out and up, almost no fringe
+    ring(9, 0.35, 0.25, 0.066, 1.0, Math.PI * 1.6, Math.PI * 0.7, -0.1, 0.25);  // sides and back, flared out
+    ring(7, 1.0, 0.27, 0.07, 0.6, Math.PI * 2, 0, -0.15, 0.25);                 // crown, upright
+    ring(4, 0.65, 0.2, 0.06, 0.9, Math.PI * 0.7, -Math.PI * 0.35, 0.1);         // front, standing straight up
+    add(spike(0.1, 0.028, V(0.2, -1, 0.7), 0.15), 0.025, 0.11, 0.085);          // one short bang
+  } else if (style === "legendary") {
+    // Broly: an enormous wild mane, thick spikes swept up and back, flaring out at the sides, no fringe
+    ring(11, 0.4, 0.3, 0.064, 0.55, Math.PI * 1.7, Math.PI * 0.65, -0.3, 0.4);  // sides, flared out wide
+    ring(8, 1.05, 0.32, 0.066, 0.7, Math.PI * 2, 0, -0.45, 0.4);                // crown, swept back
+    ring(5, 0.75, 0.24, 0.058, 1.4, Math.PI * 0.8, -Math.PI * 0.4, -0.2, 0.3);  // front, standing up off the forehead
+    for (let i = 0; i < 9; i++) {                                                // the long back: a thick mane to the shoulders
+      const a = Math.PI * 0.6 + (i / 8) * Math.PI * 0.8, side = Math.sin(a);
+      add(spike(0.3 + ((i * 7) % 4) * 0.04, 0.064, V(side * 0.7, -0.9, Math.cos(a) * 0.45 - 0.45), 0.15), side * 0.08, 0.06, Math.cos(a) * 0.07 - 0.04);
+    }
+  } else if (style === "ego") {
+    // Vegeta's Ultra Ego: a tall, sharp flame with a deep widow's peak, standing straight up and swept slightly back
+    ring(9, 0.5, 0.27, 0.058, 0.7, Math.PI * 1.7, Math.PI * 0.65, -0.2, 0.3);   // sides and back, fanning out like a flame
+    ring(6, 1.2, 0.34, 0.062, 1.2, Math.PI * 2, 0, -0.15, 0.25);                // crown
+    ring(4, 0.85, 0.32, 0.056, 1.8, Math.PI * 0.6, -Math.PI * 0.3, -0.1, 0.25); // front, straight up from the peak
+    add(spike(0.07, 0.022, V(0, -1, 0.35), 0), 0, 0.125, 0.09);                 // widow's peak
   } else if (style === "beast") {
     ring(9, 0.55, 0.36, 0.05, 2.6, Math.PI * 1.6, Math.PI * 0.7, -0.35, 0.35); // a towering crest swept up and back
     ring(6, 1.2, 0.42, 0.055, 2.8, Math.PI * 2, 0, -0.3);

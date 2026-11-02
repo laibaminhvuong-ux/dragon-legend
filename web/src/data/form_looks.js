@@ -49,7 +49,7 @@ export const FORM_LOOKS = {
     aura: { color: GOLD, core: 0xfff4c0, size: 1.1, flicker: 0.9, sparks: 0 },
   },
   SSJGrade3: { // "Super Trunks": huge, slow muscle and spikier hair
-    hair: { style: "ssj2", color: 0xf2b90c, glow: 0.2 }, eyes: SSJ_EYES, scale: 1.1,
+    hair: { style: "grade3", color: 0xf2b90c, glow: 0.2 }, eyes: SSJ_EYES, scale: 1.1,
     aura: { color: GOLD, core: 0xfff0b0, size: 1.2, flicker: 0.7, sparks: 0 },
   },
   SSJFullPower: { // Full Power Super Saiyan (Cell saga): calm, steady, always on
@@ -57,7 +57,7 @@ export const FORM_LOOKS = {
     aura: { color: 0xffcc33, core: 0xfff6d0, size: 0.95, flicker: 0.35, sparks: 0, style: "calm" },
   },
   LegendarySSJ: { // Broly: green-tinged gold hair, blank white eyes, huge, a green aura
-    hair: { style: "ssj1", color: 0xd6e04a, glow: 0.3 }, eyes: 0xf2f2f2, scale: 1.25,
+    hair: { style: "legendary", color: 0xd6e04a, glow: 0.3 }, eyes: 0xf2f2f2, scale: 1.25,
     aura: { color: 0x4cff6a, core: 0xe0ffd8, size: 1.25, flicker: 1, sparks: 2, sparkColor: 0xc8ffd0 },
   },
   SSJ4: { // black wild mane, golden eyes, a red-gold aura (red fur patches are attached by cage_model)
@@ -80,7 +80,7 @@ export const FORM_LOOKS = {
     aura: { color: 0xb8ccff, core: 0xffffff, size: 1.12, flicker: 0.45, sparks: 0, motes: 0xf0f4ff, style: "calm" },
   },
   UltraEgo: { // Vegeta's Ultra Ego: purple hair, magenta eyes, bulkier, a dark purple flame
-    hair: { style: "same", color: 0x6a2ab8, glow: 0.3 }, eyes: 0xd03aa0, scale: 1.05,
+    hair: { style: "ego", color: 0x6a2ab8, glow: 0.3 }, eyes: 0xd03aa0, scale: 1.05,
     aura: { color: 0x9a2aff, core: 0xf0c8ff, size: 1.15, flicker: 0.85, sparks: 0 },
   },
 
