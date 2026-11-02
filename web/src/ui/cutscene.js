@@ -79,7 +79,7 @@ export function createCutscenePlayer(app) {
       // over the listener's shoulder, a little to the side and above, looking at the speaker's face
       // when they stand far apart, slide in towards the speaker so they fill the frame
       const dist = Math.hypot(s.x - o.x, s.z - o.z), closer = Math.max(0, dist - 4.5 - big);
-      const want = o.clone().addScaledVector(d, closer - 2.2 - big * 0.6).addScaledVector(side, 1.1 + Math.min(1.2, closer * 0.15)).add(new THREE.Vector3(0, 0.35 + big * 0.25, 0));
+      const want = o.clone().addScaledVector(d, closer - 2.2 - big * 0.6).addScaledVector(side, 1.1 + Math.min(1.2, closer * 0.15)).add(new THREE.Vector3(0, 0.35 + big * 0.25 + Math.min(2.2, closer * 0.3), 0)); // higher when far: look over what's between
       const look = s.clone().add(new THREE.Vector3(0, -0.1 * big, 0));
       if (cut) { camPos.copy(want); camLook.copy(look); cut = false; }
       else { const k = 1 - Math.exp(-frameDt * 2.5); camPos.lerp(want, k); camLook.lerp(look, k); }
