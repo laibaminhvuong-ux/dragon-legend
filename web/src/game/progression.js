@@ -1,3 +1,4 @@
+import { formForRace } from "./forms.js";
 // Pure functions for XP, levels and derived stats. Used by the game for the real values and by the
 // UI for previews (stat screen, creator), so both always agree. Ported from Progression.luau.
 import * as S from "../data/stats.js";
@@ -7,6 +8,13 @@ import { FORMS } from "../data/forms.js";
 /** XP needed to go from `level` to `level + 1` (0 at max level). */
 export function xpToNext(level) {
   return level >= S.MAX_LEVEL ? 0 : Math.floor(100 * Math.pow(level, 1.5));
+}
+
+/** Quest reward budget for a number of levels at the quest's difficulty. */
+export function xpForLevels(level, count) {
+  let amount=0;
+  for(let i=0;i<Math.min(50,Math.max(0,count));i++)amount+=xpToNext(level+i);
+  return amount;
 }
 
 /** XP after the race's early-growth bonus (Half-Saiyan, Human). */
@@ -31,12 +39,13 @@ export function derive(slot, formId = "") {
   const level = slot.level;
   const maxHealth = S.BASE_HEALTH + (level - 1) * S.HEALTH_PER_LEVEL + points(slot, "Health") * S.HEALTH_PER_POINT;
   const maxKi = S.BASE_KI + (level - 1) * S.KI_PER_LEVEL + points(slot, "Ki") * S.KI_PER_POINT;
-  const runSpeed = Math.min(S.MAX_RUN_SPEED, S.BASE_RUN_SPEED + points(slot, "Speed") * S.RUN_SPEED_PER_POINT * mult);
+  const runSpeed = Math.min(S.MAX_RUN_SPEED, S.BASE_RUN_SPEED + points(slot, "Speed") * S.RUN_SPEED_PER_POINT * mult) * (FORMS[formId]?.speedFactor || 1);
   let total = 0;
   for (const n of S.STAT_NAMES) total += points(slot, n);
   return {
     maxHealth: Math.floor(maxHealth * mult),
     maxKi, // forms drain ki instead of raising the pool
+    kiCostScale: (S.BASE_KI+(level-1)*S.KI_PER_LEVEL)/S.BASE_KI,
     runSpeed,
     strength: (1 + points(slot, "Strength") * 0.02) * mult, // melee damage multiplier
     kiPower: (1 + points(slot, "KiPower") * 0.02) * mult, // ki attack damage multiplier
@@ -46,7 +55,7 @@ export function derive(slot, formId = "") {
 
 /** Forms this race has the level for, in unlock order. */
 export function formsAtLevel(raceId, level) {
-  return (getRace(raceId)?.forms || []).filter((id) => FORMS[id].unlockLevel <= level);
+  return (getRace(raceId)?.forms || []).filter((id) => formForRace(id,raceId) && FORMS[id].unlockLevel <= level);
 }
 
 /**

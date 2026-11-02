@@ -1,3 +1,4 @@
+import { formForRace } from "../web/src/game/forms.js";
 // Node checks for the rules (data/, game/, core/save + settings). No browser needed.
 //   node tools/check_core.mjs
 import assert from "node:assert/strict";
@@ -22,7 +23,7 @@ t("data tables are consistent", () => {
   for (const id of RACE_ORDER) {
     const r = RACES[id];
     assert.equal(r.id, id);
-    for (const f of r.forms) assert.equal(FORMS[f]?.race, id, `form ${f} of ${id}`);
+    for (const f of r.forms) assert.ok(formForRace(f,id), `form ${f} of ${id}`);
     for (const h of r.hairStyles) assert.ok(findById(HAIR_STYLES, h), `hair ${h}`);
     assert.ok(starterOutfits(id).length > 0, `${id} has a starter outfit`);
     const levels = r.forms.map((f) => FORMS[f].unlockLevel);
@@ -34,9 +35,9 @@ t("data tables are consistent", () => {
 t("progression ports the Roblox numbers", () => {
   assert.equal(P.xpToNext(1), 100);
   assert.equal(P.xpToNext(4), 800);
-  assert.equal(P.xpToNext(150), 0);
+  assert.equal(P.xpToNext(2000), 0);
   assert.equal(P.applyXPBonus("HalfSaiyan", 10, 100), 125);
-  assert.equal(P.applyXPBonus("HalfSaiyan", 50, 100), 100);
+  assert.equal(P.applyXPBonus("HalfSaiyan", 500, 100), 100);
   assert.equal(P.applyXPBonus("Human", 149, 100), 110);
   assert.equal(P.applyXPBonus("Saiyan", 1, 100), 100);
   const s = newSlot(defaultLook("Saiyan"));
@@ -44,7 +45,8 @@ t("progression ports the Roblox numbers", () => {
   assert.equal(d.maxHealth, 100);
   assert.equal(d.powerLevel, Math.floor((50 + 5 * 25) * 1.1)); // Saiyan +5 Strength
   assert.equal(P.derive(s, "SSJ").maxHealth, 150);
-  assert.deepEqual(P.formsAtLevel("Saiyan", 50), ["SSJ", "SSJ2"]);
+  assert.ok(P.formsAtLevel("Saiyan",250).includes("SSJ"));
+  assert.ok(!P.formsAtLevel("Saiyan",250).includes("SSJ2"));
 });
 
 t("addXP levels up and grants points", () => {
@@ -58,7 +60,7 @@ t("addXP levels up and grants points", () => {
   assert.equal(P.spendStatPoint(s, "Health", 9), "Not enough stat points");
   assert.equal(P.spendStatPoint(s, "Luck", 1), "Unknown stat");
   P.addXP(s, 1e12);
-  assert.equal(s.level, 150);
+  assert.equal(s.level, 2000);
   assert.equal(s.xp, 0);
 });
 
@@ -77,7 +79,7 @@ t("migrate fills missing fields and survives junk", () => {
   const old = { slots: [{ race: "Human", appearance: defaultLook("Human"), level: 4 }, 7], lastSlot: 0 };
   const m = migrate(old);
   assert.equal(m.slots[0].stats.Speed, 0);
-  assert.equal(m.slots[0].level, 4);
+  assert.equal(m.slots[0].level, 40);
   assert.equal(m.slots[1], null);
   assert.equal(m.slots[2], null);
 });

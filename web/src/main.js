@@ -27,6 +27,7 @@ import { createUI } from "./ui/index.js";
 import "./ui/screens.js";
 import { registerDevFallbacks } from "./ui/dev.js";
 import { defaultLook } from "./game/look.js";
+import { FORMS } from "./data/forms.js";
 import { VERSION } from "./version.js";
 import { createMusic } from "./audio/music.js";
 
@@ -143,6 +144,7 @@ app.scenes.register("play", {
     app.music.play(app.game.zone.id);
     const model = createCharacterModel({ race: slot.race, ...slot.appearance }, { castShadow: shadows });
     app.gfx.scene.add(model.object3d);
+    app.playerModel=model;
     const cam = createFollowCamera(app.gfx.camera, app.game.zone);
     cam.setYaw(app.game.player.yaw);
     play = { model, cam, storyView, combatView, prev: { ...app.game.player.pos }, saveTimer: 0 };
@@ -155,6 +157,7 @@ app.scenes.register("play", {
   exit() {
     app.ui.hideAll();
     play?.model.dispose();
+    app.playerModel=null;
     play?.storyView.dispose();
     play?.combatView.dispose();
     app.story = null;
@@ -188,12 +191,12 @@ app.scenes.register("play", {
     const frozen = app.paused || app.dialogueOpen;
     if (!frozen) play.cam.addLook(app.input.takeLook(frameDt));
     else app.input.takeLook(frameDt);
-    const lookKey = app.game.slot.appearance.outfit;
+    const lookKey = JSON.stringify(app.game.slot.appearance);
     if (play.outfit !== lookKey) {
       if (play.outfit !== undefined) {
         play.model.dispose();
         play.model = createCharacterModel({ race: app.game.slot.race, ...app.game.slot.appearance }, { castShadow: app.gfx.quality.shadows });
-        app.gfx.scene.add(play.model.object3d);play.lastForm=undefined;
+        app.gfx.scene.add(play.model.object3d);app.playerModel=play.model;play.lastForm=undefined;
       }
       play.outfit=lookKey;
     }
@@ -206,7 +209,7 @@ app.scenes.register("play", {
       play.model.setForm(p.form); // hair, eyes, skin, size and aura as in the story (data/form_looks.js)
     }
     const target = app.game.combat.enemies.find(e => e.id === p.lockTarget && e.health > 0);
-    play.cam.update(pos, frozen ? 0 : frameDt, target?.pos);
+    play.cam.update(pos, frozen ? 0 : frameDt, target?.pos, FORMS[p.form]?.size || 1);
     play.combatView.update(frozen ? 0 : frameDt);
     world.update(frozen ? 0 : frameDt, pos, app.gfx.camera.position);
     play.storyView.update(frozen ? 0 : frameDt, pos);

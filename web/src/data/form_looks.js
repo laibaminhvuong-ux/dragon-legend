@@ -60,11 +60,11 @@ export const FORM_LOOKS = {
     hair: { style: "ssj1", color: 0xd6e04a, glow: 0.3 }, eyes: 0xf2f2f2, scale: 1.25,
     aura: { color: 0x4cff6a, core: 0xe0ffd8, size: 1.25, flicker: 1, sparks: 2, sparkColor: 0xc8ffd0 },
   },
-  SSJ4: { // black wild mane, golden eyes, a red-gold aura (the red fur needs a body texture: not yet)
+  SSJ4: { // black wild mane, golden eyes, a red-gold aura (red fur patches are attached by cage_model)
     hair: { style: "ssj4", color: 0x16100e, glow: 0.0 }, eyes: 0xf0b41e, flush: [0xb4281e, 0.18],
     aura: { color: 0xff3a24, core: 0xffd890, size: 1.1, flicker: 0.9, sparks: 1, sparkColor: 0xffc8a0 },
   },
-  // Great Ape: stand-in until there is an ape model (a giant, brown-furred fighter with red eyes)
+  // Great Ape: cage_model swaps in the procedural ape body from great_ape.js.
   Oozaru: { hair: null, eyes: 0xd0141e, flush: [0x5a3418, 0.55], scale: 3.2, aura: { color: 0xff5a3a, core: 0xffc0a0, size: 1.0, flicker: 0.5, sparks: 0 } },
   GoldenOozaru: { hair: null, eyes: 0xd0141e, flush: [0xe0b030, 0.55], scale: 3.2, aura: { color: 0xffc81e, core: 0xfff0b0, size: 1.1, flicker: 0.7, sparks: 1, sparkColor: 0xfff0c0 } },
   UIOmen: { // Ultra Instinct -Sign-: own dark hair, silver eyes, a calm silver-blue glow
@@ -163,3 +163,8 @@ export const FORM_LOOKS = {
     aura: { color: 0xff3ca0, core: 0xffe0f0, size: 1.2, flicker: 1, sparks: 2, sparkColor: 0xffb0dc },
   },
 };
+
+// Distinct muscle distribution, rather than only uniform height scaling.
+FORM_LOOKS.SSJGrade2.bulk=[1.22,1.03,1.18];
+FORM_LOOKS.SSJGrade3.bulk=[1.42,1.07,1.32];
+FORM_LOOKS.LegendarySSJ.bulk=[1.34,1.15,1.25];

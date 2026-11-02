@@ -63,7 +63,7 @@ t('locked targets clear on death or range; techniques require unlocks',()=>{
 });
 t('transformations require race quest unlocks and revert when ki runs out',()=>{
   const {g}=fresh();tick(g,{transform:true});assert.equal(g.player.form,'');
-  g.slot.race='Saiyan';g.slot.level=25;g.slot.forms=['SSJ'];g.refreshDerived(true);tick(g,{transform:true});assert.equal(g.player.form,'SSJ');
+  g.slot.race='Saiyan';g.slot.level=250;g.slot.forms=['SSJ'];g.refreshDerived(true);tick(g,{transform:true});assert.equal(g.player.form,'SSJ');
   const strength=g.player.strength;g.player.ki=0;tick(g);assert.equal(g.player.form,'');assert.ok(g.player.strength<strength);
 });
 console.log(`${checks} combat checks passed`);

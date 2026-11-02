@@ -5,7 +5,7 @@ import { CAMERA as C } from '../data/camera.js';
 export function createFollowCamera(camera, zone) {
   const state = { yaw: Math.PI, pitch: C.pitch };
   const pos = new THREE.Vector3(), look = new THREE.Vector3(), want = new THREE.Vector3();
-  let first = true;
+  let first = true, lastScale=1;
   const blend = (dt, rate) => 1 - Math.exp(-Math.max(0, dt) * rate);
   return {
     get yaw() { return state.yaw; },
@@ -16,9 +16,11 @@ export function createFollowCamera(camera, zone) {
     },
     setYaw(yaw) { if (Number.isFinite(yaw)) state.yaw = yaw; },
     // target = interpolated feet position. lockTarget = optional interpolated enemy feet position.
-    update(target, frameDt, lockTarget = null) {
-      look.set(target.x, target.y + C.height, target.z);
-      let distance = C.distance;
+    update(target, frameDt, lockTarget = null, scale = 1) {
+      scale=Number.isFinite(scale)?Math.max(1,scale):1;
+      if(scale!==lastScale){first=true;lastScale=scale;}
+      look.set(target.x, target.y + C.height * scale, target.z);
+      let distance = C.distance * scale;
       if (lockTarget) {
         const dx = lockTarget.x - target.x, dz = lockTarget.z - target.z;
         if (Math.hypot(dx, dz) > .001) {
@@ -26,13 +28,13 @@ export function createFollowCamera(camera, zone) {
           const delta = Math.atan2(Math.sin(angle - state.yaw), Math.cos(angle - state.yaw));
           state.yaw += delta * blend(frameDt, C.lockTurnRate);
         }
-        distance = Math.min(C.maxLockDistance, C.distance + Math.hypot(dx, dz) * C.lockDistanceScale);
+        distance = Math.min(C.maxLockDistance * scale, C.distance * scale + Math.hypot(dx, dz) * C.lockDistanceScale);
         look.lerp(want.set(lockTarget.x, lockTarget.y + C.lockHeight, lockTarget.z), .5);
       }
       const cp = Math.cos(state.pitch);
       want.set(
         target.x - Math.sin(state.yaw) * cp * distance,
-        target.y + C.height + Math.sin(state.pitch) * distance,
+        target.y + C.height * scale + Math.sin(state.pitch) * distance,
         target.z - Math.cos(state.yaw) * cp * distance,
       );
       want.y = Math.max(want.y, zone.heightAt(want.x, want.z) + C.clearance);

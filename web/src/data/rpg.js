@@ -8,6 +8,8 @@ export const ZONE_LEVELS = {
   nameless_planet: 80, future_earth: 95, world_of_void: 110,
   broly_glacier: 125, red_ribbon: 135,
 };
+for(const id of Object.keys(ZONE_LEVELS))ZONE_LEVELS[id]*=10;
+Object.assign(ZONE_LEVELS,{king_kai:20,world_of_void:750,broly_glacier:780,red_ribbon:1900,new_namek:850,planet_cereal:1250});
 export const RPG = { huntCount: 3, huntXp: .8, killXp: .16, zeniPerLevel: 12 };
 export function camp(zone) {
   const p = zone.spawn, path = zone.def.terrain.path;

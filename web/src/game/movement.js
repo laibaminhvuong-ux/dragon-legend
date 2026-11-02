@@ -4,6 +4,8 @@ import { addKi, trySpendKi } from "./ki.js";
 
 export function stepMovement(e, it, dt, zone) {
   if (!(dt > 0) || !Number.isFinite(dt)) return;
+  const kiScale=e.kiCostScale || (e.maxKi || 100)/100;
+  const recoveryScale=(e.maxKi || 100)/100;
   const wish = { x: it.moveX || 0, z: it.moveZ || 0 };
   const len = Math.hypot(wish.x, wish.z);
   if (len > 1) { wish.x /= len; wish.z /= len; }
@@ -17,14 +19,14 @@ export function stepMovement(e, it, dt, zone) {
     e.vel.y = 0;
     if (e.flying) e.onGround = false;
   }
-  if (e.flying && (!canMove || !trySpendKi(e, M.flightDrain * dt))) {
+  if (e.flying && (!canMove || !trySpendKi(e, M.flightDrain * kiScale * dt))) {
     e.flying = false;
     e.vel.y = Math.min(0, e.vel.y);
   }
 
   e.charging = !!(canMove && it.charge && !e.flying && e.onGround && !e.dashRemaining);
-  if (e.charging) addKi(e, M.chargeRate * dt);
-  if (canMove && it.dash && !e.charging && e.dashCooldown === 0 && trySpendKi(e, M.dashCost)) {
+  if (e.charging) addKi(e, M.chargeRate * recoveryScale * dt);
+  if (canMove && it.dash && !e.charging && e.dashCooldown === 0 && trySpendKi(e, M.dashCost * kiScale)) {
     e.dashRemaining = M.dashDuration;
     e.dashCooldown = M.dashCooldown;
     e.dashX = len > 0 ? wish.x : Math.sin(e.yaw);

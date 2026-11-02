@@ -15,5 +15,5 @@ export function trySpendKi(e, n) {
 
 /** Passive regen, once per fixed step. */
 export function regenKi(e, dt) {
-  if (e.ki < e.maxKi) addKi(e, KI_REGEN_PER_SECOND * dt);
+  if (e.ki < e.maxKi) addKi(e, KI_REGEN_PER_SECOND * (e.maxKi / 100) * dt);
 }

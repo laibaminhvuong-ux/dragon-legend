@@ -9,7 +9,7 @@ import { ZONES } from '../web/src/game/zones.js';
 const dt=1/60;let checks=0;
 const t=(name,fn)=>{fn();checks++;console.log('ok',name);};
 function session(zone='earth_plains'){
-  const ev=createEvents(),slot=newSlot(defaultLook('Saiyan'));slot.zone=zone;
+  const ev=createEvents(),slot=newSlot(defaultLook('Saiyan'));slot.zone=zone;slot.level=10;
   const game=createGame(0,slot,ev),story=createStory(game,ev),log=[];ev.on('dialogue',d=>log.push(d));
   const tick=(it={})=>{const intents={...emptyIntents(),...it};game.update(dt,intents);story.update(dt,intents);};
   return {game,story,slot,log,tick};
@@ -33,7 +33,7 @@ t('patrol quests require actual kills, pay rewards and can repeat',()=>{
     assert.equal(e.health,0,'enemy defeated through real attacks');
   }
   assert.equal(s.slot.quests.hunt_earth_plains.completions,1);assert.ok(s.slot.zeni>before);assert.ok(s.slot.statPoints>0);
-  const migrated=migrate({version:2,slots:[structuredClone(s.game.toSave())],lastSlot:0});
+  const migrated=migrate({version:4,slots:[structuredClone(s.game.toSave())],lastSlot:0});
   assert.equal(migrated.slots[0].quests.hunt_earth_plains.completions,1);
   atNpc(s,'guide_earth_plains');assert.ok(s.story.acceptQuest('hunt_earth_plains'));assert.equal(s.slot.quests.hunt_earth_plains.count,0);
 });
@@ -68,7 +68,7 @@ t('guide shops validate distance, funds, inventory and outfit ownership',()=>{
 
 t('v2 loadouts migrate and equipped techniques survive saving and travel',()=>{
   const s=session();s.slot.moves.push('Kamehameha');assert.ok(s.game.combat.setTechnique('Kamehameha'));
-  const migrated=migrate({version:2,slots:[structuredClone(s.game.toSave())],lastSlot:0});
+  const migrated=migrate({version:4,slots:[structuredClone(s.game.toSave())],lastSlot:0});
   const restored=createGame(0,migrated.slots[0]);assert.equal(restored.combat.snapshot().technique,'Kamehameha');
   delete migrated.slots[0].loadout;
   const old=migrate(migrated);assert.equal(old.slots[0].loadout.technique,'EnergyWave');
@@ -81,7 +81,7 @@ t('story bosses spawn as enemies and real combat advances their defeat objective
   Object.assign(s.game.player.pos,{x:boss.pos.x,y:boss.pos.y,z:boss.pos.z-1.7});
   s.game.player.lockTarget=boss.id;
   assert.notEqual(s.story.interact(),'confront');assert.equal(s.slot.quests.m02_raditz.step,0);
-  for(let i=0;i<1200&&boss.health>0;i++)s.tick({melee:true});
+  for(let i=0;i<1200&&boss.health>0;i++){const dx=boss.pos.x-s.game.player.pos.x,dz=boss.pos.z-s.game.player.pos.z,d=Math.hypot(dx,dz)||1;s.tick({melee:true,moveX:d>1.8?dx/d:0,moveZ:d>1.8?dz/d:0});}
   assert.equal(boss.health,0);assert.equal(s.slot.quests.m02_raditz.step,1);
 });
 console.log(`${checks} RPG checks passed`);

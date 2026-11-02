@@ -1,0 +1,42 @@
+// Real browser acceptance for player menus, mastery, transformation meshes and live customization.
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+import {createRequire} from 'node:module';
+import {fileURLToPath} from 'node:url';
+import {serve} from './serve.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const require=createRequire(import.meta.url),{chromium}=require(process.env.PLAYWRIGHT_CORE || 'playwright-core');
+const server=await serve(5196,path.join(root,'web'));let browser;
+try{
+  browser=await chromium.launch({executablePath:process.env.CHROMIUM || path.join(os.homedir(),'.cache/ms-playwright/chromium-1140/chrome-linux/chrome'),args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+  const page=await browser.newPage({viewport:{width:1440,height:900}});page.setDefaultTimeout(90000);
+  const errors=[];page.on('pageerror',e=>errors.push(String(e)));await page.goto('http://127.0.0.1:5196/?dev');
+  await page.waitForFunction(()=>globalThis.__dragonlegend?.playerModel);
+  await page.evaluate(()=>{const a=globalThis.__dragonlegend;a.game.addXP(1e12);a.game.slot.forms.push('SSJ','Oozaru');a.game.slot.quests.m02_raditz={status:'done'};});
+  await page.getByRole('button',{name:'Forms',exact:true}).click();const modal=page.locator('.rpg-dialogue');
+  await modal.getByRole('button',{name:'Ultra Instinct',exact:true}).click();
+  assert.equal(await page.evaluate(()=>__dragonlegend.game.slot.loadout.formPath),'instinct');
+  const ssj=modal.locator('.rpg-offer').filter({has:page.getByRole('heading',{name:'Super Saiyan',exact:true})});
+  await ssj.getByRole('button',{name:'Transform',exact:true}).click();
+  await page.evaluate(()=>__dragonlegend.game.addFormMastery(1000));
+  assert.equal(await page.evaluate(()=>__dragonlegend.game.player.form),'SSJFullPower');
+  await modal.getByRole('button',{name:'Continue',exact:true}).click();
+  await page.getByRole('button',{name:'Character',exact:true}).click();
+  const previous=await page.evaluate(()=>__dragonlegend.playerModel.object3d.id);
+  await modal.getByRole('combobox',{name:'Hair',exact:true}).selectOption('Swept');
+  await page.waitForFunction(id=>__dragonlegend.playerModel.object3d.id!==id,previous);
+  assert.equal(await page.evaluate(()=>__dragonlegend.game.slot.appearance.hair),'Swept');
+  await modal.getByRole('button',{name:'Accessories',exact:true}).click();
+  await modal.locator('.rpg-offer').filter({has:page.getByRole('heading',{name:'Scouter',exact:true})}).getByRole('button',{name:'Equip',exact:true}).click();
+  await page.waitForFunction(()=>!!__dragonlegend.playerModel.object3d.getObjectByName('equipped-accessory'));
+  await modal.getByRole('button',{name:'Forms',exact:true}).click();
+  await modal.locator('.rpg-offer').filter({has:page.getByRole('heading',{name:'Oozaru (Great Ape)',exact:true})}).getByRole('button',{name:'Transform',exact:true}).click();
+  await page.waitForFunction(()=>!!__dragonlegend.playerModel.object3d.getObjectByName('great-ape'));
+  await fs.mkdir(path.join(root,'out'),{recursive:true});await page.screenshot({path:path.join(root,'out','forms.png')});
+  await modal.getByRole('button',{name:'Return to Base',exact:true}).click();
+  await page.waitForFunction(()=>!__dragonlegend.playerModel.object3d.getObjectByName('great-ape'));
+  await page.evaluate(()=>__dragonlegend.saveNow());assert.deepEqual(errors,[]);
+  console.log('forms browser smoke passed: menu tabs, max-level path, mastery evolution, live hair/accessory changes and ape restoration');
+}finally{await browser?.close();server.close();}

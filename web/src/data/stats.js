@@ -1,5 +1,5 @@
 // Tunable numbers for levels, stat points and what they produce. Units: metres, seconds.
-export const MAX_LEVEL = 150;
+export const MAX_LEVEL = 2000;
 export const POINTS_PER_LEVEL = 3;
 export const SLOT_COUNT = 3;
 export const STARTING_ZENI = 100;

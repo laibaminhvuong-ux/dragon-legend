@@ -1,3 +1,4 @@
+import { formForRace } from "./forms.js";
 import { freePosition } from "./placement.js";
 import { SHOP } from "../data/rpg.js";
 import { OUTFITS, outfitAllowed } from "../data/outfits.js";
@@ -20,7 +21,7 @@ import { QUESTS, NPCS, CHARACTERS, LINKS, START_ZONES, COMBAT_AVAILABLE } from "
 import { MOVES } from "../data/moves.js";
 import { FORMS } from "../data/forms.js";
 import { ZONES, getZone } from "./zones.js";
-import { xpToNext } from "./progression.js";
+import { xpToNext, xpForLevels } from "./progression.js";
 
 const QUEST = Object.fromEntries(QUESTS.map((q) => [q.id, q]));
 const NPC = Object.fromEntries(NPCS.map((n) => [n.id, n]));
@@ -37,6 +38,10 @@ export function ensureStoryState(slot) {
   s.visited = Array.isArray(s.visited) ? s.visited : [];
   s.items = s.items && typeof s.items === "object" ? s.items : {};
   s.flags = s.flags && typeof s.flags === "object" ? s.flags : {};
+  // Reconcile newly added destinations for saves that completed earlier versions of a quest.
+  for(const q of QUESTS)if(slot.quests[q.id]?.status==='done' || (slot.quests[q.id]?.completions || 0)>0){
+    for(const id of q.rewards?.unlock || [])if(!s.unlocked.includes(id))s.unlocked.push(id);
+  }
   return s;
 }
 
@@ -76,6 +81,8 @@ export function createStory(game, events = null) {
   const at = (step) => (step.zone === zone.id ? zone.place(step.x, step.z) : { x: step.x, z: step.z });
 
   function canAccept(q) {
+    if(q.legacy || q.automatic)return false;
+    if(q.path && slot.loadout?.formPath!==q.path)return false;
     if (isActive(q.id)) return false;
     if (isDone(q.id) && !q.repeat) return false;
     if (slot.level < (q.level || 1)) return false;
@@ -159,11 +166,12 @@ export function createStory(game, events = null) {
     const R = q.rewards || {};
     const lines = [];
     let xpGain = R.xp;
+    if (typeof xpGain === "string" && xpGain.startsWith("levels:")) xpGain=xpForLevels(slot.level,Number(xpGain.slice(7)));
     if (typeof xpGain === "string" && xpGain.startsWith("level:")) xpGain = Math.max(40, Math.round(xpToNext(slot.level) * Number(xpGain.slice(6))));
     if (R.zeni) { game.addZeni(R.zeni); lines.push(`${R.zeni} zeni`); }
     if (R.statPoints) { slot.statPoints += R.statPoints; lines.push(`${R.statPoints} stat points`); }
     for (const m of R.moves || []) if (!slot.moves.includes(m) && (!MOVES[m].races || MOVES[m].races.includes(slot.race))) { slot.moves.push(m); lines.push(`technique: ${MOVES[m].name}`); }
-    for (const f of R.forms || []) if (!slot.forms.includes(f)) { slot.forms.push(f); lines.push(`transformation: ${FORMS[f].name}`); }
+    for (const f of R.forms || []) if (formForRace(f,slot.race) && !slot.forms.includes(f)) { slot.forms.push(f); lines.push(`transformation: ${FORMS[f].name}`); }
     for (const o of R.outfits || []) if (!slot.outfits.includes(o)) { slot.outfits.push(o); lines.push(`outfit: ${o}`); }
     for (const z of R.unlock || []) if (!S.unlocked.includes(z)) { S.unlocked.push(z); lines.push(`new world: ${ZONES[z].name}`); }
     for (const [k, v] of Object.entries(R.items || {})) S.items[k] = (S.items[k] || 0) + v;
@@ -192,8 +200,9 @@ export function createStory(game, events = null) {
     const n = list.length;
     padCache = list.map((z, i) => {
       // an arc of pads facing spawn, 3 m apart
-      const span = Math.max(0, n - 1) * 3;
-      const off = -span / 2 + i * 3;
+      const row=Math.floor(i/8),columns=Math.min(8,n-row*8);
+      const span=Math.max(0,columns-1)*3;
+      const off=-span/2+(i%8)*3;
       let x, zz;
       if (zone.def.terrain.path) {
         // Snake Way is too narrow for a row: line the pads up along the road
@@ -202,7 +211,7 @@ export function createStory(game, events = null) {
         const dx = zone.spawn.x - tp.x, dz = zone.spawn.z - tp.z;
         const len = Math.hypot(dx, dz) || 1;
         const sx = -dz / len, sz = dx / len; // sideways
-        x = tp.x + sx * off; zz = tp.z + sz * off;
+        x = tp.x + sx * off + dx/len*row*3.5; zz = tp.z + sz * off + dz/len*row*3.5;
       }
       return { zone: z, name: ZONES[z].name, planet: ZONES[z].planet, x, y: zone.heightAt(x, zz), z: zz };
     });

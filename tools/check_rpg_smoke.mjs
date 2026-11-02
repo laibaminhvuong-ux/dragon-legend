@@ -19,6 +19,7 @@ try {
   await page.goto('http://127.0.0.1:5197/?dev');
   await page.waitForFunction(()=>globalThis.__dragonlegend?.game && globalThis.__dragonlegend.loop.stats.frames>5);
   assert.equal(await page.locator('.screen-rpg').count(),1);
+  await page.evaluate(async()=>{const {xpForLevels}=await import('/src/game/progression.js');globalThis.__dragonlegend.game.addXP(xpForLevels(1,9));});
   // Approach the guide through the test hook, then use actual keyboard/UI commands.
   await page.evaluate(()=>{
     const a=globalThis.__dragonlegend,n=a.story.npcs().find(n=>n.id==='guide_earth_plains');
@@ -43,7 +44,13 @@ try {
       a.game.player.lockTarget=null;
     },id);
     await page.keyboard.press('Tab');
-    await page.waitForFunction(id=>globalThis.__dragonlegend.game.combat.enemies.find(e=>e.id===id).health<=0,id);
+    // Level-10 enemies take a few combos; knockback pushes them out of reach at SwiftShader frame rates, so stay adjacent.
+    for(let t=0;t<120 && await page.evaluate(id=>globalThis.__dragonlegend.game.combat.enemies.find(e=>e.id===id).health>0,id);t++){
+      await page.evaluate(id=>{const a=globalThis.__dragonlegend,e=a.game.combat.enemies.find(e=>e.id===id),p=a.game.player;
+        if(Math.hypot(e.pos.x-p.pos.x,e.pos.z-p.pos.z)>1.9)Object.assign(p.pos,{x:e.pos.x,y:e.pos.y,z:e.pos.z-1.7});},id);
+      await page.waitForTimeout(1000);
+    }
+    assert.ok(await page.evaluate(id=>globalThis.__dragonlegend.game.combat.enemies.find(e=>e.id===id).health<=0,id),`enemy ${id} defeated`);
     await page.evaluate(()=>globalThis.__dragonlegend.input.setVirtual('melee',false));
   }
   await page.waitForFunction(()=>globalThis.__dragonlegend.game.slot.quests.hunt_earth_plains.completions===1);

@@ -289,9 +289,14 @@ export const ZONE_DEFS = {
   },
 };
 
+// Manga-era destinations reuse the same terrain/landmark engine.
+ZONE_DEFS.new_namek={...structuredClone(ZONE_DEFS.namek),name:'New Namek',planet:'New Namek',saga:'Galactic Patrol Prisoner Saga'};
+ZONE_DEFS.planet_cereal={...structuredClone(ZONE_DEFS.gizard_wasteland),name:'Planet Cereal',planet:'Cereal',saga:'Granolah the Survivor Saga',
+  landmarks:[{type:'farmhouse',x:-24,z:-10,name:'Monaito’s home',flatten:8,collide:4}]};
+
 /** Story order of the worlds (travel pads list them in this order). */
 export const ZONE_ORDER = [
   "earth_plains", "kame_island", "snake_way", "king_kai", "gizard_wasteland", "namek", "yardrat", "west_city",
   "gero_lab", "lookout", "htc", "cell_games", "papaya_island", "babidi_ship", "kai_world", "beerus_planet",
-  "nameless_planet", "future_earth", "world_of_void", "broly_glacier", "red_ribbon",
+  "nameless_planet", "future_earth", "world_of_void", "broly_glacier", "new_namek", "planet_cereal", "red_ribbon",
 ];

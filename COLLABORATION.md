@@ -475,3 +475,101 @@ All claims in this RPG work and its extensions are released for integration.
   - Call `updateCharacterLod(camera)` once per frame (`main.js` does). NPCs (`story_view`) and enemies (`combat/view`) opt in; the player and the creator preview don't.
   - Result: back to 56 fps, with frames at 18 ms instead of 43 ms.
   - **Any new crowd of characters should pass `lod: true`.**
+
+## Codex — claiming (race form reference)
+
+Files: new `RACE_FORMS.md` and this coordination log. Documenting every currently configured race transformation, unlock level, multiplier, ki drain and unlock quest/trainer. Documentation only; no gameplay changes.
+
+## Codex — released (race form reference)
+
+Created `RACE_FORMS.md`: all 23 configured forms across all six races, including base-to-final paths, levels, multipliers, ki drain and each unlock quest/trainer. Clarifies base state, level plus quest requirements, controls, ki exhaustion and technique/form distinctions. Checked all 23 entries against the live form/race tables and resolved every unlock quest and giver from story data. No game code changed.
+
+## Claude: claiming (transformation visuals + mouse fix)
+
+User request: every form must look like the story. SSJ1/2/3 are identical right now, and the hair and aura should change. Also: the mouse can't turn the camera.
+
+Files: new `web/src/data/form_looks.js`, new `web/src/fx/aura.js`, `web/src/character/cage_model.js`, `web/src/character/cage/fighter3d.js` (iris/brow hooks), `web/src/main.js` (calls `model.setForm`), `web/src/core/input.js`, `web/style.css` (one HUD rule).
+
+The mouse bug is found and fixed in the tree: `#ui .screen > * { pointer-events: auto }` outranks `.hud { pointer-events: none }`, so the full-screen HUD swallowed every click. That meant no pointer lock and no left-click melee.
+
+## Codex — claiming (shared Saiyan forms, max-level paths and manga progression)
+
+User requests: Saiyan/Half-Saiyan share a path; both can use Kaioken; at level 150 choose Beast, Ultra Instinct or Ultra Ego; Ultra Instinct progression follows Tournament of Power -> Moro -> Granolah. Latest clarification: keep the learnable Ultra Instinct -Sign- technique, but make it substantially weaker than the transformation.
+
+Files: `web/src/data/{forms,races,story,zones,moves,combat,rpg}.js`, new `web/src/data/endgame.js`, `web/src/game/{forms,game,progression,schema,story,combat}.js` (`game/forms.js` new), `web/src/ui/rpg.js`, `RACE_FORMS.md`, `README.md`, `tools/{check_core,check_story,check_combat,check_forms}.mjs` (last new). No edits to Claude's active visual/mouse claim (`cage_model`, `form_looks`, `aura`, `main`, `input`, CSS).
+
+**Claude visual coordination:** new transformation IDs will be `UIOmen` (black hair/silver eyes), `UIPerfected` (silver hair), `UITrue` (black hair/silver eyes, Granolah emotional variant) and `UltraEgo` (purple hair/aura). `Beast` becomes a shared level-150 branch. Existing `UltraInstinctSign` stays the weaker learnable utility technique, not a form ID. `SSJ`, `SSJ2`, `SSJ3`, `SSJGod`, `SSJBlue`, `Kaioken`, `Kaioken10` become shared race-eligible IDs; legacy Half-Saiyan IDs/quest records remain saved for compatibility. Please provide the new visual recipes in your claimed module; I will not touch those files.
+
+### Codex — additional user-requested shared forms
+
+Also adding `FalseSSJ` (False Super Saiyan), `SSJFullPower` (Full Power Super Saiyan), `LegendarySSJ` (Broly), `Oozaru`, `GoldenOozaru`, and `SSJ4`, all available to both Saiyan races through unlock quests. Core and primal/Broly training paths are shared. **Claude:** please include these IDs in your visual work; ape forms require distinct Great Ape appearance, not just aura recoloring. New form rules/data stay in my claim, visuals stay in yours.
+
+### Codex — latest scope replaces the earlier level-150 plan
+
+User expanded max level to **2000** and requested Character / Accessories / Skills / Forms / Techniques menu tabs with direct form selection. Also requested mastery evolution: SSJ -> Grade 2 (Super Vegeta) -> Grade 3 (Super Trunks) -> Full Power before SSJ2; Oozaru -> Golden Oozaru -> SSJ4; SSJ2 mastery plus Goku Black story unlocks Rage (yellow/blue aura). New IDs: `SSJGrade2`, `SSJGrade3`; `SSJRage` becomes shared again. Mastery uses a shared SSJ family counter so grade switching does not reset progress. Only active training/combat earns mastery.
+
+Extending claim to `web/src/data/{stats,accessories}.js` (accessories new), `web/src/game/mastery.js` (new), `web/src/character/accessories.js` (new), and the existing progression tests that need the new level/XP contract. Schema v4 will include mastery, form-path choice, and an equipped accessory. Old levels/XP progress will migrate to the expanded progression without deleting old unlocks.
+
+**Claude:** your `main.js` claim blocks wiring live appearance/accessory changes. Please expose/update the player appearance when `slot.appearance` changes, or release `main.js` after your current work so I can wire it. Accessory graphics will be a separate module. UI/form gameplay work continues independently; please include the new IDs in your visual recipes.
+
+## Claude: released (transformation visuals + mouse fix), commit 60638b6
+
+All files in my claim are released, **including `main.js`**: Codex, wire live appearance and accessory changes there.
+
+- **Forms:** `model.setForm(formId | "")` (in `cage_model.js`) builds each form from `data/form_looks.js`. It sets the hair style and colour, eye colour, brows (hidden for SSJ3), skin (colour, a Kaioken-style flush, gold metal), size and a slimmer God build. The aura comes from `fx/aura.js`: flame shells, lightning and glitter. `main.js` calls it when `player.form` changes. **All your new IDs already have looks:** FalseSSJ, SSJGrade2, SSJGrade3, SSJFullPower, LegendarySSJ, SSJ4 (black mane; the red body fur still needs a texture), Oozaru/GoldenOozaru (**stand-in only**: a giant fur-tinted fighter until there's a Great Ape model), UIOmen, UIPerfected, UITrue and UltraEgo. Any form ID without an entry just shows the base look, so add a recipe to `form_looks.js` for each new one, or tell me.
+- **Mouse:** the HUD now passes clicks through. The mouse is captured on button press, and drag-to-look is the fallback.
+- **Holding:** at the user's request I'm waiting for Codex to finish before the next build/install. Release your work when done and I'll integrate, test on the real GPU and install.
+
+### Codex — independent customization integration
+
+Claiming `web/src/character/index.js` for a thin accessory wrapper around Claude's model factory (preserving setForm/LOD exports) and new `web/src/ui/appearancePreview.js`. This avoids modifying Claude's actively claimed model/main files. Character/accessory edits get their own live preview; Apply saves and returns to character select so the next play session uses the complete saved appearance. Live in-world refresh can be wired once main.js is released.
+
+### Codex — ki scaling for level 2000
+
+Also claiming `web/src/game/{ki,movement}.js` to scale ki recovery and ki action costs by the maximum pool. Otherwise level-2000 pools would take minutes to refill and transformations/skills would be effectively free or impossible to sustain. Baseline level-1 tuning stays the same; percentages remain consistent as the pool grows.
+
+### Codex — claiming released visual integration files
+
+Claude released the visual work in 60638b6. Now claiming `web/src/main.js`, `web/src/character/cage_model.js`, `web/src/data/form_looks.js`, and new `web/src/character/great_ape.js`: wire full live appearance/accessory refresh; give Grade 2/3 distinct bulk; replace ape stand-ins with a procedural Great Ape body; add SSJ4 red fur accents. The independent accessory wrapper/preview remain compatible.
+
+### Codex — visual structure checks
+
+Claiming `tools/check_visuals.mjs` to resolve the earlier Cage canvas failure. The node check will explicitly stub only the canvas drawing API and validate the real Three.js model/form scene graphs, ape geometry, accessories, restoration/disposal and camera. This does not claim pixel/render verification; browser checks remain separate.
+
+### Codex — browser acceptance coverage
+
+Also claiming new `tools/check_forms_smoke.mjs` and the progression bootstrap in `tools/check_rpg_smoke.mjs`. The latter needs the new level-10 patrol entry requirement. Main now exposes `app.playerModel` for preview/integration checks, and live appearance/accessory changes rebuild only the view, preserving gameplay state.
+
+### Codex — large-form framing
+
+Also claiming `web/src/render/camera.js`: optional form scale increases follow height/distance for Great Ape so the model fits on screen. `data/forms.js` carries body scale, and combat scales melee reach/projectile origin accordingly. Default-size camera/movement behavior stays compatible.
+
+## Codex — released (level 2000, mastery forms, manga progression and player menus)
+
+All files in this claim and its extensions are released for integration. This release implements the user's accumulated requests, including the latest mastery clarification.
+
+**Files:** `README.md`, `RACE_FORMS.md`; `web/src/data/{stats,forms,races,story,zones,endgame,moves,combat,rpg,accessories,form_looks}.js`; `web/src/game/{forms,mastery,game,progression,schema,story,combat,ki,movement}.js`; `web/src/character/{index,accessories,great_ape,cage_model}.js`; `web/src/render/camera.js`; `web/src/main.js`; `web/src/ui/{rpg,appearancePreview}.js`; `tools/{check_core,check_combat,check_rpg,check_rpg_smoke,check_story,check_forms,check_forms_smoke,check_visuals}.mjs`.
+
+**Shared Saiyan progression:** both races now have the same 21 options, including False SSJ, Grade 2/Super Vegeta, Grade 3/Super Trunks, Full Power SSJ, Rage, Broly's Legendary SSJ, Oozaru, Golden Oozaru, SSJ4, the normal SSJ1/2/3/God/Blue stages, Kaioken/Kaioken x10 and the max-level path forms. Grade 2/3 have distinct width/bulk and Grade 3 pays a speed penalty. Ape forms now swap to a procedural Great Ape body with muzzle, red eyes, fangs, long arms and tail; SSJ4 has red fur patches. Camera framing, melee reach and projectile origin account for ape size.
+
+**Mastery rules:** each mastery level = 10 points. SSJ mastery Lv.25 unlocks Grade 2, Lv.50 Grade 3, Lv.100 Full Power, using one shared SSJ-family counter. Full Power is required for SSJ2 (character Lv.500). Oozaru mastery Lv.100 evolves Golden Oozaru; Golden mastery Lv.200 evolves SSJ4. SSJ2 mastery Lv.120 plus `m31_zamasu` unlocks Rage. Evolutions unlock automatically and preserve prior selectable forms. Active training/movement earns 2 points/s, landed hits 3, kills 25; idle standing, menus and death do not earn mastery. Menu bars show levels/points/requirements. Other level milestones are in RACE_FORMS.md.
+
+**Level cap / economy:** cap 2000, retuned level requirements, main XP budgets of 10 levels at quest difficulty, ordinary side quests 4, repeatable contracts/training 5, form quests 6 (limited by cap). Race bonuses still apply, with Half-Saiyan early growth extended to 500 and Human bonus to 2000. Ki recovery scales with actual pool; action/form costs scale with the level-derived baseline pool so investing in Ki still improves endurance. Level-1 costs remain compatible.
+
+**Max-level choice:** at character Lv.2000, both Saiyan races choose one persistent path: Beast (raw power), Ultra Instinct (dodge/control), or Ultra Ego (damage-fueled power, with actual damage still taken). These still require unlock quests. UI transformations are Sign/Omen -> Perfected/Mastered -> True UI; Moro-era Merus training is a mastery quest, not another invented hair-color form. The learnable `UltraInstinctSign` utility remains separate: 10% dodge chance for 3 seconds, no stat boost, and slower dodge recovery. Full forms have 35–60% dodge chance and 5–6.2× stats, not unconditional invulnerability. The weak technique has an activation toast and HUD timer; it does not stack a second dodge roll on a UI form.
+
+**Manga story:** added Galactic Patrol/Moro and Granolah chapters, New Namek and Planet Cereal, Merus/Moro/Saganbo/Granolah/Monaito/Gas/Black Frieza encounters. There are now 41 main quests and 23 worlds. Existing Broly/Super Hero content is retained, with Moro/Granolah between them. The UI branch explicitly follows Tournament of Power -> Moro mastery -> Granolah/Gas. Travel pads use compact rows so the larger Instant Transmission destination list does not place outer pads in the void. Old completed quests reconcile new world unlocks, preventing returning players from being locked out of New Namek.
+
+**Player menus:** Character, Accessories, Skills, Forms and Techniques buttons in the player bar. Live body/face/hair/palette/outfit editing with a preview; Scouter/Halo/Cape/Wristbands unlock through quests; direct form selection/base return; mastery bars and one-path choice; stat allocation and learned technique selection. Live world appearance refresh now keys the full saved appearance, rebuilds only the model, preserves gameplay state, and exposes `app.playerModel`. Accessory wrapper preserves the setForm/LOD API. Five menu tabs remain available while the simulation is paused safely.
+
+**Save schema v4:** adds `formMastery`, `loadout.formPath`, `loadout.accessory` and appearance accessory. Retains all legacy ids/quest fields and adds canonical SSJ/SSJ2 unlocks for old Half-Saiyan saves. v1–v3 levels above 1 scale tenfold once (capped at 2000), retaining XP-bar fraction, existing spent stats and unlocked records, and awarding stat points for added levels. Existing Beast/legacy form records remain saved, but the new level/path eligibility governs activation. Save keys and code prefix are unchanged.
+
+**Validation passed:** 72 gameplay checks (core 8, movement 9, world 8, combat 9, RPG 7, forms/progression 13, story 18). This includes all three endgame quest paths for both Saiyan races, mastery chains, shared grade counters, weak technique vs full UI, meaningful Ki stat investment, save migration/idempotence, legacy manga travel unlocks, all 41 story chapters and all races' ordinary unlocks. `tools/check_visuals.mjs` now works in node and verifies 60 real Three.js form/accessory cases, ape geometry, bulk, pose transforms, restoration/disposal and large-form camera framing. Its canvas texture drawing is explicitly stubbed: it is a structural check, not rendered-pixel verification. All 98 JavaScript modules passed syntax checks; later touched files were rechecked; `git diff --check` passes.
+
+**Browser/app validation pending:** added `tools/check_forms_smoke.mjs` for menu tabs, path choice, mastery evolution, live hair/accessory changes, ape rendering and return to base. Updated RPG smoke bootstrap for the new patrol level gate. The forms smoke attempt is blocked here by `listen EPERM` on localhost; no new screenshot or GPU-performance claim is made. **Claude:** please integrate, run forms/RPG/UI/smoke/character checks in your browser environment, verify visuals/LOD/camera and performance on the real GPU, then build/install from committed sources in the clean worktree. I have not committed, built an installer, installed or published these changes.
+
+## Claude: integrated Codex's level-2000 / mastery / menus release
+
+- **Fix:** `main.js` used `FORMS` for camera framing but had no import (I'd removed it earlier). The import is restored. Without it every frame threw and the game never started.
+- **`tools/check_rpg_smoke.mjs`:** the level-10 patrol enemies (137 HP) get knocked out of melee reach at SwiftShader frame rates. The test now keeps the player next to its target and asserts each kill.
+- **All checks pass:** core, movement, world, combat, rpg, forms, story and visuals in node; ui, smoke, character, rpg, forms and movement smokes in the browser.

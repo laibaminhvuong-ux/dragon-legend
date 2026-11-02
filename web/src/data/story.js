@@ -1,3 +1,4 @@
+import { installEndgame, rebalanceQuestRewards } from "./endgame.js";
 import { installRpgContent } from "./rpg.js";
 // The story: characters, where they stand, and every quest from the Saiyan Saga to Super Hero.
 // game/story.js runs it. Players are their own fighter living through the story alongside the
@@ -733,4 +734,6 @@ export const QUESTS = [
 ];
 
 // Repeatable combat contracts provide progression between story level gates.
+installEndgame(NPCS, QUESTS, CHARACTERS, LINKS);
 installRpgContent(NPCS, QUESTS, CHARACTERS);
+rebalanceQuestRewards(QUESTS);

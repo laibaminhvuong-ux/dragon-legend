@@ -26,7 +26,7 @@ export const MOVES = {
   FusionDance: { name: "Fusion Dance", kind: "utility", kiCost: 0, power: 0, races: null, desc: "The Metamoran dance. Perfect poses fuse two fighters for thirty minutes." },
   Hakai: { name: "Hakai", kind: "ultimate", kiCost: 80, power: 11, races: null, desc: "A God of Destruction's erasure. Beerus allows only the worthy to learn its basics." },
   GodKi: { name: "God Ki Control", kind: "utility", kiCost: 0, power: 0, races: null, desc: "Whis's training: calm, efficient ki. Your ki drains more slowly while transformed." },
-  UltraInstinctSign: { name: "Ultra Instinct -Sign-", kind: "utility", kiCost: 50, power: 0, races: null, desc: "Let your body move on its own: a short window where you dodge automatically." },
+  UltraInstinctSign: { name: "Ultra Instinct -Sign-", kind: "utility", kiCost: 10, power: 0, races: null, desc: "Brief focus with a small dodge chance and no transformation stat boost. Much weaker than an Ultra Instinct form." },
   EnergyField: { name: "Energy Field", kind: "utility", kiCost: 20, power: 0, races: null, desc: "A ki barrier that blocks blasts. Taught by Jiren's rival, Toppo." },
 };
 export const MOVE_ORDER = Object.keys(MOVES);

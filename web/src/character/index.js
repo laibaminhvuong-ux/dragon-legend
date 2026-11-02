@@ -16,4 +16,12 @@
 //   model.dispose()
 // Fighters use Cage Career 3D's model (character/cage/), dressed for Dragon Ball (cage_model.js).
 // Codex's procedural fighter (fighter.js) is kept for reference.
-export { createCharacterModel, updateCharacterLod } from "./cage_model.js";
+import { createCharacterModel as createBody, updateCharacterLod } from "./cage_model.js";
+import { createAccessories } from "./accessories.js";
+export { updateCharacterLod };
+export function createCharacterModel(look,options) {
+  const model=createBody(look,options),accessory=createAccessories(model,look.accessory || 'None');
+  const dispose=model.dispose.bind(model);let disposed=false;
+  model.dispose=()=>{if(disposed)return;disposed=true;accessory.dispose();dispose();};
+  return model;
+}

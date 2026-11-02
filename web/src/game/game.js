@@ -1,3 +1,7 @@
+import { accessoryAvailable } from "../data/accessories.js";
+import { gainFormMastery, MASTERY } from "./mastery.js";
+import { validateLook } from "./look.js";
+import { usableForms, chooseFormPath } from "./forms.js";
 import { outfitAllowed } from "../data/outfits.js";
 // A play session for one character slot: the authority for health, ki, XP, stats and position.
 // Rendering, input and UI never change this state directly. They send intents to update() and
@@ -69,6 +73,7 @@ export function createGame(slotIndex, slot, events = null) {
     const hpFrac = player.maxHealth ? player.health / player.maxHealth : 1;
     player.maxHealth = d.maxHealth;
     player.maxKi = d.maxKi;
+    player.kiCostScale=d.kiCostScale;
     player.runSpeed = d.runSpeed;
     player.strength = d.strength;
     player.kiPower = d.kiPower;
@@ -109,6 +114,36 @@ export function createGame(slotIndex, slot, events = null) {
     time: 0,
 
     refreshDerived,
+    addFormMastery(amount) {
+      if(!player.form || player.health<=0)return [];
+      const evolved=gainFormMastery(slot,player.form,amount);
+      if(evolved.length){player.form=evolved.at(-1);refreshDerived();emit('notify',{text:`Mastery evolution: ${FORMS[player.form].name}!`});}
+      return evolved;
+    },
+    selectForm(id) {
+      if(player.health<=0 || player.stun>0)return 'You cannot transform right now.';
+      if(id && !usableForms(slot).includes(id))return 'Unlock this form, its level and its chosen path first.';
+      if(id && player.ki<FORMS[id].kiDrain*player.kiCostScale)return 'Charge more ki first.';
+      player.form=id;if(id!=='UltraEgo')player.egoBoost=0;refreshDerived();return null;
+    },
+    customizeAppearance(changes) {
+      const next={race:slot.race,...slot.appearance,...changes};
+      if(next.race!==slot.race)return 'Choose a new character slot to change race.';
+      if(!slot.outfits.includes(next.outfit) || !outfitAllowed(next.outfit,slot.race))return 'You do not own that outfit.';
+      // Owned shop/quest outfits are valid; creator validation checks body/hair palettes separately.
+      const error=validateLook({...next,outfit:slot.outfits.find(id=>id==='TurtleGi') || 'TurtleGi'});
+      if(error)return error;
+      const {race,...appearance}=next;Object.assign(slot.appearance,appearance);return null;
+    },
+    chooseFormPath(path) {
+      const err=chooseFormPath(slot,path);
+      if(!err)emit("notify",{text:`Chosen transformation path: ${path}. Speak to its trainers for unlock quests.`});
+      return err;
+    },
+    equipAccessory(id) {
+      if(!accessoryAvailable(slot,id))return 'Complete the accessory’s unlock quest first.';
+      slot.loadout.accessory=id;slot.appearance.accessory=id;return null;
+    },
     equipOutfit(id) {
       if (!slot.outfits.includes(id) || !outfitAllowed(id, slot.race)) return false;
       slot.appearance.outfit = id; return true;
@@ -122,9 +157,9 @@ export function createGame(slotIndex, slot, events = null) {
       if (player.health > 0) stepMovement(player, intents, dt, zone);
       resolveCollisions(player, zone, previous);
       if (intents.transform && player.health > 0 && player.stun <= 0) {
-        const unlocked = slot.forms.filter(id => FORMS[id]?.race === slot.race && slot.level >= FORMS[id].unlockLevel);
+        const unlocked = usableForms(slot);
         const next = unlocked[(unlocked.indexOf(player.form) + 1) % (unlocked.length + 1)] || "";
-        if (next && player.ki < FORMS[next].kiDrain) emit("notify", { text: "Charge more ki before transforming." });
+        if (next && player.ki < FORMS[next].kiDrain*player.kiCostScale) emit("notify", { text: "Charge more ki before transforming." });
         else {
           player.form = next; refreshDerived();
           emit("notify", { text: next ? FORMS[next].name : "Returned to base form." });
@@ -132,6 +167,7 @@ export function createGame(slotIndex, slot, events = null) {
         if (!unlocked.length) emit("notify", { text: "Complete your race's transformation quests to unlock a form." });
       }
       game.combat.update(dt, intents);
+      if(player.form && (player.charging || Math.hypot(player.vel.x,player.vel.y,player.vel.z)>.5))game.addFormMastery(MASTERY.perSecond*dt);
       if (!player.flying && !player.dashing && !player.charging && !player.form && player.health > 0) regenKi(player, dt);
       if (player.stun > 0) player.stun = Math.max(0, player.stun - dt);
     },

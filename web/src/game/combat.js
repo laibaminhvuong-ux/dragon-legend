@@ -1,3 +1,5 @@
+import { instinctBenefits } from "./forms.js";
+import { MASTERY } from "./mastery.js";
 import { freePosition } from "./placement.js";
 // Pure combat authority: enemies, attack validation, hit tests, rewards and respawning.
 import { COMBAT as C } from '../data/combat.js';
@@ -48,6 +50,14 @@ export function createCombat(game, events) {
   }
   function hit(target, damage, source, finisher=false) {
     if (target.health<=0 || (target===p && p.evadeUntil>clock)) return;
+    if(target===p){
+      const instinct=instinctBenefits(p,clock);
+      if(clock>=(p.dodgeReady || 0) && p.ki>=instinct.cost && Math.random()<instinct.chance){
+        trySpendKi(p,instinct.cost);p.dodgeReady=clock+instinct.cooldown;
+        emit('notify',{text:instinct.kind==='form'?'Ultra Instinct dodge!':'Instinct focus: dodged.'});return;
+      }
+    }
+    if(source===p)game.addFormMastery(MASTERY.perHit);
     let amount = damage;
     if (target.blocking && target.ki>=C.guardCost && !finisher) {
       target.ki-=C.guardCost; amount*=C.guardDamage;
@@ -62,7 +72,7 @@ export function createCombat(game, events) {
     const dx=target.pos.x-source.pos.x,dz=target.pos.z-source.pos.z,d=Math.hypot(dx,dz)||1;
     target.vel.x+=dx/d*C.knockback;target.vel.z+=dz/d*C.knockback;
     emit('damage',{id:target.id,amount,pos:{...target.pos,y:target.pos.y+1.6},blocked:amount<damage*.5});
-    if(target===p) lastDamage=clock;
+    if(target===p){lastDamage=clock;if(p.form==='UltraEgo')p.egoBoost=Math.min(C.egoMaxBonus,(p.egoBoost || 0)+FORMS.UltraEgo.damageGrowth);}
     if(target.health>0) return;
     if(target===p) {
       p.flying=false;p.dashing=false;p.charging=false;p.lockTarget=null;p.form='';
@@ -73,7 +83,7 @@ export function createCombat(game, events) {
       if(p.lockTarget===target.id)p.lockTarget=null;
       const xp=Math.max(10,Math.round(xpToNext(target.level)*RPG.killXp));
       const zeni=target.level*RPG.zeniPerLevel;
-      game.addXP(xp);game.addZeni(zeni);
+      game.addFormMastery(MASTERY.perKill);game.addXP(xp);game.addZeni(zeni);
       story?.enemyDefeated(target.key,zone.id);
       emit('enemyDefeated',{id:target.id,enemy:target.key,zone:zone.id,xp,zeni});
       notify(`${target.name} defeated · +${xp} XP · +${zeni} zeni`);
@@ -89,15 +99,15 @@ export function createCombat(game, events) {
   }
   function aim() {
     const e=enemies.find(e=>e.id===p.lockTarget && e.health>0);
-    const origin={x:p.pos.x,y:p.pos.y+1.15,z:p.pos.z};
+    const origin={x:p.pos.x,y:p.pos.y+1.15*(FORMS[p.form]?.size || 1),z:p.pos.z};
     const delta=e ? {x:e.pos.x-origin.x,y:e.pos.y+1-origin.y,z:e.pos.z-origin.z} : {x:Math.sin(p.yaw),y:0,z:Math.cos(p.yaw)};
     const d=Math.hypot(delta.x,delta.y,delta.z)||1;
     return {origin,dir:{x:delta.x/d,y:delta.y/d,z:delta.z/d}};
   }
   function fire(id, charge=0) {
-    const def=moveDef(id); if(!def || !trySpendKi(p,def.kiCost)) { notify('Not enough ki. Hold Charge to recover.'); return false; }
+    const def=moveDef(id); if(!def || !trySpendKi(p,def.kiCost*(p.kiCostScale || 1))) { notify('Not enough ki. Hold Charge to recover.'); return false; }
     const {origin,dir}=aim();
-    const damage=C.meleeDamage*p.kiPower*def.power*(1+charge);
+    const damage=C.meleeDamage*p.kiPower*def.power*(1+charge)*(p.form==='UltraEgo'?1+(p.egoBoost || 0):1);
     if(def.kind==='utility') {
       if(id==='Regeneration')p.health=Math.min(p.maxHealth,p.health+p.maxHealth*C.utilityHeal);
       else if(id==='SolarFlare'){for(const e of enemies)if(e.health>0&&distance(p.pos,e.pos)<C.utilityRange)e.stun=C.utilityDuration;}
@@ -105,6 +115,7 @@ export function createCombat(game, events) {
       else if(id==='CandyBeam') {const e=targetInFront(C.utilityRange);if(e)hit(e,e.health<e.maxHealth*C.candyThreshold?e.health:C.candyDamage,p);}
       else if(id==='InstantTransmission') {const e=targetInFront(C.lockRange);if(e){p.pos.x=e.pos.x-Math.sin(e.yaw)*C.teleportOffset;p.pos.z=e.pos.z-Math.cos(e.yaw)*C.teleportOffset;p.pos.y=e.pos.y;}}
       else if(id==='Kaioken')p.powerUntil=clock+C.utilityDuration;
+      else if(id==='UltraInstinctSign'){p.uiTechniqueUntil=clock+C.uiTechniqueDuration;notify('Ultra Instinct Sign focus: small dodge chance, no form stat boost.');}
       else p.evadeUntil=clock+C.utilityDuration;
     } else if(def.kind==='melee') { const e=targetInFront(C.meleeRange+1);if(e)hit(e,damage,p,true); }
     else if(def.kind==='beam' || def.kind==='ultimate') {
@@ -122,7 +133,7 @@ export function createCombat(game, events) {
     setTechnique(id){if(!combat.availableTechniques().includes(id))return false;technique=id;(game.slot.loadout ||= {}).technique=id;return true;},
     snapshot(){
       const e=enemies.find(e=>e.id===p.lockTarget && e.health>0);
-      return {technique,techniqueName:moveDef(technique)?.name,beamCharge:Math.min(1,beamTime/C.beamCharge),meleeCd,blastCd,beamCd,
+      return {instinctFocus:Math.max(0,(p.uiTechniqueUntil || 0)-clock),technique,techniqueName:moveDef(technique)?.name,beamCharge:Math.min(1,beamTime/C.beamCharge),meleeCd,blastCd,beamCd,
         target:e?{id:e.id,name:e.name,level:e.level,health:e.health,maxHealth:e.maxHealth,boss:e.boss}:null,
         respawn:respawnAt?Math.max(0,respawnAt-clock):0};
     },
@@ -148,18 +159,19 @@ export function createCombat(game, events) {
       if(p.stun<=0 && !p.charging && !p.blocking) {
         if(it.melee && meleeCd===0){
           combo=clock-lastSwing<C.comboWindow?(combo%4)+1:1;lastSwing=clock;meleeCd=C.meleeCooldown;
-          const target=targetInFront(C.meleeRange);p.attackSerial=(p.attackSerial||0)+1;p.attackKind=['jab','cross','hook','leg kick'][combo-1];
+          const target=targetInFront(C.meleeRange*(FORMS[p.form]?.size || 1));p.attackSerial=(p.attackSerial||0)+1;p.attackKind=['jab','cross','hook','leg kick'][combo-1];
           emit('attack',{id:p.id,kind:'melee',combo,pos:copy(p.pos)});
-          if(target)hit(target,C.meleeDamage*p.strength*(p.powerUntil>clock?C.powerBuff:1)*(combo===4?C.comboFinish:1),p,combo===4);
+          if(target)hit(target,C.meleeDamage*p.strength*(p.form==='UltraEgo'?1+(p.egoBoost || 0):1)*(p.powerUntil>clock?C.powerBuff:1)*(combo===4?C.comboFinish:1),p,combo===4);
         }
         if(it.kiBlast && blastCd===0 && fire('KiBlast'))blastCd=C.blastCooldown;
         if(it.beam && beamCd===0){beamHeld=true;beamTime=Math.min(C.beamCharge,beamTime+dt);}
         if(!it.beam && beamHeld){if(fire(technique,beamTime/C.beamCharge))beamCd=moveDef(technique)?.kind==='utility'?C.utilityCooldown:C.beamCooldown;beamHeld=false;beamTime=0;}
       } else {beamHeld=false;beamTime=0;}
       if(game.player.form){
-        const f=FORMS[p.form],drain=f.kiDrain*(game.slot.moves.includes('GodKi') ? .7 : 1)*dt;
+        const f=FORMS[p.form],drain=f.kiDrain*(p.kiCostScale || 1)*(game.slot.moves.includes('GodKi') ? .7 : 1)*(game.slot.story?.items?.instinctMastery && f.path==='instinct'?.8:1)*dt;
         if(!trySpendKi(p,drain)){p.form='';game.refreshDerived();notify('Transformation ended: ki exhausted.');}
       }
+      if(p.form!=='UltraEgo')p.egoBoost=0;
       if(p.powerUntil>clock)p.health=Math.max(1,p.health-p.maxHealth*C.powerHealthDrain*dt);
       if(clock-lastDamage>C.regenDelay && !(p.powerUntil>clock))p.health=Math.min(p.maxHealth,p.health+p.maxHealth*C.playerRegen*dt);
       for(let i=projectiles.length-1;i>=0;i--){

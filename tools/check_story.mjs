@@ -1,3 +1,5 @@
+import { FORMS } from "../web/src/data/forms.js";
+import { formForRace } from "../web/src/game/forms.js";
 // Plays the whole story with a bot: every main quest from the Saiyan Saga to Super Hero, plus every
 // race's transformation quests and the side quests, travelling between worlds like a player.
 // Catches unreachable NPCs, impossible steps, broken unlocks and bad references.
@@ -55,7 +57,8 @@ function session(race) {
         pad = pads.find((p) => p.zone === path[1]);
       }
       assert.ok(pad, `no pad in ${s.game.zone.id} towards ${zoneId}`);
-      s.at(pad.x + 6, pad.z + 6); s.tick(); // step off first (pads arm once you leave them)
+      const safe=[0,4,8,12,16].map(off=>({x:s.game.zone.spawn.x+off,z:s.game.zone.spawn.z+8})).find(p=>pads.every(pd=>Math.hypot(pd.x-p.x,pd.z-p.z)>3));
+      assert.ok(safe,'space to step off pads');s.at(safe.x,safe.z); s.tick(); // step off first (pads arm once you leave them)
       const from = s.game.zone.id;
       s.at(pad.x, pad.z); s.tick();
       if (process.env.DEBUG) console.log("hop", from, "->", pad.zone, "now", s.game.zone.id, "pad", pad.x.toFixed(1), pad.z.toFixed(1), "y", pad.y.toFixed(1), "player y", s.game.player.pos.y.toFixed(1));
@@ -81,6 +84,11 @@ const npcById = Object.fromEntries(NPCS.map((n) => [n.id, n]));
 
 /** Do one quest from start to finish. */
 function play(s, q) {
+  if(q.automatic){
+    const f=FORMS[q.id.slice(5)],edge=f.mastery;
+    if(!s.slot.forms.includes(edge.from))play(s,QUESTS.find(x=>x.id==='Form_'+edge.from));
+    s.grindTo(q.level);s.game.selectForm(edge.from);s.game.addFormMastery(edge.required+1);return;
+  }
   s.grindTo(q.level || 1);
   const giver = npcById[q.giver];
   s.goTo(giver.zone);
@@ -159,7 +167,7 @@ function runSteps(s, q) {
   assert.equal(s.slot.story.unlocked.length, Object.keys(ZONES).length - 1, "every world unlocked by the end");
   ok("every world gets unlocked by the story");
   // side quests and trainers available to a Saiyan
-  const sides = QUESTS.filter((q) => !q.main && !q.id.startsWith("Form_") && (!q.races || q.races.includes("Saiyan")));
+  const sides = QUESTS.filter((q) => !q.main && !q.path && !q.id.startsWith("Form_") && (!q.races || q.races.includes("Saiyan")));
   for (const q of sides) play(s, q);
   ok(`${sides.length} side and trainer quests (moves learned: ${s.slot.moves.length})`);
   assert.ok(s.slot.moves.includes("InstantTransmission") && s.slot.moves.includes("Kamehameha") && s.slot.moves.includes("SpiritBomb"));
@@ -184,7 +192,7 @@ function runSteps(s, q) {
 for (const race of RACE_ORDER) {
   const s = session(race);
   s.enter("earth_plains");
-  const forms = QUESTS.filter((q) => q.id.startsWith("Form_") && q.races.includes(race));
+  const forms = QUESTS.filter((q) => q.id.startsWith("Form_") && !q.legacy && !q.path && !q.automatic && q.races.includes(race));
   const needed = new Set(forms.flatMap((q) => q.after || []));
   // play the story far enough for every form's prerequisites, in story order
   for (const q of QUESTS.filter((x) => x.main)) {
@@ -195,10 +203,11 @@ for (const race of RACE_ORDER) {
     for (const pre of q.after || []) if (s.slot.quests[pre]?.status !== "done") play(s, QUESTS.find((x) => x.id === pre));
     play(s, q);
   }
-  assert.deepEqual([...s.slot.forms].sort(), forms.flatMap((q) => q.rewards.forms).sort());
+  for(const id of forms.flatMap(q=>q.rewards.forms))assert.ok(s.slot.forms.includes(id));
+  for(const id of s.slot.forms)assert.ok(formForRace(id,race));
   ok(`${race}: all ${forms.length} transformations unlock (${s.slot.forms.join(", ")})`);
   // this race's own side quests (finish the story first so every giver is around)
-  const own = QUESTS.filter((q) => !q.main && !q.id.startsWith("Form_") && q.races?.includes(race));
+  const own = QUESTS.filter((q) => !q.main && !q.path && !q.id.startsWith("Form_") && q.races?.includes(race));
   for (const q of QUESTS.filter((x) => x.main)) if (s.slot.quests[q.id]?.status !== "done" && own.some((o) => (o.after || []).length)) play(s, q);
   for (const q of own) play(s, q);
   if (own.length) ok(`${race}: race quests ${own.map((q) => q.title).join(", ")}`);

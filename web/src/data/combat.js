@@ -15,5 +15,6 @@ export const COMBAT = {
   powerBuff: 1.5, powerHealthDrain: .025, shieldReduction: .4,
   candyThreshold: .25, candyDamage: 20, teleportOffset: 2,
   enemyRegen: .15, respawnSafeRange: 6, spawnProtection: 2, syncInterval: .2,
+  uiTechniqueChance:.1, uiTechniqueDuration:3, uiTechniqueDodgeCooldown:1.25, uiFormDodgeCooldown:.35, uiDodgeCost:2, egoMaxBonus:.5,
   starterMove: { name: 'Energy Wave', kind: 'beam', kiCost: 18, power: 2.2 },
 };

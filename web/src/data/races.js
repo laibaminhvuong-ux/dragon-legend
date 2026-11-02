@@ -1,3 +1,4 @@
+import { SHARED_SAIYAN_FORMS } from "./forms.js";
 // Playable races. `forms` = form ids in unlock order; `skins` = colours the creator offers (0xRRGGBB).
 // Saves store the skin *index* into `skins`, never the colour.
 const HUMAN_SKINS = [0xffdcb4, 0xf0c396, 0xc8966e, 0x966446, 0x5f412d];
@@ -10,18 +11,18 @@ export const RACES = {
     id: "Saiyan", name: "Saiyan", description: "A warrior race that grows stronger after every battle.",
     skins: HUMAN_SKINS, hairStyles: ["Spiky", "Wild", "Swept", "LongSpiky"], tail: true,
     powerMultiplier: 1.1, xpBonusBelowLevel: null, statBonus: { Strength: 5 },
-    forms: ["SSJ", "SSJ2", "SSJ3", "SSJGod", "SSJBlue"],
+    forms: [...SHARED_SAIYAN_FORMS],
   },
   HalfSaiyan: {
     id: "HalfSaiyan", name: "Half-Saiyan", description: "Saiyan and human blood. Grows fast early and hides huge potential.",
     skins: HUMAN_SKINS, hairStyles: HUMAN_HAIR, tail: false,
-    powerMultiplier: 1.05, xpBonusBelowLevel: { level: 50, bonus: 0.25 }, statBonus: { KiPower: 5 },
-    forms: ["HSSJ", "HSSJ2", "SSJRage", "Ultimate", "Beast"],
+    powerMultiplier: 1.05, xpBonusBelowLevel: { level: 500, bonus: 0.25 }, statBonus: { KiPower: 5 },
+    forms: [...SHARED_SAIYAN_FORMS],
   },
   Human: {
     id: "Human", name: "Human", description: "Disciplined fighters whose technique makes up for raw power.",
     skins: HUMAN_SKINS, hairStyles: HUMAN_HAIR, tail: false,
-    powerMultiplier: 1.0, xpBonusBelowLevel: { level: 150, bonus: 0.1 }, statBonus: { Speed: 5 },
+    powerMultiplier: 1.0, xpBonusBelowLevel: { level: 2000, bonus: 0.1 }, statBonus: { Speed: 5 },
     forms: ["Kaioken", "Kaioken10", "PotentialUnleashed"],
   },
   Namekian: {

@@ -1,3 +1,4 @@
+import { createGreatApe } from "./great_ape.js";
 // Fighters built on Cage Career 3D's model (character/cage/: sculpted skinned body, detailed head and
 // eyes, shell hair, skin shading, walk/run animation), dressed for Dragon Ball: gi, armour, capes,
 // anime spiky hair, and race features (Saiyan tail, Namekian antennae, Frost Demon dome and tail,
@@ -357,9 +358,14 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
   const raceSkin = (f.raceSkin || []).map(([m, k]) => ({ m, k, hex: m.color.getHex() }));
   const baseDome = f.domeM ? f.domeM.color.getHex() : 0;
   const baseIris = f.irisM ? f.irisM.map : null;
-  let formId = "", formAura = null, formHairGroup = null, formHairMat = null;
+  let formId = "", formAura = null, formHairGroup = null, formHairMat = null, ape=null, hiddenParts=[], furParts=[];
   const hexCss = (n) => "#" + n.toString(16).padStart(6, "0");
   function clearForm() {
+    ape?.dispose();ape=null;
+    const furGeometries=new Set(),furMaterials=new Set();
+    for(const mesh of furParts){mesh.removeFromParent();furGeometries.add(mesh.geometry);furMaterials.add(mesh.material);}furParts=[];
+    furGeometries.forEach(g=>g.dispose());furMaterials.forEach(m=>m.dispose());
+    for(const [part,visible] of hiddenParts)part.visible=visible;hiddenParts=[];
     if (formAura) { formAura.dispose(); formAura = null; }
     if (formHairGroup) {
       formHairGroup.removeFromParent();
@@ -393,6 +399,7 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
       const ease = (k, on) => (pose[k] += ((on ? 1 : 0) - pose[k]) * Math.min(1, dt * 8));
       ease("fly", anim.flying); ease("charge", anim.charging); ease("dash", anim.dashing); ease("block", anim.blocking);
       f.update(dt);
+      ape?.update(dt,anim);
       const j = J;
       // flying: legs trail, one knee bent, arms relaxed back; leaning into the direction of travel
       if (pose.fly > 0.01) {
@@ -456,7 +463,21 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
       f.skinBase.copy(skinM.color);
       if (F.dome != null && f.domeM) f.domeM.color.setHex(F.dome);
       if (F.scale) root.scale.copy(baseScale).multiplyScalar(F.scale);
+      if (F.bulk) root.scale.set(baseScale.x*F.bulk[0],baseScale.y*F.bulk[1],baseScale.z*F.bulk[2]);
       if (F.slim) root.scale.set(baseScale.x * 0.95, baseScale.y * 1.01, baseScale.z * 0.95);
+      if(id==='SSJ4'){
+        const furGeometry=new THREE.SphereGeometry(1,12,8),furMaterial=new THREE.MeshStandardMaterial({color:0xa72437,roughness:.95});
+        const patch=(parent,position,scale)=>{const mesh=new THREE.Mesh(furGeometry,furMaterial);mesh.name='ssj4-red-fur';mesh.position.set(...position);mesh.scale.set(...scale);mesh.castShadow=castShadow;parent.add(mesh);furParts.push(mesh);};
+        for(const side of ['L','R']){
+          patch(J['sh'+side],[0,-.14,0],[.085,.17,.085]);patch(J['el'+side],[0,-.09,0],[.067,.13,.075]);
+          patch(J.chest,[side==='L'?.15:-.15,.08,0],[.1,.24,.15]);
+        }
+        patch(J.chest,[0,.08,-.11],[.23,.24,.065]);
+      }
+      if (id==='Oozaru'  || id==='GoldenOozaru'){
+        hiddenParts=root.children.map(part=>[part,part.visible]);hiddenParts.forEach(([part])=>part.visible=false);
+        ape=createGreatApe({golden:id==='GoldenOozaru',castShadow});root.add(ape.object3d);
+      }
       if (F.aura) { formAura = createAura(F.aura); root.add(formAura.object3d); }
     },
     setAura(hex) {
