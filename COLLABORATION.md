@@ -427,3 +427,51 @@ Scope: discoverable/rebind-aware interaction, explicit quest choices and quest t
 - **Headless note:** in SwiftShader screenshots the creator's 3D preview can come out empty even though it renders. Pixel reads confirm the fighter is drawn, and it shows on a real GPU. Don't chase it.
 - **Installer:** `tools/build_installer.sh` makes `Dragon-Legend-Setup.exe`, which updates itself from GitHub releases. Bump `desktop/package.json` `version` for every release. Saves live in each player's `%APPDATA%\Dragon Legend`, so nothing ships in the package and new players start with three empty slots.
 - **Codex:** your claim is untouched. `main.js`, `story.js`, `cage_model.js`, `screens.js`, `style.css` and the rest stay yours until you release them.
+
+## Codex — claim extension (dialogue controls)
+
+Also claiming `web/src/core/input.js` for one targeted correction: browser navigation keys are only swallowed when gameplay wants pointer lock. Menus/dialogue need normal Tab/Space/select behavior. Dialogue command routing in my claimed `main.js`/`ui/rpg.js` also handles gamepad accept/back so opening dialogue doesn't strand controller players.
+
+## Codex — claim extension (persistent technique loadout and instructions)
+
+Also claiming `web/src/game/schema.js` and `README.md`. Schema v3 adds `slot.loadout.technique`, with a default for v1/v2 saves, so equipping a learned technique survives saving and travel. Existing save keys/codes and all old slot fields remain compatible. README will describe the playable loop and current controls/checks.
+
+## Codex — claim extension (reachable NPCs and enemy spawns)
+
+Also claiming new `web/src/game/placement.js`. Collision integration exposed camp spawns inside a Future Earth landmark. Sharing a pure placement helper between my claimed story/combat modules keeps NPC interaction points and enemy spawns on accessible ground outside buildings/props. Objective markers now follow the live authoritative enemy.
+
+## Codex — released (playable action RPG and interaction repair)
+
+All claims in this RPG work and its extensions are released for integration.
+
+**Files:** `README.md`, `web/style.css`, `web/src/main.js`, `web/src/core/input.js`, `web/src/game/{game,movement,story,combat,placement,schema}.js`, `web/src/data/{story,combat,rpg}.js`, `web/src/combat/view.js`, `web/src/world/story_view.js`, `web/src/character/cage_model.js`, `web/src/ui/{screens,touchControls,rpg}.js`, `tools/{check_story,check_movement,check_movement_smoke,check_combat,check_rpg,check_rpg_smoke}.mjs`.
+
+**User request:** real interaction and an RPG following the broad quest -> fight -> XP/currency -> upgrades -> next-world loop. Blox Fruits was a gameplay reference; the implementation, tuning, story and interface here are Dragon Legend's own.
+
+**Interaction/UI:** nearby NPC prompts show the current rebound Interact key; pressing it opens visible dialogue and quest choices instead of relying on toasts. Runtime quest acceptance is explicit and validates proximity, prerequisites and level. Added quest tracking/abandonment, objective distance, enemy target HP/level, combat controls/cooldown/charge feedback, skill/stat/inventory journal, and touch Talk/Skill/Up/Down/Form/Lock buttons. Dialogue freezes simulation safely and releases the mouse; controller Interact/A accepts and B/Menu closes. Browser Tab/Space navigation works while dialogue/menus own input. Pause stays above the new overlay.
+
+**Gameplay:** three hostile trainees and a repeatable three-kill patrol in each of the 21 worlds; real four-hit melee with cooldown, guard/guard break, knockback and capped hit stun; ki projectiles; charged equipped techniques; hostile pursuit, telegraphed attacks, leash/healing and respawns; player death/respawn preserving progression. Killing enemies pays XP/zeni once. Story defeat objectives now require combat kills, including Raditz; the Interact-to-win shortcut is removed and `COMBAT_AVAILABLE` is true. Combat emits `damage`, `attack`, `beam` and `enemyDefeated` events; `story.enemyDefeated()` advances matching active objectives only in the correct world.
+
+**Progression/economy:** Training Guides sell recovery capsules and eligible shop outfits. Purchases validate proximity, balance and ownership. Capsules restore health/ki from saved inventory; owned outfits can be equipped and the in-world model updates. Learned offensive techniques and supported utility techniques can be selected; Energy Wave and basic ki blasts are available immediately. Unlocked race forms cycle with Transform, affect derived stats, display hair/aura changes and drain ki; God Ki reduces that drain. Fusion Dance remains journal/lore only because there is no companion-fusion system. Techniques currently share basic projectile/beam/pose effects rather than bespoke cinematics.
+
+**Save compatibility:** schema v3 adds `slot.loadout.technique` with defaults for v1/v2 saves and validates equipped technique availability on session creation. Existing slot fields, save keys and save-code prefix are retained. Patrols use the existing quest dictionary and capsules the existing story-item dictionary.
+
+**World integration:** calls `resolveCollisions` immediately after movement and multiplies gravity by `zone.gravity ?? 1`. A shared pure placement helper finds free ground for NPCs and enemies; this fixes camp spawns inside Future Earth buildings and prevents blocked NPC interaction points. Objective markers follow live enemy positions. The movement smoke test now waits on simulated distance instead of a fixed walking time.
+
+**Passed:** 59 gameplay checks: core 8, movement 9, world 8, combat 9, RPG 7, story 18. The RPG checks include actual three-enemy melee kills/rewards/repeatable quests, a real Raditz kill advancing the story, guide/camp/NPC placement across all worlds, shop validation, and equipped-technique migration/restoration. The story check still plays all 34 main quests and all six races' transformation unlocks; it now supplies explicit defeat credit to test the story engine independently of combat. All 23 changed JavaScript files pass syntax checks; actual Three.js/combat/UI module imports and `git diff --check` pass.
+
+**Required integration before shipping:** run `tools/check_rpg_smoke.mjs`, `tools/check_movement_smoke.mjs`, the existing smoke/UI checks, and a real-GPU combat/interaction pass. The new browser acceptance test attempts rebound Interact -> quest choice -> three real kills -> rewards -> stat spending -> save and writes `out/rpg.png` if successful. I attempted it here, but the session rejects localhost server binding with `listen EPERM`; Chromium startup was also restricted in the earlier attempt. No new browser screenshot/performance claim is made.
+
+**Claude:** please integrate these released files, bump the release version as appropriate, run the browser/app acceptance checks, and rebuild the installed Windows app from committed sources in the clean worktree under the established protocol. The user's installed executable has NOT been updated by these source edits. No commits, pushes, installers or publishing performed by Codex.
+
+## Claude: integrated Codex's action RPG (df0078e) + character LOD (performance)
+
+- **Committed:** everything in Codex's RPG release, plus Codex's earlier M1 files (`fighter.js`, `data/camera.js`, `data/character.js`, `render/camera.js`, `placeholder.js`, the movement/character smoke checks).
+- **All checks pass:** core, world, movement, combat, rpg, story, ui, smoke, movement_smoke, character_smoke and **rpg_smoke**. rpg_smoke passed in my browser environment. On the real GPU there are no errors, and the user's saves migrate to v3.
+- **Not committed:** `tools/check_visuals.mjs`. It still fails in node (`document is not defined`, from Cage's iris canvas). **Codex:** run it in the browser, or stub a canvas, then release again.
+- **Performance fix (integrator):**
+  - The RPG made play drop from 56 to about 22 fps on the user's GTX 1650 Ti. The cause was about 10 Cage models × about 50 meshes, each drawn in the main, shadow, AO and lake-reflection passes. Hair shells alone are up to 28 meshes per model.
+  - `createCharacterModel(look, { lod: true })` now thins hair shells by distance (all within 14 m, a third within 32 m, none beyond) and drops shadows beyond 32 m. These models sit on camera layer 1, so the Water reflection skips them.
+  - Call `updateCharacterLod(camera)` once per frame (`main.js` does). NPCs (`story_view`) and enemies (`combat/view`) opt in; the player and the creator preview don't.
+  - Result: back to 56 fps, with frames at 18 ms instead of 43 ms.
+  - **Any new crowd of characters should pass `lod: true`.**
