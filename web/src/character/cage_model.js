@@ -5,6 +5,9 @@
 import * as THREE from "three";
 import { Fighter3D, LOOK_OPTIONS, attack } from "./cage/fighter3d.js";
 import { resolveLook } from "../game/look.js";
+import { irisTexture } from "./cage/fighter3d.js";
+import { FORM_LOOKS } from "../data/form_looks.js";
+import { createAura } from "../fx/aura.js";
 
 // --------------------------------------------------------------------------------- mapping
 const BUILD = { // weight class (girth), body type, abs, height scale
@@ -116,6 +119,70 @@ function spikyHair(style, mat) {
   return group;
 }
 
+/**
+ * Transformation hair (data/form_looks.js): ssj1 = tall golden spikes swept up with a few bangs,
+ * ssj2 = sharper, more upright, a single lone bang, ssj3 = a mane to the waist, beast = a towering
+ * swept-up crest. Vegeta-style flame hair keeps its flame shape in Super Saiyan 1/2, as in the story.
+ */
+function formHair(style, baseStyle, mat) {
+  if (style === "same") return spikyHair(baseStyle || "goku", mat);
+  if (baseStyle === "flame" && (style === "ssj1" || style === "ssj2")) {
+    const g = spikyHair("flame", mat);
+    g.scale.y = style === "ssj2" ? 1.12 : 1.05;
+    return g;
+  }
+  const group = new THREE.Group();
+  const add = (geo, x, y, z) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; group.add(m); };
+  const V = (x, y, z) => new THREE.Vector3(x, y, z);
+  const cap = new THREE.SphereGeometry(0.113, 24, 14, 0, Math.PI * 2, 0, Math.PI * 0.55);
+  cap.scale(1.03, 1.0, 1.09); cap.translate(0, 0.05, -0.012);
+  add(cap, 0, 0, 0);
+  const ring = (n, yAngle, len, rad, tilt, spread = Math.PI * 2, start = 0, up = 0, jitter = 0.3) => {
+    for (let i = 0; i < n; i++) {
+      const a = start + (i / Math.max(1, n - (spread < Math.PI * 2 ? 1 : 0))) * spread;
+      const dir = V(Math.sin(a) * Math.cos(yAngle), Math.sin(yAngle), Math.cos(a) * Math.cos(yAngle));
+      const base = dir.clone().multiplyScalar(0.085);
+      const d = dir.clone(); d.y += tilt;
+      add(spike(len * (1 - jitter / 2 + jitter * (((i * 37) % 10) / 10)), rad, d, up), base.x, base.y + 0.05, base.z - 0.015);
+    }
+  };
+  if (style === "ssj1") {
+    // full, flame-like spikes swept up and back, a fringe of several bangs
+    ring(8, 0.3, 0.19, 0.05, 0.75, Math.PI * 1.5, Math.PI * 0.75, -0.15); // sides and back, swept up
+    ring(6, 1.0, 0.2, 0.054, 0.35, Math.PI * 2, 0, -0.25);              // crown, leaning back
+    ring(4, 0.12, 0.1, 0.03, -0.4, Math.PI * 0.55, -Math.PI * 0.27);    // bangs over the forehead
+  } else if (style === "ssj2") {
+    // thinner, sharper and nearly vertical, standing taller; the bangs are gone except one lone strand
+    ring(10, 0.45, 0.27, 0.036, 2.0, Math.PI * 1.55, Math.PI * 0.72, 0, 0.45);
+    ring(8, 1.15, 0.3, 0.038, 1.6, Math.PI * 2, 0, 0, 0.45);
+    add(spike(0.16, 0.019, V(0.25, -1, 0.6), 0.2), 0.03, 0.115, 0.083);
+  } else if (style === "ssj3") {
+    ring(6, 0.95, 0.15, 0.05, 0.45);                                   // crown
+    ring(4, 0.15, 0.1, 0.03, -0.35, Math.PI * 0.5, -Math.PI * 0.25);   // bangs
+    // the mane: long spikes down the back to the waist
+    for (let i = 0; i < 15; i++) {
+      const a = Math.PI * 0.5 + (i / 14) * Math.PI;
+      const side = Math.sin(a);
+      const dir = V(side * 0.42, -1, Math.cos(a) * 0.25 - 0.42);
+      const len = 0.62 + (1 - Math.abs(side)) * 0.32 + ((i * 7) % 5) * 0.03;
+      add(spike(len, 0.06, dir, 0.08), side * 0.075, 0.08, Math.cos(a) * 0.06 - 0.04);
+    }
+  } else if (style === "ssj4") {
+    ring(7, 0.9, 0.15, 0.05, 0.25, Math.PI * 2, 0, -0.2);              // wild crown
+    ring(5, 0.12, 0.12, 0.03, -0.45, Math.PI * 0.6, -Math.PI * 0.3);   // long bangs
+    for (let i = 0; i < 11; i++) {                                      // mane to the shoulder blades
+      const a = Math.PI * 0.55 + (i / 10) * Math.PI * 0.9;
+      const side = Math.sin(a);
+      add(spike(0.36 + ((i * 7) % 4) * 0.04, 0.055, V(side * 0.6, -0.7, Math.cos(a) * 0.3 - 0.6), 0.1), side * 0.075, 0.08, Math.cos(a) * 0.06 - 0.04);
+    }
+  } else if (style === "beast") {
+    ring(9, 0.55, 0.36, 0.05, 2.6, Math.PI * 1.6, Math.PI * 0.7, -0.35, 0.35); // a towering crest swept up and back
+    ring(6, 1.2, 0.42, 0.055, 2.8, Math.PI * 2, 0, -0.3);
+    ring(3, 0.12, 0.09, 0.026, -0.4, Math.PI * 0.45, -Math.PI * 0.22);
+  }
+  return group;
+}
+
 /** Adds rigid pieces to bones: armour, capes, sashes, race features. Returns materials/geometries to dispose. */
 function dress(f, parts, L, look, hairMat) {
   const own = [];
@@ -182,6 +249,7 @@ function dress(f, parts, L, look, hairMat) {
   }
   if (race === "Namekian") {
     const m = keep(std(shade(skinHex, 0.9), { rough: 0.55 }));
+    (f.raceSkin ||= []).push([m, 0.9]);
     for (const s of [1, -1]) {
       at(f.head, taper([new THREE.Vector3(0, 0, 0), new THREE.Vector3(s * 0.02, 0.06, 0.02), new THREE.Vector3(s * 0.05, 0.12, 0.0)], 0.009, 0.006, 12, 8), m, s * 0.03, 0.135, 0.07);
       at(f.head, new THREE.SphereGeometry(0.011, 10, 8), m, s * 0.08, 0.255, 0.07);
@@ -192,17 +260,20 @@ function dress(f, parts, L, look, hairMat) {
   }
   if (race === "FrostDemon") {
     const dome = keep(std(0x8a3ab8, { rough: 0.15, metal: 0.1 }));
+    f.domeM = dome;
     const d = at(f.head, new THREE.SphereGeometry(0.105, 24, 14, 0, Math.PI * 2, 0, Math.PI * 0.42), dome, 0, 0.075, -0.01); d.scale.set(1.04, 0.95, 1.12);
     const tail = keep(std(skinHex, { rough: 0.45 }));
+    (f.raceSkin ||= []).push([tail, 1]);
     at(J.hips, taper([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -0.3, -0.25), new THREE.Vector3(0.05, -0.75, -0.35), new THREE.Vector3(0.25, -0.9, -0.1), new THREE.Vector3(0.35, -0.92, 0.15)], 0.06, 0.02, 30), tail, 0, -0.04, -0.12);
   }
   if (race === "Majin") {
     const m = keep(std(skinHex, { rough: 0.5 }));
+    (f.raceSkin ||= []).push([m, 1]);
     at(f.head, taper([new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0.12, -0.04), new THREE.Vector3(0, 0.2, -0.14), new THREE.Vector3(0, 0.17, -0.24), new THREE.Vector3(0, 0.08, -0.26)], 0.035, 0.012, 24), m, 0, 0.13, 0.0);
   }
   // anime spiky hair
   const sp = SPIKES[look.hair];
-  if (sp && L.race.hairStyles.includes(look.hair)) { const h = spikyHair(sp, hairMat); f.head.add(h); h.traverse((o) => o.isMesh && own.push(o.geometry)); }
+  if (sp && L.race.hairStyles.includes(look.hair)) { const h = spikyHair(sp, hairMat); f.head.add(h); h.traverse((o) => o.isMesh && own.push(o.geometry)); f.spikes = h; f.spikeStyle = sp; }
   return own;
 }
 
@@ -277,6 +348,35 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
   };
 
   let aura = null, t = 0, attackSerial = 0;
+  // transformations (setForm): what was swapped out, so it can be put back exactly
+  const baseScale = root.scale.clone();
+  const furBases = [];
+  root.traverse((o) => o.userData.furBase && furBases.push(o));
+  const skinM = f.skinM;
+  const baseSkin = { color: skinM.color.getHex(), metal: skinM.metalness ?? 0, rough: skinM.roughness ?? 0.5 };
+  const raceSkin = (f.raceSkin || []).map(([m, k]) => ({ m, k, hex: m.color.getHex() }));
+  const baseDome = f.domeM ? f.domeM.color.getHex() : 0;
+  const baseIris = f.irisM ? f.irisM.map : null;
+  let formId = "", formAura = null, formHairGroup = null, formHairMat = null;
+  const hexCss = (n) => "#" + n.toString(16).padStart(6, "0");
+  function clearForm() {
+    if (formAura) { formAura.dispose(); formAura = null; }
+    if (formHairGroup) {
+      formHairGroup.removeFromParent();
+      formHairGroup.traverse((o) => o.isMesh && o.geometry.dispose());
+      formHairMat.dispose();
+      formHairGroup = formHairMat = null;
+    }
+    if (f.spikes) f.spikes.visible = true;
+    for (const b of furBases) b.visible = true;
+    skinM.color.setHex(baseSkin.color); f.skinBase.copy(skinM.color);
+    if ("metalness" in skinM) { skinM.metalness = baseSkin.metal; skinM.roughness = baseSkin.rough; }
+    for (const r of raceSkin) r.m.color.setHex(r.hex);
+    if (f.domeM) f.domeM.color.setHex(baseDome);
+    if (f.irisM && baseIris) f.irisM.map = baseIris;
+    f.setBrows?.(true);
+    root.scale.copy(baseScale);
+  }
   const pose = { fly: 0, charge: 0, dash: 0, block: 0 };
   return {
     object3d: root,
@@ -324,9 +424,41 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
         j.shR.rotation.x -= 1.3 * k; j.elR.rotation.x -= 1.6 * k; j.shR.rotation.z += 0.35 * k;
       }
       if (f.cape) f.cape.rotation.x = 0.06 + Math.min(0.9, (anim.speed || 0) * 0.08) + Math.sin(t * 3) * 0.03;
+      if (formAura) formAura.update(dt);
       if (aura) { aura.material.opacity = 0.22 + Math.sin(t * 14) * 0.06; aura.scale.y = 1.45 + Math.sin(t * 9) * 0.05; }
     },
     setHairColor(hex) { hairMat.color.setHex(hex ?? L.hairColor); },
+    /** Shows a transformation as in the story (data/form_looks.js); "" or null = base form. */
+    setForm(id) {
+      id = id || "";
+      if (id === formId) return;
+      clearForm();
+      formId = id;
+      const F = FORM_LOOKS[id];
+      if (!F) return;
+      if (F.hair) {
+        formHairMat = new THREE.MeshStandardMaterial({ color: F.hair.color, roughness: 0.42, emissive: new THREE.Color(F.hair.color).multiplyScalar(F.hair.glow ?? 0.3) });
+        formHairGroup = formHair(F.hair.style, f.spikeStyle, formHairMat);
+        f.head.add(formHairGroup);
+        if (f.spikes) f.spikes.visible = false;
+        for (const b of furBases) b.visible = false;
+      }
+      if (F.eyes != null && f.irisM) f.irisM.map = irisTexture(hexCss(F.eyes));
+      if (F.brows === false) f.setBrows?.(false);
+      if (F.skin != null) {
+        skinM.color.setHex(F.skin);
+        for (const r of raceSkin) r.m.color.setHex(shade(F.skin, r.k));
+      } else if (F.flush) {
+        skinM.color.lerp(new THREE.Color(F.flush[0]), F.flush[1]);
+        for (const r of raceSkin) r.m.color.lerp(new THREE.Color(F.flush[0]), F.flush[1]);
+      }
+      if (F.skinMetal != null && "metalness" in skinM) { skinM.metalness = F.skinMetal; skinM.roughness = 0.35; }
+      f.skinBase.copy(skinM.color);
+      if (F.dome != null && f.domeM) f.domeM.color.setHex(F.dome);
+      if (F.scale) root.scale.copy(baseScale).multiplyScalar(F.scale);
+      if (F.slim) root.scale.set(baseScale.x * 0.95, baseScale.y * 1.01, baseScale.z * 0.95);
+      if (F.aura) { formAura = createAura(F.aura); root.add(formAura.object3d); }
+    },
     setAura(hex) {
       if (hex == null) { if (aura) { root.remove(aura); aura.geometry.dispose(); aura.material.dispose(); aura = null; } return; }
       if (!aura) {
@@ -338,6 +470,7 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
     },
     dispose() {
       if (lodEntry) lodModels.delete(lodEntry);
+      clearForm();
       this.setAura(null);
       for (const o of owned) o.dispose?.();
       f.dispose();

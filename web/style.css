@@ -92,6 +92,8 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); c
 /* ---- HUD --------------------------------------------------------------------------------- */
 .screen-hud { pointer-events: none !important; }
 .hud { position: absolute; inset: 0; pointer-events: none; }
+/* "#ui .screen > *" (pointer-events: auto) would win over .hud and swallow every click meant for the game */
+#ui .screen-hud > .hud { pointer-events: none; }
 .hud-left { position: absolute; left: 18px; top: 16px; width: min(300px, 48vw); display: flex; flex-direction: column; gap: 6px; }
 .hud-name { display: flex; align-items: baseline; gap: 8px; text-shadow: 0 1px 4px #000; }
 .hud-name .race { font-size: 15px; font-weight: 600; letter-spacing: 0.04em; }

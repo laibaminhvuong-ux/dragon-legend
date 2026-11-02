@@ -1015,6 +1015,7 @@ function growFur(base, color, { layers = 10, length = 0.012, density = 70, clump
   }
   // the scalp under the hair: dark, with the same ragged hairline as the strands
   base.material = furMat(color, 0, layers, density, clump, scalp);
+  base.userData.furBase = true; // a transformation's own hair hides this (and its shells with it)
 }
 
 const SOLE = new THREE.Vector3();
@@ -1038,7 +1039,7 @@ function ropeGeo(r0, r1, len, lump) {
 
 const irisCache = {};
 /** An iris: fibres radiating from a dark pupil, a darker ring around the edge. */
-function irisTexture(color) {
+export function irisTexture(color) {
   if (irisCache[color]) return irisCache[color];
   const c = document.createElement("canvas");
   c.width = c.height = 128;
@@ -1425,12 +1426,22 @@ export class Fighter3D {
     this.belt.sash.visible = this.belt.sash.userData.plate.visible = mode === "shoulder";
   }
 
+  /** Shows or hides the painted eyebrows (repaints the face). */
+  setBrows(on) {
+    if (!this.faceMesh || this.hideBrows === !on) return;
+    this.hideBrows = !on;
+    const d = this.damage || 0;
+    this.damage = -1; // force the repaint
+    this.setDamage(d, this.bodyDamage || 0, this.legDamage || 0);
+  }
+
   buildHead(head, skin, hairM, dark, look, ref) {
     // painted facial hair (brows, and beards below) takes the hair color; the referee is grey
     this.beardType = "None";
     this.beardColor = new THREE.Color(ref ? "#8d8d8d" : LOOK_OPTIONS.hairColor[look.hairColor]);
     const white = mat("#e6dcd2", { roughness: 0.25 });
     const iris = new THREE.MeshStandardMaterial({ map: irisTexture(["#4a2c18", "#2e1b10", "#4f6e3c", "#3d6488"][(look.skin + look.hair) % 4]), roughness: 0.3 });
+    this.irisM = iris; // transformations recolour the eyes (character/cage_model.js)
     const pupil = mat("#050505", { roughness: 0.1 });
     void pupil;
     const cornea = new THREE.MeshPhysicalMaterial({ color: "#ffffff", transparent: true, opacity: 0.05, roughness: 0.03, clearcoat: 1, envMap, envMapIntensity: 0.5, depthWrite: false });
@@ -1660,6 +1671,7 @@ export class Fighter3D {
 
   /** Eyebrows: an arched band of hair over each eye, thick near the nose and thinning at the tail. */
   browShade(x, y, z) {
+    if (this.hideBrows) return 0; // Super Saiyan 3 has no eyebrows
     if (z < 0.07 || y < 0.04 || y > 0.075) return 0;
     const ax = Math.abs(x);
     if (ax < 0.012 || ax > 0.058) return 0;

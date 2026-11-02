@@ -90,30 +90,36 @@ export function createInput(target, settings, events = null) {
     codesDown.delete(e.code);
     recompute();
   };
+  const grabMouse = () => {
+    if (input.pointerLockWanted && document.pointerLockElement !== target && !matchMedia("(pointer: coarse)").matches) {
+      try { target.requestPointerLock()?.catch?.(() => {}); } catch { /* not allowed right now */ }
+    }
+  };
+  let dragging = false; // a button held on the game: drag-to-look if the mouse can't be captured
   const onMouseDown = (e) => {
     if (e.target !== target && document.pointerLockElement !== target) return;
+    dragging = true;
+    grabMouse(); // on press, so click-and-drag turns the camera straight away
     lastDevice = "keyboard";
     codesDown.add("Mouse" + e.button);
     recompute();
   };
   const onMouseUp = (e) => {
+    if (!e.buttons) dragging = false;
     codesDown.delete("Mouse" + e.button);
     recompute();
   };
   const onMouseMove = (e) => {
-    if (document.pointerLockElement !== target) return;
+    if (document.pointerLockElement !== target && !(dragging && e.buttons && input.pointerLockWanted)) return;
     look.x += e.movementX * 0.0025;
     look.y += e.movementY * 0.0025;
   };
   const onBlur = () => {
+    dragging = false;
     codesDown.clear();
     recompute();
   };
-  const onClick = () => {
-    if (input.pointerLockWanted && document.pointerLockElement !== target && !matchMedia("(pointer: coarse)").matches) {
-      try { target.requestPointerLock()?.catch?.(() => {}); } catch { /* not allowed right now */ }
-    }
-  };
+  const onClick = grabMouse;
 
   addEventListener("keydown", onKeyDown);
   addEventListener("keyup", onKeyUp);

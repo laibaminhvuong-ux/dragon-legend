@@ -19,7 +19,6 @@ import { createFollowCamera } from "./render/camera.js";
 import { createGame, emptyIntents } from "./game/game.js";
 import { getZone } from "./game/zones.js";
 import { createStory } from "./game/story.js";
-import { FORMS } from "./data/forms.js";
 import { createCombatView } from "./combat/view.js";
 import { createStoryView } from "./world/story_view.js";
 import { buildZone } from "./world/testzone.js";
@@ -204,8 +203,7 @@ app.scenes.register("play", {
     play.model.update(frozen ? 0 : frameDt, { speed: Math.hypot(p.vel.x, p.vel.z), onGround: p.onGround, flying: p.flying, charging: p.charging, dashing: p.dashing, blocking: p.blocking, attackSerial: p.attackSerial, attackKind: p.attackKind });
     if (play.lastForm !== p.form) {
       play.lastForm = p.form;
-      play.model.setHairColor(FORMS[p.form]?.hairColor ?? null);
-      play.model.setAura(FORMS[p.form]?.auraColor ?? null);
+      play.model.setForm(p.form); // hair, eyes, skin, size and aura as in the story (data/form_looks.js)
     }
     const target = app.game.combat.enemies.find(e => e.id === p.lockTarget && e.health > 0);
     play.cam.update(pos, frozen ? 0 : frameDt, target?.pos);
