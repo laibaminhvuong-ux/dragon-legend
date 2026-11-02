@@ -51,11 +51,12 @@ export function createRocks(zone, scene, tex, quality) {
   const props = zone.props();
   const group = new THREE.Group();
   const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, normalMap: tex.rockNormal, normalScale: new THREE.Vector2(0.8, 0.8), envMapIntensity: 0.6 });
-  patchShader(mat, { tRock: { value: tex.rock }, tGrass: { value: tex.grass } }, /* glsl */ `
+  const rt = zone.biome?.tints?.rock || [1, 1, 1], gt = zone.biome?.tints?.grass || [1, 1, 1];
+  patchShader(mat, { tRock: { value: tex.rock }, tGrass: { value: tex.grass }, uRockTint: { value: new THREE.Vector3(...rt) }, uGrassTint: { value: new THREE.Vector3(...gt) }, uSnowy: { value: zone.ground === "snow" ? 1 : 0 } }, /* glsl */ `
     vec3 N = normalize(vWNormal);
-    vec3 col = triplanarRock(vWPos, N) * 0.95;
+    vec3 col = triplanarRock(vWPos, N) * 0.95 * uRockTint;
     float moss = smoothstep(0.55, 0.85, N.y + (texture2D(tGrass, vWPos.xz * 0.5).g - 0.3) * 0.5);
-    col = mix(col, texture2D(tGrass, vWPos.xz * 0.6).rgb * vec3(0.8, 0.95, 0.6), moss * 0.85);
+    col = mix(col, uSnowy > 0.5 ? vec3(0.88, 0.91, 0.96) : texture2D(tGrass, vWPos.xz * 0.6).rgb * vec3(0.8, 0.95, 0.6) * uGrassTint, moss * 0.85);
     diffuseColor.rgb *= col;
   `);
   const variants = [1, 2, 3, 4, 5].map((s) => rockVariant(s * 17 + 3, 3)); // ~1.3k triangles

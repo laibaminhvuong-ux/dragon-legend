@@ -18,12 +18,15 @@ function bladeGeometry() {
 }
 
 export function createGrass(zone, scene, quality, sunDir) {
-  const density = quality.grassDensity; // blades per m^2
+  const B = zone.biome || {};
+  const lushGround = zone.ground === "grass" || zone.ground === "dirt" || zone.ground === "sand" || zone.ground === "stone";
+  const density = lushGround ? quality.grassDensity * (B.grass ?? 1) : 0; // blades per m^2
   if (!density) return { update() {}, dispose() {} };
   const radius = quality.grassTiles; // tiles each side of the player
   const perTile = Math.round(TILE * TILE * density);
   const uniforms = { uTime: { value: 0 }, uCam: { value: new THREE.Vector3() }, uFade: { value: new THREE.Vector2(radius * TILE * 0.55, radius * TILE * 0.95) } };
-  const mat = new THREE.MeshStandardMaterial({ vertexColors: true, side: THREE.DoubleSide, roughness: 0.75, color: 0xffffff, envMapIntensity: 0.6 });
+  const gt = B.tints?.grass || [1, 1, 1];
+  const mat = new THREE.MeshStandardMaterial({ vertexColors: true, side: THREE.DoubleSide, roughness: 0.75, color: new THREE.Color(gt[0], gt[1], gt[2]), envMapIntensity: 0.6 });
   mat.onBeforeCompile = (s) => {
     Object.assign(s.uniforms, uniforms);
     s.vertexShader = s.vertexShader
@@ -67,7 +70,8 @@ export function createGrass(zone, scene, quality, sunDir) {
       const w = zone.water;
       const lakeD = w ? Math.hypot(x0 + i - w.x, z0 + j - w.z) : 1e9;
       const wet = w && hs[k] < w.level + 0.8 && lakeD < w.radius * 1.5;
-      ok[k] = ny > 0.8 && !wet ? 1 : 0;
+      const s = hs[k] > -200 ? (zone.ground === "stone" ? zone.surfaceAt(x0 + i, z0 + j) : "grass") : "void";
+      ok[k] = ny > 0.8 && !wet && s === "grass" ? 1 : 0;
       dirt[k] = zone.dirtAt(x0 + i, z0 + j);
     }
     const lerp2 = (arr, fx, fz) => {

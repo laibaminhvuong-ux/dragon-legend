@@ -55,7 +55,7 @@ try {
   assert.ok(info.calls > 3 && info.triangles > 1000, `scene draws (${info.calls} calls, ${info.triangles} tris)`);
   assert.equal(info.hud.level, 1);
   fs.mkdirSync(path.join(root, "out"), { recursive: true });
-  await page.screenshot({ path: path.join(root, "out", "smoke.png") });
+  await page.screenshot({ path: path.join(root, "out", "smoke.png"), timeout: 120000 });
 
   // pause -> save -> menu
   await page.keyboard.press("Escape");

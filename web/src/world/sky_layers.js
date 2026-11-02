@@ -1,10 +1,10 @@
 // Clouds (a high procedural layer that drifts) and floating pollen/dust motes near the camera.
 import * as THREE from "three";
 
-export function createClouds(scene, tex, sunDir, quality) {
+export function createClouds(scene, tex, sunDir, quality, horizon = 0xa6bfd8) {
   const uniforms = {
     uTime: { value: 0 }, tNoise: { value: tex.cloudNoise }, uSun: { value: sunDir.clone() },
-    uCam: { value: new THREE.Vector3() }, uHorizon: { value: new THREE.Color(0xa6bfd8) },
+    uCam: { value: new THREE.Vector3() }, uHorizon: { value: new THREE.Color(horizon) },
   };
   const mat = new THREE.ShaderMaterial({
     uniforms, transparent: true, depthWrite: false, side: THREE.DoubleSide, fog: false,
@@ -85,5 +85,38 @@ export function createMotes(scene, count = 500) {
   return {
     update(dt, camPos) { uniforms.uTime.value += dt; uniforms.uCam.value.copy(camPos); },
     dispose() { scene.remove(pts); geo.dispose(); mat.dispose(); },
+  };
+}
+
+/** A sea of clouds below floating worlds (Kami's Lookout, Snake Way, King Kai's planet). */
+export function createCloudSea(scene, tex, { color = 0xffffff, y = -40 } = {}) {
+  const uniforms = { uTime: { value: 0 }, tNoise: { value: tex.cloudNoise }, uColor: { value: new THREE.Color(color) }, uCam: { value: new THREE.Vector3() } };
+  const mat = new THREE.ShaderMaterial({
+    uniforms, fog: false,
+    vertexShader: /* glsl */ `
+      varying vec3 vW;
+      void main() { vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`,
+    fragmentShader: /* glsl */ `
+      uniform float uTime; uniform sampler2D tNoise; uniform vec3 uColor; uniform vec3 uCam;
+      varying vec3 vW;
+      void main() {
+        vec2 p = vW.xz * 0.004 + vec2(uTime * 0.006, uTime * 0.003);
+        float n = texture2D(tNoise, p).r * 0.6 + texture2D(tNoise, p * 3.1 - uTime * 0.004).r * 0.4;
+        // billowy: bright tops, soft shadowed hollows
+        vec3 col = uColor * (0.72 + smoothstep(0.35, 0.75, n) * 0.4);
+        gl_FragColor = vec4(col, 1.0);
+        #include <colorspace_fragment>
+      }`,
+  });
+  const geo = new THREE.PlaneGeometry(9000, 9000, 1, 1);
+  geo.rotateX(-Math.PI / 2);
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.y = y;
+  mesh.frustumCulled = false;
+  mesh.userData.noAO = true;
+  scene.add(mesh);
+  return {
+    update(dt, camPos) { uniforms.uTime.value += dt; mesh.position.x = camPos.x; mesh.position.z = camPos.z; },
+    dispose() { scene.remove(mesh); geo.dispose(); mat.dispose(); },
   };
 }

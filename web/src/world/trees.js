@@ -98,6 +98,100 @@ function treeVariant(seed, density = 1) {
   return { wood: toGeometry(wood), leaves: toGeometry(leaves), height: H };
 }
 
+/** Namekian Ajisa tree: a tall bare trunk crowned with round, puffy clusters. */
+function ajisaVariant(seed, density = 1) {
+  const r = rng(seed);
+  const wood = { pos: [], nor: [], uv: [], idx: [] }, leaves = { pos: [], nor: [], uv: [], idx: [] };
+  const H = 7 + r() * 4;
+  const pts = [];
+  for (let i = 0; i <= 6; i++) { const t = i / 6; pts.push(new THREE.Vector3(Math.sin(t * 3 + seed) * 0.25 * t, t * H, Math.cos(t * 2 + seed) * 0.2 * t)); }
+  tube(wood, pts, 0.22, 0.1, 7);
+  const top = pts[6].clone();
+  const k = Math.sqrt(1 / density);
+  leafCluster(leaves, top.clone().add(new THREE.Vector3(0, 1.2, 0)), 1.6, Math.round(30 * density), 2.0 * k, top, r);
+  for (let i = 0; i < 3; i++) {
+    const a = (i / 3) * Math.PI * 2 + r();
+    const c = top.clone().add(new THREE.Vector3(Math.cos(a) * 1.5, 0.2 + r() * 0.6, Math.sin(a) * 1.5));
+    tube(wood, [top.clone().multiplyScalar(0.92), c], 0.08, 0.04, 5);
+    leafCluster(leaves, c, 1.1, Math.round(16 * density), 1.6 * k, c, r);
+  }
+  return { wood: toGeometry(wood), leaves: toGeometry(leaves), height: H };
+}
+
+/** Pine: straight trunk, layered cone of needles. */
+function pineVariant(seed, density = 1) {
+  const r = rng(seed);
+  const wood = { pos: [], nor: [], uv: [], idx: [] }, leaves = { pos: [], nor: [], uv: [], idx: [] };
+  const H = 9 + r() * 5;
+  tube(wood, [new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, H * 0.5, 0), new THREE.Vector3(0, H, 0)], 0.3, 0.06, 7);
+  const k = Math.sqrt(1 / density);
+  const tiers = 6;
+  for (let i = 0; i < tiers; i++) {
+    const t = i / tiers;
+    const c = new THREE.Vector3(0, H * (0.25 + t * 0.72), 0);
+    const rad = (1 - t) * 2.6 + 0.4;
+    for (let a = 0; a < 6; a++) {
+      const ang = (a / 6) * Math.PI * 2 + r() * 0.5 + i;
+      const p = c.clone().add(new THREE.Vector3(Math.cos(ang) * rad * 0.6, -0.3, Math.sin(ang) * rad * 0.6));
+      leafCluster(leaves, p, rad * 0.45, Math.max(2, Math.round(4 * density)), 1.4 * k, new THREE.Vector3(0, c.y + 1, 0), r);
+    }
+  }
+  return { wood: toGeometry(wood), leaves: toGeometry(leaves), height: H };
+}
+
+/** Palm: a curved trunk and long drooping fronds. */
+function palmVariant(seed) {
+  const r = rng(seed);
+  const wood = { pos: [], nor: [], uv: [], idx: [] }, leaves = { pos: [], nor: [], uv: [], idx: [] };
+  const H = 7 + r() * 3, bend = 1.2 + r() * 1.4, dir = r() * Math.PI * 2;
+  const pts = [];
+  for (let i = 0; i <= 8; i++) { const t = i / 8; pts.push(new THREE.Vector3(Math.cos(dir) * bend * t * t, t * H, Math.sin(dir) * bend * t * t)); }
+  tube(wood, pts, 0.24, 0.16, 7);
+  const top = pts[8];
+  for (let f = 0; f < 9; f++) {
+    const a = (f / 9) * Math.PI * 2 + r() * 0.3;
+    // a frond = a strip of leaf cards arching out and down
+    for (let k = 1; k <= 4; k++) {
+      const t = k / 4;
+      const c = top.clone().add(new THREE.Vector3(Math.cos(a) * t * 3.2, Math.sin(t * Math.PI * 0.8) * 0.8 - t * t * 1.6, Math.sin(a) * t * 3.2));
+      leafCluster(leaves, c, 0.3, 2, 1.3, top, r);
+    }
+  }
+  return { wood: toGeometry(wood), leaves: toGeometry(leaves), height: H };
+}
+
+/** Bare dead tree for wastelands. */
+function deadVariant(seed) {
+  const v = treeVariant(seed, 1);
+  v.leaves.dispose();
+  return { wood: v.wood, leaves: null, height: v.height };
+}
+
+/** Yardrat crystal spire cluster (glassy, softly glowing). */
+function crystalVariant(seed) {
+  const r = rng(seed);
+  const parts = [];
+  const n = 3 + Math.floor(r() * 4);
+  for (let i = 0; i < n; i++) {
+    const h = 2 + r() * 6, rad = 0.3 + r() * 0.6;
+    const g = new THREE.CylinderGeometry(0, rad, h * 0.25, 6).translate(0, h * 0.875, 0);
+    const body = new THREE.CylinderGeometry(rad, rad * 1.1, h * 0.75, 6).translate(0, h * 0.375, 0);
+    const tilt = new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler((r() - 0.5) * 0.6, r() * 6, (r() - 0.5) * 0.6));
+    const off = new THREE.Matrix4().makeTranslation((r() - 0.5) * 1.6, 0, (r() - 0.5) * 1.6);
+    for (const p of [g, body]) { p.applyMatrix4(tilt); p.applyMatrix4(off); parts.push(p.toNonIndexed()); }
+  }
+  // merge
+  let count = 0; for (const p of parts) count += p.attributes.position.count;
+  const pos = new Float32Array(count * 3), nor = new Float32Array(count * 3);
+  let o = 0;
+  for (const p of parts) { pos.set(p.attributes.position.array, o * 3); p.computeVertexNormals(); nor.set(p.attributes.normal.array, o * 3); o += p.attributes.position.count; p.dispose(); }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute("normal", new THREE.BufferAttribute(nor, 3));
+  geo.computeBoundingSphere();
+  return { wood: geo, leaves: null, height: 8, crystal: true };
+}
+
 function bushGeometry() {
   const r = rng(77);
   const o = { pos: [], nor: [], uv: [], idx: [] };
@@ -125,38 +219,48 @@ function windPatch(material, uniforms, amount) {
   };
 }
 
+const BUILDERS = { broadleaf: treeVariant, ajisa: ajisaVariant, pine: pineVariant, palm: palmVariant, dead: deadVariant, crystal: crystalVariant };
+
 export function createTrees(zone, scene, tex, quality) {
   const props = zone.props();
+  const B = zone.biome || {};
+  const style = B.trees || "broadleaf";
+  const lt = B.tints?.grass || [1, 1, 1];
   const uniforms = { uTime: { value: 0 } };
   const group = new THREE.Group();
   const bark = new THREE.MeshStandardMaterial({ map: tex.bark, normalMap: tex.barkNormal, normalScale: new THREE.Vector2(1.4, 1.4), roughness: 0.95, envMapIntensity: 0.5 });
   windPatch(bark, uniforms, 0.004);
-  const leafMat = new THREE.MeshStandardMaterial({ map: tex.leaves, alphaTest: 0.5, side: THREE.DoubleSide, roughness: 0.7, envMapIntensity: 0.9, emissive: 0x1a2a0c, emissiveIntensity: 0.55, alphaToCoverage: quality.msaa > 0 });
+  const leafColor = style === "pine" ? new THREE.Color(0.55, 0.75, 0.6) : style === "palm" ? new THREE.Color(1.05, 1.1, 0.75) : new THREE.Color(1, 1, 1);
+  leafColor.multiply(new THREE.Color(lt[0], lt[1], lt[2]));
+  const leafMat = new THREE.MeshStandardMaterial({ map: tex.leaves, color: leafColor, alphaTest: 0.5, side: THREE.DoubleSide, roughness: 0.7, envMapIntensity: 0.9, emissive: new THREE.Color(0x1a2a0c).multiply(leafColor), emissiveIntensity: 0.55, alphaToCoverage: quality.msaa > 0 });
+  const crystalMat = new THREE.MeshPhysicalMaterial({ color: 0xc9a6ff, emissive: 0x6a3cc8, emissiveIntensity: 0.5, roughness: 0.12, metalness: 0, clearcoat: 1, transmission: 0, flatShading: true });
   windPatch(leafMat, uniforms, 0.012);
   const leafDepth = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: tex.leaves, alphaTest: 0.5 });
-  const variants = [1, 2, 3, 4].map((s) => treeVariant(s * 31, quality.leafDensity));
+  const build = BUILDERS[style] || treeVariant;
+  const variants = style === "none" ? [] : [1, 2, 3, 4].map((s) => build(s * 31, quality.leafDensity));
   const m = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), v = new THREE.Vector3(), c = new THREE.Color();
-  const disposables = [bark, leafMat, leafDepth];
+  const disposables = [bark, leafMat, leafDepth, crystalMat];
 
   variants.forEach((variant, vi) => {
     const list = props.trees.filter((t) => t.variant === vi);
     if (!list.length) return;
-    const trunks = new THREE.InstancedMesh(variant.wood, bark, list.length);
-    const crowns = new THREE.InstancedMesh(variant.leaves, leafMat, list.length);
-    crowns.customDepthMaterial = leafDepth;
-    crowns.userData.noAO = true;
+    const trunks = new THREE.InstancedMesh(variant.wood, variant.crystal ? crystalMat : bark, list.length);
+    const crowns = variant.leaves ? new THREE.InstancedMesh(variant.leaves, leafMat, list.length) : null;
+    if (crowns) { crowns.customDepthMaterial = leafDepth; crowns.userData.noAO = true; }
     list.forEach((t, i) => {
       q.setFromAxisAngle(v.set(0, 1, 0), t.rot);
       m.compose(v.set(t.x, t.y - 0.15, t.z), q, s.set(t.scale, t.scale, t.scale));
       trunks.setMatrixAt(i, m);
+      if (!crowns) return;
       crowns.setMatrixAt(i, m);
       // each tree a slightly different green (autumn-ish tint on a few)
       const k = (Math.sin(t.x * 12.9 + t.z * 78.2) * 43758.5) % 1;
       const f = Math.abs(k);
       crowns.setColorAt(i, c.setRGB(0.85 + f * 0.25, 0.9 + f * 0.15, 0.75 + (f > 0.85 ? -0.2 : f * 0.2)));
     });
-    for (const im of [trunks, crowns]) { im.castShadow = quality.shadows; im.receiveShadow = true; im.computeBoundingSphere(); group.add(im); }
-    disposables.push(variant.wood, variant.leaves);
+    for (const im of [trunks, crowns].filter(Boolean)) { im.castShadow = quality.shadows; im.receiveShadow = true; im.computeBoundingSphere(); group.add(im); }
+    disposables.push(variant.wood);
+    if (variant.leaves) disposables.push(variant.leaves);
   });
 
   if (props.bushes.length && quality.grassDensity) {

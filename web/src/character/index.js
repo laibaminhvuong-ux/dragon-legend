@@ -1,7 +1,7 @@
 // Character model entry point. Everything that draws a fighter (game world, creator preview)
 // calls createCharacterModel(), so they always match.
 //
-// Contract (Codex's lane owns the implementation; keep this API):
+// Contract (shared by play and creator previews):
 //   createCharacterModel(look, options?) -> model
 //     look    = slot appearance + race: { race, skin, face, hair, hairColor, build, outfit, outfitTint }
 //     options = { castShadow?: boolean }
@@ -11,4 +11,6 @@
 //   model.setHairColor(hex | null)   transformations; null = back to the look's own colour
 //   model.setAura(hex | null)        aura on/off (fx/ may draw it instead; this is the hook)
 //   model.dispose()
-export { createCharacterModel } from "./placeholder.js";
+// Fighters use Cage Career 3D's model (character/cage/), dressed for Dragon Ball (cage_model.js).
+// Codex's procedural fighter (fighter.js) is kept for reference.
+export { createCharacterModel } from "./cage_model.js";

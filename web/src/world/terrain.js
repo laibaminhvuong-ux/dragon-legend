@@ -44,9 +44,15 @@ function patchShader(material, uniforms, fragmentBody, { wantsRock = true, norma
 }
 export { patchShader };
 
+const tint = (t) => new THREE.Vector3(...(t || [1, 1, 1]));
+
 export function createTerrainMaterial(tex, zone) {
+  const B = zone.biome || {}, T = B.tints || {};
   const m = new THREE.MeshStandardMaterial({ roughness: 0.93, metalness: 0, normalMap: tex.groundNormal, normalScale: new THREE.Vector2(0.9, 0.9), envMapIntensity: 0.7 });
+  const groundKind = { grass: 0, dirt: 0, sand: 2, snow: 3, white: 4, stone: 5 }[zone.ground] ?? 0;
   patchShader(m, {
+    uGrassTint: { value: tint(T.grass) }, uDirtTint: { value: tint(T.dirt) }, uRockTint: { value: tint(T.rock) }, uSandTint: { value: tint(T.sand) },
+    uSnowLine: { value: B.snowLine ?? 135 }, uGround: { value: groundKind },
     tGrass: { value: tex.grass }, tDirt: { value: tex.dirt }, tRock: { value: tex.rock }, tSand: { value: tex.sand },
     tZone: { value: tex.zoneMap }, uZoneSize: { value: tex.zoneMapSize }, uWater: { value: zone.water ? zone.water.level : -999 },
     tRockN: { value: tex.rockNormal },
@@ -55,21 +61,31 @@ export function createTerrainMaterial(tex, zone) {
     vec4 zm = texture2D(tZone, P.xz / uZoneSize + 0.5);
     // two scales of each ground texture, mixed, so the repeat doesn't show
     vec3 grass = mix(texture2D(tGrass, P.xz * 0.21).rgb, texture2D(tGrass, P.xz * 0.037).rgb, 0.45);
-    grass *= mix(vec3(0.86, 0.92, 0.78), vec3(1.12, 1.06, 0.88), zm.g);
-    vec3 dirt = mix(texture2D(tDirt, P.xz * 0.24).rgb, texture2D(tDirt, P.xz * 0.05).rgb, 0.4);
-    vec3 sand = texture2D(tSand, P.xz * 0.3).rgb;
+    grass *= mix(vec3(0.86, 0.92, 0.78), vec3(1.12, 1.06, 0.88), zm.g) * uGrassTint;
+    vec3 dirt = mix(texture2D(tDirt, P.xz * 0.24).rgb, texture2D(tDirt, P.xz * 0.05).rgb, 0.4) * uDirtTint;
+    vec3 sand = texture2D(tSand, P.xz * 0.3).rgb * uSandTint;
     float breakup = texture2D(tGrass, P.xz * 0.011).g * 2.0 - 0.6;
     vec3 col = mix(grass, dirt, smoothstep(0.42, 0.62, zm.r + (breakup - 0.2) * 0.25));
     float slope = 1.0 - N.y;
     float rockW = smoothstep(0.17, 0.26, slope + (breakup - 0.2) * 0.05);
-    col = mix(col, triplanarRock(P, N), rockW);
-    float sandW = smoothstep(uWater + 1.1, uWater + 0.35, P.y) * zm.b;
+    col = mix(col, triplanarRock(P, N) * uRockTint, rockW);
+    float sandW = max(smoothstep(uWater + 1.1, uWater + 0.35, P.y) * zm.b, uGround == 2.0 ? 1.0 - rockW : 0.0);
     col = mix(col, sand, sandW);
     // wet band and lakebed
     col *= mix(1.0, 0.55, smoothstep(uWater + 0.12, uWater - 0.3, P.y) * zm.b);
     // snow caps on the far mountains
-    float snowW = smoothstep(120.0, 160.0, P.y + breakup * 25.0) * smoothstep(0.3, 0.75, N.y);
-    col = mix(col, vec3(0.86, 0.89, 0.95), snowW * 0.95);
+    float snowW = smoothstep(uSnowLine - 15.0, uSnowLine + 25.0, P.y + breakup * 25.0) * smoothstep(0.3, 0.75, N.y);
+    if (uGround == 3.0) snowW = max(snowW, smoothstep(0.45, 0.7, N.y));
+    col = mix(col, vec3(0.86, 0.89, 0.95) * (0.92 + texture2D(tSand, P.xz * 0.11).r * 0.12), snowW * 0.95);
+    // the Time Chamber's endless white floor
+    if (uGround == 4.0) col = vec3(0.93, 0.92, 0.88) * (0.97 + texture2D(tSand, P.xz * 0.05).r * 0.05);
+    // stone platforms (Kami's Lookout, the Tournament of Power): large square tiles with seams
+    if (uGround == 5.0 && N.y > 0.8) {
+      vec2 g = abs(fract(P.xz / 4.0) - 0.5);
+      float seam = smoothstep(0.47, 0.5, max(g.x, g.y));
+      vec3 stone = texture2D(tSand, P.xz * 0.25).rgb * vec3(1.18, 1.16, 1.12) * uSandTint;
+      col = mix(stone, stone * 0.55, seam);
+    }
     diffuseColor.rgb *= col;
   `, { normalBody: CLIFF_NORMALS });
   return m;
@@ -96,6 +112,8 @@ export const CLIFF_NORMALS = /* glsl */ `
   }`;
 
 /** Plane mesh following heightAt. uv = world xz (for the detail normal map). */
+const VOID_FLOOR = -26; // floating worlds: how far the rock hangs below the edge
+
 function heightMesh(zone, size, segs, cx, cz, { skirt = 0, sink = null } = {}) {
   const geo = new THREE.PlaneGeometry(size, size, segs, segs);
   geo.rotateX(-Math.PI / 2);
@@ -103,6 +121,7 @@ function heightMesh(zone, size, segs, cx, cz, { skirt = 0, sink = null } = {}) {
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i) + cx, z = p.getZ(i) + cz;
     let h = zone.heightAt(x, z);
+    if (h < -300) h = VOID_FLOOR + Math.sin(x * 0.7) * Math.cos(z * 0.6) * 4;
     if (sink) h -= sink(x, z);
     p.setXYZ(i, x, h, z);
     uv.setXY(i, x * 0.23, z * 0.23);
@@ -117,16 +136,30 @@ function heightMesh(zone, size, segs, cx, cz, { skirt = 0, sink = null } = {}) {
   return geo;
 }
 
+/** Drops triangles whose corners are all in the void, leaving only the islands and their undersides. */
+function hideVoid(geo) {
+  const p = geo.attributes.position, idx = geo.index.array, keep = [];
+  const solid = (i) => p.getY(i) > VOID_FLOOR + 6;
+  for (let t = 0; t < idx.length; t += 3) if (solid(idx[t]) || solid(idx[t + 1]) || solid(idx[t + 2])) keep.push(idx[t], idx[t + 1], idx[t + 2]);
+  geo.setIndex(keep);
+}
+
 export function buildTerrain(zone, material, quality) {
   const group = new THREE.Group();
-  const nearSize = zone.size + 120;
+  const floating = zone.killY !== null;
+  const nearSize = zone.size + (floating ? 40 : 120);
   const nearSegs = quality.terrainSegments;
-  const near = new THREE.Mesh(heightMesh(zone, nearSize, nearSegs, 0, 0, { skirt: 30 }), material);
+  const near = new THREE.Mesh(heightMesh(zone, nearSize, nearSegs, 0, 0, { skirt: floating ? 0 : 30 }), material);
   near.receiveShadow = true;
   near.castShadow = quality.shadows;
   group.add(near);
   // surrounding ranges at medium detail, then the far horizon coarse; each is sunk out of sight
   // where the finer mesh covers it (skirts hide the seams)
+  if (floating) {
+    // nothing below but sky (or a sea of clouds): hide the rock that fills the space between islands
+    hideVoid(near.geometry);
+    return { object3d: group, dispose() { near.geometry.dispose(); } };
+  }
   const inside = (half, depth) => (x, z) => (Math.abs(x) < half && Math.abs(z) < half ? depth : 0);
   const midSize = 2600;
   const mid = new THREE.Mesh(heightMesh(zone, midSize, quality.midSegments, 0, 0, { skirt: 40, sink: inside(nearSize / 2 - 20, 6) }), material);

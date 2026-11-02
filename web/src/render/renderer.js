@@ -27,7 +27,7 @@ export function createRenderer(canvas, settings, events) {
   const camera = new THREE.PerspectiveCamera(62, 1, 0.1, 4000);
   // layer 1 = small detail (grass, pollen) the main camera sees but water reflections skip
   camera.layers.enable(1);
-  const sky = createSky(renderer, scene);
+  let sky = createSky(renderer, scene);
 
   const hemi = new THREE.HemisphereLight(0xcfe3ff, 0x5a5236, 0.35);
   const sun = new THREE.DirectionalLight(0xfff0d8, 3.1);
@@ -107,6 +107,21 @@ export function createRenderer(canvas, settings, events) {
     },
     /** Current dynamic resolution scale (1 = full). */
     get resolutionScale() { return dyn.scale; },
+    /**
+     * Switches sky, sun and ambient light to a world's look (zone.biome). World modules built after
+     * this pick up gfx.sunDirection.
+     */
+    setEnvironment(biome = {}) {
+      sky.dispose();
+      const ground = biome.tints?.grass ? new THREE.Color(0x4d5a33).multiply(new THREE.Color(...biome.tints.grass)) : new THREE.Color(biome.ground === "white" ? 0xf0f0f0 : 0x4d5a33);
+      sky = createSky(renderer, scene, biome.sky || { type: "physical" }, ground);
+      gfx.sunDirection.copy(sky.sun);
+      const S = biome.sun || {};
+      sun.color.setHex(S.color ?? (biome.sky?.sunColor ?? 0xfff0d8));
+      sun.intensity = S.intensity ?? 3.1;
+      hemi.color.setHex(biome.sky?.type === "gradient" ? biome.sky.horizon : 0xcfe3ff);
+      hemi.intensity = biome.sky?.type === "gradient" ? 0.5 : 0.35;
+    },
     render(frameDt = 1 / 60) {
       adapt(frameDt);
       sky.update(camera);

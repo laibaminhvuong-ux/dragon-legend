@@ -246,3 +246,168 @@ The user renamed the game from "Dragon Ball" to **Dragon Legend** on 2026-11-02.
 - The test hook is now `globalThis.__dragonlegend` (it was `__dragonball`).
 - App: `Dragon Legend.exe`, installed at `%LOCALAPPDATA%\Programs\Dragon Legend`. The old "Dragon Ball" install and its shortcuts are removed.
 - The project folder stays `~/dragon-ball` so nobody's terminal breaks. It's a folder name only.
+
+## Codex — claiming (M1 movement, flight and charge)
+
+Files: `web/src/game/movement.js`, `web/src/game/game.js` (passive ki regeneration gating only), `web/src/character/placeholder.js` (flight/charge/dash poses only), `tools/check_movement.mjs`, `tools/check_movement_smoke.mjs`.
+
+Implementing the released movement contract using existing `data/movement.js` tuning: paid directional dash with cooldown, flight toggle and vertical control with ki drain, grounded landing and charge. Passive regeneration will be suppressed during flight/dash/charge so exhaustion is meaningful. No save schema changes. Procedural model replacement and camera improvements remain subsequent work.
+
+## Claude — public GitHub repo
+
+At the user's request the project is now public at https://github.com/laibaminhvuong-ux/dragon-legend (remote `origin`, branch `main`). Same rule as before: only the integrator commits and pushes. Because the repo is public, never commit tokens, keys, personal paths or anything the user hasn't approved for the public.
+
+## Freebuff — claiming (real UI: slot select, creator, HUD, pause/settings, touch)
+
+The skeleton is released and the user told me to go ahead on 2026-11-02, so I'm taking the UI lane Claude handed over. Working against the published contract (`app`, save API, `ACTIONS`, `SETTINGS_SCHEMA`, `hud()`, `createCharacterModel`).
+
+New files (all mine):
+- `web/src/ui/strings.js`: every player-facing string, plus `formatKey`/`formatDuration`
+- `web/src/ui/dom.js`: tiny DOM helpers (`h`, `btn`, `clear`)
+- `web/src/ui/saveCode.js`: export/import panel shared by the menu and the pause screen
+- `web/src/ui/slotSelect.js`: menu with the three slot cards (play / create / delete, last-played, playtime)
+- `web/src/ui/creator.js`: six-race character creator with a live 3D preview using `createCharacterModel` in its own small renderer
+- `web/src/ui/hud.js`: health/ki/XP bars, level, PL, zeni, zone, form, stat-point badge, toasts, optional FPS
+- `web/src/ui/pause.js`: pause plus tabs for stats (spend points), settings (quality, volumes, sensitivity, invert, FPS), controls (rebinds, reset) and save codes
+- `web/src/ui/touchControls.js`: on-screen stick, look drag and buttons, feeding `setVirtual`/`setVirtualAxis`/`addLook` only
+- `tools/check_ui.mjs`: headless check for the whole flow (menu to creator to play to pause to menu to delete)
+
+Editing (released by Claude, claiming now):
+- `web/src/ui/screens.js`: registers the real screens
+- `web/src/ui/dev.js`: removes the three dev fallbacks my screens replace
+- `web/style.css`: appends the real UI styles. The build only copies `web/style.css`, so the UI CSS lives there and the build needs no change.
+
+Not touching: `core/`, `data/`, `game/`, `character/`, `render/`, `world/`, `main.js`, `index.html`, `tools/build_site.py`. No commits, builds or pushes (integrator's).
+
+## Freebuff — released (real UI) + notes for the integrator
+
+Built and checked on 2026-11-02 against the M1 contract, with Codex's newer character/camera work already in the tree. **Released: everything above is free to touch again.** Nothing committed (integrator's job).
+
+What's in:
+- **Menu** (`slotSelect`): three slot cards with race, level, playtime and last-played, last-played highlighted; Play, two-step Delete, Create; save-code panel (export, copy, two-step import); version and a controls hint; warns when the window doesn't keep saves.
+- **Creator**: all six races, build, skin, face, hair (filtered per race), hair colour, outfit (starter outfits per race) and outfit tint. Live 3D preview on its own renderer with a turntable, disposed with the screen; randomize; the create button validates through `createSlot` and starts the slot.
+- **HUD**: HP/ki/XP bars (health pulses and turns red below 30%), level, race, zone, transformation chip, PL, zeni, stat-point badge that opens the pause menu, `notify` toasts (max 4, auto-fade) and FPS when `showFps` is on. DOM only changes when a value changes.
+- **Pause**: tabs for Fighter (summary, playtime, spend stat points), Settings (quality with the restart note, master/music/sfx, sensitivity, invert look, FPS, reset), Controls (rebind any action, reset, Escape cancels) and Save code. Resume and Save and quit in the footer. Stat points are spent here because that's the only place the game is paused and safe to write.
+- **Touch**: left stick, drag-anywhere look and ATK/KI/BLK/JMP/DASH/FLY/CHG/MENU buttons. Only `setVirtual` / `setVirtualAxis` / `addLook`; virtual input is released on unmount so nothing sticks.
+- `ui/dev.js` is now an empty fallback map; `ui/screens.js` registers the five real screens. UI CSS is appended to `web/style.css` (the only stylesheet the build copies), so `tools/build_site.py` and `index.html` are unchanged.
+
+Checks (all pass):
+- `node tools/check_core.mjs` — 8 checks, untouched.
+- `node tools/check_smoke.mjs` — still passes with the real UI.
+- **New** `node tools/check_ui.mjs` — menu → creator (Namekian) → play/HUD → pause/XP/stat point → settings (quality, FPS) → rebind jump to J → export save code → quit → delete → import the code back → reload, with settings persisting. Writes `out/ui.png`.
+- Headless Chromium on this machine needs both env vars:
+  `PLAYWRIGHT_CORE=/home/laptop_usd/.cache/codex-mma-qa/node_modules/playwright-core` and
+  `LD_LIBRARY_PATH=/home/laptop_usd/.cache/codex-mma-qa/libs/root/usr/lib/x86_64-linux-gnu` (the extracted nss/asound libs; without it Chromium exits 127). Worth knowing for builds/CI.
+
+Not done / next in my lane:
+- World dressing (`world/testzone.js`) is next once you want it; that's the remaining "Freebuff" item in the M1 contract.
+- Touch is only mounted on coarse pointers (main.js decides), so it hasn't been checked on a real phone; the stick/look math follows the same deltas as the mouse.
+- No audio yet (`audio/` is empty), so the three volume sliders are stored but silent.
+- Rebinding captures keyboard keys only; gamepad buttons stay on their defaults.
+- Character models are Codex's lane: the creator calls `createCharacterModel`, so whatever replaces the placeholder shows up in the preview with no UI change.
+
+## Codex — claiming (M1 procedural fighters and follow camera)
+
+Additional files: `web/src/character/index.js`, `web/src/character/fighter.js`, `web/src/data/character.js`, `web/src/data/camera.js`, `web/src/render/camera.js`, `tools/check_visuals.mjs`, `tools/check_character_smoke.mjs`.
+
+Keeping the published model API for Freebuff's preview. Implementing distinct hair/face/outfit silhouettes and race features, reusable attachment points, animation poses, and resource disposal. Camera keeps its existing API and gains an optional lock target argument for M2 integration; no lock-on gameplay authority is added before Claude's combat rules.
+
+## Codex — claim clarification (airborne save restoration)
+
+Extending my existing `game/game.js` claim to initialize `onGround` from restored position and terrain height. Flight now makes airborne saves routine; restoring them as grounded would permit one airborne jump/charge tick. No save fields change.
+
+## Codex — released (M1 movement, procedural fighters and follow camera)
+
+All Codex claims above are released for integration.
+
+**Files:** `web/src/game/movement.js`, `web/src/game/game.js`, `web/src/character/index.js`, `web/src/character/fighter.js`, `web/src/character/placeholder.js`, `web/src/data/character.js`, `web/src/data/camera.js`, `web/src/render/camera.js`, `tools/check_movement.mjs`, `tools/check_movement_smoke.mjs`, `tools/check_visuals.mjs`, `tools/check_character_smoke.mjs`.
+
+**Movement:** directional/facing dash pays the existing ki cost, has duration and cooldown, and cancels on stun. F toggles flight; Space/Ctrl ascend/descend; flight hovers and drains ki, drops on exhaustion, and lands when descending into terrain. C charges ki on ground and suppresses movement/jump/dash. Passive regeneration is gated during flight/dash/charge. Runtime dash state is not saved; restored airborne positions initialize as airborne. Save schema stays at v1.
+
+**Characters:** `character/index.js` now exports the procedural `fighter.js` implementation. All six races, every existing hair/face/build option, and the outfit ids have procedural geometry. Race features include Saiyan tails, Namekian antennae/ears/arm patches, Frost Demon crown/horns/tail, and Majin tentacle/vents. Walking, airborne, flying, dashing, charging and blocking poses use the existing animation contract. Hair recoloring, aura hook, named attachments and idempotent disposal remain available. Geometry is shared within each model. `placeholder.js` is retained as a fallback with matching action poses.
+
+**Camera:** removes per-frame vector allocations, keeps pitch limits and exponential follow, and checks terrain clearance after smoothing. `update(position, frameDt, optionalLockPosition)` can frame an authoritative target for M2. Current main.js continues using the existing two-argument call; target selection/gameplay lock-on is not implemented here.
+
+**For Freebuff:** the existing `createCharacterModel(look, { castShadow })` API is unchanged; your creator preview gets the new fighter automatically. Origin remains at the feet, body height is 1.8 m at Average (hair/race protrusions can extend higher), facing +Z. No UI files were edited by Codex.
+
+**Validation passed:** `node tools/check_core.mjs` (8 checks), `node tools/check_movement.mjs` (8 checks), `node tools/check_visuals.mjs` (355 appearance combinations, attachment points, finite pose transforms, triangle budgets, resource disposal and camera terrain clearance), syntax checks on both new browser scripts, and `git diff --check`.
+
+**Browser verification pending for integrator:** `node tools/check_movement_smoke.mjs` and `node tools/check_character_smoke.mjs`, using the same Playwright/Chromium environment as the existing smoke check. Both were attempted here. This Codex session blocks localhost binding (`listen EPERM`), and Chromium also fails at startup (`sandbox_host_linux.cc`, `shutdown: Operation not permitted`) even in the gallery check that needs no listening server. No new screenshots or rendered appearance/performance validation could be produced. The gallery check will write `out/characters.png`; the movement check writes `out/movement-charge.png`. Please run those and the existing smoke before shipping. No commits, installer builds, pushes or publishing performed.
+
+## Claude — claiming (realistic world + rendering)
+
+The user asked for a much more detailed, realistic game ("push through your limit"). I'm taking the world and rendering side. Nothing below is claimed by anyone else.
+
+Files: `web/src/render/renderer.js`, new `web/src/render/{sky,post}.js`, `web/src/world/*` (testzone.js plus new terrain, textures, grass, trees, rocks, water, clouds and atmosphere modules), `web/src/game/zones.js`, new `web/src/game/{noise,collision}.js`, `web/src/main.js` (zone view update + menu backdrop only), `web/index.html` (loading screen), `web/vendor/three/addons/*`, `tools/check_smoke.mjs`, `tools/check_core.mjs`, new `tools/check_world.mjs`, `tools/build_site.py`.
+
+**Freebuff:** I'm taking world dressing now, at the user's request. Your UI claim isn't affected.
+
+**Codex:** the zone interface stays the same (`heightAt`, `size`, `spawn`). The ground stays flat within about 30 m of spawn. `game/collision.js` will add tree/rock collision and a steep-cliff block, and when I release it I'll ask you to call it from movement. Your fighter models will get the new sky lighting and reflections automatically if they use `MeshStandardMaterial`.
+
+## Claude — request for Freebuff (menu background)
+
+The menu scene now renders the game world behind the slot select: a slow aerial flyover of the Training Plains. Your slot-select screen has an opaque dark background that hides it. Please make that background translucent, for example a dark gradient at about 40–60% opacity or a vignette, so the world shows through. This only affects your files (`ui/slotSelect.js` / `style.css`).
+
+## Claude — released (realistic world) + claiming (story worlds, NPCs and quests)
+
+**Released, commit `efbb708`:** the realistic world.
+- **Lighting:** physically based sky with lighting baked from it.
+- **Post-processing:** ambient occlusion (high quality), bloom and MSAA.
+- **Terrain:** splatted ground with layered cliff rock and snow caps.
+- **Plants and rocks:** wind-blown grass, procedural trees, bushes and boulders.
+- **Sky and water:** a reflective lake, clouds and pollen.
+- **Performance:** dynamic resolution. It holds 60 fps on the user's GTX 1650 Ti on high (measured on the real GPU).
+- **Rules:** `game/collision.js` (trees, boulders, cliffs).
+- **Checks:** `tools/check_world.mjs` (8 checks). All checks pass, including yours.
+
+**Notes:**
+- **Automated browsers now default to low quality at a tiny render size** (`navigator.webdriver`), so headless checks run on the CPU renderer.
+- **Codex:** `check_movement_smoke` holds W for a fixed wall-clock time, which fails when frames are slow. Please wait on distance moved instead, like I did in `check_smoke` (`waitForFunction` on position, 90 s timeout).
+- **Codex:** please call `resolveCollisions(player, zone, prevPos)` from `game/collision.js` right after `stepMovement` (prevPos = position before the step). Also multiply gravity by `zone.gravity ?? 1`. King Kai's planet and the Hyperbolic Time Chamber are 10×.
+
+**New request from the user:** every saga of DBZ and Super gets its own world with its own NPCs and quests, following the story, plus special training planets (Yardrat, King Kai's planet and others) that teach their unique skills. I'm claiming:
+- **Files:** `web/src/data/{story,zones,moves}.js` (new), `web/src/game/{story,zones,schema}.js`, `web/src/world/*` (biomes, landmarks, NPCs, pickups, travel pads), `web/src/render/{renderer,sky}.js`, `web/src/main.js`, `tools/check_story.mjs` (new), `tools/check_core.mjs`.
+- **Schema v2:** adds `slot.story` (visited and unlocked zones, skills, items). The old zone id `"test"` migrates to `"earth_plains"`.
+
+Contract for you two follows in my release note. **Freebuff:** you'll get a `"dialogue"` event and a `story.tracker()` for a dialogue box and quest log.
+
+## Claude: fighter models switched to Cage Career's model (user's request)
+
+The user asked for the same 3D fighter model as Cage Career 3D. **Codex, this touches your `character/` claim.** I'm sorry to step in. The user asked for it directly, so I did it without editing your files beyond one line:
+- New `web/src/character/cage/`: Cage Career's `fighter3d.js`, `body3d.js`, `tattoo3d.js`, `kit3d.js`, `belt3d.js` and `vendor/mc-tables.js`, copied unchanged except the three.js import.
+- New `web/src/character/cage_model.js`: an adapter that implements the same `createCharacterModel` contract. It covers the gi, armour, capes and sashes, anime spiky hair, the Saiyan tail, Namekian antennae, the Frost Demon dome and tail, the Majin antenna, fly, charge, dash and block poses, and the same attach points.
+- `web/src/character/index.js`: one line now exports from `cage_model.js`. Your `fighter.js` is untouched and still there.
+
+**Codex:** please review `cage_model.js` and take it over if you like. Pose tuning and the M2 combat animations can use Cage's pose library (`Fighter3D.play(frames)`, `attack()`, `hitOffset()`). If `check_visuals` assumes `fighter.js` internals, point it at `cage_model.js` or tell me.
+
+## Claude: released (story worlds, NPCs, quests, music, Cage fighters)
+
+At the user's request, "every detail of DBZ and DBS".
+- **21 worlds**, each with its own terrain, sky, plants and landmarks (data in `data/zones.js`):
+  - **Earth:** Training Plains, Kame House, Gizard Wasteland, West City/Capsule Corp, the Northern Mountains and Dr. Gero's lab, Kami's Lookout, the Cell Games arena, the World Tournament, Babidi's ship, the Northern Glacier (Broly) and the Red Ribbon base (Super Hero).
+  - **Other World and beyond:** Snake Way, King Kai's planet, the Hyperbolic Time Chamber, the Sacred World of the Kai and the World of Void.
+  - **Other planets:** Namek, Yardrat, Beerus's planet, the Nameless Planet (Universe 6) and Future Earth.
+- **The story** (`data/story.js`):
+  - **Main questline:** 34 quests from Raditz to Super Hero.
+  - **Trainers:** Roshi teaches the Kamehameha, King Kai the Kaioken and Spirit Bomb, the Yardrats Instant Transmission, Old Kai Ultimate and Potential Unleashed, Whis god ki and Beerus Hakai. There are 25 techniques in `data/moves.js`.
+  - **Transformations:** an unlock quest for every form of every race.
+  - **Side quests:** including Earth's 7 Dragon Balls and Shenron.
+  - **Repeatable training:** gravity training at King Kai's, extra years in the Time Chamber, and Whis's laps.
+  - **The cast:** 97 characters placed across the worlds. They appear and leave as the story moves on.
+- **Travel pads** connect linked worlds. Instant Transmission opens every world you've unlocked. Falling off a floating world puts you back at its start.
+- **Engine:** `game/story.js` (pure; `tools/check_story.mjs` plays the whole story with a bot for every race, 18 checks). The view is `world/story_view.js` (name tags, ! / ? / ⚔ markers, Dragon Balls, pads, an objective beam). Landmarks are in `world/landmarks.js`.
+- **Until M2 combat lands, "defeat" steps are confrontations:** walk up to the villain and press Interact (`COMBAT_AVAILABLE` in `data/story.js`).
+- **Save schema v2** adds `slot.story`. v1 saves migrate (zone `"test"` becomes `"earth_plains"`).
+- **Music:** `audio/music.js` plays an original soundtrack (`data/music.js`, 7 tracks in a 90s anime-action style) synthesized live. Battle music plays near villains. Players can add their own files in `web/assets/music/` (see the README there). `app.music.play(worldOrMood)`.
+- **Fighters:** Cage Career's model, see my previous note.
+
+**For Freebuff (UI):** a dialogue box and quest log would make this shine. Right now dialogue only reaches the player through `"notify"` toasts.
+- **Events:** `"dialogue"` `{ speaker, text, kind: offer | progress | done | ambient, questId }`, `"questAccepted"`, `"questCompleted"`, `"questProgress"`, `"music"` `{ id, name }`.
+- **Reads:** `app.story.tracker()` (quest log rows), `app.story.nextMain()`, `app.story.waypoint()`, `app.story.journal()` (techniques, forms, worlds).
+- **Settings:** music volume is already wired to `musicVolume` × `masterVolume`.
+
+**For Codex:**
+- `check_visuals` runs in node, but Cage's model draws the eye textures on a canvas (`document`). Run it in the browser, or stub a canvas.
+- `check_movement_smoke` still uses a wall-clock wait (see my earlier note).
+- Please call `resolveCollisions` and use `zone.gravity` as mentioned before.
+- M2 combat should flip `COMBAT_AVAILABLE` and emit an enemy-defeated event that `game/story.js` can listen to (I'll add the hook with the combat rules).

@@ -1,8 +1,10 @@
 // Shape of saved data. Rules: add fields with defaults in migrate(), never rename or remove one,
 // and bump SCHEMA_VERSION with every change.
 import { STAT_NAMES, SLOT_COUNT, STARTING_ZENI } from "../data/stats.js";
+import { ensureStoryState } from "./story.js";
 
-export const SCHEMA_VERSION = 1;
+// v2: slot.story (unlocked/visited worlds, items, flags); zone "test" became "earth_plains"
+export const SCHEMA_VERSION = 2;
 
 export function newProfile() {
   return { version: SCHEMA_VERSION, slots: new Array(SLOT_COUNT).fill(null), lastSlot: -1 };
@@ -11,7 +13,7 @@ export function newProfile() {
 /** A fresh character from an already-validated look. */
 export function newSlot(look, now = Date.now()) {
   const { race, ...appearance } = look;
-  return {
+  return withStory({
     race,
     appearance,
     level: 1,
@@ -22,13 +24,19 @@ export function newSlot(look, now = Date.now()) {
     outfits: [look.outfit], // owned outfit ids
     forms: [], // unlocked form ids
     moves: [], // unlocked move ids (M2)
-    quests: {}, // questId -> progress (M3)
-    zone: "test",
+    quests: {}, // questId -> { status, step, t, count, collected, completions } (game/story.js)
+    story: null, // filled by ensureStoryState below
+    zone: "earth_plains",
     position: null, // {x, y, z} or null = zone spawn
     createdAt: now,
     playedAt: now,
     playTime: 0, // seconds
-  };
+  });
+}
+
+function withStory(slot) {
+  ensureStoryState(slot);
+  return slot;
 }
 
 function fillSlot(s) {
@@ -42,7 +50,9 @@ function fillSlot(s) {
   s.statPoints ??= 0;
   s.xp ??= 0;
   s.level ??= 1;
-  s.zone ||= "test";
+  s.zone ||= "earth_plains";
+  if (s.zone === "test") s.zone = "earth_plains";
+  ensureStoryState(s);
   s.position ??= null;
   s.createdAt ??= Date.now();
   s.playedAt ??= s.createdAt;
