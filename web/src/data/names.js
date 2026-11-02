@@ -27,6 +27,27 @@ export const NAMES = [
   ["Uub", "Uubo"], ["Gogeta", "Gogeto"], ["Vegito", "Vegitto"], ["Pikkon", "Pikko"], ["Bojack", "Bojak"], ["Cooler", "Kooler"],
   ["Mai", "Mae"], ["Hit", "Hitto"], ["Frost", "Frosk"], ["Gas", "Gaz"], ["Pan", "Panna"], ["Nail", "Nael"], ["Kale", "Kael"],
 ];
+const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** Technique, item and place names. Some techniques are also ids ("Kamehameha", "Kaioken"), so these are
+ *  only applied to on-screen text: prose fields and anything with a space in it (ids never have spaces). */
+export const TERMS = [
+  ["Dragon Ball Super", "Legend Super"], ["Dragon Ball Z", "Legend Z"], ["Dragon Balls", "Dragon Orbs"], ["Dragon Ball", "Dragon Orb"],
+  ["Kamehameha", "Kamehamera"], ["Destructo Disc", "Destro Disc"], ["Solar Flare", "Solar Flash"], ["Tri-Beam", "Triad Beam"],
+  ["Wolf Fang Fist", "Wolf Claw Fist"], ["Kaioken", "Kaiyoken"], ["Spirit Bomb", "Spirit Sphere"], ["Special Beam Cannon", "Spiral Beam Cannon"],
+  ["Masenko", "Masenka"], ["Galick Gun", "Galik Blaster"], ["Final Flash", "Final Blaze"], ["Big Bang Attack", "Big Burst Attack"],
+  ["Death Beam", "Doom Beam"], ["Death Ball", "Doom Orb"], ["Candy Beam", "Sweet Beam"], ["Instant Transmission", "Instant Transfer"],
+  ["Exploding Demon Wave", "Bursting Demon Wave"], ["Fusion Dance", "Fusion Step"], ["Hakai", "Hakaido"], ["Potara", "Potaro"],
+  ["Senzu", "Senzo"], ["Capsule Corporation", "Kapsule Corporation"], ["Capsule Corp", "Kapsule Corp"],
+  ["Namekians", "Nameckians"], ["Namekian", "Nameckian"], ["Namek", "Nameck"], ["Kame House", "Kama House"], ["Kame Island", "Kama Island"], ["Kame", "Kama"],
+  ["Snake Way", "Serpent Road"], ["Gizard Wasteland", "Gizzard Wastes"], ["West City", "West Capital"],
+  ["Hyperbolic Time Chamber", "Hyperbolic Time Room"], ["World Martial Arts Tournament", "Grand Martial Arts Tournament"],
+  ["Papaya Island", "Pawpaw Island"], ["World of Void", "Null Realm"], ["Red Ribbon", "Crimson Ribbon"], ["Planet Cereal", "Planet Grain"],
+  ["Cereal", "Grain"], ["Tournament of Power", "Tournament of Might"], ["Galactic Patrol", "Star Patrol"], ["Vampa", "Vampo"],
+];
+const PROSE = new Set(["name", "title", "text", "offer", "done", "desc", "description", "saga", "planet", "label", "objective", "hint", "message", "line"]);
+const TERM_RULES = TERMS.map(([from, to]) => [new RegExp(`\\b${esc(from)}\\b`, "g"), to]);
+
 /** Names that are also common words: renamed only in these contexts (as a name, not "Hit him!"). */
 const SAFE = {
   Hit: /\bHit\b(?=[ ,.!?:;'’)]|$)(?! (?:him|her|it|them|me|us|you|the|a|an|his|every|everything|hard|back|again|fast|where|with)\b)/g,
@@ -34,14 +55,14 @@ const SAFE = {
   Frost: /\bFrost\b(?! (?:Demon|Demons|demon|Armor|armour|Armour)\b)/g,
   Pan: /\bPan\b/g, Nail: /\bNail\b/g, Mai: /\bMai\b/g, Kale: /\bKale\b/g,
 };
-const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const RULES = NAMES.map(([from, to]) => [SAFE[from] || new RegExp(`\\b${esc(from)}\\b`, "g"), to]);
 
 /** Replaces story names in a piece of player-facing text. */
-export function renameText(text) {
+export function renameText(text, terms = true) {
   if (typeof text !== "string" || !text) return text;
   let out = text;
   for (const [re, to] of RULES) out = out.replace(re, to);
+  if (terms) for (const [re, to] of TERM_RULES) out = out.replace(re, to);
   return out;
 }
 
@@ -60,7 +81,7 @@ export function renameDeep(value, seen = new Set()) {
   seen.add(value);
   for (const k of Object.keys(value)) {
     const v = value[k];
-    if (typeof v === "string") value[k] = renameText(v);
+    if (typeof v === "string") value[k] = renameText(v, PROSE.has(k) || /\s/.test(v)); // ids have no spaces
     else if (v && typeof v === "object" && (Array.isArray(v) || Object.getPrototypeOf(v) === Object.prototype)) renameDeep(v, seen);
   }
   return value;

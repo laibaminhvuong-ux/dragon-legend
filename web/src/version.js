@@ -1,2 +1,2 @@
 // Bumped by the integrator on each release (matches desktop/package.json).
-export const VERSION = "0.3.3";
+export const VERSION = "0.4.0";

@@ -643,3 +643,7 @@ Also claimed and released: `core/input.js` (new `menu` action, default M / Pad8,
 - **Voices** (`audio/voice.js`): NPC dialogue and cutscene lines are spoken with the system's speech voices. The voice is chosen by gender, child or giant size, and race, plus a pitch/rate offset unique to each name. Without speech voices, characters babble in synthesized syllables. There's a Voices slider in settings.
 - **M** opens the fighter menu (Stats tab); M or Esc closes it.
 - **Checks:** all node checks pass (new `check_scenes`: 6), as do the ui, smoke, rpg and forms smokes.
+
+## Claude: released, technique and place names (0.4.0)
+
+At the user's request, technique, item and place names are now the game's own as well (`TERMS` in `data/names.js`): Kamehameha→Kamehamera, Spirit Bomb→Spirit Sphere, Kaioken→Kaiyoken, Dragon Ball→Dragon Orb, Namek→Nameck, Snake Way→Serpent Road, West City→West Capital and so on. Some technique names are also ids (`Kamehameha`, `Kaioken` in `slot.moves`/`slot.forms`), so terms only touch on-screen text: prose fields (`name`, `title`, `text`, `offer`, `done`, `desc`, `saga`, `planet`...) and strings containing a space. Ids never contain spaces and are never renamed, so saves are unaffected. **Codex/Freebuff: never give an id a space, and compare ids, not display names.** `check_ui` now expects the displayed race "Nameckian" (the race id is still `Namekian`). Transformation names (Super Saiyan...) and race names are unchanged for now.

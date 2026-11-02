@@ -39,8 +39,8 @@ try {
   await page.waitForSelector(".screen-creator .creator-canvas");
   await page.waitForFunction(() => globalThis.__dragonlegend.ui.isShown("creator"));
 
-  await page.locator(".race-card", { hasText: "Namekian" }).click();
-  assert.equal(await page.locator(".race-card.on strong").innerText(), "Namekian");
+  await page.locator(".race-card", { hasText: "Nameckian" }).click();
+  assert.equal(await page.locator(".race-card.on strong").innerText(), "Nameckian"); // the game's own name (data/names.js)
   // the preview keeps drawing frames
   const frames = await page.evaluate(async () => {
     const before = performance.now();
@@ -58,7 +58,7 @@ try {
     const a = globalThis.__dragonlegend;
     return { hud: a.game.hud(), hpWidth: document.querySelector(".hud-bar.hp i").style.width, racelabel: document.querySelector(".hud-name .race").textContent };
   });
-  assert.equal(hud.racelabel, "Namekian", "HUD shows the created race");
+  assert.equal(hud.racelabel, "Nameckian", "HUD shows the created race");
   assert.equal(hud.hud.race, "Namekian");
   assert.ok(parseFloat(hud.hpWidth) > 0, `health bar filled (${hud.hpWidth})`);
   assert.equal(hud.hud.level, 1);
@@ -104,7 +104,7 @@ try {
   await page.locator(".pause-foot .btn", { hasText: "Save and quit" }).click();
   await page.waitForFunction(() => globalThis.__dragonlegend.scenes.name === "menu");
   await page.waitForSelector(".screen-slotSelect");
-  assert.match(await page.locator(".slot").first().innerText(), /Namekian/);
+  assert.match(await page.locator(".slot").first().innerText(), /Nameckian/);
   assert.match(await page.locator(".slot").first().innerText(), /Level 2/);
 
   // ---- delete, then import the code back ----------------------------------------------------
@@ -120,12 +120,12 @@ try {
   assert.match(await importBtn.innerText(), /Import anyway/, "import asks for confirmation");
   await importBtn.click();
   await page.waitForFunction(() => globalThis.__dragonlegend.save.listSlots()[0]?.race === "Namekian");
-  assert.match(await page.locator(".slot").first().innerText(), /Namekian/);
+  assert.match(await page.locator(".slot").first().innerText(), /Nameckian/);
 
   // ---- persistence --------------------------------------------------------------------------
   await page.reload();
   await page.waitForFunction(() => globalThis.__dragonlegend?.scenes.name === "menu");
-  assert.match(await page.locator(".slot").first().innerText(), /Namekian/);
+  assert.match(await page.locator(".slot").first().innerText(), /Nameckian/);
   assert.equal(
     await page.evaluate(() => globalThis.__dragonlegend.settings.get("quality")),
     "low",
