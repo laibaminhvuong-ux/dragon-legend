@@ -33,10 +33,15 @@ try {
 
   // ?dev goes straight into play with a default Saiyan
   await page.goto(`http://127.0.0.1:${port}/?dev`);
-  await page.waitForFunction(() => globalThis.__dragonlegend?.scenes.name === "play" && globalThis.__dragonlegend.loop.stats.frames > 30, null, { timeout: 30000 });
+  await page.waitForFunction(() => globalThis.__dragonlegend?.scenes.name === "play" && globalThis.__dragonlegend.loop.stats.frames > 10, null, { timeout: 90000 });
   const start = await page.evaluate(() => ({ ...globalThis.__dragonlegend.game.player.pos }));
+  // hold W until the player has covered 2 m of simulated ground (CPU-rendered test browsers run at a
+  // few fps, so wall-clock waits are unreliable)
   await page.keyboard.down("KeyW");
-  await page.waitForTimeout(1500);
+  await page.waitForFunction((s) => {
+    const p = globalThis.__dragonlegend.game.player.pos;
+    return Math.hypot(p.x - s.x, p.z - s.z) > 2;
+  }, start, { timeout: 90000 });
   await page.keyboard.up("KeyW");
   const after = await page.evaluate(() => ({ ...globalThis.__dragonlegend.game.player.pos }));
   const moved = Math.hypot(after.x - start.x, after.z - start.z);

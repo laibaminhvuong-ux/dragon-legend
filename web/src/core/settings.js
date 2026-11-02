@@ -7,7 +7,8 @@ const touch = typeof navigator !== "undefined" && navigator.maxTouchPoints > 0 &
 
 /** Every setting: default value and allowed values/range. */
 export const SETTINGS_SCHEMA = {
-  quality: { default: touch ? "medium" : "high", options: ["low", "medium", "high"] },
+  // automated test browsers (no GPU) default to low; phones to medium; desktops to high
+  quality: { default: typeof navigator !== "undefined" && navigator.webdriver ? "low" : touch ? "medium" : "high", options: ["low", "medium", "high"] },
   masterVolume: { default: 0.8, min: 0, max: 1 },
   musicVolume: { default: 0.6, min: 0, max: 1 },
   sfxVolume: { default: 0.8, min: 0, max: 1 },

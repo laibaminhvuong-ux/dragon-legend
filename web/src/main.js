@@ -14,6 +14,7 @@ import { createLoop } from "./core/loop.js";
 import { createRenderer } from "./render/renderer.js";
 import { createFollowCamera } from "./render/camera.js";
 import { createGame, emptyIntents } from "./game/game.js";
+import { getZone } from "./game/zones.js";
 import { buildZone } from "./world/testzone.js";
 import { createCharacterModel } from "./character/index.js";
 import { createUI } from "./ui/index.js";
@@ -56,20 +57,50 @@ app.saveNow = () => { if (app.game) app.save.saveSlot(app.game.slotIndex, app.ga
 app.startGame = (slotIndex) => app.scenes.go("play", { slotIndex });
 app.quitToMenu = () => { app.saveNow(); app.scenes.go("menu"); };
 
-// ---- menu scene -------------------------------------------------------------------------------
+// ---- the world (built once, shared by the menu backdrop and play) -----------------------------
+let world = null;
+function ensureWorld(zone) {
+  if (world && world.zone === zone) return world;
+  world?.dispose();
+  world = buildZone(app.gfx, zone);
+  app.world = world;
+  return world;
+}
+events.on("qualityChanged", () => {
+  if (!world) return;
+  const zone = world.zone;
+  world.dispose();
+  world = null;
+  ensureWorld(zone);
+});
+
+// ---- menu scene: slow flyover behind the slot select -------------------------------------------
+let menuTime = 0;
 app.scenes.register("menu", {
   enter() {
     app.input.pointerLockWanted = false;
     document.exitPointerLock?.();
     app.ui.hideAll();
+    ensureWorld(getZone("test"));
     app.ui.show("slotSelect");
   },
   exit() { app.ui.hide("slotSelect"); },
-  render() { app.gfx.render(); },
+  render(frameDt) {
+    menuTime += frameDt;
+    const zone = world.zone, cam = app.gfx.camera;
+    const a = menuTime * 0.025 + 0.8, rad = 120;
+    const x = Math.sin(a) * rad, z = Math.cos(a) * rad;
+    cam.position.set(x, Math.max(zone.heightAt(x, z), zone.water?.level ?? 0) + 14, z);
+    cam.lookAt(Math.sin(a + 0.9) * 60, 10, Math.cos(a + 0.9) * 60);
+    const focus = { x, y: 0, z };
+    world.update(frameDt, focus, cam.position);
+    app.gfx.followSun(focus);
+    app.gfx.render(frameDt);
+  },
 });
 
 // ---- play scene -------------------------------------------------------------------------------
-let play = null; // { zoneView, model, cam, prev, saveTimer }
+let play = null; // { model, cam, prev, saveTimer }
 app.scenes.register("play", {
   enter({ slotIndex }) {
     const slot = app.save.loadSlot(slotIndex);
@@ -77,12 +108,12 @@ app.scenes.register("play", {
     app.game = createGame(slotIndex, slot, events);
     app.paused = false;
     const shadows = app.gfx.quality.shadows;
-    const zoneView = buildZone(app.gfx.scene, app.game.zone, { castShadow: shadows });
+    ensureWorld(app.game.zone);
     const model = createCharacterModel({ race: slot.race, ...slot.appearance }, { castShadow: shadows });
     app.gfx.scene.add(model.object3d);
     const cam = createFollowCamera(app.gfx.camera, app.game.zone);
     cam.setYaw(app.game.player.yaw);
-    play = { zoneView, model, cam, prev: { ...app.game.player.pos }, saveTimer: 0 };
+    play = { model, cam, prev: { ...app.game.player.pos }, saveTimer: 0 };
     app.input.pointerLockWanted = true;
     app.ui.hideAll();
     app.ui.show("hud");
@@ -91,7 +122,6 @@ app.scenes.register("play", {
   exit() {
     app.ui.hideAll();
     play?.model.dispose();
-    play?.zoneView.dispose();
     play = null;
     app.game = null;
     app.paused = false;
@@ -111,7 +141,7 @@ app.scenes.register("play", {
     if ((play.saveTimer += dt) >= AUTOSAVE_SECONDS) { play.saveTimer = 0; app.saveNow(); }
   },
   render(frameDt, alpha) {
-    if (!play) return app.gfx.render();
+    if (!play) return app.gfx.render(frameDt);
     const p = app.game.player;
     const pos = { x: play.prev.x + (p.pos.x - play.prev.x) * alpha, y: play.prev.y + (p.pos.y - play.prev.y) * alpha, z: play.prev.z + (p.pos.z - play.prev.z) * alpha };
     if (!app.paused) play.cam.addLook(app.input.takeLook(frameDt));
@@ -120,8 +150,9 @@ app.scenes.register("play", {
     play.model.object3d.rotation.y = p.yaw;
     play.model.update(app.paused ? 0 : frameDt, { speed: Math.hypot(p.vel.x, p.vel.z), onGround: p.onGround, flying: p.flying, charging: p.charging, dashing: p.dashing, blocking: p.blocking });
     play.cam.update(pos, frameDt);
+    world.update(app.paused ? 0 : frameDt, pos, app.gfx.camera.position);
     app.gfx.followSun(pos);
-    app.gfx.render();
+    app.gfx.render(frameDt);
   },
 });
 
@@ -134,6 +165,11 @@ document.addEventListener("pointerlockchange", () => {
 });
 addEventListener("visibilitychange", () => document.hidden && app.saveNow());
 addEventListener("beforeunload", () => app.saveNow());
+// leaving the page: save and stop drawing
+addEventListener("pagehide", () => {
+  app.saveNow();
+  app.loop?.stop();
+});
 
 app.loop = createLoop({
   beforeFrame: () => app.input.poll(),
@@ -153,6 +189,7 @@ if (params.has("dev")) {
   app.startGame(0);
 } else app.scenes.go("menu");
 app.loop.start();
+requestAnimationFrame(() => requestAnimationFrame(() => document.getElementById("loading")?.remove()));
 
 // test hook for tools/check_smoke.cjs (and the dev console)
 globalThis.__dragonlegend = app;
