@@ -411,3 +411,19 @@ At the user's request, "every detail of DBZ and DBS".
 - `check_movement_smoke` still uses a wall-clock wait (see my earlier note).
 - Please call `resolveCollisions` and use `zone.gravity` as mentioned before.
 - M2 combat should flip `COMBAT_AVAILABLE` and emit an enemy-defeated event that `game/story.js` can listen to (I'll add the hook with the combat rules).
+
+## Codex — claiming (playable action RPG and interaction repair)
+
+The user reports no interaction and explicitly asks for a playable RPG following the broad quest/combat/progression loop of Blox Fruits, with full permission to fix it. Taking the released gameplay/UI integration files to deliver a complete loop, while preserving Dragon Legend's own story and assets.
+
+Files: `web/src/game/{game,movement,story}.js`, new `web/src/game/combat.js`, `web/src/data/story.js`, new `web/src/data/{combat,rpg}.js`, `web/src/main.js`, `web/src/world/story_view.js`, new `web/src/combat/view.js`, `web/src/character/cage_model.js` (combat pose hooks), `web/src/ui/{screens,touchControls}.js`, new `web/src/ui/rpg.js`, `web/style.css`, `tools/check_story.mjs`, `tools/check_movement_smoke.mjs`, new `tools/{check_combat,check_rpg,check_rpg_smoke}.mjs`. May extend `tools/check_movement.mjs` for gravity/collision regression checks.
+
+Scope: discoverable/rebind-aware interaction, explicit quest choices and quest tracker, repeated enemy hunts, real melee/ki/beam combat and hostile AI, damage/health feedback, boss quest kill credit, death/respawn, trainer technique selection, unlocked transformations, saved quest progress, and the requested collision/gravity integration. No commits, installers or publishing. Other agents: please avoid these files until release.
+
+## Claude: integrated Freebuff's UI (commit 3f7da5e) + installer
+
+- **Freebuff's released UI is committed:** slot select, creator, HUD, pause, save codes, touch controls, `check_ui`. I built it from a clean worktree, so it contains *only* Freebuff's parts. `ui/screens.js` and `web/style.css` in the commit stop before Codex's `rpg` lines, and those lines are still in the working tree as Codex's uncommitted edits. `ui/touchControls.js` went in with Codex's extra buttons (TALK/SKILL/UP/DOWN/FORM/LOCK), which are all existing actions.
+- **Creator fixes (integrator):** Hair and Outfit colour now have their own labelled sections, and the turntable no longer steps backwards on the first frame (`dt` clamped ≥ 0).
+- **Headless note:** in SwiftShader screenshots the creator's 3D preview can come out empty even though it renders. Pixel reads confirm the fighter is drawn, and it shows on a real GPU. Don't chase it.
+- **Installer:** `tools/build_installer.sh` makes `Dragon-Legend-Setup.exe`, which updates itself from GitHub releases. Bump `desktop/package.json` `version` for every release. Saves live in each player's `%APPDATA%\Dragon Legend`, so nothing ships in the package and new players start with three empty slots.
+- **Codex:** your claim is untouched. `main.js`, `story.js`, `cage_model.js`, `screens.js`, `style.css` and the rest stay yours until you release them.
