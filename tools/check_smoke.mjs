@@ -28,22 +28,22 @@ try {
 
   // menu first
   await page.goto(`http://127.0.0.1:${port}/`);
-  await page.waitForFunction(() => globalThis.__dragonball?.scenes.name === "menu");
+  await page.waitForFunction(() => globalThis.__dragonlegend?.scenes.name === "menu");
   assert.equal(await page.locator(".screen-slotSelect").count(), 1, "slot select shown");
 
   // ?dev goes straight into play with a default Saiyan
   await page.goto(`http://127.0.0.1:${port}/?dev`);
-  await page.waitForFunction(() => globalThis.__dragonball?.scenes.name === "play" && globalThis.__dragonball.loop.stats.frames > 30, null, { timeout: 30000 });
-  const start = await page.evaluate(() => ({ ...globalThis.__dragonball.game.player.pos }));
+  await page.waitForFunction(() => globalThis.__dragonlegend?.scenes.name === "play" && globalThis.__dragonlegend.loop.stats.frames > 30, null, { timeout: 30000 });
+  const start = await page.evaluate(() => ({ ...globalThis.__dragonlegend.game.player.pos }));
   await page.keyboard.down("KeyW");
   await page.waitForTimeout(1500);
   await page.keyboard.up("KeyW");
-  const after = await page.evaluate(() => ({ ...globalThis.__dragonball.game.player.pos }));
+  const after = await page.evaluate(() => ({ ...globalThis.__dragonlegend.game.player.pos }));
   const moved = Math.hypot(after.x - start.x, after.z - start.z);
   assert.ok(moved > 2, `player moved ${moved.toFixed(2)} m`);
 
   const info = await page.evaluate(() => {
-    const a = globalThis.__dragonball;
+    const a = globalThis.__dragonlegend;
     const r = a.gfx.renderer.info.render;
     return { hud: a.game.hud(), calls: r.calls, triangles: r.triangles, fps: a.loop.stats.fps };
   });
@@ -54,9 +54,9 @@ try {
 
   // pause -> save -> menu
   await page.keyboard.press("Escape");
-  await page.waitForFunction(() => globalThis.__dragonball.paused);
-  await page.evaluate(() => globalThis.__dragonball.quitToMenu());
-  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("dragonball.profile")).slots[0].position);
+  await page.waitForFunction(() => globalThis.__dragonlegend.paused);
+  await page.evaluate(() => globalThis.__dragonlegend.quitToMenu());
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("dragonlegend.profile")).slots[0].position);
   assert.ok(saved && Math.abs(saved.z - after.z) < 0.5, "position saved");
   assert.deepEqual(errors, [], "no page errors");
   console.log(`smoke ok (${folder}): moved ${moved.toFixed(1)} m, ${info.calls} draw calls, ${info.triangles} triangles, ${info.fps} fps (software GL)`);

@@ -1,8 +1,8 @@
 {
-  "name": "dragon-ball",
-  "productName": "Dragon Ball",
+  "name": "dragon-legend",
+  "productName": "Dragon Legend",
   "version": "0.1.0",
-  "description": "Dragon Ball: a 3D action RPG",
+  "description": "Dragon Legend: a 3D action RPG",
   "author": "laibaminhvuong",
   "main": "main.js",
   "private": true,

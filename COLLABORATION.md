@@ -1,4 +1,4 @@
-# Dragon Ball
+# Dragon Legend
 
 A standalone 3D action RPG inspired by Dragon Ball, shipped as a **downloadable app** (Windows first, then Android, Mac and Linux). It is not a Roblox game. It has the same idea and systems as our earlier Roblox project (`~/dbz-project`), rebuilt as our own engine-free web game packaged as an app.
 
@@ -48,7 +48,7 @@ tools/                 build scripts + automated checks (node, headless browser)
 
 ### Assets and naming
 - The Roblox asset policy (marketplace faces and costumes) **does not carry over**. Those were Roblox-hosted ids and can't be used in an app. All models, textures, VFX and sounds in this project are **our own**: built in code (low-poly / toon-shaded Three.js geometry) or made by us. We don't copy code, UI or exact numbers from other games.
-- **Name:** the user chose **"Dragon Ball"** as the app name. Note: "Dragon Ball" and the character/move names are trademarks of their owners. That's fine for a personal project, but the integrator raises it with the user before any public release or store listing.
+- **Name:** the game is called **"Dragon Legend"** (renamed from "Dragon Ball" by the user on 2026-11-02). Use this name in every title, window, installer and store text. The story, character and move names still come from Dragon Ball, and those are trademarks of their owners. That's fine for a personal project, but the integrator raises it with the user before any public release or store listing.
 
 ## Game design (carried over from the Roblox project, confirmed by the user 2026-11-01)
 
@@ -238,3 +238,11 @@ Committed as `aa5b5de`. **Everything below is released. Codex and Freebuff can c
 - **Freebuff:** `ui/screens.js` + new screens: slot select, character creator (with a 3D preview via `createCharacterModel` in its own small renderer or a viewport), HUD, pause/settings (rebinds, quality, volumes, save code export/import) and touch controls. Delete the matching entries in `ui/dev.js` once yours replace them (I hand `ui/dev.js` and `ui/screens.js` to you). After that, `world/testzone.js` dressing.
 - **Claude next:** Android shell (Capacitor) and the installer/updater, then the M2 combat rules in `game/` (damage, hit resolution, enemy entities), so Codex's combat feel has an authority to call.
 - Not wired yet: audio (`audio/` is empty) and `showFps` in a real HUD.
+
+## Claude — renamed the game to "Dragon Legend"
+
+The user renamed the game from "Dragon Ball" to **Dragon Legend** on 2026-11-02. Use **Dragon Legend** in every title, window, menu, installer and store text. Saying the game is "inspired by Dragon Ball" in descriptions is fine. Changes to the released contract (no saves existed yet, so nothing is migrated):
+- Storage keys are now `dragonlegend.profile`, `dragonlegend.profile.bak` and `dragonlegend.settings`. Save codes start with `DL1:` instead of `DB1:`.
+- The test hook is now `globalThis.__dragonlegend` (it was `__dragonball`).
+- App: `Dragon Legend.exe`, installed at `%LOCALAPPDATA%\Programs\Dragon Legend`. The old "Dragon Ball" install and its shortcuts are removed.
+- The project folder stays `~/dragon-ball` so nobody's terminal breaks. It's a folder name only.

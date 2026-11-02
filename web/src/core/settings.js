@@ -2,7 +2,7 @@
 // and listen for the "settings" event.
 import { storage } from "./storage.js";
 
-const KEY = "dragonball.settings";
+const KEY = "dragonlegend.settings";
 const touch = typeof navigator !== "undefined" && navigator.maxTouchPoints > 0 && /Android|iPhone|iPad|Mobile/i.test(navigator.userAgent);
 
 /** Every setting: default value and allowed values/range. */

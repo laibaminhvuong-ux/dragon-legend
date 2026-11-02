@@ -7,9 +7,9 @@ import { validateLook } from "../game/look.js";
 import { getRace } from "../data/races.js";
 import { SLOT_COUNT } from "../data/stats.js";
 
-const KEY = "dragonball.profile";
-const BACKUP = "dragonball.profile.bak";
-const CODE_PREFIX = "DB1:";
+const KEY = "dragonlegend.profile";
+const BACKUP = "dragonlegend.profile.bak";
+const CODE_PREFIX = "DL1:";
 
 export { SCHEMA_VERSION };
 
@@ -101,7 +101,7 @@ export function createSaveStore(events = null) {
     importCode(code) {
       try {
         const text = String(code || "").trim();
-        if (!text.startsWith(CODE_PREFIX)) return { ok: false, error: "That isn't a Dragon Ball save code" };
+        if (!text.startsWith(CODE_PREFIX)) return { ok: false, error: "That isn't a Dragon Legend save code" };
         const bin = atob(text.slice(CODE_PREFIX.length));
         const data = JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0))));
         if (!data || !Array.isArray(data.slots)) return { ok: false, error: "The save code is damaged" };

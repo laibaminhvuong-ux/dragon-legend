@@ -1,4 +1,4 @@
-# Dragon Ball
+# Dragon Legend
 
 A 3D open-world action RPG inspired by Dragon Ball Z and Super: create a fighter from six races, take quests, level up, unlock transformations and fight through the story arcs.
 

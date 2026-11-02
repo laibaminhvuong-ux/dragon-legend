@@ -13,7 +13,7 @@ const screens = {
       mount(el) {
         el.classList.add("dev-panel");
         const draw = () => {
-          el.replaceChildren(h("h1", null, "Dragon Ball"), h("p", "dev-note", "Dev slot select (placeholder until the real creator lands)"));
+          el.replaceChildren(h("h1", null, "Dragon Legend"), h("p", "dev-note", "Dev slot select (placeholder until the real creator lands)"));
           app.save.listSlots().forEach((s, i) => {
             const row = h("div", "dev-row");
             row.append(h("span", null, s ? `Slot ${i + 1}: ${s.raceName}, level ${s.level}` : `Slot ${i + 1}: empty`));

@@ -28,5 +28,5 @@ export function serve(p = port, dir = root) {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   await serve();
-  console.log(`Dragon Ball dev server: http://localhost:${port}/  (serving ${root})`);
+  console.log(`Dragon Legend dev server: http://localhost:${port}/  (serving ${root})`);
 }

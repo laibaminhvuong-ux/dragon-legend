@@ -1,4 +1,4 @@
-// Dragon Ball as a desktop app: runs the bundled game (site/) in Electron, on the dedicated GPU,
+// Dragon Legend as a desktop app: runs the bundled game (site/) in Electron, on the dedicated GPU,
 // at full speed even when another window is in front. Installer + self-update come in M6.
 const { app, BrowserWindow, Menu, net, protocol, shell } = require("electron");
 const fs = require("fs");
@@ -28,7 +28,7 @@ app.whenReady().then(() => {
   Menu.setApplicationMenu(null);
   const win = new BrowserWindow({
     width: 1440, height: 900, minWidth: 900, minHeight: 600, show: false,
-    backgroundColor: "#0b0d12", title: "Dragon Ball", icon: path.join(SITE, "icons", "icon-512.png"),
+    backgroundColor: "#0b0d12", title: "Dragon Legend", icon: path.join(SITE, "icons", "icon-512.png"),
     webPreferences: { backgroundThrottling: false, contextIsolation: true, sandbox: true },
   });
   win.once("ready-to-show", () => { win.maximize(); win.show(); });

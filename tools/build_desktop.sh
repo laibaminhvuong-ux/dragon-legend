@@ -9,6 +9,6 @@ cd "$ROOT/desktop"
 npm install --no-audit --no-fund
 rm -rf site
 cp -r "$ROOT/dist/site" site
-npx @electron/packager . "Dragon Ball" --platform=win32 --arch=x64 --out "$OUT" --overwrite --asar \
-  --app-copyright="Dragon Ball" --ignore='^/node_modules' --ignore='^/package-lock.json'
-echo "Built: $OUT/Dragon Ball-win32-x64/Dragon Ball.exe"
+npx @electron/packager . "Dragon Legend" --platform=win32 --arch=x64 --out "$OUT" --overwrite --asar \
+  --app-copyright="Dragon Legend" --ignore='^/node_modules' --ignore='^/package-lock.json'
+echo "Built: $OUT/Dragon Legend-win32-x64/Dragon Legend.exe"

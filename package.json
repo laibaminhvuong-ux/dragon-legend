@@ -1,5 +1,5 @@
 {
-  "name": "dragon-ball-dev",
+  "name": "dragon-legend-dev",
   "private": true,
   "type": "module",
   "description": "Dev scripts. The game itself has no npm dependencies (three.js is vendored in web/vendor).",

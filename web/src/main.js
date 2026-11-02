@@ -155,4 +155,4 @@ if (params.has("dev")) {
 app.loop.start();
 
 // test hook for tools/check_smoke.cjs (and the dev console)
-globalThis.__dragonball = app;
+globalThis.__dragonlegend = app;

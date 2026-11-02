@@ -103,7 +103,7 @@ t("save store: create, load, save, delete, export/import", () => {
   assert.equal(save.importCode(code).ok, true);
   assert.equal(save.listSlots()[0].raceName, "Majin");
   assert.equal(save.importCode("nope").ok, false);
-  assert.equal(save.importCode("DB1:!!!").ok, false);
+  assert.equal(save.importCode("DL1:!!!").ok, false);
   assert.equal(changes, 3); // create, delete, import (saveSlot is silent)
   // a second store reads what the first wrote
   assert.equal(createSaveStore().listSlots()[0].level, 9);
