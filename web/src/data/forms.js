@@ -1,3 +1,4 @@
+import { renameDeep } from "./names.js";
 // Transformation tuning for the level-2000 game. Legacy ids remain for save compatibility.
 export const FORMS = {};
 function form(id,race,name,unlockLevel,multiplier,kiDrain,auraColor,hairColor=null,options={}) {
@@ -82,3 +83,6 @@ export const MASTERY_EVOLUTIONS=[
 ];
 for(const edge of MASTERY_EVOLUTIONS)FORMS[edge.to].mastery=edge;
 export const MASTERY_TUNING={"perSecond":2,"perHit":3,"perKill":25,"pointsPerLevel":10};
+
+// player-facing names are the game's own (data/names.js)
+renameDeep(FORMS);

@@ -1,3 +1,4 @@
+import { renameDeep } from "../data/names.js";
 // Every player-facing string in the UI. Screens stay layout-only and read text from here.
 // Keep this in a separate file so a later translation pass touches one place.
 
@@ -176,3 +177,6 @@ export function formatWhen(ts) {
   const d = new Date(ts || Date.now());
   return d.toLocaleDateString(undefined, { day: "numeric", month: "short" });
 }
+
+// player-facing names are the game's own (data/names.js)
+renameDeep(STR);

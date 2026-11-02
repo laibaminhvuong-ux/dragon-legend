@@ -44,40 +44,19 @@ function session(race) {
     p.vel.x = p.vel.y = p.vel.z = 0;
     p.onGround = true; p.flying = false;
   };
-  /** Walk onto the travel pad for zoneId (the bot's way of travelling). */
+  /** Walk to the travel guide and fly to zoneId (the guide appears once this planet's story tasks are done). */
   s.goTo = (zoneId) => {
     if (s.game.zone.id === zoneId) return;
-    // route: direct pad, else hop through linked worlds (breadth-first over unlocked links)
-    for (let hops = 0; hops < 6 && s.game.zone.id !== zoneId; hops++) {
-      const pads = s.story.pads();
-      let pad = pads.find((p) => p.zone === zoneId);
-      if (!pad) {
-        const path = route(s.game.zone.id, zoneId, slot.story.unlocked, s.slot.story.items.instantTransmission > 0);
-        assert.ok(path, `no route from ${s.game.zone.id} to ${zoneId} (unlocked: ${slot.story.unlocked.join(", ")})`);
-        pad = pads.find((p) => p.zone === path[1]);
-      }
-      assert.ok(pad, `no pad in ${s.game.zone.id} towards ${zoneId}`);
-      const safe=[0,4,8,12,16].map(off=>({x:s.game.zone.spawn.x+off,z:s.game.zone.spawn.z+8})).find(p=>pads.every(pd=>Math.hypot(pd.x-p.x,pd.z-p.z)>3));
-      assert.ok(safe,'space to step off pads');s.at(safe.x,safe.z); s.tick(); // step off first (pads arm once you leave them)
-      const from = s.game.zone.id;
-      s.at(pad.x, pad.z); s.tick();
-      if (process.env.DEBUG) console.log("hop", from, "->", pad.zone, "now", s.game.zone.id, "pad", pad.x.toFixed(1), pad.z.toFixed(1), "y", pad.y.toFixed(1), "player y", s.game.player.pos.y.toFixed(1));
-    }
+    const g = s.story.travelGuide();
+    assert.ok(g, `travel guide in ${s.game.zone.id} towards ${zoneId} (story tasks left here: ${s.story.tasksHere().join(", ")})`);
+    assert.ok(s.story.travelOptions().some((o) => o.zone === zoneId), `guide in ${s.game.zone.id} offers ${zoneId} (offers: ${s.story.travelOptions().map((o) => o.zone).join(", ")})`);
+    s.at(g.x + 1, g.z); s.tick();
+    assert.ok(s.story.travelTo(zoneId), `travel to ${zoneId}`);
+    s.tick();
     assert.equal(s.game.zone.id, zoneId, `travel to ${zoneId}`);
   };
   s.grindTo = (lv) => { while (slot.level < lv) { const n = xpToNext(slot.level); s.grindXP += n; s.game.addXP(n); } };
   return s;
-}
-
-import { LINKS } from "../web/src/data/story.js";
-function route(from, to, unlocked, it) {
-  const q = [[from]], seen = new Set([from]);
-  while (q.length) {
-    const path = q.shift(), at = path[path.length - 1];
-    if (at === to) return path;
-    for (const n of it ? Object.keys(LINKS) : LINKS[at] || []) if (!seen.has(n) && unlocked.includes(n)) { seen.add(n); q.push([...path, n]); }
-  }
-  return null;
 }
 
 const npcById = Object.fromEntries(NPCS.map((n) => [n.id, n]));
@@ -160,7 +139,7 @@ function runSteps(s, q) {
   const s = session("Saiyan");
   s.enter("earth_plains");
   const w = s.story.waypoint();
-  assert.ok(w && w.text.includes("Goku"), "first waypoint points at Goku");
+  assert.ok(w && w.text.includes("Gokan"), "first waypoint points at Gokan (the game's own name for the hero)");
   const mains = QUESTS.filter((q) => q.main);
   for (const q of mains) play(s, q);
   ok(`main story: all ${mains.length} quests from "${mains[0].title}" to "${mains[mains.length - 1].title}" (reached level ${s.slot.level}, ${s.slot.story.unlocked.length} worlds unlocked)`);
@@ -174,8 +153,8 @@ function runSteps(s, q) {
   assert.ok(s.slot.story.flags.shenron, "Shenron summoned");
   // Instant Transmission: pads to every unlocked world
   s.goTo("htc");
-  assert.equal(s.story.pads().length, Object.keys(ZONES).length - 2, "Instant Transmission opens every world");
-  ok("Instant Transmission shows pads to every unlocked world");
+  assert.equal(s.story.travelOptions().length, s.slot.story.unlocked.filter((z) => z !== "htc" && z !== "test").length, "the guide offers every unlocked world");
+  ok("after the story, the travel guide offers every unlocked world");
   // repeatable training can be redone
   const r = QUESTS.find((q) => q.id === "r_kingkai_gravity");
   const before = s.slot.quests[r.id].completions;

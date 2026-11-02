@@ -1,3 +1,4 @@
+import { renameDeep, renameText } from "../data/names.js";
 import { formForRace, hasFormPath } from "./forms.js";
 import { freePosition } from "./placement.js";
 import { SHOP } from "../data/rpg.js";
@@ -9,7 +10,11 @@ import { OUTFITS, outfitAllowed } from "../data/outfits.js";
 //   story.update(dt, intents)   objectives, pickups, travel pads, falling off void worlds
 //   story.interact()            what the Interact button does (main.js calls it on intents.interact)
 //   story.npcs()                visible NPCs here, with marker: "!" (quest), "?" (talk to them), "⚔" (fight), null
-//   story.pads()                travel pads here: [{ zone, name, x, y, z }]
+//   story.pads()                (travel pads were replaced by the travel guide: always [])
+//   story.travelGuide()         the travel guide NPC here once this planet's story tasks are done, or null
+//   story.travelOptions()       [{ zone, name, planet, story }] (story = where the storyline goes next)
+//   story.travelTo(zone)        travel there (must stand next to the guide)
+//   story.tasksHere()           titles of the story tasks still open on this planet
 //   story.pickups()             pickups to grab here: [{ item, x, y, z }]
 //   story.waypoint()            current objective position here, or null
 //   story.tracker()             quest log: [{ id, title, saga, main, objective, progress }]
@@ -27,7 +32,6 @@ const QUEST = Object.fromEntries(QUESTS.map((q) => [q.id, q]));
 const NPC = Object.fromEntries(NPCS.map((n) => [n.id, n]));
 const TALK_RANGE = 4.5;
 const PICKUP_RANGE = 2.6;
-const PAD_RANGE = 1.8;
 
 /** Fills in slot.story / slot.quests (also used by the save migration). */
 export function ensureStoryState(slot) {
@@ -48,7 +52,8 @@ export function ensureStoryState(slot) {
 export function createStory(game, events = null) {
   const slot = game.slot, zone = game.zone, player = game.player;
   const S = ensureStoryState(slot);
-  const emit = (n, d) => events && events.emit(n, d);
+  // every line the story says goes out with the game's own names (data/names.js)
+  const emit = (n, d) => events && events.emit(n, d && typeof d === "object" ? { ...d, ...(typeof d.text === "string" ? { text: renameText(d.text) } : {}), ...(typeof d.speaker === "string" ? { speaker: renameText(d.speaker) } : {}), ...(typeof d.title === "string" ? { title: renameText(d.title) } : {}) } : d);
   const say = (speaker, text, kind, questId) => {
     emit("dialogue", { speaker, text, kind, questId });
     emit("notify", { text: `${speaker}: ${text}` });
@@ -141,7 +146,6 @@ export function createStory(game, events = null) {
     // a "go to X" objective opens the way to X
     if (step.type === "travel" && !S.unlocked.includes(step.zone)) {
       S.unlocked.push(step.zone);
-      padCache = null;
       emit("notify", { text: `New world: ${ZONES[step.zone].name}` });
     }
     if (step.type === "level" && slot.level >= step.level) advance(q);
@@ -183,41 +187,45 @@ export function createStory(game, events = null) {
     for (const a of activeQuests()) checkInstant(a);
   }
 
-  // ------------------------------------------------------------ travel pads
-  function destinations() {
-    const it = S.items.instantTransmission > 0;
-    const linked = it ? Object.keys(LINKS) : LINKS[zone.id] || [];
-    return linked.filter((z) => z !== zone.id && S.unlocked.includes(z) && ZONES[z]);
+  // ------------------------------------------------------------ travel guide
+  // Once every story task on this planet is done, a Capsule Corp pilot appears at the travel point and
+  // flies you on: first to where the storyline goes next, or back to any world the story has opened.
+  // Repeatable patrols and optional side/trainer quests never block leaving.
+  /** Which world a main quest's next task happens in (null = anywhere, e.g. "reach level 20"). */
+  function questPlace(q) {
+    if (!isActive(q.id)) return NPC[q.giver]?.zone ?? null;
+    const s = stepOf(q);
+    if (s.type === "talk") return NPC[s.npc]?.zone ?? null;
+    return s.zone ?? null;
   }
-  let padCache = null, padKey = "";
-  function pads() {
-    const key = destinations().join(",");
-    if (padCache && key === padKey) return padCache;
-    padKey = key;
-    const tp = zone.travelPoint;
-    if (!tp) return (padCache = []);
-    const list = destinations();
-    const n = list.length;
-    padCache = list.map((z, i) => {
-      // an arc of pads facing spawn, 3 m apart
-      const row=Math.floor(i/8),columns=Math.min(8,n-row*8);
-      const span=Math.max(0,columns-1)*3;
-      const off=-span/2+(i%8)*3;
-      let x, zz;
-      if (zone.def.terrain.path) {
-        // Snake Way is too narrow for a row: line the pads up along the road
-        ({ x, z: zz } = zone.place(0, tp.z + 3 + i * 3.5));
-      } else {
-        const dx = zone.spawn.x - tp.x, dz = zone.spawn.z - tp.z;
-        const len = Math.hypot(dx, dz) || 1;
-        const sx = -dz / len, sz = dx / len; // sideways
-        x = tp.x + sx * off + dx/len*row*3.5; zz = tp.z + sz * off + dz/len*row*3.5;
-      }
-      return { zone: z, name: ZONES[z].name, planet: ZONES[z].planet, x, y: zone.heightAt(x, zz), z: zz };
-    });
-    return padCache;
+  const storyQuests = () => QUESTS.filter((q) => q.main && !q.legacy && !q.automatic && (isActive(q.id) || canAccept(q)));
+  function tasksHere() {
+    return storyQuests().filter((q) => questPlace(q) === zone.id).map((q) => q.title);
   }
-  let padArmed = false; // arriving players stand on the travel point: wait until they step away
+  function travelOptions() {
+    if (tasksHere().length) return [];
+    const next = new Set(storyQuests().map(questPlace).filter((z) => z && z !== zone.id));
+    // the next chapter points the way even before you have its level
+    const upcoming = QUESTS.find((q) => q.main && !q.legacy && !q.automatic && !isDone(q.id) && !isActive(q.id) && (q.after || []).every(isDone) && (!q.races || q.races.includes(slot.race)) && (!q.path || hasFormPath(slot, q.path)));
+    const upZone = upcoming && NPC[upcoming.giver]?.zone;
+    if (upZone && upZone !== zone.id) next.add(upZone);
+    const ok = (z) => z !== zone.id && ZONES[z] && z !== "test" && (S.unlocked.includes(z) || next.has(z));
+    const story = [...next].filter(ok), rest = S.unlocked.filter((z) => ok(z) && !next.has(z));
+    return [...story.map((z) => ({ zone: z, story: true })), ...rest.map((z) => ({ zone: z, story: false }))]
+      .map((o) => ({ ...o, name: ZONES[o.zone].name, planet: ZONES[o.zone].planet }));
+  }
+  const GUIDE_LOOK = { race: "Human", skin: 0, face: "Calm", hair: "Short", hairColor: 2, build: "Average", outfit: "CapsuleCorp", outfitTint: 4 };
+  let guidePos = null;
+  function travelGuide() {
+    if (!travelOptions().length) return null;
+    if (!guidePos) {
+      const tp = zone.travelPoint || zone.spawn;
+      const { x, z } = zone.def.terrain.path ? zone.place(0, tp.z + 4) : { x: tp.x + 2.5, z: tp.z + 2.5 };
+      guidePos = freePosition(zone, { x, z });
+    }
+    return { id: `travel_guide_${zone.id}`, name: "Capsule Corp Pilot", look: GUIDE_LOOK, scale: 1, ...guidePos, rot: 0, boss: false, marker: "✈", main: true, guide: true };
+  }
+  function pads() { return []; }
 
   // ------------------------------------------------------------ public
   let trackedId = null;
@@ -238,7 +246,22 @@ export function createStory(game, events = null) {
         const c = CHARACTERS[n.who];
         return { id: n.id, name: c.name, look: c.look, scale: c.scale || 1, ...npcPos(n), rot: n.rot || 0, boss: !!n.boss, marker,
           main: marker === "!" && QUESTS.some((q) => q.giver === n.id && q.main && canAccept(q)) };
-      });
+      }).concat(travelGuide() || []);
+    },
+    travelGuide,
+    travelOptions,
+    tasksHere,
+    /** Fly with the travel guide (validated: you must stand next to the guide, and the world must be offered). */
+    travelTo(zoneId) {
+      const g = travelGuide();
+      if (!g || player.health <= 0) return false;
+      if (Math.hypot(g.x - player.pos.x, g.z - player.pos.z) > TALK_RANGE * 1.1) return false;
+      const o = travelOptions().find((t) => t.zone === zoneId);
+      if (!o) return false;
+      if (!S.unlocked.includes(zoneId)) S.unlocked.push(zoneId);
+      emit("notify", { text: `Travelling to ${o.name}...` });
+      emit("travel", { zone: zoneId });
+      return true;
     },
 
     shop() {
@@ -286,7 +309,7 @@ export function createStory(game, events = null) {
       const p = player.pos;
       const near = story.npcs().map(n => ({ ...n, distance: Math.hypot(n.x-p.x, n.z-p.z) }))
         .filter(n => n.distance < TALK_RANGE && Math.abs(n.y-p.y) < 4 && !n.boss).sort((a,b) => a.distance-b.distance)[0];
-      return near ? { id: near.id, name: near.name, action: near.marker === "!" ? "Quests" : "Talk", distance: near.distance } : null;
+      return near ? { id: near.id, name: near.name, action: near.guide ? "Travel" : near.marker === "!" ? "Quests" : "Talk", distance: near.distance } : null;
     },
     /** Only combat calls this after a real enemy death. Interaction cannot complete fights. */
     enemyDefeated(enemy, defeatedZone = zone.id) {
@@ -305,7 +328,7 @@ export function createStory(game, events = null) {
         if (s.type !== "defeat" || s.zone !== zone.id || s.enemy.startsWith("patrol_")) return [];
         const n = NPC[s.enemy], c = n && CHARACTERS[n.who];
         const p = n && visible(n) ? npcPos(n) : at(s);
-        return [{ key: s.enemy, name: c?.name || s.enemy.replace(/_/g, " "), look: c?.look,
+        return [{ key: s.enemy, questId: q.id, step: qs(q.id).step, name: c?.name || s.enemy.replace(/_/g, " "), look: c?.look,
           scale: c?.scale || 1, x: p.x, y: p.y ?? zone.heightAt(p.x,p.z), z: p.z, level: q.level || 1, boss: (s.count || 1) === 1 }];
       });
     },
@@ -391,7 +414,15 @@ export function createStory(game, events = null) {
           accept(q); return "accept";
         }
       }
-      // 4. small talk
+      // 4. the travel guide
+      if (here.length && here[0].guide) {
+        const options = travelOptions();
+        const next = options.find((o) => o.story);
+        emit("dialogue", { speaker: here[0].name, kind: "travel", options,
+          text: next ? `Your work on ${zone.name} is done. The story continues on ${next.name}. Where to?` : "The ship is ready. Where do you want to go?" });
+        return "travel";
+      }
+      // 5. small talk
       if (here.length) {
         const n = here[0];
         const blocked = QUESTS.find((x) => x.giver === n.id && !isDone(x.id) && !isActive(x.id) && (x.after || []).every(isDone) && (!x.races || x.races.includes(slot.race)));
@@ -450,14 +481,6 @@ export function createStory(game, events = null) {
             }
           });
         }
-      }
-      // travel pads
-      const onPad = pads().find((pd) => Math.hypot(pd.x - p.x, pd.z - p.z) < PAD_RANGE && Math.abs(pd.y - p.y) < 2.5);
-      if (!onPad) padArmed = true;
-      else if (padArmed) {
-        padArmed = false;
-        emit("notify", { text: `Travelling to ${onPad.name}...` });
-        emit("travel", { zone: onPad.zone });
       }
     },
   };
@@ -534,3 +557,5 @@ const AMBIENT = {
 /** For tests/tools: is a zone reachable at all? */
 export function questById(id) { return QUEST[id]; }
 export { getZone };
+
+renameDeep(TALK_REPLIES); renameDeep(AMBIENT); renameDeep(ITEM_NAMES);

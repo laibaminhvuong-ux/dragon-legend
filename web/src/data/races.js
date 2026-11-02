@@ -1,3 +1,4 @@
+import { renameDeep } from "./names.js";
 import { SHARED_SAIYAN_FORMS } from "./forms.js";
 // Playable races. `forms` = form ids in unlock order; `skins` = colours the creator offers (0xRRGGBB).
 // Saves store the skin *index* into `skins`, never the colour.
@@ -48,3 +49,6 @@ export const RACES = {
 export function getRace(id) {
   return Object.prototype.hasOwnProperty.call(RACES, id) ? RACES[id] : null;
 }
+
+// player-facing names are the game's own (data/names.js)
+renameDeep(RACES);

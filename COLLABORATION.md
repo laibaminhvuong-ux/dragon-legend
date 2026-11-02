@@ -615,3 +615,31 @@ Released `cage_model.js` and `form_looks.js`. Grade 3 uses `grade3`, LegendarySS
 
 - Switched the three direct `formPath` checks to `hasFormPath`: `data/avatar.js` (canManifestAvatar), `game/story.js` (path-gated quests) and `ui/rpg.js` (Avatar shortcut). The path header shows "All three (test save)" when the flag is set. **Codex:** please use `hasFormPath` for any future path checks.
 - **All checks pass:** core, movement, world, combat, rpg, forms, story, visuals and avatar in node; ui, smoke, character, rpg, forms (Avatar included) and movement smokes in the browser. Committed, installed on the user's PC and pushed together with 0.2.0–0.2.2.
+
+## Claude: claiming tutorial, boss cutscenes and the travel guide
+
+The user asked for three things: a tutorial, cutscenes before and after boss fights, and an NPC who offers travel to the next planet in the storyline once a planet's story tasks are done. This replaces the travel pads.
+Files: `web/src/game/story.js` (travel guide, encounter quest ids; `pads()` returns []), new `web/src/data/cutscenes.js`, new `web/src/game/cutscene.js`, new `web/src/game/tutorial.js`, new `web/src/ui/cutscene.js`, new `web/src/ui/tutorial.js`, `web/src/ui/rpg.js` (travel menu), `web/src/main.js`, `web/style.css`, `tools/check_story.mjs` (the bot travels through the guide), new `tools/check_scenes.mjs`.
+
+## Codex — claiming (Avatar timing adjustment)
+
+User requests a one-minute Avatar duration and two-minute cooldown. Claiming `web/src/data/{avatar,moves}.js`, `tools/check_avatar.mjs`, `README.md`, and `RACE_FORMS.md`. Only timing, descriptions and duration/cooldown regression checks; Claude's active story/tutorial/cutscene/travel files are untouched.
+
+## Codex — released (Avatar timing adjustment)
+
+Released `web/src/data/avatar.js`, `web/src/data/moves.js`, `tools/check_avatar.mjs`, `README.md`, and `RACE_FORMS.md`.
+
+Avatar duration is now **60 seconds** and its independent cooldown **120 seconds from activation**, using the existing cooldown convention (60 seconds remain when a full-duration manifestation ends). Move descriptions now read timing directly from the configuration. Ki costs and normal cancellation on death/form loss/ki exhaustion remain unchanged.
+
+All 7 Avatar checks pass. The timing regression explicitly sustains full UI, proves the Avatar remains active at 59 seconds and ends at 60, verifies the cooldown cannot be bypassed through technique swaps, and allows reactivation after 120 seconds. JavaScript syntax and `git diff --check` pass. **Claude:** include this released timing update in the next integration/build; no installer, commit or publication performed here.
+Also claimed and released: `core/input.js` (new `menu` action, default M / Pad8, opens the fighter menu), `core/settings.js` + `ui/pause.js` (Voices volume), new `audio/voice.js`, new `data/names.js`. The data modules now pass their text through `renameDeep` (see below).
+
+## Claude: released (tutorial, boss cutscenes, travel guide, the game's own names, NPC voices) – 0.3.0
+
+- **Tutorial** (`game/tutorial.js`, `ui/tutorial.js`): new characters get 14 steps, each finished by doing it. It's skippable, and progress is saved in `slot.story.flags.tutorial`. Characters that already played skip it.
+- **Boss cutscenes** (`data/cutscenes.js`, `game/cutscene.js`, `ui/cutscene.js`): every story boss has a before scene (plays within 24 m) and an after scene, each once (`flags.scenes`). The game is frozen while they play. They use letterbox bars and over-the-shoulder shots. Space/G/click goes to the next line; Esc skips.
+- **Travel guide** (`game/story.js`): travel pads are gone (`pads()` returns []). A Capsule Corp Pilot ✈ appears at the travel point once no main-story task is left on this planet. It lists where the story goes next (★), including a level-locked next chapter, then every unlocked world. API: `travelGuide()`, `travelOptions()`, `travelTo(zone)` (must stand next to the pilot) and `tasksHere()`. `check_story`'s bot travels this way.
+- **Names:** at the user's request (copyright), every named character uses the game's own altered name (`data/names.js`): Goku→Gokan, Vegeta→Vegara, Frieza→Frigor and so on. Data modules call `renameDeep(...)` at load, and the story's `emit` renames dialogue and notify text. **Codex/Freebuff: keep writing canon names in data if you like; they are converted. Text in UI code (not data) must use the new names directly.** Ids stay canon (internal only).
+- **Voices** (`audio/voice.js`): NPC dialogue and cutscene lines are spoken with the system's speech voices. The voice is chosen by gender, child or giant size, and race, plus a pitch/rate offset unique to each name. Without speech voices, characters babble in synthesized syllables. There's a Voices slider in settings.
+- **M** opens the fighter menu (Stats tab); M or Esc closes it.
+- **Checks:** all node checks pass (new `check_scenes`: 6), as do the ui, smoke, rpg and forms smokes.

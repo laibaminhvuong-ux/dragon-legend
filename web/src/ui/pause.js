@@ -155,6 +155,7 @@ export function pause(app) {
       slider("masterVolume", STR.pause.master),
       slider("musicVolume", STR.pause.music),
       slider("sfxVolume", STR.pause.sfx),
+      slider("voiceVolume", "Voices"),
       slider("mouseSensitivity", STR.pause.sensitivity, { min: 0.1, max: 3, step: 0.05, percent: false }),
       checkbox("invertY", STR.pause.invertY),
       checkbox("showFps", STR.pause.showFps),

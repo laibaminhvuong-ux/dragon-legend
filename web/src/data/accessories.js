@@ -1,3 +1,4 @@
+import { renameDeep } from "./names.js";
 // Cosmetic accessories use existing attachment points; unlocks are earned through story progress.
 export const ACCESSORIES = {
   None:{name:'None',after:null},
@@ -9,3 +10,6 @@ export const ACCESSORIES = {
 export function accessoryAvailable(slot,id){
   const item=ACCESSORIES[id];return !!item && (!item.after || ['done','repeatable'].includes(slot.quests[item.after]?.status));
 }
+
+// player-facing names are the game's own (data/names.js)
+renameDeep(ACCESSORIES);

@@ -20,7 +20,7 @@ export function rpg(app) {
   function close() {
     if (!modal) return;
     preview?.dispose();preview=null;
-    modal.hidden=true; modal.replaceChildren();isOpen=false;app.dialogueOpen=false;
+    modal.hidden=true; modal.replaceChildren();isOpen=false;app.dialogueOpen=false;app.voice?.stop();
     app.input.pointerLockWanted=!app.paused;
   }
   function open(speaker, text) {
@@ -32,6 +32,7 @@ export function rpg(app) {
   }
   function dialogue(d) {
     open(d.speaker,d.text);
+    app.voice?.say(d.speaker,d.text);
     if(d.kind==='choice') {
       for(const q of d.choices || []) {
         const card=h('section','rpg-offer');
@@ -46,8 +47,20 @@ export function rpg(app) {
         modal.append(card);
       }
     }
+    if(d.kind==='travel') {
+      // the travel guide: where the story goes next first, then any world the story has opened
+      const list=h('div','rpg-travel');
+      for(const o of d.options || []) {
+        const b=btn(o.story?`★ ${o.name} · next in the story`:`${o.name} · ${o.planet}`,()=>{
+          if(app.story.travelTo(o.zone)){close();}
+          else {close();app.events.emit('notify',{text:'Stand next to the pilot and try again.'});}
+        },o.story?'primary':'');
+        list.append(b);
+      }
+      modal.append(list);
+    }
     if(d.speaker==='Training Guide')modal.append(btn('Shop',showShop));
-    modal.append(btn(d.kind==='choice'?'Not now':'Continue',close));
+    modal.append(btn(d.kind==='choice' || d.kind==='travel'?'Not now':'Continue',close));
     modal.querySelector('button')?.focus();
   }
   function showShop() {
@@ -141,7 +154,7 @@ export function rpg(app) {
       }
     }
     if(tab==='Forms' && hasFormPath(slot,'instinct')){
-      modal.append(h('h3','','Ultra Instinct Energy Avatar'),h('p','','Advanced ability: learn from Merus after Moro mastery. Use it in Perfected or True UI; equip it under Techniques.'));
+      modal.append(h('h3','','Ultra Instinct Energy Avatar'),h('p','','Advanced ability: learn from Meros after Morro mastery. Use it in Perfected or True UI; equip it under Techniques.'));
       const equip=btn('Equip Energy Avatar',()=>{app.game.combat.setTechnique('UltraInstinctAvatar');app.saveNow();showTab('Techniques');});equip.disabled=!slot.moves.includes('UltraInstinctAvatar');modal.append(equip);
     }
     if(tab==='Character' || tab==='Accessories')modal.append(btn('Apply appearance',()=>{app.saveNow();close();}));
@@ -192,16 +205,17 @@ export function rpg(app) {
       document.addEventListener('keydown',onKey,true);offs.push(()=>document.removeEventListener('keydown',onKey,true));
       app.dialogueInput = input => {
         if (!isOpen) return;
-        if (input.pressed('pause') || (input.lastDevice === 'gamepad' && input.pressed('dash'))) return close();
+        if (input.pressed('pause') || input.pressed('menu') || (input.lastDevice === 'gamepad' && input.pressed('dash'))) return close();
         if (input.pressed('interact') || (input.lastDevice === 'gamepad' && input.pressed('jump'))) {
           const focused = document.activeElement;
           const button = modal.contains(focused) && focused.tagName === 'BUTTON' ? focused : modal.querySelector('button');
           button?.click();
         }
       };
+      app.openFighterMenu = (tab='Stats') => showTab(tab);
       update(true);
     },
     update(dt){preview?.update(dt);if((timer+=dt)>=.1){timer=0;update();}},
-    unmount(){app.dialogueInput=null;close();offs.forEach(off=>off());offs=[];root=null;stamp='';questStamp='';},
+    unmount(){app.dialogueInput=null;app.openFighterMenu=null;close();offs.forEach(off=>off());offs=[];root=null;stamp='';questStamp='';},
   };
 }

@@ -1,3 +1,4 @@
+import { renameDeep } from "./names.js";
 import { installEndgame, rebalanceQuestRewards } from "./endgame.js";
 import { installRpgContent } from "./rpg.js";
 // The story: characters, where they stand, and every quest from the Saiyan Saga to Super Hero.
@@ -737,3 +738,6 @@ export const QUESTS = [
 installEndgame(NPCS, QUESTS, CHARACTERS, LINKS);
 installRpgContent(NPCS, QUESTS, CHARACTERS);
 rebalanceQuestRewards(QUESTS);
+
+// player-facing names are the game's own (data/names.js)
+renameDeep(CHARACTERS); renameDeep(NPCS); renameDeep(QUESTS);

@@ -1,3 +1,4 @@
+import { renameDeep } from "./names.js";
 import { ZONE_DEFS } from './zones.js';
 import { xpToNext } from '../game/progression.js';
 export const ZONE_LEVELS = {
@@ -35,3 +36,6 @@ export function installRpgContent(npcs, quests, characters) {
 export const SHOP = {
   capsule: { name: 'Recovery Capsule', price: 75, description: 'Restore 40% health and ki. Keep it in your inventory for later.', heal: .4 },
 };
+
+// player-facing names are the game's own (data/names.js)
+renameDeep(SHOP);

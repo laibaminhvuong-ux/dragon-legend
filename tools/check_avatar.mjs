@@ -44,11 +44,17 @@ test('insufficient ki rejects activation without starting its cooldown',()=>{
   activate(g);assert.equal(g.combat.snapshot().avatar.active,false);assert.equal(g.combat.snapshot().avatar.cooldown,0);
   assert.ok(before-g.player.ki<100,'only normal transformation drain was charged');assert.ok(messages.some(m=>m.includes('Not enough ki')));
 });
-test('switching techniques cannot reset Avatar cooldown; it expires normally',()=>{
-  const {g}=fresh();activate(g);tick(g,{},370);assert.equal(g.combat.snapshot().avatar.active,false);assert.ok(g.combat.snapshot().avatar.cooldown>20);
-  g.player.ki=g.player.maxKi;g.combat.setTechnique('EnergyWave');g.combat.setTechnique(A.id);activate(g);assert.equal(g.combat.snapshot().avatar.active,false);
-  // Hold charge to sustain UI while its independent cooldown runs down.
-  tick(g,{charge:true},1500);assert.equal(g.combat.snapshot().avatar.cooldown,0);g.player.ki=g.player.maxKi;
+test('Avatar lasts 60 seconds and its 120-second cooldown survives technique swaps',()=>{
+  assert.equal(A.duration,60);assert.equal(A.cooldown,120);
+  const {g}=fresh();activate(g);
+  // Sustain the required UI form so this checks the Avatar timer, not ki exhaustion.
+  tick(g,{charge:true},Math.floor(59/dt));assert.equal(g.combat.snapshot().avatar.active,true);
+  assert.ok(g.combat.snapshot().avatar.remaining>0 && g.combat.snapshot().avatar.remaining<=1);
+  tick(g,{charge:true},Math.ceil(1/dt)+1);assert.equal(g.combat.snapshot().avatar.active,false);
+  assert.ok(g.combat.snapshot().avatar.cooldown>59 && g.combat.snapshot().avatar.cooldown<=60);
+  g.combat.setTechnique('EnergyWave');g.combat.setTechnique(A.id);activate(g);assert.equal(g.combat.snapshot().avatar.active,false);
+  tick(g,{charge:true},Math.ceil(59/dt));assert.ok(g.combat.snapshot().avatar.cooldown>0);
+  tick(g,{charge:true},Math.ceil(2/dt));assert.equal(g.combat.snapshot().avatar.cooldown,0);
   activate(g);assert.equal(g.combat.snapshot().avatar.active,true);
 });
 test('death, form loss and ki exhaustion cancel the manifestation',()=>{

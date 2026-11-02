@@ -12,6 +12,7 @@ export const SETTINGS_SCHEMA = {
   masterVolume: { default: 0.8, min: 0, max: 1 },
   musicVolume: { default: 0.6, min: 0, max: 1 },
   sfxVolume: { default: 0.8, min: 0, max: 1 },
+  voiceVolume: { default: 0.9, min: 0, max: 1 },
   mouseSensitivity: { default: 1, min: 0.1, max: 3 },
   invertY: { default: false, type: "boolean" },
   showFps: { default: false, type: "boolean" },

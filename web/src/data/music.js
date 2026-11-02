@@ -1,3 +1,4 @@
+import { renameDeep } from "./names.js";
 // The soundtrack: original compositions in the style of 90s anime action scores (rock drums,
 // distorted power chords, brass leads, string pads), played live by audio/music.js.
 // Players can replace any of them with their own files: see web/assets/music/README.md.
@@ -87,3 +88,6 @@ export const ZONE_MUSIC = {
   kai_world: "otherworld", beerus_planet: "otherworld", nameless_planet: "battle", future_earth: "ruins",
   world_of_void: "battle", broly_glacier: "battle", red_ribbon: "training",
 };
+
+// player-facing names are the game's own (data/names.js)
+renameDeep(TRACKS);

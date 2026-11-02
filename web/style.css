@@ -205,3 +205,29 @@ kbd.key { font: 11px ui-monospace, monospace; padding: 2px 7px; border-radius: 5
 .rpg-stat-name {font-weight:700}.rpg-stat-points {text-align:right;font-variant-numeric:tabular-nums;color:#ffd166}.rpg-stat-effect {color:#b9c6dc;font-size:.9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rpg-stat-row button {padding:4px 0;min-width:0;width:100%}
 @media (max-width:640px){.rpg-stat-row {grid-template-columns:1fr auto;}.rpg-stat-effect {grid-column:1 / -1}}
+
+/* ---- boss cutscenes: letterbox bars, speaker and line ---- */
+.cutscene {position:fixed;inset:0;z-index:40;pointer-events:auto;cursor:pointer}
+.cutscene[hidden] {display:none}
+.cs-bar {position:absolute;left:0;right:0;background:#000;animation:cs-in .45s ease-out both}
+.cs-top {top:0;height:11vh}
+.cs-bottom {bottom:0;min-height:19vh;padding:1.6vh 8vw 1.4vh;box-sizing:border-box;display:flex;flex-direction:column;gap:.6vh}
+.cs-who {font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#ffb347;font-size:clamp(14px,1.6vw,22px)}
+.cs-who.cs-you {color:#7fd3ff}
+.cs-line {color:#fff;font-size:clamp(16px,2vw,28px);line-height:1.35;min-height:2.7em;max-width:70em}
+.cs-hint {color:#8d96a8;font-size:clamp(11px,.95vw,14px);margin-top:auto}
+@keyframes cs-in {from{transform:scaleY(0)}to{transform:scaleY(1)}}
+body.in-cutscene #ui {visibility:hidden}
+
+/* ---- tutorial panel ---- */
+.tutorial {position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:30;pointer-events:none;width:min(560px,calc(100vw - 32px));
+  background:rgba(14,20,33,.9);border:1px solid #ffb347;border-radius:10px;padding:10px 14px;color:#f3f6fb;box-shadow:0 6px 24px rgba(0,0,0,.4)}
+.tutorial[hidden] {display:none}
+.tut-head {display:flex;align-items:center;gap:10px;font-size:13px;color:#ffb347;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.tut-count {color:#b9c6dc;font-weight:500}
+.tut-skip {pointer-events:auto;margin-left:auto;background:none;border:1px solid #5b6782;color:#b9c6dc;border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer;text-transform:none;letter-spacing:0}
+.tut-text {margin-top:6px;font-size:16px;line-height:1.4}
+.tutorial.tut-done {border-color:#5fdc8a;box-shadow:0 0 0 2px rgba(95,220,138,.5)}
+body.in-cutscene .tutorial {display:none}
+.rpg-travel {display:flex;flex-direction:column;gap:6px;margin:8px 0;max-height:46vh;overflow:auto}
+.rpg-travel .btn {text-align:left}

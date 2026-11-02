@@ -31,6 +31,11 @@ import { defaultLook } from "./game/look.js";
 import { FORMS } from "./data/forms.js";
 import { VERSION } from "./version.js";
 import { createMusic } from "./audio/music.js";
+import { createVoice } from "./audio/voice.js";
+import { createSceneDirector } from "./game/cutscene.js";
+import { createTutorial } from "./game/tutorial.js";
+import { createCutscenePlayer } from "./ui/cutscene.js";
+import { createTutorialPanel } from "./ui/tutorial.js";
 
 const AUTOSAVE_SECONDS = 60;
 const params = new URLSearchParams(location.search);
@@ -84,6 +89,44 @@ app.travel = (zoneId) => {
 };
 let pendingTravel = null;
 events.on("travel", ({ zone }) => (pendingTravel = zone));
+
+// ---- boss cutscenes and the first-play tutorial ----------------------------------------------------
+app.voice = createVoice(app.settings);
+const cutscenes = createCutscenePlayer(app);
+app.cutscene = cutscenes;
+const tutorialPanel = createTutorialPanel(app);
+/** Where a cutscene speaker stands: "you", a boss (combat enemy key) or a story NPC id. */
+function sceneActor(speaker, fixed = {}) {
+  const g = app.game;
+  if (!g) return null;
+  const p = g.player;
+  if (speaker === "you") return { x: p.pos.x, y: p.pos.y, z: p.pos.z, scale: FORMS[p.form]?.size || 1 };
+  if (fixed[speaker]) return fixed[speaker];
+  const e = g.combat.enemies.find((x) => x.key === speaker);
+  if (e) return { x: e.pos.x, y: e.pos.y, z: e.pos.z, scale: e.scale || 1 };
+  const n = app.story?.npcs().find((x) => x.id === speaker);
+  return n ? { x: n.x, y: n.y, z: n.z, scale: n.scale || 1 } : null;
+}
+function playScene(scene, fixed = {}) {
+  const g = app.game, p = g.player;
+  p.vel.x = p.vel.y = p.vel.z = 0;
+  const boss = sceneActor(scene.enemy, fixed);
+  if (boss) {
+    p.yaw = Math.atan2(boss.x - p.pos.x, boss.z - p.pos.z); // face each other
+    const e = g.combat.enemies.find((x) => x.key === scene.enemy);
+    if (e) e.yaw = Math.atan2(p.pos.x - e.pos.x, p.pos.z - e.pos.z);
+  }
+  const actor = (who) => sceneActor(who, fixed) || sceneActor(who === "you" ? scene.enemy : "you", fixed);
+  cutscenes.play(scene, { actor, other: (who) => actor(who === "you" ? scene.enemy : "you") }, () => app.saveNow());
+}
+events.on("enemyDefeated", ({ enemy }) => {
+  if (!play || !app.game) return;
+  const e = app.game.combat.enemies.find((x) => x.key === enemy);
+  const scene = play.scenes.afterFor(enemy, e?.name);
+  if (scene) playScene(scene, e ? { [enemy]: { x: e.pos.x, y: e.pos.y, z: e.pos.z, scale: e.scale || 1 } } : {});
+});
+events.on("questAccepted", () => play?.tutorial.note("talk"));
+events.on("dialogue", () => play?.tutorial.note("talk"));
 app.quitToMenu = () => { app.saveNow(); app.scenes.go("menu"); };
 
 // ---- the world (built once, shared by the menu backdrop and play) -----------------------------
@@ -148,7 +191,9 @@ app.scenes.register("play", {
     app.playerModel=model;
     const cam = createFollowCamera(app.gfx.camera, app.game.zone);
     cam.setYaw(app.game.player.yaw);
-    play = { model, cam, storyView, combatView, prev: { ...app.game.player.pos }, saveTimer: 0 };
+    play = { model, cam, storyView, combatView, prev: { ...app.game.player.pos }, saveTimer: 0,
+      scenes: createSceneDirector(app.game.slot), tutorial: createTutorial(app.game.slot) };
+    tutorialPanel.attach(play.tutorial);
     app.input.pointerLockWanted = true;
     app.ui.hideAll();
     app.ui.show("hud");
@@ -157,6 +202,8 @@ app.scenes.register("play", {
   },
   exit() {
     app.ui.hideAll();
+    cutscenes.skip();
+    tutorialPanel.detach();
     play?.model.dispose();
     app.playerModel=null;
     play?.storyView.dispose();
@@ -168,8 +215,10 @@ app.scenes.register("play", {
   },
   update(dt) {
     const { input, game } = app;
+    if (cutscenes.active) { cutscenes.input(input); return; }
     if (app.dialogueOpen) { app.dialogueInput?.(input); return; }
     if (input.pressed("pause")) app.setPaused(!app.paused);
+    if (!app.paused && input.pressed("menu")) return app.openFighterMenu?.("Stats");
     if (app.paused || app.dialogueOpen || !play) return;
     const it = emptyIntents();
     const mv = input.axis("move"), yaw = play.cam.yaw;
@@ -181,6 +230,9 @@ app.scenes.register("play", {
     play.prev = { ...game.player.pos };
     game.update(dt, it);
     app.story.update(dt, it);
+    if (play.tutorial.update(dt, it, game.player)) { tutorialPanel.flash(); app.saveNow(); }
+    const scene = play.scenes.beforeFor(app.story.encounters(), game.player.pos);
+    if (scene) playScene(scene);
     if (pendingTravel) { const z = pendingTravel; pendingTravel = null; return app.travel(z); }
     if ((play.saveTimer += dt) >= AUTOSAVE_SECONDS) { play.saveTimer = 0; app.saveNow(); }
   },
@@ -189,9 +241,12 @@ app.scenes.register("play", {
     const p = app.game.player;
     const renderAlpha = app.paused || app.dialogueOpen ? 1 : alpha;
     const pos = { x: play.prev.x + (p.pos.x - play.prev.x) * renderAlpha, y: play.prev.y + (p.pos.y - play.prev.y) * renderAlpha, z: play.prev.z + (p.pos.z - play.prev.z) * renderAlpha };
-    const frozen = app.paused || app.dialogueOpen;
-    if (!frozen) play.cam.addLook(app.input.takeLook(frameDt));
+    const inScene = cutscenes.active;
+    const frozen = app.paused || app.dialogueOpen || inScene;
+    const animDt = inScene ? frameDt : frozen ? 0 : frameDt; // cutscenes keep idle animation going
+    if (!frozen) { const d = app.input.takeLook(frameDt); play.cam.addLook(d); play.tutorial.look(Math.abs(d.x) + Math.abs(d.y)); }
     else app.input.takeLook(frameDt);
+    tutorialPanel.update();
     const lookKey = JSON.stringify(app.game.slot.appearance);
     if (play.outfit !== lookKey) {
       if (play.outfit !== undefined) {
@@ -204,7 +259,7 @@ app.scenes.register("play", {
     play.model.object3d.visible = p.health > 0;
     play.model.object3d.position.set(pos.x, pos.y, pos.z);
     play.model.object3d.rotation.y = p.yaw;
-    play.model.update(frozen ? 0 : frameDt, { speed: Math.hypot(p.vel.x, p.vel.z), onGround: p.onGround, flying: p.flying, charging: p.charging, dashing: p.dashing, blocking: p.blocking, attackSerial: p.attackSerial, attackKind: p.attackKind });
+    play.model.update(animDt, { speed: Math.hypot(p.vel.x, p.vel.z), onGround: p.onGround, flying: p.flying, charging: p.charging, dashing: p.dashing, blocking: p.blocking, attackSerial: p.attackSerial, attackKind: p.attackKind });
     if (play.lastForm !== p.form) {
       play.lastForm = p.form;
       play.model.setForm(p.form); // hair, eyes, skin, size and aura as in the story (data/form_looks.js)
@@ -212,9 +267,10 @@ app.scenes.register("play", {
     const target = app.game.combat.enemies.find(e => e.id === p.lockTarget && e.health > 0);
     const avatarActive=app.game.combat.snapshot().avatar.active;
     play.cam.update(pos, frozen ? 0 : frameDt, target?.pos, Math.max(FORMS[p.form]?.size || 1,avatarActive?INSTINCT_AVATAR.cameraScale:1));
-    play.combatView.update(frozen ? 0 : frameDt);
-    world.update(frozen ? 0 : frameDt, pos, app.gfx.camera.position);
-    play.storyView.update(frozen ? 0 : frameDt, pos);
+    cutscenes.camera(app.gfx.camera, frameDt);
+    play.combatView.update(animDt);
+    world.update(animDt, pos, app.gfx.camera.position);
+    play.storyView.update(animDt, pos);
     // battle music when a villain is close, the world's own theme otherwise
     if ((play.musicCheck = (play.musicCheck || 0) + frameDt) > 1) {
       play.musicCheck = 0;
@@ -231,7 +287,7 @@ app.scenes.register("play", {
 let hadLock = false;
 document.addEventListener("pointerlockchange", () => {
   const locked = document.pointerLockElement === canvas;
-  if (hadLock && !locked && app.scenes.name === "play" && !app.paused && !app.dialogueOpen) app.setPaused(true);
+  if (hadLock && !locked && app.scenes.name === "play" && !app.paused && !app.dialogueOpen && !cutscenes.active) app.setPaused(true);
   hadLock = locked;
 });
 addEventListener("visibilitychange", () => document.hidden && app.saveNow());

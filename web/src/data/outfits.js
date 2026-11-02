@@ -1,3 +1,4 @@
+import { renameDeep } from "./names.js";
 // Outfit sets. races null = every race. starter = offered in the creator.
 // Others come from quests or the shop (unlock "quest" / "shop", price in zeni).
 export const OUTFIT_ORDER = [
@@ -34,3 +35,6 @@ export function outfitAllowed(outfitId, raceId) {
 export function starterOutfits(raceId) {
   return OUTFIT_ORDER.filter((id) => OUTFITS[id].starter && outfitAllowed(id, raceId));
 }
+
+// player-facing names are the game's own (data/names.js)
+renameDeep(OUTFITS);

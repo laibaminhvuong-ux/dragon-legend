@@ -18,6 +18,7 @@ export const ACTIONS = [
   { id: "transform", label: "Transform" },
   { id: "lockOn", label: "Lock on" },
   { id: "interact", label: "Talk / interact" },
+  { id: "menu", label: "Fighter menu (stats, forms...)" },
   { id: "pause", label: "Pause menu" },
 ];
 /** Axes: "move" {x: right+, y: forward+} and "look" (deltas, via takeLook()). */
@@ -37,6 +38,7 @@ export const DEFAULT_BINDINGS = {
   transform: ["KeyT", "Pad12"],
   lockOn: ["Tab", "Pad11"],
   interact: ["KeyG", "Pad13"],
+  menu: ["KeyM", "Pad8"],
   pause: ["Escape", "Pad9"],
 };
 

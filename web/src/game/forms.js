@@ -1,3 +1,4 @@
+import { renameDeep } from "../data/names.js";
 import { COMBAT } from "../data/combat.js";
 // Shared eligibility and endgame choice authority. UI and combat use the same rules.
 import { FORMS } from '../data/forms.js';
@@ -34,3 +35,6 @@ export function instinctBenefits(player,time) {
   if(player.uiTechniqueUntil>time)return {chance:COMBAT.uiTechniqueChance,cost:COMBAT.uiDodgeCost,cooldown:COMBAT.uiTechniqueDodgeCooldown,kind:'technique'};
   return {chance:0,cost:0,cooldown:0,kind:'none'};
 }
+
+// player-facing names are the game's own (data/names.js)
+renameDeep(FORM_PATHS);

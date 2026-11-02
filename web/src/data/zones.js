@@ -1,3 +1,4 @@
+import { renameDeep } from "./names.js";
 // Every world in the game: terrain recipe, look (biome) and landmarks. game/zones.js turns these
 // into height functions and props; world/ draws them. Coordinates are metres (x east, z north).
 //
@@ -300,3 +301,6 @@ export const ZONE_ORDER = [
   "gero_lab", "lookout", "htc", "cell_games", "papaya_island", "babidi_ship", "kai_world", "beerus_planet",
   "nameless_planet", "future_earth", "world_of_void", "broly_glacier", "new_namek", "planet_cereal", "red_ribbon",
 ];
+
+// player-facing names are the game's own (data/names.js)
+renameDeep(ZONE_DEFS);
