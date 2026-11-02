@@ -11,8 +11,13 @@ export const FORM_PATHS = {
 export function formForRace(id,race) {
   const f=FORMS[id];return !!f && !f.legacy && (f.races || [f.race]).includes(race);
 }
+/** True when this character may use the given level-2000 path. `loadout.testAllPaths` (set by hand on a developer's
+ *  own test save, never by the game) opens all three; ordinary saves have exactly one chosen path. */
+export function hasFormPath(slot,path) {
+  return slot.loadout?.testAllPaths===true || slot.loadout?.formPath===path;
+}
 export function formAvailable(slot,id) {
-  const f=FORMS[id];return formForRace(id,slot.race) && slot.level>=f.unlockLevel && (!f.path || slot.loadout?.formPath===f.path);
+  const f=FORMS[id];return formForRace(id,slot.race) && slot.level>=f.unlockLevel && (!f.path || hasFormPath(slot,f.path));
 }
 export function chooseFormPath(slot,path) {
   if(!SAIYAN_RACES.includes(slot.race))return 'These paths are for Saiyans and Half-Saiyans.';

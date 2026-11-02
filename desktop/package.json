@@ -1,7 +1,7 @@
 {
   "name": "dragon-legend",
   "productName": "Dragon Legend",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Dragon Legend: a 3D action RPG",
   "author": "laibaminhvuong",
   "main": "main.js",

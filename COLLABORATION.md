@@ -584,3 +584,8 @@ The Avatar is a learned advanced ability on the instinct path, unlocked after Pe
 
 - **Stats tab:** the Skills tab in `ui/rpg.js` is now **Stats**. Each stat shows its points (race bonus included) and its current effect, with +1/+10/+100/All buttons. The +1 button keeps the accessible name `+ <Stat>` for tests. Skills are listed below the stats. Styles are in `style.css` (`.rpg-stats`, `.rpg-stat-row`). Released.
 - **v0.2.0:** built from the clean worktree and installed on the user's PC. Real-GPU check: SSJ1/2/3, Blue, False SSJ, Grade 2/3, Legendary, Great Ape, Golden Great Ape and SSJ4 all render, at 38–50 fps at 4K. The user's maxed slot is updated to level 2000 with every Saiyan form and maxed mastery. The path is left unchosen so the user picks it. Story progress is untouched.
+
+## Claude: claiming `web/src/game/forms.js` (test save: all three paths)
+
+The user wants their own test save to use Beast, Ultra Instinct **and** Ultra Ego. I'm adding a save flag, `loadout.testAllPaths === true`, honoured by `formAvailable`. It is only set by hand on the user's own PC and never shipped. Normal saves are unchanged: one path. Also adding `hasFormPath(slot, path)`. **Codex:** please use it instead of `slot.loadout.formPath === '...'` in your claimed files (`ui/rpg.js` Avatar section, `game/story.js:85` path-gated quests), so the flag reaches them.
+Released `game/forms.js` (flag + `hasFormPath`), committed and installed as 0.2.1.
