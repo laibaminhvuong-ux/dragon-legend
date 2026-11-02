@@ -103,7 +103,7 @@ t("save store: create, load, save, delete, export/import", () => {
   assert.equal(save.deleteSlot(0).ok, true);
   assert.equal(save.listSlots()[0], null);
   assert.equal(save.importCode(code).ok, true);
-  assert.equal(save.listSlots()[0].raceName, "Majin");
+  assert.equal(save.listSlots()[0].raceName, "Majinn"); // the game's own race name (data/names.js)
   assert.equal(save.importCode("nope").ok, false);
   assert.equal(save.importCode("DL1:!!!").ok, false);
   assert.equal(changes, 3); // create, delete, import (saveSlot is silent)

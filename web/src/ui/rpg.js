@@ -154,7 +154,7 @@ export function rpg(app) {
       }
     }
     if(tab==='Forms' && hasFormPath(slot,'instinct')){
-      modal.append(h('h3','','Ultra Instinct Energy Avatar'),h('p','','Advanced ability: learn from Meros after Morro mastery. Use it in Perfected or True UI; equip it under Techniques.'));
+      modal.append(h('h3','','Ultra Intuition Energy Avatar'),h('p','','Advanced ability: learn from Meros after Morro mastery. Use it in Perfected or True UI; equip it under Techniques.'));
       const equip=btn('Equip Energy Avatar',()=>{app.game.combat.setTechnique('UltraInstinctAvatar');app.saveNow();showTab('Techniques');});equip.disabled=!slot.moves.includes('UltraInstinctAvatar');modal.append(equip);
     }
     if(tab==='Character' || tab==='Accessories')modal.append(btn('Apply appearance',()=>{app.saveNow();close();}));

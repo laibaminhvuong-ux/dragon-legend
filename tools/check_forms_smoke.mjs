@@ -16,9 +16,9 @@ try{
   await page.waitForFunction(()=>globalThis.__dragonlegend?.playerModel);
   await page.evaluate(()=>{const a=globalThis.__dragonlegend;a.game.addXP(1e12);a.game.slot.forms.push('SSJ','Oozaru');a.game.slot.quests.m02_raditz={status:'done'};});
   await page.getByRole('button',{name:'Forms',exact:true}).click();const modal=page.locator('.rpg-dialogue');
-  await modal.getByRole('button',{name:'Ultra Instinct',exact:true}).click();
+  await modal.getByRole('button',{name:'Ultra Intuition',exact:true}).click();
   assert.equal(await page.evaluate(()=>__dragonlegend.game.slot.loadout.formPath),'instinct');
-  const ssj=modal.locator('.rpg-offer').filter({has:page.getByRole('heading',{name:'Super Saiyan',exact:true})});
+  const ssj=modal.locator('.rpg-offer').filter({has:page.getByRole('heading',{name:'Super Saiyar',exact:true})});
   await ssj.getByRole('button',{name:'Transform',exact:true}).click();
   await page.evaluate(()=>__dragonlegend.game.addFormMastery(1000));
   assert.equal(await page.evaluate(()=>__dragonlegend.game.player.form),'SSJFullPower');
@@ -32,7 +32,7 @@ try{
   await modal.locator('.rpg-offer').filter({has:page.getByRole('heading',{name:'Scouter',exact:true})}).getByRole('button',{name:'Equip',exact:true}).click();
   await page.waitForFunction(()=>!!__dragonlegend.playerModel.object3d.getObjectByName('equipped-accessory'));
   await modal.getByRole('button',{name:'Forms',exact:true}).click();
-  await modal.locator('.rpg-offer').filter({has:page.getByRole('heading',{name:'Oozaru (Great Ape)',exact:true})}).getByRole('button',{name:'Transform',exact:true}).click();
+  await modal.locator('.rpg-offer').filter({has:page.getByRole('heading',{name:'Ohzaru (Great Ape)',exact:true})}).getByRole('button',{name:'Transform',exact:true}).click();
   await page.waitForFunction(()=>!!__dragonlegend.playerModel.object3d.getObjectByName('great-ape'));
   await fs.mkdir(path.join(root,'out'),{recursive:true});await page.screenshot({path:path.join(root,'out','forms.png')});
   await modal.getByRole('button',{name:'Return to Base',exact:true}).click();
@@ -41,7 +41,7 @@ try{
   await page.evaluate(()=>{const s=__dragonlegend.game.slot;s.forms.push('UIPerfected');s.moves.push('UltraInstinctAvatar','GodKi');s.story.items.instinctMastery=1;});
   await modal.getByRole('button',{name:'Techniques',exact:true}).click();
   await modal.getByRole('button',{name:'Forms',exact:true}).click();
-  await modal.locator('.rpg-offer').filter({has:page.getByRole('heading',{name:'Perfected Ultra Instinct',exact:true})}).getByRole('button',{name:'Transform',exact:true}).click();
+  await modal.locator('.rpg-offer').filter({has:page.getByRole('heading',{name:'Perfected Ultra Intuition',exact:true})}).getByRole('button',{name:'Transform',exact:true}).click();
   await modal.getByRole('button',{name:'Equip Energy Avatar',exact:true}).click();
   await modal.getByRole('button',{name:'Continue',exact:true}).click();
   await page.keyboard.down('r');await page.waitForFunction(()=>__dragonlegend.game.combat.snapshot().beamCharge>0);await page.keyboard.up('r');

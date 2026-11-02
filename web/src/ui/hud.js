@@ -1,3 +1,4 @@
+import { renameText } from "../data/names.js";
 // HUD: health, ki, XP, level, power level, zeni, zone, form, stat-point badge, toasts and FPS.
 // Polls app.game.hud() once per frame but only touches the DOM when a value actually changes.
 import { h } from "./dom.js";
@@ -84,7 +85,7 @@ export function hud(app) {
       els = { root, race, level, zone, form, hp, ki, xp, power, zeni, points, fps, toasts };
 
       put("showFps", app.settings.get("showFps"), (v) => { fps.hidden = !v; });
-      offNotify = app.events.on("notify", ({ text }) => toast(text));
+      offNotify = app.events.on("notify", ({ text }) => toast(renameText(text)));
       offStats = app.events.on("stats", () => { last = {}; });
     },
 

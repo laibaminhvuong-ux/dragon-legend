@@ -647,3 +647,13 @@ Also claimed and released: `core/input.js` (new `menu` action, default M / Pad8,
 ## Claude: released, technique and place names (0.4.0)
 
 At the user's request, technique, item and place names are now the game's own as well (`TERMS` in `data/names.js`): Kamehameha→Kamehamera, Spirit Bomb→Spirit Sphere, Kaioken→Kaiyoken, Dragon Ball→Dragon Orb, Namek→Nameck, Snake Way→Serpent Road, West City→West Capital and so on. Some technique names are also ids (`Kamehameha`, `Kaioken` in `slot.moves`/`slot.forms`), so terms only touch on-screen text: prose fields (`name`, `title`, `text`, `offer`, `done`, `desc`, `saga`, `planet`...) and strings containing a space. Ids never contain spaces and are never renamed, so saves are unaffected. **Codex/Freebuff: never give an id a space, and compare ids, not display names.** `check_ui` now expects the displayed race "Nameckian" (the race id is still `Namekian`). Transformation names (Super Saiyan...) and race names are unchanged for now.
+
+## Codex — claiming (aim reticle and personal Ki colour)
+
+User tested the game and requests an aiming dot, visible base-form charging aura, and selectable fighter Ki colour. No active conflicting claims remain; preserving existing uncommitted naming changes in `ui/hud.js` and `ui/rpg.js`.
+Files: `web/src/data/appearance.js`, `web/src/game/{look,schema,combat}.js`, `web/src/character/cage_model.js`, `web/src/combat/view.js`, `web/src/ui/{hud,rpg,creator,appearancePreview}.js`, new `web/src/ui/aimReticle.js`, `web/style.css`, new `tools/check_ki_aim.mjs`, `tools/check_visuals.mjs`, new `tools/check_ki_aim_smoke.mjs`. Save v5 will default existing characters to cyan Ki without altering progression. Reticle projects the authoritative shot line/locked target. Charging VFX use the personal palette; transformations retain their distinct form auras. Only source/checks; integration, commits and app builds remain Claude's lane.
+
+## Claude: released, transformation and race names; version reset to 0.0.0
+
+- Transformation and race names are the game's own too: Saiyan→Saiyar, Super Saiyan→Super Saiyar, Ultra Instinct→Ultra Intuition, Ultra Ego→Ultra Self, Oozaru→Ohzaru, Frost Demon→Frost Fiend, Majin→Majinn. Ids (`Saiyan`, `FrostDemon`, `SSJ`, `UIOmen`...) are unchanged. HUD toasts now pass through `renameText`, so notify text written in code is covered. Tests updated to the displayed names.
+- **Version:** at the user's request, the first public release is **0.0.0** and includes everything so far. The earlier 0.1.0–0.4.0 numbers were local installs only and none was published. Continue from 0.0.1.

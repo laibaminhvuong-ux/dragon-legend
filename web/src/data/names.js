@@ -44,6 +44,9 @@ export const TERMS = [
   ["Hyperbolic Time Chamber", "Hyperbolic Time Room"], ["World Martial Arts Tournament", "Grand Martial Arts Tournament"],
   ["Papaya Island", "Pawpaw Island"], ["World of Void", "Null Realm"], ["Red Ribbon", "Crimson Ribbon"], ["Planet Cereal", "Planet Grain"],
   ["Cereal", "Grain"], ["Tournament of Power", "Tournament of Might"], ["Galactic Patrol", "Star Patrol"], ["Vampa", "Vampo"],
+  // transformations and races (ids like "Saiyan", "FrostDemon", "UIOmen" have no spaces and stay as they are)
+  ["Saiyans", "Saiyars"], ["Saiyan", "Saiyar"], ["Oozaru", "Ohzaru"], ["Ultra Instinct", "Ultra Intuition"], ["Ultra Ego", "Ultra Self"],
+  ["Frost Demons", "Frost Fiends"], ["Frost Demon", "Frost Fiend"], ["Majin", "Majinn"],
 ];
 const PROSE = new Set(["name", "title", "text", "offer", "done", "desc", "description", "saga", "planet", "label", "objective", "hint", "message", "line"]);
 const TERM_RULES = TERMS.map(([from, to]) => [new RegExp(`\\b${esc(from)}\\b`, "g"), to]);
