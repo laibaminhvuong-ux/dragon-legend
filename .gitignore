@@ -1,0 +1,9 @@
+node_modules/
+dist/
+out/
+release/
+desktop/site/
+mobile/www/
+mobile/android/app/build/
+*.log
+.DS_Store
