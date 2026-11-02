@@ -32,7 +32,7 @@ export function createCombatView(gfx, combat, events) {
       for(const e of combat.enemies){
         seen.add(e.id);let view=models.get(e.id);
         if(!view){
-          const model=createCharacterModel(e.look,{castShadow:gfx.quality.shadows});model.object3d.scale.multiplyScalar(e.scale || 1);root.add(model.object3d);
+          const model=createCharacterModel(e.look,{castShadow:gfx.quality.shadows,lod:true});model.object3d.scale.multiplyScalar(e.scale || 1);root.add(model.object3d);
           const tag=text(`${e.name} · Lv. ${e.level}`,e.boss?'#ffd17c':'#f3d9d9');root.add(tag);
           const health=new THREE.Group(),back=new THREE.Mesh(barGeo,barBack),fill=new THREE.Mesh(barGeo,barFill);fill.position.z=.002;health.add(back,fill);root.add(health);
           view={model,tag,health,fill};models.set(e.id,view);

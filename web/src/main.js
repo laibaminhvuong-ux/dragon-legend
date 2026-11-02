@@ -23,7 +23,7 @@ import { FORMS } from "./data/forms.js";
 import { createCombatView } from "./combat/view.js";
 import { createStoryView } from "./world/story_view.js";
 import { buildZone } from "./world/testzone.js";
-import { createCharacterModel } from "./character/index.js";
+import { createCharacterModel, updateCharacterLod } from "./character/index.js";
 import { createUI } from "./ui/index.js";
 import "./ui/screens.js";
 import { registerDevFallbacks } from "./ui/dev.js";
@@ -219,6 +219,7 @@ app.scenes.register("play", {
       app.music.play(villain ? "battle" : app.game.zone.id);
     }
     app.gfx.followSun(pos);
+    updateCharacterLod(app.gfx.camera);
     app.gfx.render(frameDt);
   },
 });

@@ -70,7 +70,7 @@ export function createStoryView(gfx, story, combat = null) {
       seen.add(n.id);
       let e = npcs.get(n.id);
       if (!e) {
-        const model = createCharacterModel({ ...n.look }, { castShadow: quality.shadows });
+        const model = createCharacterModel({ ...n.look }, { castShadow: quality.shadows, lod: true });
         model.object3d.scale.multiplyScalar(n.scale);
         model.object3d.position.set(n.x, n.y, n.z);
         model.object3d.rotation.y = n.rot;

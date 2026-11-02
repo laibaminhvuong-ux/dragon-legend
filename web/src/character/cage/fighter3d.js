@@ -1010,6 +1010,7 @@ function growFur(base, color, { layers = 10, length = 0.012, density = 70, clump
     shell.castShadow = false;
     shell.receiveShadow = false;
     shell.renderOrder = i;
+    shell.userData.furShell = i; // distance LOD thins these out (character/cage_model.js)
     base.add(shell);
   }
   // the scalp under the hair: dark, with the same ragged hairline as the strands

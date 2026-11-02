@@ -206,8 +206,36 @@ function dress(f, parts, L, look, hairMat) {
   return own;
 }
 
+// ----------------------------------------------------------------------------- distance detail
+// Every model is ~50 meshes (hair alone is up to 28 shells) and each is drawn in the main, shadow
+// and ambient-occlusion passes, so a crowd of NPCs and enemies costs far more than the world.
+// Other characters (created with lod: true) thin their hair shells and drop shadows with distance, and live on
+// camera layer 1 so the lake's reflection pass skips them. The player's own model keeps full detail.
+const LOD_NEAR = 14, LOD_MID = 32;
+const lodModels = new Set();
+
+function setBand(m, band) {
+  if (m.band === band) return;
+  m.band = band;
+  for (const s of m.shells) s.visible = band === 0 || (band === 1 && s.userData.furShell % 3 === 0);
+  for (const c of m.casters) c.castShadow = band < 2;
+}
+
+/** Call once per frame before rendering, with the camera. */
+export function updateCharacterLod(camera) {
+  const p = camera.position;
+  for (const m of lodModels) {
+    const e = m.root.matrixWorld.elements; // world position (enemies sit inside a parent group)
+    const d = Math.hypot(e[12] - p.x, e[13] - p.y, e[14] - p.z);
+    const b = m.band;
+    // a metre of hysteresis so a model on a boundary doesn't flicker
+    const near = LOD_NEAR + (b === 0 ? 1 : -1), mid = LOD_MID + (b <= 1 ? 1 : -1);
+    setBand(m, d < near ? 0 : d < mid ? 1 : 2);
+  }
+}
+
 // --------------------------------------------------------------------------------- the model
-export function createCharacterModel(look, { castShadow = true, female = look.female } = {}) {
+export function createCharacterModel(look, { castShadow = true, female = look.female, lod = false } = {}) {
   const L = resolveLook(look);
   const B = BUILD[look.build] || BUILD.Average;
   const parts = outfitParts(look.outfit, L.tintColor);
@@ -228,6 +256,17 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
   const owned = dress(f, parts, L, look, hairMat);
   owned.push(hairMat);
   root.traverse((o) => { if (o.isMesh) o.castShadow = castShadow && o.castShadow; });
+  let lodEntry = null;
+  if (lod) {
+    lodEntry = { root, band: -1, shells: [], casters: [] };
+    root.traverse((o) => {
+      if (!o.isMesh) return;
+      o.layers.set(1); // not reflected (see above)
+      if (o.userData.furShell) lodEntry.shells.push(o);
+      if (o.castShadow) lodEntry.casters.push(o);
+    });
+    lodModels.add(lodEntry);
+  }
 
   // attachment points
   const point = (bone, x, y, z) => { const o = new THREE.Object3D(); o.position.set(x, y, z); bone.add(o); return o; };
@@ -298,6 +337,7 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
       aura.material.color.setHex(hex);
     },
     dispose() {
+      if (lodEntry) lodModels.delete(lodEntry);
       this.setAura(null);
       for (const o of owned) o.dispose?.();
       f.dispose();
