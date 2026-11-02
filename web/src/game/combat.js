@@ -1,3 +1,4 @@
+import { INSTINCT_AVATAR as A, canManifestAvatar } from "../data/avatar.js";
 import { instinctBenefits } from "./forms.js";
 import { MASTERY } from "./mastery.js";
 import { freePosition } from "./placement.js";
@@ -20,6 +21,7 @@ export function createCombat(game, events) {
   const notify = text => emit('notify', { text });
   let story = null, clock = 0, serial = 0, syncAt = 0, meleeCd = 0, blastCd = 0, beamCd = 0;
   let combo = 0, lastSwing = -10, beamHeld = false, beamTime = 0, respawnAt = 0, lastDamage = -100;
+  const avatar={remaining:0,readyAt:0,nextStrike:0,damage:0,pulse:0};
   let technique = game.slot.loadout?.technique || 'EnergyWave';
   const starter = C.starterMove;
   const supportedUtilities = ['Regeneration','SolarFlare','Afterimage','UltraInstinctSign','EnergyField','CandyBeam','InstantTransmission','Kaioken'];
@@ -105,10 +107,18 @@ export function createCombat(game, events) {
     return {origin,dir:{x:delta.x/d,y:delta.y/d,z:delta.z/d}};
   }
   function fire(id, charge=0) {
-    const def=moveDef(id); if(!def || !trySpendKi(p,def.kiCost*(p.kiCostScale || 1))) { notify('Not enough ki. Hold Charge to recover.'); return false; }
+    const def=moveDef(id);
+    if(def?.kind==='avatar'){
+      if(!canManifestAvatar(game.slot,p)){notify('The Avatar requires learned training and active Perfected or True Ultra Instinct.');return false;}
+      if(avatar.remaining>0 || clock<avatar.readyAt){notify(`Avatar cooldown: ${Math.ceil(Math.max(0,avatar.readyAt-clock))}s.`);return false;}
+    }
+    if(!def || !trySpendKi(p,def.kiCost*(p.kiCostScale || 1))) { notify('Not enough ki. Hold Charge to recover.'); return false; }
     const {origin,dir}=aim();
     const damage=C.meleeDamage*p.kiPower*def.power*(1+charge)*(p.form==='UltraEgo'?1+(p.egoBoost || 0):1);
-    if(def.kind==='utility') {
+    if(def.kind==='avatar'){
+      avatar.remaining=A.duration;avatar.readyAt=clock+A.cooldown;avatar.nextStrike=clock;avatar.damage=damage;
+      notify('Ultra Instinct Energy Avatar manifested!');
+    } else if(def.kind==='utility') {
       if(id==='Regeneration')p.health=Math.min(p.maxHealth,p.health+p.maxHealth*C.utilityHeal);
       else if(id==='SolarFlare'){for(const e of enemies)if(e.health>0&&distance(p.pos,e.pos)<C.utilityRange)e.stun=C.utilityDuration;}
       else if(id==='EnergyField')p.barrierUntil=clock+C.utilityDuration;
@@ -126,14 +136,16 @@ export function createCombat(game, events) {
     p.attackSerial=(p.attackSerial||0)+1;p.attackKind='cross';
     emit('attack',{id:p.id,kind:def.kind,pos:copy(p.pos)}); return true;
   }
+  const avatarInfo=()=>({active:avatar.remaining>0 && canManifestAvatar(game.slot,p),remaining:canManifestAvatar(game.slot,p)?avatar.remaining:0,cooldown:Math.max(0,avatar.readyAt-clock),pulse:avatar.pulse});
   const combat = {
     enemies, projectiles,
+    avatarState(){return {...avatarInfo(),pos:copy(p.pos),yaw:p.yaw};},
     setStory(value){story=value;sync();},
     availableTechniques(){return ['EnergyWave',...game.slot.moves.filter(id=>MOVES[id] && (MOVES[id].power>0 || supportedUtilities.includes(id)))];},
     setTechnique(id){if(!combat.availableTechniques().includes(id))return false;technique=id;(game.slot.loadout ||= {}).technique=id;return true;},
     snapshot(){
       const e=enemies.find(e=>e.id===p.lockTarget && e.health>0);
-      return {instinctFocus:Math.max(0,(p.uiTechniqueUntil || 0)-clock),technique,techniqueName:moveDef(technique)?.name,beamCharge:Math.min(1,beamTime/C.beamCharge),meleeCd,blastCd,beamCd,
+      return {avatar:avatarInfo(),instinctFocus:Math.max(0,(p.uiTechniqueUntil || 0)-clock),technique,techniqueName:moveDef(technique)?.name,beamCharge:Math.min(1,beamTime/C.beamCharge),meleeCd,blastCd,beamCd,
         target:e?{id:e.id,name:e.name,level:e.level,health:e.health,maxHealth:e.maxHealth,boss:e.boss}:null,
         respawn:respawnAt?Math.max(0,respawnAt-clock):0};
     },
@@ -141,6 +153,7 @@ export function createCombat(game, events) {
       clock+=dt;meleeCd=Math.max(0,meleeCd-dt);blastCd=Math.max(0,blastCd-dt);beamCd=Math.max(0,beamCd-dt);
       if(clock>=syncAt){syncAt=clock+C.syncInterval;sync();}
       if(p.health<=0){
+        avatar.remaining=0;
         if(respawnAt && clock>=respawnAt){
           respawnAt=0;game.refreshDerived(true);Object.assign(p.pos,{x:zone.spawn.x,y:zone.heightAt(zone.spawn.x,zone.spawn.z),z:zone.spawn.z});
           Object.assign(p.vel,{x:0,y:0,z:0});p.stun=0;p.onGround=true;p.invulnerableUntil=clock+C.spawnProtection;
@@ -170,6 +183,21 @@ export function createCombat(game, events) {
       if(game.player.form){
         const f=FORMS[p.form],drain=f.kiDrain*(p.kiCostScale || 1)*(game.slot.moves.includes('GodKi') ? .7 : 1)*(game.slot.story?.items?.instinctMastery && f.path==='instinct'?.8:1)*dt;
         if(!trySpendKi(p,drain)){p.form='';game.refreshDerived();notify('Transformation ended: ki exhausted.');}
+      }
+      if(avatar.remaining>0){
+        if(!canManifestAvatar(game.slot,p))avatar.remaining=0;
+        else {
+          avatar.remaining=Math.max(0,avatar.remaining-dt);
+          if(avatar.remaining>0 && clock>=avatar.nextStrike){
+            avatar.nextStrike+=A.strikeInterval;avatar.pulse++;
+            const fx=Math.sin(p.yaw),fz=Math.cos(p.yaw);
+            for(const enemy of enemies){
+              const dx=enemy.pos.x-p.pos.x,dz=enemy.pos.z-p.pos.z,along=dx*fx+dz*fz;
+              if(enemy.health>0 && along>=0 && along<=A.range && Math.abs(dx*fz-dz*fx)<=A.halfWidth && Math.abs(enemy.pos.y-p.pos.y)<=A.verticalReach)hit(enemy,avatar.damage,p,true);
+            }
+            emit('avatarStrike',{pos:copy(p.pos),yaw:p.yaw,pulse:avatar.pulse});
+          }
+        }
       }
       if(p.form!=='UltraEgo')p.egoBoost=0;
       if(p.powerUntil>clock)p.health=Math.max(1,p.health-p.maxHealth*C.powerHealthDrain*dt);

@@ -1,6 +1,5 @@
-// Techniques. Players learn them from trainers (quests in data/story.js). M2 combat reads
-// kiCost/power/kind; until then they are unlocked and listed.
-//   kind: "beam" (hold to charge) | "blast" | "barrage" | "melee" | "utility" | "ultimate"
+// Techniques learned through story/training quests. Combat validates costs and requirements.
+//   kind: "beam" (hold to charge) | "blast" | "barrage" | "melee" | "utility" | "ultimate" | "avatar"
 //   races: null = anyone can learn it
 export const MOVES = {
   KiBlast: { name: "Ki Blast", kind: "blast", kiCost: 5, power: 1, races: null, desc: "A quick ball of ki." },
@@ -27,6 +26,7 @@ export const MOVES = {
   Hakai: { name: "Hakai", kind: "ultimate", kiCost: 80, power: 11, races: null, desc: "A God of Destruction's erasure. Beerus allows only the worthy to learn its basics." },
   GodKi: { name: "God Ki Control", kind: "utility", kiCost: 0, power: 0, races: null, desc: "Whis's training: calm, efficient ki. Your ki drains more slowly while transformed." },
   UltraInstinctSign: { name: "Ultra Instinct -Sign-", kind: "utility", kiCost: 10, power: 0, races: null, desc: "Brief focus with a small dodge chance and no transformation stat boost. Much weaker than an Ultra Instinct form." },
+  UltraInstinctAvatar: { name: "Ultra Instinct Energy Avatar", kind: "avatar", kiCost: 60, power: 4, races: ["Saiyan","HalfSaiyan"], desc: "Manifest a giant energy body for six seconds. It strikes a wide area in front of you. Requires learned Avatar training and active Perfected or True Ultra Instinct; 30-second cooldown." },
   EnergyField: { name: "Energy Field", kind: "utility", kiCost: 20, power: 0, races: null, desc: "A ki barrier that blocks blasts. Taught by Jiren's rival, Toppo." },
 };
 export const MOVE_ORDER = Object.keys(MOVES);

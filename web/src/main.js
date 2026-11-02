@@ -1,3 +1,4 @@
+import { INSTINCT_AVATAR } from "./data/avatar.js";
 // Boot: builds the shared `app` object, the scenes and the loop.
 //
 // `app` is what every system and screen gets:
@@ -209,7 +210,8 @@ app.scenes.register("play", {
       play.model.setForm(p.form); // hair, eyes, skin, size and aura as in the story (data/form_looks.js)
     }
     const target = app.game.combat.enemies.find(e => e.id === p.lockTarget && e.health > 0);
-    play.cam.update(pos, frozen ? 0 : frameDt, target?.pos, FORMS[p.form]?.size || 1);
+    const avatarActive=app.game.combat.snapshot().avatar.active;
+    play.cam.update(pos, frozen ? 0 : frameDt, target?.pos, Math.max(FORMS[p.form]?.size || 1,avatarActive?INSTINCT_AVATAR.cameraScale:1));
     play.combatView.update(frozen ? 0 : frameDt);
     world.update(frozen ? 0 : frameDt, pos, app.gfx.camera.position);
     play.storyView.update(frozen ? 0 : frameDt, pos);

@@ -53,6 +53,23 @@ for(const id of Object.keys(ACCESSORIES)){
   if(id!=='None')assert.ok(model.object3d.getObjectByName('equipped-accessory'));
   model.dispose();count++;
 }
+const {createUltraInstinctAvatar}=await import('../web/src/fx/ultra_instinct_avatar.js');
+const avatar=createUltraInstinctAvatar(),avatarScene=new THREE.Scene();avatarScene.add(avatar.object3d);
+const avatarState={active:true,pos:{x:1,y:0,z:2},yaw:.5,remaining:6,pulse:1};
+avatar.update(1/60,avatarState);avatar.object3d.updateMatrixWorld(true);
+const avatarGeos=new Set(),avatarMats=new Set();let avatarMeshes=0;
+avatar.object3d.traverse(o=>{
+  assert.ok(o.matrixWorld.elements.every(Number.isFinite));
+  if(!o.isMesh)return;avatarMeshes++;avatarGeos.add(o.geometry);avatarMats.add(o.material);
+  assert.equal(o.material.transparent,true);assert.equal(o.material.depthWrite,false);assert.equal(o.castShadow,false);assert.equal(o.layers.mask,2);
+});
+assert.ok(avatarMeshes>10);assert.ok(avatar.object3d.getObjectByName('avatar-fist'));assert.ok(avatar.object3d.getObjectByName('avatar-strike-wave'));
+let avatarFreed=0;for(const resource of [...avatarGeos,...avatarMats])resource.addEventListener('dispose',()=>avatarFreed++);
+avatar.dispose();avatar.dispose();assert.equal(avatarFreed,avatarGeos.size+avatarMats.size);assert.equal(avatarScene.children.length,0);
+const {createCombatView}=await import('../web/src/combat/view.js');const {createEvents}=await import('../web/src/core/events.js');
+const view=createCombatView({scene:avatarScene,camera:new THREE.PerspectiveCamera(),quality:{shadows:false}}, {enemies:[],projectiles:[],avatarState:()=>avatarState},createEvents());
+view.update(1/60);assert.ok(avatarScene.getObjectByName('ultra-instinct-energy-avatar'));
+avatarState.active=false;view.update(1/60);assert.equal(avatarScene.getObjectByName('ultra-instinct-energy-avatar'),undefined);view.dispose();assert.equal(avatarScene.children.length,0);count++;
 const terrain = { heightAt: (x, z) => Math.sin(x) * 3 + Math.cos(z) * 2 };
 const camera = new THREE.PerspectiveCamera();
 const follow = createFollowCamera(camera, terrain);

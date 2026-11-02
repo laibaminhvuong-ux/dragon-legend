@@ -19,7 +19,7 @@ Maximum level: **2,000**. Saiyan and Half-Saiyan have the same 21 form options. 
 | Ultra Instinct | Tournament of Power Sign/Omen → Perfected UI → Moro-era mastery under Merus → True UI through the Granolah/Gas storyline |
 | Ultra Ego | Beerus’s Destruction training and the Granolah story → Ultra Ego |
 
-“Perfected” and “Mastered” describe the same silver-haired transformation here. Moro training improves its control rather than inventing another hair-color form. The black-haired True UI variant is a later branch stage. The giant energy avatar is not treated as a separate transformation.
+“Perfected” and “Mastered” describe the same silver-haired transformation here. Moro training improves its control rather than inventing another hair-color form. The black-haired True UI variant is a later branch stage. The giant energy Avatar is now an advanced learned ability, rather than a separate transformation.
 
 The separately learned **Ultra Instinct -Sign- technique** remains available: 10% temporary dodge chance, no transformation stat multiplier, slower dodge recovery. Full UI forms have 35–60% dodge chance and 5–6.2× stat multipliers. Neither grants unconditional invulnerability.
 
@@ -93,3 +93,10 @@ Save schema v4 retains legacy ids/quest records and maps old Half-Saiyan SSJ unl
 ## Story references
 
 The game uses custom balance and includes GT/movie forms by user request. Official story references: [Tournament and Moro/Granolah recap](https://en.dragon-ball-official.com/news/01_900.html), [True Ultra Instinct vs Gas](https://en.dragon-ball-official.com/news/01_1272.html), [Ultra Ego and the Granolah finale](https://en.dragon-ball-official.com/news/01_1331.html), and [Super Vegeta / Super Trunks](https://en.dragon-ball-official.com/news/01_4399.html).
+
+
+## Ultra Instinct Energy Avatar
+
+After Perfected UI and Merus’s Moro-era mastery quest, speak to Merus for **Ultra Instinct: Energy Avatar**. Complete 45 seconds of ki training while in Perfected or True UI. The learned ability is saved and can be equipped from **Techniques**, or with **Equip Energy Avatar** on the Forms page.
+
+With Perfected/True UI active, hold/release the skill action (default **R**) to manifest the giant translucent energy body. It lasts **6 seconds**, costs **60 base ki** scaled by the level’s normal cost factor, and has an independent **30-second cooldown**. It repeatedly strikes a wide area up to **14 metres** in front of the player. The manifestation ends if the player dies, leaves full UI, or loses the transformation through ki exhaustion. It does not grant invulnerability, replace the fighter, or upgrade the weak learnable Sign technique. Camera framing widens while it is active.

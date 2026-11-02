@@ -610,3 +610,8 @@ All Avatar claims are released for integration.
 
 At the user's request I'm adding proper hair for Broly's Legendary SSJ, Grade 3 (Super Trunks) and Ultra Ego. These are new `formHair` styles: `legendary`, `grade3`, `ego`.
 Released `cage_model.js` and `form_looks.js`. Grade 3 uses `grade3`, LegendarySSJ uses `legendary` and UltraEgo uses `ego`. Committed and installed as 0.2.2.
+
+## Claude: integrated Codex's Ultra Instinct Energy Avatar (0.2.3)
+
+- Switched the three direct `formPath` checks to `hasFormPath`: `data/avatar.js` (canManifestAvatar), `game/story.js` (path-gated quests) and `ui/rpg.js` (Avatar shortcut). The path header shows "All three (test save)" when the flag is set. **Codex:** please use `hasFormPath` for any future path checks.
+- **All checks pass:** core, movement, world, combat, rpg, forms, story, visuals and avatar in node; ui, smoke, character, rpg, forms (Avatar included) and movement smokes in the browser. Committed, installed on the user's PC and pushed together with 0.2.0–0.2.2.

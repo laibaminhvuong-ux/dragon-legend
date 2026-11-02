@@ -102,6 +102,7 @@ test('all three endgame quest paths unlock and activate for both Saiyan races',(
       Object.assign(game.player.pos,{x:npc.x+1,y:npc.y,z:npc.z});assert.ok(story.acceptQuest(q.id),`${race}/${q.id} accepted`);
       for(const step of q.steps){
         assert.equal(step.type,'train');enter(step.zone);
+        if(step.requiredForms)assert.equal(game.selectForm(step.requiredForms.find(id=>slot.forms.includes(id))),null);
         for(let i=0;i<Math.ceil(step.seconds*4)+1&&slot.quests[q.id].status==='active';i++)story.update(.25,{charge:step.mode==='charge'});
       }
       assert.equal(slot.quests[q.id].status,'done',`${race}/${q.id} completed`);

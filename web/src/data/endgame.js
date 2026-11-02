@@ -73,6 +73,11 @@ export function installEndgame(npcs,quests,chars,links){
   quests.push(unlock('UIPerfected','whis',['Form_UIOmen'],'world_of_void','Quiet your mind and complete the silver-haired transformation.','instinct'));
   quests.push({id:'t_ui_moro_mastery',title:'Merus: Ultra Instinct Mastery',giver:'merus_earth',level:2000,races:family,path:'instinct',saga:moro,after:['Form_UIPerfected','m37_moro_final'],
     offer:'Merus teaches you to sustain perfected Ultra Instinct after the Moro battle.',done:'Your control is stable. Mastery reduces the form’s ki drain.',steps:[train('earth_plains',60,'Perfect your control under Merus','still')],rewards:{items:{instinctMastery:1}}});
+  quests.push({id:'t_ui_avatar',title:'Ultra Instinct: Energy Avatar',giver:'merus_earth',level:2000,races:family,path:'instinct',saga:moro,after:['t_ui_moro_mastery'],
+    offer:'Hold your perfected instinct and project its energy beyond your body. The giant Avatar is a technique, not another transformation.',
+    done:'Your energy Avatar can now be equipped from Techniques. Use it while in Perfected or True Ultra Instinct.',
+    steps:[{...train('earth_plains',45,'Channel the Avatar in Perfected or True Ultra Instinct (hold Charge)'),requiredForms:['UIPerfected','UITrue']}],
+    rewards:{moves:['UltraInstinctAvatar']}});
   quests.push(unlock('UITrue','monaito_cereal',['t_ui_moro_mastery','m40_gas'],'planet_cereal','Find your own emotional, black-haired Ultra Instinct while facing the legacy of the Gas battle.','instinct'));
   quests.push(unlock('UltraEgo','beerus',['m38_granolah','Form_SSJBlue'],'beerus_planet','Train in Destruction with Beerus and follow Vegeta’s Ultra Ego path.','ego'));
 }

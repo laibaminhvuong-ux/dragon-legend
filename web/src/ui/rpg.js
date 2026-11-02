@@ -2,7 +2,7 @@ import { createAppearancePreview } from "./appearancePreview.js";
 import { RACES } from '../data/races.js';
 import { FACES, BUILDS, HAIR_COLORS, TINTS } from '../data/appearance.js';
 import { ACCESSORIES, accessoryAvailable } from '../data/accessories.js';
-import { FORM_PATHS, formAvailable } from '../game/forms.js';
+import { FORM_PATHS, formAvailable, hasFormPath } from '../game/forms.js';
 import { masteryProgress } from '../game/mastery.js';
 import { MAX_LEVEL, POINTS_PER_LEVEL } from '../data/stats.js';
 import { derive, points } from '../game/progression.js';
@@ -37,7 +37,8 @@ export function rpg(app) {
         const card=h('section','rpg-offer');
         card.append(h('h3','',`${q.title} · Lv. ${q.level}`),h('p','',q.text),h('p','rpg-muted',q.objective));
         const r=q.rewards || {};
-        card.append(h('p','rpg-reward',`${r.xp || 0} XP · ${r.zeni || 0} zeni`));
+        const rewards=[r.xp?`${r.xp} XP`:null,r.zeni?`${r.zeni} zeni`:null,...(r.moves || []).map(id=>MOVES[id]?.name || id),...(r.forms || []).map(id=>FORMS[id]?.name || id)].filter(Boolean);
+        card.append(h('p','rpg-reward',rewards.join(' · ') || 'Training progress'));
         card.append(btn('Accept quest',()=> {
           if(app.story.acceptQuest(q.id)){app.saveNow();close();stamp='';}
           else {close();app.events.emit('notify',{text:'Move closer to the quest giver and try again.'});}
@@ -118,10 +119,11 @@ export function rpg(app) {
       if(app.story.interaction()?.id.startsWith('guide_'))modal.append(btn('Guide shop',showShop));
     }else if(tab==='Techniques'){
       modal.append(h('p','','Select a learned technique, then hold/release its skill action. The learnable UI Sign technique has no form stat multiplier and a much smaller dodge benefit.'));
-      modal.append(picker('Equipped technique',app.game.combat.availableTechniques().map(id=>[id,id==='EnergyWave'?'Energy Wave (starter)':MOVES[id].name]),app.game.combat.snapshot().technique,id=>{app.game.combat.setTechnique(id);app.saveNow();}));
+      modal.append(h('p','rpg-muted',MOVES[app.game.combat.snapshot().technique]?.desc || 'Starter Energy Wave.'));
+      modal.append(picker('Equipped technique',app.game.combat.availableTechniques().map(id=>[id,id==='EnergyWave'?'Energy Wave (starter)':MOVES[id].name]),app.game.combat.snapshot().technique,id=>{app.game.combat.setTechnique(id);app.saveNow();showTab('Techniques');}));
     }else if(tab==='Forms'){
       if(['Saiyan','HalfSaiyan'].includes(slot.race)){
-        modal.append(h('h3','',`Level ${MAX_LEVEL} path · ${FORM_PATHS[slot.loadout.formPath]?.name || 'Not chosen'}`),h('p','','Choose one endgame path for this character. Other paths remain locked.'));
+        modal.append(h('h3','',`Level ${MAX_LEVEL} path · ${FORM_PATHS[slot.loadout.formPath]?.name || (slot.loadout.testAllPaths===true?'All three (test save)':'Not chosen')}`),h('p','','Choose one endgame path for this character. Other paths remain locked.'));
         for(const [path,info]of Object.entries(FORM_PATHS)){
           const choose=btn(info.name,()=>{tell(app.game.chooseFormPath(path));showTab(tab);});choose.disabled=slot.level<MAX_LEVEL || !!slot.loadout.formPath;modal.append(choose);
         }
@@ -137,6 +139,10 @@ export function rpg(app) {
         if(!owned)card.append(h('small','rpg-muted',form.mastery?'Mastery evolution':'Complete its unlock quest'));
         modal.append(card);
       }
+    }
+    if(tab==='Forms' && hasFormPath(slot,'instinct')){
+      modal.append(h('h3','','Ultra Instinct Energy Avatar'),h('p','','Advanced ability: learn from Merus after Moro mastery. Use it in Perfected or True UI; equip it under Techniques.'));
+      const equip=btn('Equip Energy Avatar',()=>{app.game.combat.setTechnique('UltraInstinctAvatar');app.saveNow();showTab('Techniques');});equip.disabled=!slot.moves.includes('UltraInstinctAvatar');modal.append(equip);
     }
     if(tab==='Character' || tab==='Accessories')modal.append(btn('Apply appearance',()=>{app.saveNow();close();}));
     modal.append(btn('Continue',close));
@@ -165,7 +171,7 @@ export function rpg(app) {
     }
     const n=story.nextMain();
     next.textContent=w?`${w.text} · ${data.dist} m`:n?.locked?`Next story: ${n.title} · requires Lv. ${n.level}. Take a Training Guide patrol to level up.`:n?.giver?`Next story: ${n.title} · ${n.giver} · ${n.zone}`:'Speak to a Training Guide for repeatable combat quests.';
-    progress.textContent=`${hud.statPoints} unspent stat points · ${combat.techniqueName}${combat.beamCharge>0?` · charging ${Math.round(combat.beamCharge*100)}%`:''}${combat.beamCd>0?` · cooldown ${combat.beamCd.toFixed(1)}s`:''}${combat.instinctFocus>0?` · UI focus ${combat.instinctFocus.toFixed(1)}s`:''}`;
+    progress.textContent=`${hud.statPoints} unspent stat points · ${combat.techniqueName}${combat.beamCharge>0?` · charging ${Math.round(combat.beamCharge*100)}%`:''}${combat.beamCd>0?` · cooldown ${combat.beamCd.toFixed(1)}s`:''}${combat.instinctFocus>0?` · UI focus ${combat.instinctFocus.toFixed(1)}s`:''}${combat.avatar.active?` · Avatar ${combat.avatar.remaining.toFixed(1)}s`:combat.avatar.cooldown>0?` · Avatar cooldown ${combat.avatar.cooldown.toFixed(1)}s`:''}`;
     death.hidden=!combat.respawn;death.textContent=`Defeated · respawning in ${Math.ceil(combat.respawn)}s`;
   }
   return {

@@ -1,9 +1,11 @@
+import { createUltraInstinctAvatar } from "../fx/ultra_instinct_avatar.js";
 // Combat presentation consumes authoritative entities; it never awards damage or rewards.
 import * as THREE from 'three';
 import { createCharacterModel } from '../character/index.js';
 export function createCombatView(gfx, combat, events) {
   const root=new THREE.Group();root.name='combat';gfx.scene.add(root);
   const models=new Map(), balls=new Map(), effects=[];
+  let avatarView=null;
   const sphere=new THREE.SphereGeometry(.17,10,8), energy=new THREE.MeshBasicMaterial({color:0x78dfff});
   const barGeo=new THREE.PlaneGeometry(1.35,.12),barBack=new THREE.MeshBasicMaterial({color:0x281b22,depthTest:false}),barFill=new THREE.MeshBasicMaterial({color:0xf06d51,depthTest:false});
   function text(value,color='#ffffff') {
@@ -28,6 +30,11 @@ export function createCombatView(gfx, combat, events) {
   function removeEffect(e){if(e.sprite)disposeSprite(e.sprite);else {e.mesh.removeFromParent();e.mesh.geometry.dispose();e.mesh.material.dispose();}}
   return {
     update(dt){
+      const avatar=combat.avatarState();
+      if(avatar.active){
+        if(!avatarView){avatarView=createUltraInstinctAvatar();root.add(avatarView.object3d);}
+        avatarView.update(dt,avatar);
+      }else if(avatarView){avatarView.dispose();avatarView=null;}
       const seen=new Set();
       for(const e of combat.enemies){
         seen.add(e.id);let view=models.get(e.id);
@@ -53,6 +60,6 @@ export function createCombatView(gfx, combat, events) {
       for(const [id,m]of balls)if(!shots.has(id)){m.removeFromParent();balls.delete(id);}
       for(let i=effects.length-1;i>=0;i--){const e=effects[i];e.life-=dt;if(e.life<=0){removeEffect(e);effects.splice(i,1);}else if(e.sprite)e.sprite.position.y+=dt*.9;else e.mesh.material.opacity=e.life/.3*.8;}
     },
-    dispose(){offDamage();offBeam();for(const v of models.values()){v.model.dispose();disposeSprite(v.tag);}effects.forEach(removeEffect);sphere.dispose();energy.dispose();barGeo.dispose();barBack.dispose();barFill.dispose();root.removeFromParent();models.clear();balls.clear();},
+    dispose(){avatarView?.dispose();offDamage();offBeam();for(const v of models.values()){v.model.dispose();disposeSprite(v.tag);}effects.forEach(removeEffect);sphere.dispose();energy.dispose();barGeo.dispose();barBack.dispose();barFill.dispose();root.removeFromParent();models.clear();balls.clear();},
   };
 }

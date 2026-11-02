@@ -37,6 +37,18 @@ try{
   await fs.mkdir(path.join(root,'out'),{recursive:true});await page.screenshot({path:path.join(root,'out','forms.png')});
   await modal.getByRole('button',{name:'Return to Base',exact:true}).click();
   await page.waitForFunction(()=>!__dragonlegend.playerModel.object3d.getObjectByName('great-ape'));
+  // Trusted test fixture grants the learned endgame ability; menu/keyboard perform activation.
+  await page.evaluate(()=>{const s=__dragonlegend.game.slot;s.forms.push('UIPerfected');s.moves.push('UltraInstinctAvatar','GodKi');s.story.items.instinctMastery=1;});
+  await modal.getByRole('button',{name:'Techniques',exact:true}).click();
+  await modal.getByRole('button',{name:'Forms',exact:true}).click();
+  await modal.locator('.rpg-offer').filter({has:page.getByRole('heading',{name:'Perfected Ultra Instinct',exact:true})}).getByRole('button',{name:'Transform',exact:true}).click();
+  await modal.getByRole('button',{name:'Equip Energy Avatar',exact:true}).click();
+  await modal.getByRole('button',{name:'Continue',exact:true}).click();
+  await page.keyboard.down('r');await page.waitForFunction(()=>__dragonlegend.game.combat.snapshot().beamCharge>0);await page.keyboard.up('r');
+  await page.waitForFunction(()=>__dragonlegend.game.combat.snapshot().avatar.active && !!__dragonlegend.gfx.scene.getObjectByName('ultra-instinct-energy-avatar'));
+  await page.screenshot({path:path.join(root,'out','avatar.png')});
+  await page.evaluate(()=>__dragonlegend.game.selectForm(''));
+  await page.waitForFunction(()=>!__dragonlegend.gfx.scene.getObjectByName('ultra-instinct-energy-avatar'));
   await page.evaluate(()=>__dragonlegend.saveNow());assert.deepEqual(errors,[]);
-  console.log('forms browser smoke passed: menu tabs, max-level path, mastery evolution, live hair/accessory changes and ape restoration');
+  console.log('forms browser smoke passed: menu tabs, max-level path, mastery evolution, live hair/accessory changes ape restoration and energy Avatar');
 }finally{await browser?.close();server.close();}

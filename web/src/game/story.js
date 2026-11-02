@@ -1,4 +1,4 @@
-import { formForRace } from "./forms.js";
+import { formForRace, hasFormPath } from "./forms.js";
 import { freePosition } from "./placement.js";
 import { SHOP } from "../data/rpg.js";
 import { OUTFITS, outfitAllowed } from "../data/outfits.js";
@@ -82,7 +82,7 @@ export function createStory(game, events = null) {
 
   function canAccept(q) {
     if(q.legacy || q.automatic)return false;
-    if(q.path && slot.loadout?.formPath!==q.path)return false;
+    if(q.path && !hasFormPath(slot,q.path))return false;
     if (isActive(q.id)) return false;
     if (isDone(q.id) && !q.repeat) return false;
     if (slot.level < (q.level || 1)) return false;
@@ -421,6 +421,7 @@ export function createStory(game, events = null) {
         else if (step.type === "travel" && step.zone === zone.id) advance(q);
         else if (step.type === "level" && slot.level >= step.level) advance(q);
         else if (step.type === "train" && step.zone === zone.id) {
+          if(step.requiredForms && !step.requiredForms.includes(player.form))continue;
           if (step.x !== undefined && Math.hypot(at(step).x - p.x, at(step).z - p.z) > step.r) continue;
           const charging = player.charging || (intents?.charge && speed < 1.5);
           const ok = step.mode === "move" ? speed > 1.5 || (player.flying && Math.hypot(player.vel.x, player.vel.y, player.vel.z) > 1.5)
