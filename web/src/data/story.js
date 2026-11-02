@@ -133,7 +133,7 @@ export const NPCS = [
   N("gohan_plains", "gohan_kid", "earth_plains", 8, 12, { rot: Math.PI, before: "m02_raditz" }),
   N("piccolo_plains", "piccolo", "earth_plains", -10, 14, { rot: 2.6, after: "m01_arrival" }),
   N("farmer", "farmer", "earth_plains", -52, 26, { rot: 0.4 }),
-  N("raditz", "raditz", "earth_plains", 48, 52, { boss: true, after: "m01_arrival", before: "m02_raditz" }),
+  N("raditz", "raditz", "earth_plains", 42, 46, { boss: true, after: "m01_arrival", before: "m02_raditz" }),
   N("chichi", "chichi", "earth_plains", -6, 22, { rot: Math.PI, after: "m25_kid_buu" }),
   N("pan_plains", "pan", "earth_plains", 12, 24, { after: "m33_broly" }),
   // Kame House
@@ -336,7 +336,7 @@ export const QUESTS = [
   { id: "m02_raditz", saga: "Saiyan Saga", title: "Raditz", giver: "piccolo_plains", main: true, level: 1, after: ["m01_arrival"],
     offer: "That Saiyan, Raditz, has taken Goku's son. I hate the idea, but we fight him together. Don't slow me down.",
     done: "Hmph. You held your own. Goku is dead, but two more Saiyans are coming in a year. He'll train in the Other World, and I'll train the boy.",
-    steps: [defeat("raditz", "earth_plains", 48, 52, "Defeat Raditz"), talk("goku_plains", "Check on Goku")],
+    steps: [defeat("raditz", "earth_plains", 42, 46, "Defeat Raditz"), talk("goku_plains", "Check on Goku")],
     rewards: { xp: xp(3, 1.2), zeni: 300, moves: ["KiBlast"], unlock: ["snake_way", "gizard_wasteland"] } },
   { id: "m03_snake_way", saga: "Saiyan Saga", title: "Snake Way", giver: "king_yemma", main: true, level: 2, after: ["m02_raditz"],
     offer: "So you want to train with King Kai? He lives at the end of Snake Way: a million kilometres of road. Don't fall off, or you'll land in Hell!",
