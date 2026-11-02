@@ -1,0 +1,12 @@
+{
+  "name": "dragon-ball-dev",
+  "private": true,
+  "type": "module",
+  "description": "Dev scripts. The game itself has no npm dependencies (three.js is vendored in web/vendor).",
+  "scripts": {
+    "dev": "node tools/serve.mjs",
+    "check": "node tools/check_core.mjs",
+    "smoke": "node tools/check_smoke.mjs",
+    "build": "python3 tools/build_site.py"
+  }
+}
