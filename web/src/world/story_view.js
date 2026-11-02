@@ -32,7 +32,7 @@ function roundRect(g, x, y, w, h, r) {
   g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
 }
 
-const MARKERS = { "!": { text: "!", color: "#ffd23a" }, side: { text: "!", color: "#f2f2f2" }, "?": { text: "?", color: "#ffd23a" }, "⚔": { text: "⚔", color: "#ff5a4a" } };
+const MARKERS = { "!": { text: "!", color: "#ffd23a" }, side: { text: "!", color: "#f2f2f2" }, "?": { text: "?", color: "#ffd23a" }, "⚔": { text: "⚔", color: "#ff5a4a" }, "✈": { text: "✈", color: "#7fd3ff" } };
 
 function dragonBallTexture(stars, color = "#d8202a") {
   const c = document.createElement("canvas");
@@ -86,7 +86,8 @@ export function createStoryView(gfx, story, combat = null) {
       const key = n.marker ? (n.marker === "!" && !n.main ? "side" : n.marker) : "";
       if (key !== e.markerKey) {
         if (e.marker) root.remove(e.marker);
-        e.marker = key ? label(MARKERS[key].text, { color: MARKERS[key].color, size: 60, bg: null, worldHeight: 0.8 }) : null;
+        const m = MARKERS[key] || { text: key, color: "#ffd23a" }; // unknown markers still draw
+        e.marker = key ? label(m.text, { color: m.color, size: 60, bg: null, worldHeight: 0.8 }) : null;
         if (e.marker) { e.marker.position.set(n.x, n.y + 2.15 * n.scale + 1.0, n.z); root.add(e.marker); }
         e.markerKey = key;
       }
