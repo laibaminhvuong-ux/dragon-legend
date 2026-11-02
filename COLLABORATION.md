@@ -12,7 +12,7 @@ We use the same pipeline as Cage Career 3D, which already ships as a Windows app
 
 - **Engine:** [Three.js](https://threejs.org) (version pinned and vendored in `web/vendor/`, no CDN at runtime) with plain ES modules. No game engine, no framework.
 - **Bundling:** esbuild bundles `web/` into `dist/site/`.
-- **Desktop app:** Electron in `desktop/`. It loads the bundled game from a custom `app://game/` protocol and forces the dedicated GPU. electron-builder makes `Dragon-Ball-Setup.exe` and a portable zip.
+- **Desktop app:** Electron in `desktop/`. It loads the bundled game from a custom `app://game/` protocol and forces the dedicated GPU. electron-builder makes `Dragon-Legend-Setup.exe` and a portable zip (`tools/build_installer.sh`); installed copies update themselves from GitHub releases (electron-updater reads `latest.yml`).
 - **Mobile app:** Capacitor in `mobile/` wraps the same bundle as an Android APK. iPhone needs an Apple Developer account, which the user doesn't have.
 - **Saves:** 3 character slots in the app's local storage, with a versioned schema and migrations. There's also an export/import save code. The game is offline and single-player first. Online/PvP comes later, if at all.
 - **Releases:** GitHub releases. The app checks `releases/latest` for updates. Only the integrator publishes.

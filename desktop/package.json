@@ -8,6 +8,54 @@
   "private": true,
   "devDependencies": {
     "@electron/packager": "18.3.6",
-    "electron": "33.2.0"
+    "electron": "33.2.0",
+    "electron-builder": "25.1.8"
+  },
+  "dependencies": {
+    "electron-updater": "6.3.9"
+  },
+  "build": {
+    "appId": "com.laibaminhvuong.dragonlegend",
+    "productName": "Dragon Legend",
+    "copyright": "Dragon Legend",
+    "files": [
+      "main.js",
+      "site/**/*"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "site/icons/icon-512.png",
+      "artifactName": "Dragon-Legend-portable.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Dragon Legend",
+      "artifactName": "Dragon-Legend-Setup.${ext}"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "laibaminhvuong-ux",
+      "repo": "dragon-legend"
+    }
   }
 }
