@@ -1,3 +1,6 @@
+import { freePosition } from "./placement.js";
+import { SHOP } from "../data/rpg.js";
+import { OUTFITS, outfitAllowed } from "../data/outfits.js";
 // The story engine: NPCs, quests, rewards, travel between worlds. Pure rules (no rendering), run
 // once per fixed step after game.update(). State lives in the save slot (slot.quests, slot.story).
 //
@@ -61,9 +64,13 @@ export function createStory(game, events = null) {
     if (n.flagged && !S.flags[n.flagged]) return false;
     return true;
   }
+  const npcPositions = new Map();
   function npcPos(n) {
-    const { x, z } = zone.place(n.x, n.z);
-    return { x, y: n.y ?? zone.heightAt(x, z), z };
+    if (!npcPositions.has(n.id)) {
+      const { x, z } = zone.place(n.x, n.z);
+      npcPositions.set(n.id, freePosition(zone, { x, z, y:n.y }));
+    }
+    return npcPositions.get(n.id);
   }
   /** A step's x/z in this world (Snake Way coordinates follow the road). */
   const at = (step) => (step.zone === zone.id ? zone.place(step.x, step.z) : { x: step.x, z: step.z });
@@ -83,6 +90,9 @@ export function createStory(game, events = null) {
   function stepTarget(step) {
     if (step.type === "talk") { const n = NPC[step.npc]; return n && { zone: n.zone, ...(n.zone === zone.id && visible(n) ? npcPos(n) : { x: n.x, z: n.z }) }; }
     if (step.type === "defeat") {
+      const live = game.combat?.enemies.filter(e => e.key === step.enemy && e.health > 0)
+        .sort((a,b) => Math.hypot(a.pos.x-player.pos.x,a.pos.z-player.pos.z)-Math.hypot(b.pos.x-player.pos.x,b.pos.z-player.pos.z))[0];
+      if (live && step.zone === zone.id) return { zone: zone.id, ...live.pos };
       const n = NPC[step.enemy];
       if (n && n.zone === zone.id && visible(n)) return { zone: n.zone, ...npcPos(n) };
       return { zone: step.zone, ...at(step) };
@@ -201,7 +211,9 @@ export function createStory(game, events = null) {
   let padArmed = false; // arriving players stand on the travel point: wait until they step away
 
   // ------------------------------------------------------------ public
+  let trackedId = null;
   const story = {
+    trackQuest(id) { if (!isActive(id)) return false; trackedId = id; return true; },
     zone,
     combatAvailable: COMBAT_AVAILABLE,
 
@@ -217,6 +229,75 @@ export function createStory(game, events = null) {
         const c = CHARACTERS[n.who];
         return { id: n.id, name: c.name, look: c.look, scale: c.scale || 1, ...npcPos(n), rot: n.rot || 0, boss: !!n.boss, marker,
           main: marker === "!" && QUESTS.some((q) => q.giver === n.id && q.main && canAccept(q)) };
+      });
+    },
+
+    shop() {
+      return [...Object.entries(SHOP).map(([id, item]) => ({ id, ...item })),
+        ...Object.values(OUTFITS).filter(o => o.unlock === "shop" && outfitAllowed(o.id, slot.race)).map(o => ({ id: o.id, name:o.name, price:o.price, description:"Cosmetic outfit. Equip it from your fighter journal.", owned:slot.outfits.includes(o.id) }))];
+    },
+    buy(id) {
+      const near = story.interaction();
+      if (player.health <= 0 || !near?.id.startsWith("guide_")) return "Visit a nearby Training Guide to shop.";
+      const item = story.shop().find(i => i.id === id);
+      if (!item || item.owned) return "That item is unavailable or already owned.";
+      if (slot.zeni < item.price) return "Not enough zeni. Complete patrols and story quests to earn more.";
+      game.addZeni(-item.price);
+      if (SHOP[id]) S.items[id] = (S.items[id] || 0) + 1;
+      else slot.outfits.push(id);
+      emit("notify", { text: `Purchased ${item.name}.` });
+      return null;
+    },
+    useItem(id) {
+      const item = SHOP[id];
+      if (player.health <= 0 || !item || !(S.items[id] > 0)) return false;
+      if (player.health >= player.maxHealth && player.ki >= player.maxKi) return false;
+      S.items[id]--;
+      player.health = Math.min(player.maxHealth, player.health + player.maxHealth * item.heal);
+      player.ki = Math.min(player.maxKi, player.ki + player.maxKi * item.heal);
+      emit("notify", { text: `Used ${item.name}.` });return true;
+    },
+
+    /** Validated command used by the dialogue buttons. */
+    acceptQuest(id) {
+      if (player.health <= 0) return false;
+      const q = QUEST[id], n = q && NPC[q.giver];
+      if (!q || !n || !visible(n) || !canAccept(q)) return false;
+      const p = npcPos(n);
+      if (Math.hypot(p.x - player.pos.x, p.z - player.pos.z) > TALK_RANGE * 1.1 || Math.abs(p.y - player.pos.y) > 4) return false;
+      accept(q); return true;
+    },
+    abandonQuest(id) {
+      if (!isActive(id)) return false;
+      slot.quests[id].status = "abandoned";
+      emit("notify", { text: "Quest abandoned. Speak to its giver to start again." });
+      return true;
+    },
+    interaction() {
+      const p = player.pos;
+      const near = story.npcs().map(n => ({ ...n, distance: Math.hypot(n.x-p.x, n.z-p.z) }))
+        .filter(n => n.distance < TALK_RANGE && Math.abs(n.y-p.y) < 4 && !n.boss).sort((a,b) => a.distance-b.distance)[0];
+      return near ? { id: near.id, name: near.name, action: near.marker === "!" ? "Quests" : "Talk", distance: near.distance } : null;
+    },
+    /** Only combat calls this after a real enemy death. Interaction cannot complete fights. */
+    enemyDefeated(enemy, defeatedZone = zone.id) {
+      if (defeatedZone !== zone.id) return;
+      for (const q of activeQuests()) {
+        const s = stepOf(q), st = qs(q.id);
+        if (s.type !== "defeat" || s.enemy !== enemy || s.zone !== zone.id) continue;
+        st.count = (st.count || 0) + 1;
+        emit("questProgress", { id: q.id, objective: s.text });
+        if (st.count >= (s.count || 1)) advance(q);
+      }
+    },
+    encounters() {
+      return activeQuests().flatMap(q => {
+        const s = stepOf(q);
+        if (s.type !== "defeat" || s.zone !== zone.id || s.enemy.startsWith("patrol_")) return [];
+        const n = NPC[s.enemy], c = n && CHARACTERS[n.who];
+        const p = n && visible(n) ? npcPos(n) : at(s);
+        return [{ key: s.enemy, name: c?.name || s.enemy.replace(/_/g, " "), look: c?.look,
+          scale: c?.scale || 1, x: p.x, y: p.y ?? zone.heightAt(p.x,p.z), z: p.z, level: q.level || 1, boss: (s.count || 1) === 1 }];
       });
     },
 
@@ -237,7 +318,7 @@ export function createStory(game, events = null) {
     },
 
     waypoint() {
-      const order = [...activeQuests()].sort((a, b) => (b.main ? 1 : 0) - (a.main ? 1 : 0));
+      const order = [...activeQuests()].sort((a, b) => (b.id === trackedId ? 10 : b.main ? 1 : 0) - (a.id === trackedId ? 10 : a.main ? 1 : 0));
       for (const q of order) {
         const t = stepTarget(stepOf(q));
         if (t && t.zone === zone.id && t.x !== undefined) return { x: t.x, y: t.y ?? zone.heightAt(t.x, t.z), z: t.z, questId: q.id, text: stepOf(q).text };
@@ -275,7 +356,8 @@ export function createStory(game, events = null) {
     },
 
     /** The Interact button. Returns what happened (for tests). */
-    interact() {
+    interact({ choose = false } = {}) {
+      if (player.health <= 0) return null;
       const p = player.pos;
       const here = story.npcs().map((n) => ({ ...n, d: Math.hypot(n.x - p.x, n.z - p.z), dy: Math.abs(n.y - p.y) })).filter((n) => n.d < TALK_RANGE * Math.max(1, n.scale * 0.8) && n.dy < 4 + n.scale * 2).sort((a, b) => a.d - b.d);
       // 1. finish a "talk to" step
@@ -288,22 +370,17 @@ export function createStory(game, events = null) {
           return "talk";
         }
       }
-      // 2. confront an enemy (until real combat exists)
-      if (!COMBAT_AVAILABLE) for (const q of activeQuests()) {
-        const s = stepOf(q);
-        if (s.type !== "defeat") continue;
-        const t = stepTarget(s);
-        if (t.zone !== zone.id || Math.hypot(t.x - p.x, t.z - p.z) > (s.r || 10)) continue;
-        const enemy = NPC[s.enemy] ? CHARACTERS[NPC[s.enemy].who].name : s.enemy.replace(/_/g, " ");
-        emit("notify", { text: `You clash with ${enemy}... and win!` });
-        game.addXP(Math.round(xpToNext(slot.level) * 0.12 * (s.count || 1)));
-        advance(q);
-        return "confront";
-      }
       // 3. take a quest
       for (const n of here) {
         const q = QUESTS.filter((x) => x.giver === n.id && canAccept(x)).sort((a, b) => priority(a) - priority(b))[0];
-        if (q) { accept(q); return "accept"; }
+        if (q) {
+          if (choose) {
+            emit("dialogue", { speaker: n.name, text: "Choose a quest.", kind: "choice", npcId: n.id,
+              choices: QUESTS.filter(x => x.giver === n.id && canAccept(x)).map(x => ({ id: x.id, title: x.title, text: x.offer, level: x.level || 1, rewards: x.rewards, objective: x.steps[0].text })) });
+            return "offer";
+          }
+          accept(q); return "accept";
+        }
       }
       // 4. small talk
       if (here.length) {
@@ -319,6 +396,7 @@ export function createStory(game, events = null) {
 
     /** Once per fixed step, after game.update. */
     update(dt, intents) {
+      if (player.health <= 0) return;
       const p = player.pos;
       // fell off a floating world / Snake Way: back to the start
       if (zone.killY !== null && p.y < zone.killY) {
@@ -326,7 +404,7 @@ export function createStory(game, events = null) {
         player.vel.x = player.vel.y = player.vel.z = 0;
         emit("notify", { text: zone.id === "snake_way" ? "You fell off Snake Way! King Yemma's ogres carry you back to the start." : "You fell off! Back to the start." });
       }
-      if (intents?.interact) story.interact();
+      if (intents?.interact) story.interact({ choose: true });
       const speed = Math.hypot(player.vel.x, player.vel.z);
       for (const q of activeQuests()) {
         const st = qs(q.id), step = stepOf(q);
@@ -375,6 +453,7 @@ export function createStory(game, events = null) {
   };
   // re-check steps that complete on arrival
   for (const q of activeQuests()) checkInstant(q);
+  game.combat?.setStory(story);
   return story;
 }
 

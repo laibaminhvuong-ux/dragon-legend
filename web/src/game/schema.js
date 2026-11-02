@@ -4,7 +4,8 @@ import { STAT_NAMES, SLOT_COUNT, STARTING_ZENI } from "../data/stats.js";
 import { ensureStoryState } from "./story.js";
 
 // v2: slot.story (unlocked/visited worlds, items, flags); zone "test" became "earth_plains"
-export const SCHEMA_VERSION = 2;
+// v3: persistent equipped technique; all v1/v2 fields are retained.
+export const SCHEMA_VERSION = 3;
 
 export function newProfile() {
   return { version: SCHEMA_VERSION, slots: new Array(SLOT_COUNT).fill(null), lastSlot: -1 };
@@ -23,7 +24,8 @@ export function newSlot(look, now = Date.now()) {
     zeni: STARTING_ZENI,
     outfits: [look.outfit], // owned outfit ids
     forms: [], // unlocked form ids
-    moves: [], // unlocked move ids (M2)
+    moves: [], // unlocked move ids
+    loadout: { technique: "EnergyWave" },
     quests: {}, // questId -> { status, step, t, count, collected, completions } (game/story.js)
     story: null, // filled by ensureStoryState below
     zone: "earth_plains",
@@ -45,6 +47,8 @@ function fillSlot(s) {
   s.outfits ||= [s.appearance.outfit];
   s.forms ||= [];
   s.moves ||= [];
+  if (!s.loadout || typeof s.loadout !== "object" || Array.isArray(s.loadout)) s.loadout = {};
+  if (typeof s.loadout.technique !== "string") s.loadout.technique = "EnergyWave";
   s.quests ||= {};
   s.zeni ??= STARTING_ZENI;
   s.statPoints ??= 0;

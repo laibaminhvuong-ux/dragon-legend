@@ -118,7 +118,10 @@ function runSteps(s, q) {
       const w = s.story.waypoint();
       assert.ok(w, `${q.id}: no waypoint for ${step.enemy}`);
       s.at(w.x + 1, w.z + 1);
-      assert.equal(s.story.interact(), "confront", `${q.id}: confront ${step.enemy}`);
+      const before = st.step;
+      assert.notEqual(s.story.interact(), "confront", "interaction never defeats an enemy");
+      assert.equal(st.step, before, "fight waits for combat kill credit");
+      for (let i = 0; i < (step.count || 1); i++) s.story.enemyDefeated(step.enemy, step.zone);
     } else if (step.type === "collect") {
       for (const spot of step.spots) {
         s.goTo(spot.zone ?? step.zone); s.at(spot.x, spot.z); s.tick();

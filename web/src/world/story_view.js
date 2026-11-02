@@ -1,6 +1,6 @@
 // Draws the story in the world: NPCs (with name tags and quest markers), Dragon Balls and other
 // pickups, travel pads to other worlds, and a beam of light over the current objective.
-// createStoryView(gfx, story) -> { update(dt, playerPos), refresh(), dispose() }
+// createStoryView(gfx, story, combat = null) -> { update(dt, playerPos), refresh(), dispose() }
 import * as THREE from "three";
 import { createCharacterModel } from "../character/index.js";
 
@@ -55,7 +55,7 @@ function star(g, x, y, r) {
   g.closePath(); g.fill();
 }
 
-export function createStoryView(gfx, story) {
+export function createStoryView(gfx, story, combat = null) {
   const { scene, quality } = gfx;
   disposables.length = 0;
   const root = new THREE.Group();
@@ -64,7 +64,7 @@ export function createStoryView(gfx, story) {
   // ------------------------------------------------------------- NPCs
   const npcs = new Map(); // id -> { model, tag, marker, data }
   function syncNpcs() {
-    const list = story.npcs();
+    const list = story.npcs().filter(n => !combat?.enemies.some(e => e.key === n.id));
     const seen = new Set();
     for (const n of list) {
       seen.add(n.id);

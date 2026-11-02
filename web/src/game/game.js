@@ -1,3 +1,4 @@
+import { outfitAllowed } from "../data/outfits.js";
 // A play session for one character slot: the authority for health, ki, XP, stats and position.
 // Rendering, input and UI never change this state directly. They send intents to update() and
 // call the methods below. No three.js in here, so it runs in node checks (and could run on a
@@ -7,6 +8,8 @@ import { getRace } from "../data/races.js";
 import { FORMS } from "../data/forms.js";
 import { getZone } from "./zones.js";
 import { stepMovement } from "./movement.js";
+import { createCombat } from "./combat.js";
+import { resolveCollisions } from "./collision.js";
 import { regenKi } from "./ki.js";
 
 /**
@@ -51,7 +54,7 @@ export function createGame(slotIndex, slot, events = null) {
     pos: { ...spawn },
     vel: { x: 0, y: 0, z: 0 },
     yaw: 0, // radians, 0 = facing +Z
-    onGround: true,
+    onGround: spawn.y <= zone.heightAt(spawn.x, spawn.z),
     form: "", // "" = base
     health: 0, maxHealth: 0,
     ki: 0, maxKi: 0,
@@ -105,12 +108,31 @@ export function createGame(slotIndex, slot, events = null) {
     entities: [player],
     time: 0,
 
+    refreshDerived,
+    equipOutfit(id) {
+      if (!slot.outfits.includes(id) || !outfitAllowed(id, slot.race)) return false;
+      slot.appearance.outfit = id; return true;
+    },
+
     /** One fixed simulation step. */
     update(dt, intents) {
       game.time += dt;
       slot.playTime += dt;
-      stepMovement(player, intents, dt, zone);
-      regenKi(player, dt);
+      const previous = { ...player.pos };
+      if (player.health > 0) stepMovement(player, intents, dt, zone);
+      resolveCollisions(player, zone, previous);
+      if (intents.transform && player.health > 0 && player.stun <= 0) {
+        const unlocked = slot.forms.filter(id => FORMS[id]?.race === slot.race && slot.level >= FORMS[id].unlockLevel);
+        const next = unlocked[(unlocked.indexOf(player.form) + 1) % (unlocked.length + 1)] || "";
+        if (next && player.ki < FORMS[next].kiDrain) emit("notify", { text: "Charge more ki before transforming." });
+        else {
+          player.form = next; refreshDerived();
+          emit("notify", { text: next ? FORMS[next].name : "Returned to base form." });
+        }
+        if (!unlocked.length) emit("notify", { text: "Complete your race's transformation quests to unlock a form." });
+      }
+      game.combat.update(dt, intents);
+      if (!player.flying && !player.dashing && !player.charging && !player.form && player.health > 0) regenKi(player, dt);
       if (player.stun > 0) player.stun = Math.max(0, player.stun - dt);
     },
 
@@ -148,5 +170,6 @@ export function createGame(slotIndex, slot, events = null) {
   };
 
   refreshDerived(true);
+  game.combat = createCombat(game, events);
   return game;
 }

@@ -1,35 +1,45 @@
-// Third-person orbit camera that follows a target and stays above the ground.
-// PLACEHOLDER: Codex's lane (camera feel, lock-on framing) replaces the internals; keep the API.
-import * as THREE from "three";
+import * as THREE from 'three';
+import { CAMERA as C } from '../data/camera.js';
 
+/** Third-person orbit. Optional lock position is supplied by the gameplay authority. */
 export function createFollowCamera(camera, zone) {
-  const state = { yaw: Math.PI, pitch: 0.25, distance: 6, height: 1.6 };
-  const pos = new THREE.Vector3();
-  const look = new THREE.Vector3();
+  const state = { yaw: Math.PI, pitch: C.pitch };
+  const pos = new THREE.Vector3(), look = new THREE.Vector3(), want = new THREE.Vector3();
   let first = true;
-
+  const blend = (dt, rate) => 1 - Math.exp(-Math.max(0, dt) * rate);
   return {
-    /** Yaw (radians) of where the camera looks, used to turn WASD into world directions. */
     get yaw() { return state.yaw; },
-    /** Apply look deltas from input.takeLook(). */
     addLook(d) {
-      state.yaw -= d.x;
-      state.pitch = Math.min(1.2, Math.max(-0.6, state.pitch + d.y));
+      if (!d) return;
+      state.yaw -= Number.isFinite(d.x) ? d.x : 0;
+      state.pitch = THREE.MathUtils.clamp(state.pitch + (Number.isFinite(d.y) ? d.y : 0), C.minPitch, C.maxPitch);
     },
-    /** Snap behind a direction (radians, 0 = +Z). */
-    setYaw(yaw) { state.yaw = yaw; },
-    /** target: {x, y, z} feet position (already interpolated for rendering). */
-    update(target, frameDt) {
-      look.set(target.x, target.y + state.height, target.z);
+    setYaw(yaw) { if (Number.isFinite(yaw)) state.yaw = yaw; },
+    // target = interpolated feet position. lockTarget = optional interpolated enemy feet position.
+    update(target, frameDt, lockTarget = null) {
+      look.set(target.x, target.y + C.height, target.z);
+      let distance = C.distance;
+      if (lockTarget) {
+        const dx = lockTarget.x - target.x, dz = lockTarget.z - target.z;
+        if (Math.hypot(dx, dz) > .001) {
+          const angle = Math.atan2(dx, dz);
+          const delta = Math.atan2(Math.sin(angle - state.yaw), Math.cos(angle - state.yaw));
+          state.yaw += delta * blend(frameDt, C.lockTurnRate);
+        }
+        distance = Math.min(C.maxLockDistance, C.distance + Math.hypot(dx, dz) * C.lockDistanceScale);
+        look.lerp(want.set(lockTarget.x, lockTarget.y + C.lockHeight, lockTarget.z), .5);
+      }
       const cp = Math.cos(state.pitch);
-      const want = new THREE.Vector3(
-        look.x - Math.sin(state.yaw) * cp * state.distance,
-        look.y + Math.sin(state.pitch) * state.distance,
-        look.z - Math.cos(state.yaw) * cp * state.distance,
+      want.set(
+        target.x - Math.sin(state.yaw) * cp * distance,
+        target.y + C.height + Math.sin(state.pitch) * distance,
+        target.z - Math.cos(state.yaw) * cp * distance,
       );
-      const ground = zone.heightAt(want.x, want.z) + 0.4;
-      if (want.y < ground) want.y = ground;
-      if (first) { pos.copy(want); first = false; } else pos.lerp(want, 1 - Math.exp(-frameDt * 18));
+      want.y = Math.max(want.y, zone.heightAt(want.x, want.z) + C.clearance);
+      if (first) { pos.copy(want); first = false; }
+      else pos.lerp(want, blend(frameDt, C.followRate));
+      // Smoothing across a slope must not put the actual camera below the terrain.
+      pos.y = Math.max(pos.y, zone.heightAt(pos.x, pos.z) + C.clearance);
       camera.position.copy(pos);
       camera.lookAt(look);
     },

@@ -175,3 +175,25 @@ kbd.key { font: 11px ui-monospace, monospace; padding: 2px 7px; border-radius: 5
   .creator-opts { padding: 12px 14px 4px; gap: 14px; }
   .creator-foot { padding: 10px 14px; }
 }
+
+/* Action RPG interaction, quest tracker and dialogue. */
+.rpg-overlay {position:absolute;inset:0;pointer-events:none;color:#f5f5fa;font-family:system-ui,sans-serif}
+.rpg-overlay [hidden] {display:none!important}
+.rpg-overlay button,.rpg-overlay select {pointer-events:auto}
+.rpg-tracker {position:absolute;right:18px;top:85px;width:min(310px,34vw);max-height:58vh;overflow:auto;padding:16px;background:linear-gradient(130deg,#172133ed,#111723d9);border:1px solid #b8c8df36;border-radius:12px;pointer-events:auto}
+.rpg-tracker h3 {font-size:13px;letter-spacing:.2em;color:#ffd46c;margin:0 0 12px}
+.rpg-quest {padding:10px 0;border-bottom:1px solid #ffffff20;font-size:13px}
+.rpg-quest p {margin:6px 0}.rpg-quest .btn {padding:4px 8px;font-size:11px;margin:6px 5px 0 0}
+.rpg-muted {color:#b3c3d9}.rpg-next {font-size:13px;line-height:1.5;color:#ffd46c}
+.rpg-interact {position:absolute;left:50%;top:64%;transform:translateX(-50%);padding:13px 22px!important;background:#111e32ed!important;border:1px solid #ffd46c!important;color:#fff3cc!important;white-space:nowrap}
+.rpg-actions {position:absolute;bottom:20px;left:50%;transform:translateX(-50%);width:90%;text-align:center;font-size:12px;text-shadow:0 2px 4px #000;background:linear-gradient(transparent,#101728b0);padding:12px;border-radius:10px}
+.rpg-progress {color:#ffd46c;margin-bottom:7px}.rpg-target {position:absolute;top:22px;left:50%;transform:translateX(-50%);padding:12px 24px;border:1px solid #ff8c69;border-radius:8px;background:#1c202fed;color:#ffdab5;font-weight:700}
+.rpg-dialogue {position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(620px,90vw);max-height:80vh;overflow:auto;background:#152035fa;border:1px solid #d0b46c;border-radius:16px;padding:26px;box-shadow:0 20px 100px #000b;pointer-events:auto;z-index:40}
+.rpg-dialogue h2 {color:#ffdc8c;margin-top:0}.rpg-dialogue p {line-height:1.6}.rpg-dialogue .btn {margin:5px}.rpg-offer {padding:12px;margin:12px 0;border:1px solid #ffffff24;border-radius:8px}.rpg-reward {color:#85e1a2}
+.rpg-dialogue select {background:#24334b;color:white;border:1px solid #98a8c2;padding:10px;width:100%}.rpg-stat-buttons {display:flex;flex-wrap:wrap}
+.rpg-death {position:absolute;left:50%;top:43%;transform:translateX(-50%);padding:24px;background:#301c24e8;border:1px solid #ff8c91;border-radius:12px;font-size:22px}
+@media (max-width:760px) {.rpg-tracker{top:15px;right:8px;width:180px;padding:10px;max-height:36vh}.rpg-tracker h3{font-size:11px}.rpg-quest{font-size:11px}.rpg-actions{bottom:4px;font-size:9px;width:96%}.rpg-interact{top:58%;font-size:12px}.rpg-target{top:6px;left:25%;font-size:10px;padding:5px}.rpg-dialogue{padding:16px}.rpg-next{font-size:11px}}
+#ui .screen-rpg > .rpg-overlay {pointer-events:none}
+.screen-rpg {z-index:5}.screen-pause {z-index:20}
+.rpg-overlay:has(.rpg-dialogue:not([hidden])) .rpg-tracker {pointer-events:none;opacity:.35}
+.rpg-overlay:has(.rpg-dialogue:not([hidden])) .rpg-tracker button {pointer-events:none}

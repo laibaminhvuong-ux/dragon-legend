@@ -3,7 +3,7 @@
 // anime spiky hair, and race features (Saiyan tail, Namekian antennae, Frost Demon dome and tail,
 // Majin antenna). Implements the contract in character/index.js.
 import * as THREE from "three";
-import { Fighter3D, LOOK_OPTIONS } from "./cage/fighter3d.js";
+import { Fighter3D, LOOK_OPTIONS, attack } from "./cage/fighter3d.js";
 import { resolveLook } from "../game/look.js";
 
 // --------------------------------------------------------------------------------- mapping
@@ -237,13 +237,18 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
     handL: point(J.elL, 0, -0.27, 0), handR: point(J.elR, 0, -0.27, 0), footL: point(J.knL, 0, -0.45, 0.05), footR: point(J.knR, 0, -0.45, 0.05),
   };
 
-  let aura = null, t = 0;
+  let aura = null, t = 0, attackSerial = 0;
   const pose = { fly: 0, charge: 0, dash: 0, block: 0 };
   return {
     object3d: root,
     attach,
     fighter: f,
     update(dt, anim = {}) {
+      if (dt <= 0) return;
+      if (anim.attackSerial && anim.attackSerial !== attackSerial) {
+        attackSerial = anim.attackSerial;
+        f.play(attack(anim.attackKind || "jab").frames);
+      }
       t += dt;
       // ease in/out of the special poses
       const ease = (k, on) => (pose[k] += ((on ? 1 : 0) - pose[k]) * Math.min(1, dt * 8));

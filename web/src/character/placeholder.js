@@ -60,6 +60,19 @@ export function createCharacterModel(look, { castShadow = true } = {}) {
       armL.pivot.rotation.x = -swing * 0.8; armR.pivot.rotation.x = swing * 0.8;
       armL.knee.rotation.x = armR.knee.rotation.x = -0.4 * s - 0.1;
       if (!anim.onGround && !anim.flying) { legL.pivot.rotation.x = -0.5; legL.knee.rotation.x = 0.9; legR.pivot.rotation.x = 0.2; }
+      hips.rotation.x = anim.dashing ? 0.55 : anim.flying ? 0.18 : 0;
+      armL.pivot.rotation.z = armR.pivot.rotation.z = 0;
+      if (anim.flying || anim.dashing) {
+        armL.pivot.rotation.x = armR.pivot.rotation.x = 0.35;
+        legL.pivot.rotation.x = -0.15; legR.pivot.rotation.x = 0.15;
+        legL.knee.rotation.x = legR.knee.rotation.x = 0.2;
+      }
+      if (anim.charging || anim.blocking) {
+        armL.pivot.rotation.x = armR.pivot.rotation.x = -0.8;
+        armL.knee.rotation.x = armR.knee.rotation.x = -1.2;
+        armL.pivot.rotation.z = anim.charging ? -0.35 : -0.1;
+        armR.pivot.rotation.z = -armL.pivot.rotation.z;
+      }
       hips.position.y = 0.95 + Math.abs(Math.sin(phase)) * 0.04 * s;
       if (aura) aura.material.opacity = 0.25 + Math.sin(phase * 3) * 0.08;
     },

@@ -19,6 +19,8 @@ import { createFollowCamera } from "./render/camera.js";
 import { createGame, emptyIntents } from "./game/game.js";
 import { getZone } from "./game/zones.js";
 import { createStory } from "./game/story.js";
+import { FORMS } from "./data/forms.js";
+import { createCombatView } from "./combat/view.js";
 import { createStoryView } from "./world/story_view.js";
 import { buildZone } from "./world/testzone.js";
 import { createCharacterModel } from "./character/index.js";
@@ -137,22 +139,25 @@ app.scenes.register("play", {
     app.paused = false;
     const shadows = app.gfx.quality.shadows;
     ensureWorld(app.game.zone);
-    const storyView = createStoryView(app.gfx, app.story);
+    const storyView = createStoryView(app.gfx, app.story, app.game.combat);
+    const combatView = createCombatView(app.gfx, app.game.combat, events);
     app.music.play(app.game.zone.id);
     const model = createCharacterModel({ race: slot.race, ...slot.appearance }, { castShadow: shadows });
     app.gfx.scene.add(model.object3d);
     const cam = createFollowCamera(app.gfx.camera, app.game.zone);
     cam.setYaw(app.game.player.yaw);
-    play = { model, cam, storyView, prev: { ...app.game.player.pos }, saveTimer: 0 };
+    play = { model, cam, storyView, combatView, prev: { ...app.game.player.pos }, saveTimer: 0 };
     app.input.pointerLockWanted = true;
     app.ui.hideAll();
     app.ui.show("hud");
+    app.ui.show("rpg");
     if (matchMedia("(pointer: coarse)").matches) app.ui.show("touchControls");
   },
   exit() {
     app.ui.hideAll();
     play?.model.dispose();
     play?.storyView.dispose();
+    play?.combatView.dispose();
     app.story = null;
     play = null;
     app.game = null;
@@ -160,14 +165,16 @@ app.scenes.register("play", {
   },
   update(dt) {
     const { input, game } = app;
+    if (app.dialogueOpen) { app.dialogueInput?.(input); return; }
     if (input.pressed("pause")) app.setPaused(!app.paused);
-    if (app.paused || !play) return;
+    if (app.paused || app.dialogueOpen || !play) return;
     const it = emptyIntents();
     const mv = input.axis("move"), yaw = play.cam.yaw;
     it.moveX = Math.sin(yaw) * mv.y - Math.cos(yaw) * mv.x;
     it.moveZ = Math.cos(yaw) * mv.y + Math.sin(yaw) * mv.x;
     for (const a of ["jump", "dash", "flight", "melee", "kiBlast", "transform", "lockOn", "interact"]) it[a] = input.pressed(a);
     for (const a of ["ascend", "descend", "charge", "block", "beam"]) it[a] = input.down(a);
+    it.melee = input.down("melee") || it.melee;
     play.prev = { ...game.player.pos };
     game.update(dt, it);
     app.story.update(dt, it);
@@ -177,15 +184,34 @@ app.scenes.register("play", {
   render(frameDt, alpha) {
     if (!play) return app.gfx.render(frameDt);
     const p = app.game.player;
-    const pos = { x: play.prev.x + (p.pos.x - play.prev.x) * alpha, y: play.prev.y + (p.pos.y - play.prev.y) * alpha, z: play.prev.z + (p.pos.z - play.prev.z) * alpha };
-    if (!app.paused) play.cam.addLook(app.input.takeLook(frameDt));
+    const renderAlpha = app.paused || app.dialogueOpen ? 1 : alpha;
+    const pos = { x: play.prev.x + (p.pos.x - play.prev.x) * renderAlpha, y: play.prev.y + (p.pos.y - play.prev.y) * renderAlpha, z: play.prev.z + (p.pos.z - play.prev.z) * renderAlpha };
+    const frozen = app.paused || app.dialogueOpen;
+    if (!frozen) play.cam.addLook(app.input.takeLook(frameDt));
     else app.input.takeLook(frameDt);
+    const lookKey = app.game.slot.appearance.outfit;
+    if (play.outfit !== lookKey) {
+      if (play.outfit !== undefined) {
+        play.model.dispose();
+        play.model = createCharacterModel({ race: app.game.slot.race, ...app.game.slot.appearance }, { castShadow: app.gfx.quality.shadows });
+        app.gfx.scene.add(play.model.object3d);play.lastForm=undefined;
+      }
+      play.outfit=lookKey;
+    }
+    play.model.object3d.visible = p.health > 0;
     play.model.object3d.position.set(pos.x, pos.y, pos.z);
     play.model.object3d.rotation.y = p.yaw;
-    play.model.update(app.paused ? 0 : frameDt, { speed: Math.hypot(p.vel.x, p.vel.z), onGround: p.onGround, flying: p.flying, charging: p.charging, dashing: p.dashing, blocking: p.blocking });
-    play.cam.update(pos, frameDt);
-    world.update(app.paused ? 0 : frameDt, pos, app.gfx.camera.position);
-    play.storyView.update(app.paused ? 0 : frameDt, pos);
+    play.model.update(frozen ? 0 : frameDt, { speed: Math.hypot(p.vel.x, p.vel.z), onGround: p.onGround, flying: p.flying, charging: p.charging, dashing: p.dashing, blocking: p.blocking, attackSerial: p.attackSerial, attackKind: p.attackKind });
+    if (play.lastForm !== p.form) {
+      play.lastForm = p.form;
+      play.model.setHairColor(FORMS[p.form]?.hairColor ?? null);
+      play.model.setAura(FORMS[p.form]?.auraColor ?? null);
+    }
+    const target = app.game.combat.enemies.find(e => e.id === p.lockTarget && e.health > 0);
+    play.cam.update(pos, frozen ? 0 : frameDt, target?.pos);
+    play.combatView.update(frozen ? 0 : frameDt);
+    world.update(frozen ? 0 : frameDt, pos, app.gfx.camera.position);
+    play.storyView.update(frozen ? 0 : frameDt, pos);
     // battle music when a villain is close, the world's own theme otherwise
     if ((play.musicCheck = (play.musicCheck || 0) + frameDt) > 1) {
       play.musicCheck = 0;
@@ -201,7 +227,7 @@ app.scenes.register("play", {
 let hadLock = false;
 document.addEventListener("pointerlockchange", () => {
   const locked = document.pointerLockElement === canvas;
-  if (hadLock && !locked && app.scenes.name === "play" && !app.paused) app.setPaused(true);
+  if (hadLock && !locked && app.scenes.name === "play" && !app.paused && !app.dialogueOpen) app.setPaused(true);
   hadLock = locked;
 });
 addEventListener("visibilitychange", () => document.hidden && app.saveNow());

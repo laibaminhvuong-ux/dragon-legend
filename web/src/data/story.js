@@ -1,3 +1,4 @@
+import { installRpgContent } from "./rpg.js";
 // The story: characters, where they stand, and every quest from the Saiyan Saga to Super Hero.
 // game/story.js runs it. Players are their own fighter living through the story alongside the
 // Z Fighters. Names and events follow Dragon Ball Z and Dragon Ball Super.
@@ -304,7 +305,7 @@ export const LINKS = {
 export const START_ZONES = ["earth_plains", "kame_island"];
 
 // Until M2 combat lands, "defeat" steps are confrontations: walk up to the enemy and press Interact.
-export const COMBAT_AVAILABLE = false;
+export const COMBAT_AVAILABLE = true;
 
 // ------------------------------------------------------------------ quests
 const xp = (level, k = 0.6) => Math.max(40, Math.round(xpToNext(level) * k));
@@ -730,3 +731,6 @@ export const QUESTS = [
     done: "Pure Majin. Gentle and terrifying at once.",
     steps: [train("kai_world", 80, "Meditate at the Kai crystals (stand still)", "still", { x: 30, z: 60, r: 10 })], rewards: { forms: ["PureMajin"], xp: xp(110) } },
 ];
+
+// Repeatable combat contracts provide progression between story level gates.
+installRpgContent(NPCS, QUESTS, CHARACTERS);

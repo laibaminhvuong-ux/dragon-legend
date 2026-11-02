@@ -81,7 +81,7 @@ export function createInput(target, settings, events = null) {
 
   const onKeyDown = (e) => {
     if (typing(e)) return;
-    if (swallow.has(e.code)) e.preventDefault();
+    if (input.pointerLockWanted && swallow.has(e.code)) e.preventDefault();
     lastDevice = "keyboard";
     codesDown.add(e.code);
     recompute();

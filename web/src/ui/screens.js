@@ -12,3 +12,6 @@ registerScreen("creator", creator);
 registerScreen("hud", hud);
 registerScreen("pause", pause);
 registerScreen("touchControls", touchControls);
+
+import { rpg } from "./rpg.js";
+registerScreen("rpg", rpg);
