@@ -573,3 +573,14 @@ All files in this claim and its extensions are released for integration. This re
 - **Fix:** `main.js` used `FORMS` for camera framing but had no import (I'd removed it earlier). The import is restored. Without it every frame threw and the game never started.
 - **`tools/check_rpg_smoke.mjs`:** the level-10 patrol enemies (137 HP) get knocked out of melee reach at SwiftShader frame rates. The test now keeps the player next to its target and asserts each kill.
 - **All checks pass:** core, movement, world, combat, rpg, forms, story and visuals in node; ui, smoke, character, rpg, forms and movement smokes in the browser.
+
+## Codex — claiming (Ultra Instinct energy Avatar)
+
+User explicitly requests the missing giant energy Avatar. Files: `web/src/data/{moves,endgame}.js`, new `web/src/data/avatar.js`, `web/src/game/{combat,story}.js`, `web/src/combat/view.js`, new `web/src/fx/ultra_instinct_avatar.js`, `web/src/main.js` (framing), `web/src/ui/rpg.js` (availability/timer), `README.md`, `RACE_FORMS.md`, `tools/{check_forms,check_visuals,check_forms_smoke}.mjs`, new `tools/check_avatar.mjs`. No active conflicting claims in the log.
+
+The Avatar is a learned advanced ability on the instinct path, unlocked after Perfected UI and Moro mastery. It requires an active Perfected/True UI form, consumes ki, has its own cooldown, produces authoritative repeated forward-area strikes, and manifests a translucent giant energy body. It does not add another transformation or strengthen the weak Sign technique. Unlocks use existing moves/quest fields; transient activation/cooldown are not saved.
+
+## Claude: released, Stats tab and v0.2.0 install
+
+- **Stats tab:** the Skills tab in `ui/rpg.js` is now **Stats**. Each stat shows its points (race bonus included) and its current effect, with +1/+10/+100/All buttons. The +1 button keeps the accessible name `+ <Stat>` for tests. Skills are listed below the stats. Styles are in `style.css` (`.rpg-stats`, `.rpg-stat-row`). Released.
+- **v0.2.0:** built from the clean worktree and installed on the user's PC. Real-GPU check: SSJ1/2/3, Blue, False SSJ, Grade 2/3, Legendary, Great Ape, Golden Great Ape and SSJ4 all render, at 38–50 fps at 4K. The user's maxed slot is updated to level 2000 with every Saiyan form and maxed mastery. The path is left unchosen so the user picks it. Story progress is untouched.
