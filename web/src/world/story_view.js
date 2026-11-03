@@ -3,6 +3,8 @@
 // createStoryView(gfx, story, combat = null) -> { update(dt, playerPos), refresh(), dispose() }
 import * as THREE from "three";
 import { createCharacterModel } from "../character/index.js";
+import { createWishDragon } from '../character/wish_dragon.js';
+import { ORB_LOOKS } from '../data/dragon_hunts.js';
 
 const disposables = [];
 const own = (x) => { disposables.push(x); return x; };
@@ -70,7 +72,7 @@ export function createStoryView(gfx, story, combat = null) {
       seen.add(n.id);
       let e = npcs.get(n.id);
       if (!e) {
-        const model = createCharacterModel({ ...n.look }, { castShadow: quality.shadows, lod: true });
+        const model = n.dragon?createWishDragon(n.dragon):createCharacterModel({ ...n.look }, { castShadow: quality.shadows, lod: true });
         model.object3d.scale.multiplyScalar(n.scale);
         model.object3d.position.set(n.x, n.y, n.z);
         model.object3d.rotation.y = n.rot;
@@ -116,10 +118,11 @@ export function createStoryView(gfx, story, combat = null) {
         crate.position.y = -0.25; crate.castShadow = true;
         g.add(crate);
       } else {
-        const big = p.item === "namek_ball";
-        const ball = new THREE.Mesh(ballGeo, own(new THREE.MeshPhysicalMaterial({ map: dragonBallTexture(p.index % 7 + 1, big ? "#c81818" : "#d8202a"), roughness: 0.08, clearcoat: 1, emissive: 0xff8a20, emissiveIntensity: 0.35 })));
-        ball.scale.setScalar(big ? 2.2 : 1);
+        const orb=ORB_LOOKS[p.item] || ORB_LOOKS.dragon_ball;
+        const ball = new THREE.Mesh(ballGeo, own(new THREE.MeshPhysicalMaterial({ map: dragonBallTexture(p.index % 7 + 1), roughness: 0.08, clearcoat: 1, emissive: orb.color, emissiveIntensity: .35,transparent:!!orb.projection,opacity:orb.projection ? .7 : 1 })));
+        ball.scale.setScalar(orb.scale);
         g.add(ball);
+        if(orb.projection){const tag=label('Cosmic retrieval beacon',{color:'#ffe39a'});tag.position.y=1.7;g.add(tag);}
       }
       const glow = new THREE.Sprite(own(new THREE.SpriteMaterial({ map: glowTex, color: 0xffa040, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })));
       glow.scale.setScalar(2.4);

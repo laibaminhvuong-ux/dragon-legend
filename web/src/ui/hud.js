@@ -3,6 +3,7 @@ import { renameText } from "../data/names.js";
 // Polls app.game.hud() once per frame but only touches the DOM when a value actually changes.
 import { h } from "./dom.js";
 import { STR } from "./strings.js";
+import { createAimReticle } from "./aimReticle.js";
 
 const LOW_FRACTION = 0.3;
 const TOAST_MS = 3400;
@@ -15,6 +16,7 @@ export function hud(app) {
   let offStats = null;
   let fpsTimer = 0;
   let toastCount = 0;
+  let reticle = null;
 
   const put = (key, value, apply) => {
     if (last[key] === value) return;
@@ -82,6 +84,7 @@ export function hud(app) {
 
       root.append(left, fps, toasts);
       el.append(root);
+      reticle = createAimReticle(root,app);
       els = { root, race, level, zone, form, hp, ki, xp, power, zeni, points, fps, toasts };
 
       put("showFps", app.settings.get("showFps"), (v) => { fps.hidden = !v; });
@@ -90,6 +93,7 @@ export function hud(app) {
     },
 
     update(frameDt) {
+      reticle?.update();
       if (!els) return;
       const game = app.game;
       if (!game) return;
@@ -98,7 +102,7 @@ export function hud(app) {
       put("race", s.raceName, (v) => { els.race.textContent = v; });
       put("level", s.level, (v) => { els.level.textContent = STR.hud.level(v); });
       put("zone", s.zoneName || "", (v) => { els.zone.textContent = v; });
-      put("form", s.form && s.form !== "Base" ? s.formName || s.form : "", (v) => {
+      put("form", s.formName !== "Base" ? s.formName || s.form : "", (v) => {
         els.form.textContent = v;
         els.form.hidden = !v;
       });
@@ -141,6 +145,7 @@ export function hud(app) {
     },
 
     unmount() {
+      reticle?.dispose();reticle=null;
       if (offNotify) offNotify();
       if (offStats) offStats();
       offNotify = offStats = null;

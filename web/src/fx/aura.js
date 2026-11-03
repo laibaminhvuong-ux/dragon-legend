@@ -148,6 +148,7 @@ export function createAura(look) {
   let t = Math.random() * 10, burst = 1;
   return {
     object3d: root,
+    setColor(hex) { outer.material.uniforms.uColor.value.setHex(hex); },
     /** A flare, as at the moment of transforming. */
     flare() { burst = 1; },
     update(dt) {

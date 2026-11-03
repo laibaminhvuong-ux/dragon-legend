@@ -1,6 +1,6 @@
 import { createAppearancePreview } from "./appearancePreview.js";
 import { RACES } from '../data/races.js';
-import { FACES, BUILDS, HAIR_COLORS, TINTS } from '../data/appearance.js';
+import { FACES, BUILDS, HAIR_COLORS, KI_COLORS, KI_COLOR_NAMES, TINTS } from '../data/appearance.js';
 import { ACCESSORIES, accessoryAvailable } from '../data/accessories.js';
 import { FORM_PATHS, formAvailable, hasFormPath } from '../game/forms.js';
 import { masteryProgress } from '../game/mastery.js';
@@ -11,6 +11,8 @@ import { h, btn } from './dom.js';
 import { MOVES } from '../data/moves.js';
 import { OUTFITS } from '../data/outfits.js';
 import { FORMS } from '../data/forms.js';
+import { KAIOKEN } from '../data/kaioken.js';
+import { kiColourInput } from './kiColourInput.js';
 
 const displayCode = code => (code || '').replace(/^Key/, '').replace(/^Digit/, '').replace('Mouse0','LMB').replace('Mouse2','RMB').replace('ControlLeft','Ctrl').replace(/^Pad/, 'Pad ');
 export function rpg(app) {
@@ -38,7 +40,7 @@ export function rpg(app) {
         const card=h('section','rpg-offer');
         card.append(h('h3','',`${q.title} · Lv. ${q.level}`),h('p','',q.text),h('p','rpg-muted',q.objective));
         const r=q.rewards || {};
-        const rewards=[r.xp?`${r.xp} XP`:null,r.zeni?`${r.zeni} zeni`:null,...(r.moves || []).map(id=>MOVES[id]?.name || id),...(r.forms || []).map(id=>FORMS[id]?.name || id)].filter(Boolean);
+        const rewards=[r.xp?`${r.xp} XP`:null,r.zeni?`${r.zeni} zeni`:null,r.statPoints?`${r.statPoints} stat points`:null,r.restore?'Health and Ki restored':null,...(r.moves || []).map(id=>MOVES[id]?.name || id),...(r.forms || []).map(id=>FORMS[id]?.name || id)].filter(Boolean);
         card.append(h('p','rpg-reward',rewards.join(' · ') || 'Training progress'));
         card.append(btn('Accept quest',()=> {
           if(app.story.acceptQuest(q.id)){app.saveNow();close();stamp='';}
@@ -88,6 +90,14 @@ export function rpg(app) {
     const nav=h('nav','rpg-stat-buttons');nav.setAttribute('aria-label','Character menu tabs');
     for(const name of tabNames)nav.append(btn(name,()=>showTab(name),name===tab?'primary':''));modal.append(nav);
     if(tab==='Character' || tab==='Accessories')preview=createAppearancePreview(modal,app);
+    if(tab==='Forms' || tab==='Techniques'){
+      const kai=app.game.kaioken.snapshot(),ranks=app.game.kaioken.ranks();
+      modal.append(h('h3','','Kaiyoken overlay'),h('p','rpg-muted',`Keep your Saiyan form and equipped attack. Toggle with ${key('kaioken')}, gamepad D-pad left, the touch KAIO button, or here. x2: ${KAIOKEN.tiers[2].duration} seconds; x10: ${KAIOKEN.tiers[10].duration} seconds. Extra Ki and health drain; ${KAIOKEN.cooldown}-second cooldown after stopping. Ends at ${KAIOKEN.minHealth*100}% health.`));
+      if(ranks.length){
+        modal.append(picker('Kaiyoken intensity',ranks.map(rank=>[rank,`x${rank}`]),slot.loadout.kaiokenRank || 2,v=>{tell(app.game.kaioken.select(Number(v)));showTab(tab);}));
+        modal.append(btn(kai.active?'Stop Kaiyoken':'Activate Kaiyoken',()=>{tell(app.game.kaioken.toggle());showTab(tab);}));
+      }else modal.append(h('p','rpg-muted','Learn Kaiyoken through King Kae training. Complete the x10 form training to unlock its intensity.'));
+    }
     if(tab==='Character'){
       const apply=(key,value)=>tell(app.game.customizeAppearance({[key]:value}));
       const palettes=(values)=>values.map((c,i)=>[i,`#${c.toString(16).padStart(6,'0')}`]);
@@ -99,7 +109,13 @@ export function rpg(app) {
         ['Hair color','hairColor',palettes(HAIR_COLORS),true],
         ['Outfit tint','outfitTint',palettes(TINTS),true],
       ])modal.append(picker(label,options,slot.appearance[key],v=>apply(key,numeric?Number(v):v)));
+      modal.append(picker('Ki colour',[["custom","Custom hex"],...KI_COLORS.map((c,i)=>[i,KI_COLOR_NAMES[i]])],slot.appearance.kiColorHex?'custom':slot.appearance.kiColor,v=>{
+        if(v==='custom')return;
+        tell(app.game.customizeAppearance({kiColor:Number(v),kiColorHex:null}));showTab('Character');
+      }));
+      modal.append(kiColourInput(slot.appearance,(value,phase)=>{const error=app.game.customizeAppearance({kiColorHex:value});if(!error && !phase?.preview){app.saveNow();showTab('Character');}return error;}));
       modal.append(picker('Outfit',slot.outfits.map(id=>[id,OUTFITS[id]?.name || id]),slot.appearance.outfit,v=>tell(app.game.equipOutfit(v)?null:'That outfit is unavailable.')));
+      modal.append(h('p','rpg-muted','Ki colour changes your charging aura, blasts and beams. Transformation auras keep their form colours. The preview shows your charging aura.'));
     }else if(tab==='Accessories'){
       for(const [id,item] of Object.entries(ACCESSORIES)){
         const available=accessoryAvailable(slot,id),card=h('section','rpg-offer');card.append(h('h3','',item.name));
@@ -169,7 +185,7 @@ export function rpg(app) {
     prompt.hidden=!interact || app.paused || isOpen;
     prompt.textContent=interact?`[${hints.interact}] ${interact.action} · ${interact.name}`:'';
     actions.textContent=`${hints.melee} Melee · ${hints.blast} Ki blast · ${hints.beam} ${combat.techniqueName} · ${hints.block} Guard · ${hints.charge} Charge · ${hints.lock} Lock-on`;
-    controls.textContent=`${hints.flight} Flight · Space / Ctrl Up / Down · ${hints.dash} Dash · Find ! markers for quests`;
+    controls.textContent=`${hints.flight} Flight · Space / Ctrl Up / Down · ${hints.dash} Dash · ${key('kaioken')} Kaiyoken · Find ! markers for quests`;
     target.hidden=!combat.target;
     target.textContent=combat.target?`${combat.target.boss?'BOSS · ':''}${combat.target.name} · Lv. ${combat.target.level} · ${Math.ceil(combat.target.health)} / ${Math.ceil(combat.target.maxHealth)} HP`:'';
     const rowsKey=JSON.stringify(rows);
@@ -185,6 +201,8 @@ export function rpg(app) {
     const n=story.nextMain();
     next.textContent=w?`${w.text} · ${data.dist} m`:n?.locked?`Next story: ${n.title} · requires Lv. ${n.level}. Take a Training Guide patrol to level up.`:n?.giver?`Next story: ${n.title} · ${n.giver} · ${n.zone}`:'Speak to a Training Guide for repeatable combat quests.';
     progress.textContent=`${hud.statPoints} unspent stat points · ${combat.techniqueName}${combat.beamCharge>0?` · charging ${Math.round(combat.beamCharge*100)}%`:''}${combat.beamCd>0?` · cooldown ${combat.beamCd.toFixed(1)}s`:''}${combat.instinctFocus>0?` · UI focus ${combat.instinctFocus.toFixed(1)}s`:''}${combat.avatar.active?` · Avatar ${combat.avatar.remaining.toFixed(1)}s`:combat.avatar.cooldown>0?` · Avatar cooldown ${combat.avatar.cooldown.toFixed(1)}s`:''}`;
+    if(combat.kaioken.active)progress.textContent+=` · Kaiyoken x${combat.kaioken.rank}: ${combat.kaioken.remaining.toFixed(1)}s`;
+    else if(combat.kaioken.cooldown>0)progress.textContent+=` · Kaiyoken cooldown ${combat.kaioken.cooldown.toFixed(1)}s`;
     death.hidden=!combat.respawn;death.textContent=`Defeated · respawning in ${Math.ceil(combat.respawn)}s`;
   }
   return {

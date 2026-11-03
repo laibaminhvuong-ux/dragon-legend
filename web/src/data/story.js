@@ -1,6 +1,7 @@
 import { renameDeep } from "./names.js";
 import { installEndgame, rebalanceQuestRewards } from "./endgame.js";
 import { installRpgContent } from "./rpg.js";
+import { installDragonHunts } from './dragon_hunts.js';
 // The story: characters, where they stand, and every quest from the Saiyan Saga to Super Hero.
 // game/story.js runs it. Players are their own fighter living through the story alongside the
 // Z Fighters. Names and events follow Dragon Ball Z and Dragon Ball Super.
@@ -736,6 +737,7 @@ export const QUESTS = [
 
 // Repeatable combat contracts provide progression between story level gates.
 installEndgame(NPCS, QUESTS, CHARACTERS, LINKS);
+installDragonHunts(NPCS, QUESTS, CHARACTERS);
 installRpgContent(NPCS, QUESTS, CHARACTERS);
 rebalanceQuestRewards(QUESTS);
 

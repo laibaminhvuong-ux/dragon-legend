@@ -1,9 +1,9 @@
 // Character appearance ("look") validation and defaults. A look is what the creator produces and
 // what a slot stores in `appearance`:
-//   { race, skin, face, hair, hairColor, build, outfit, outfitTint }
+//   { race, skin, face, hair, hairColor, kiColor, build, outfit, outfitTint }
 //   race/face/hair/build/outfit = string ids; skin/hairColor/outfitTint = 0-based palette indexes.
 import { getRace } from "../data/races.js";
-import { FACES, HAIR_STYLES, HAIR_COLORS, BUILDS, TINTS, findById } from "../data/appearance.js";
+import { FACES, HAIR_STYLES, HAIR_COLORS, KI_COLORS, BUILDS, TINTS, findById, kiColor, normalizeKiHex } from "../data/appearance.js";
 import { OUTFITS, outfitAllowed } from "../data/outfits.js";
 
 const isIndex = (v, list) => Number.isInteger(v) && v >= 0 && v < list.length;
@@ -17,6 +17,8 @@ export function validateLook(look) {
   if (!findById(FACES, look.face)) return "Bad face";
   if (!findById(HAIR_STYLES, look.hair) || !race.hairStyles.includes(look.hair)) return "That hair isn't available for this race";
   if (!isIndex(look.hairColor, HAIR_COLORS)) return "Bad hair colour";
+  if (look.kiColor !== undefined && !isIndex(look.kiColor, KI_COLORS)) return "Bad Ki colour";
+  if (look.kiColorHex != null && !normalizeKiHex(look.kiColorHex)) return "Enter a valid Ki hex colour, such as #63CFFF.";
   if (!findById(BUILDS, look.build)) return "Bad build";
   if (!OUTFITS[look.outfit]?.starter || !outfitAllowed(look.outfit, look.race)) return "That outfit isn't available for this race";
   if (!isIndex(look.outfitTint, TINTS)) return "Bad outfit colour";
@@ -27,7 +29,7 @@ export function validateLook(look) {
 export function defaultLook(raceId = "Saiyan") {
   const race = getRace(raceId) || getRace("Saiyan");
   const outfit = Object.keys(OUTFITS).find((id) => OUTFITS[id].starter && outfitAllowed(id, race.id));
-  return { race: race.id, skin: 0, face: FACES[0].id, hair: race.hairStyles[0], hairColor: 0, build: "Average", outfit, outfitTint: 0 };
+  return { race: race.id, skin: 0, face: FACES[0].id, hair: race.hairStyles[0], hairColor: 0, kiColor: 0, build: "Average", outfit, outfitTint: 0 };
 }
 
 /** Resolves a stored look into actual colours/objects for renderers. */
@@ -37,6 +39,7 @@ export function resolveLook(look) {
     race,
     skinColor: race.skins[look.skin] ?? race.skins[0],
     hairColor: HAIR_COLORS[look.hairColor] ?? HAIR_COLORS[0],
+    kiColor: kiColor(look),
     tintColor: TINTS[look.outfitTint] ?? TINTS[0],
     face: look.face,
     hair: look.hair,

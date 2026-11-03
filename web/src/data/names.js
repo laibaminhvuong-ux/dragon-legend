@@ -23,7 +23,7 @@ export const NAMES = [
   ["Jiren", "Jiran"], ["Toppo", "Toppa"], ["Kefla", "Kafla"], ["Caulifla", "Kaulifla"], ["Broly", "Brolo"],
   ["Paragus", "Paragos"], ["Cheelai", "Chelai"], ["Lemo", "Lemmo"], ["Gamma", "Gama"], ["Hedo", "Heddo"],
   ["Magenta", "Majenta"], ["Shenron", "Shenra"], ["Porunga", "Porunda"], ["Merus", "Meros"], ["Moro", "Morro"],
-  ["Saganbo", "Sagambo"], ["Granolah", "Granolo"], ["Monaito", "Monaido"], ["Elec", "Elek"], ["Bardock", "Bardak"],
+  ["Saganbo", "Sagambo"], ["Granolah", "Granolo"], ["Monaito", "Monaido"], ["Toronbo", "Toronba"], ["Elec", "Elek"], ["Bardock", "Bardak"],
   ["Uub", "Uubo"], ["Gogeta", "Gogeto"], ["Vegito", "Vegitto"], ["Pikkon", "Pikko"], ["Bojack", "Bojak"], ["Cooler", "Kooler"],
   ["Mai", "Mae"], ["Hit", "Hitto"], ["Frost", "Frosk"], ["Gas", "Gaz"], ["Pan", "Panna"], ["Nail", "Nael"], ["Kale", "Kael"],
 ];

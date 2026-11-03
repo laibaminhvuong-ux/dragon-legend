@@ -10,6 +10,7 @@ const BUTTONS = [
   ["ascend", "UP", ""],
   ["descend", "DOWN", ""],
   ["transform", "FORM", ""],
+  ["kaioken", "KAIO", ""],
   ["lockOn", "LOCK", ""],
   ["melee", STR.touch.attack, "hot"],
   ["kiBlast", STR.touch.ki, "hot"],

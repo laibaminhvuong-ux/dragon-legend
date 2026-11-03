@@ -10,7 +10,7 @@ export const MOVES = {
   SolarFlare: { name: "Solar Flare", kind: "utility", kiCost: 15, power: 0, races: null, desc: "A blinding flash that stuns everyone facing you." },
   TriBeam: { name: "Tri-Beam", kind: "beam", kiCost: 45, power: 5, races: null, desc: "Tien's devastating triangle blast. Costs a lot of ki." },
   WolfFangFist: { name: "Wolf Fang Fist", kind: "melee", kiCost: 12, power: 2.5, races: null, desc: "Yamcha's flurry of wolf-like strikes." },
-  Kaioken: { name: "Kaioken", kind: "utility", kiCost: 4, power: 0, races: null, desc: "King Kai's technique: multiply your power for a short time at the cost of health." },
+  Kaioken: { name: "Kaioken", kind: "utility", kiCost: 0, power: 0, races: null, desc: "An independent technique: toggle it in Forms / Techniques or with K. Combine it with a Saiyan form while keeping your beam equipped. Extra power costs continuous Ki and health; a cooldown follows. Train Kaioken x10 to unlock the higher intensity." },
   SpiritBomb: { name: "Spirit Bomb", kind: "ultimate", kiCost: 100, power: 12, races: null, desc: "Gather energy from all living things into one giant sphere. Takes a long charge." },
   SpecialBeamCannon: { name: "Special Beam Cannon", kind: "beam", kiCost: 40, power: 5.5, races: null, desc: "Piccolo's piercing spiral beam." },
   Masenko: { name: "Masenko", kind: "beam", kiCost: 25, power: 3.5, races: null, desc: "A quick overhead beam Piccolo taught Gohan." },

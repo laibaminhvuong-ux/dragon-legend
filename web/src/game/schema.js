@@ -2,11 +2,14 @@
 // and bump SCHEMA_VERSION with every change.
 import { STAT_NAMES, SLOT_COUNT, STARTING_ZENI } from "../data/stats.js";
 import { ensureStoryState } from "./story.js";
+import { KI_COLORS, normalizeKiHex } from "../data/appearance.js";
 
 // v2: slot.story (unlocked/visited worlds, items, flags); zone "test" became "earth_plains"
 // v3: persistent equipped technique; all v1/v2 fields are retained.
 // v4: shared Saiyan legacy unlocks and a persistent max-level form path.
-export const SCHEMA_VERSION = 4;
+// v5: personal Ki colour, default cyan for existing fighters.
+// v6: optional custom Ki hex colour; the palette choice is retained as a fallback.
+export const SCHEMA_VERSION = 6;
 
 export function newProfile() {
   return { version: SCHEMA_VERSION, slots: new Array(SLOT_COUNT).fill(null), lastSlot: -1 };
@@ -17,7 +20,7 @@ export function newSlot(look, now = Date.now()) {
   const { race, ...appearance } = look;
   return withStory({
     race,
-    appearance: {...appearance,accessory:appearance.accessory || "None"},
+    appearance: {...appearance,kiColor:appearance.kiColor ?? 0,kiColorHex:normalizeKiHex(appearance.kiColorHex),accessory:appearance.accessory || "None"},
     level: 1,
     xp: 0,
     statPoints: 0,
@@ -26,7 +29,7 @@ export function newSlot(look, now = Date.now()) {
     outfits: [look.outfit], // owned outfit ids
     forms: [], // unlocked form ids
     moves: [], // unlocked move ids
-    loadout: { technique: "EnergyWave", formPath: null, accessory: "None" },
+    loadout: { technique: "EnergyWave", formPath: null, accessory: "None", kaiokenRank:2 },
     formMastery: {},
     quests: {}, // questId -> { status, step, t, count, collected, completions } (game/story.js)
     story: null, // filled by ensureStoryState below
@@ -44,6 +47,8 @@ function withStory(slot) {
 }
 
 function fillSlot(s) {
+  s.appearance.kiColorHex=normalizeKiHex(s.appearance.kiColorHex);
+  if (!Number.isInteger(s.appearance.kiColor) || s.appearance.kiColor < 0 || s.appearance.kiColor >= KI_COLORS.length) s.appearance.kiColor = 0;
   s.stats ||= {};
   for (const n of STAT_NAMES) s.stats[n] ??= 0;
   s.outfits ||= [s.appearance.outfit];
@@ -51,6 +56,7 @@ function fillSlot(s) {
   s.moves ||= [];
   if (!s.loadout || typeof s.loadout !== "object" || Array.isArray(s.loadout)) s.loadout = {};
   if (typeof s.loadout.technique !== "string") s.loadout.technique = "EnergyWave";
+  if(![2,10].includes(s.loadout.kaiokenRank))s.loadout.kaiokenRank=2;
   s.loadout.accessory ??= s.appearance.accessory || "None";
   s.appearance.accessory ??= s.loadout.accessory;
   if(!s.formMastery || typeof s.formMastery!=="object" || Array.isArray(s.formMastery))s.formMastery={};

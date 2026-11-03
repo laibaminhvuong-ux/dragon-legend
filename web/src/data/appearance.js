@@ -1,4 +1,4 @@
-// Creator options shared by every race. Saves store ids and palette *indexes*, never colours.
+// Creator options shared by every race. Saves store palette indexes and an optional Ki hex override.
 export const FACES = [
   { id: "Calm", name: "Calm" },
   { id: "Fierce", name: "Fierce" },
@@ -20,6 +20,22 @@ export const HAIR_STYLES = [
 ];
 
 export const HAIR_COLORS = [0x141418, 0x462d1e, 0x966ec8, 0xe6c878, 0xb42828, 0xf0f0f0];
+
+// Palette indexes are persisted on each fighter. Keep existing entries in this order.
+export const KI_COLORS = [0x63cfff, 0xf4f7ff, 0xffd34d, 0xff863e, 0xff4f65, 0x63ee9b, 0xb78aff, 0xff83da];
+export const KI_COLOR_NAMES = ['Cyan', 'White', 'Gold', 'Orange', 'Red', 'Green', 'Violet', 'Pink'];
+export const KI_CHARGE_LOOK = {core:0xffffff,flicker:1,size:1.15};
+/** Accept RGB or RRGGBB, with or without #. Store a canonical six-digit value. */
+export function normalizeKiHex(value) {
+  if(typeof value!=='string')return null;
+  let hex=value.trim().replace(/^#/,'');
+  if(/^[0-9a-f]{3}$/i.test(hex))hex=[...hex].map(c=>c+c).join('');
+  return /^[0-9a-f]{6}$/i.test(hex)?'#'+hex.toLowerCase():null;
+}
+export const kiColor = (appearance) => {
+  const hex=normalizeKiHex(appearance?.kiColorHex);
+  return hex?Number.parseInt(hex.slice(1),16):KI_COLORS[appearance?.kiColor] ?? KI_COLORS[0];
+};
 
 // height/width/depth scale the 1.8 m base body
 export const BUILDS = [

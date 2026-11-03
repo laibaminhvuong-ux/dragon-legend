@@ -6,6 +6,8 @@ import { createGreatApe } from "./great_ape.js";
 import * as THREE from "three";
 import { Fighter3D, LOOK_OPTIONS, attack } from "./cage/fighter3d.js";
 import { resolveLook } from "../game/look.js";
+import { KI_CHARGE_LOOK } from "../data/appearance.js";
+import { KAIOKEN } from "../data/kaioken.js";
 import { irisTexture } from "./cage/fighter3d.js";
 import { FORM_LOOKS } from "../data/form_looks.js";
 import { createAura } from "../fx/aura.js";
@@ -370,7 +372,7 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
     handL: point(J.elL, 0, -0.27, 0), handR: point(J.elR, 0, -0.27, 0), footL: point(J.knL, 0, -0.45, 0.05), footR: point(J.knR, 0, -0.45, 0.05),
   };
 
-  let aura = null, t = 0, attackSerial = 0;
+  let aura = null, chargeAura = null, kaiokenAura = null, t = 0, attackSerial = 0;
   // transformations (setForm): what was swapped out, so it can be put back exactly
   const baseScale = root.scale.clone();
   const furBases = [];
@@ -411,6 +413,22 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
     attach,
     fighter: f,
     update(dt, anim = {}) {
+      if (anim.kaioken && !kaiokenAura) {
+        kaiokenAura = createAura(KAIOKEN.aura);kaiokenAura.object3d.name='kaioken-overlay-aura';
+        kaiokenAura.object3d.traverse(o=>{o.layers.set(1);o.castShadow=false;});root.add(kaiokenAura.object3d);
+      }
+      if(kaiokenAura){kaiokenAura.object3d.visible=!!anim.kaioken;if(anim.kaioken && dt>0)kaiokenAura.update(dt);}
+      // Charging remains visible at full Ki, including in base form.
+      if (anim.charging && !chargeAura) {
+        chargeAura = createAura({color:L.kiColor,...KI_CHARGE_LOOK});
+        chargeAura.object3d.name = 'ki-charge-aura';
+        chargeAura.object3d.traverse(o=>{o.layers.set(1);o.castShadow=false;});
+        root.add(chargeAura.object3d);
+      }
+      if (chargeAura) {
+        chargeAura.object3d.visible = !!anim.charging;
+        if (anim.charging && dt>0) chargeAura.update(dt);
+      }
       if (dt <= 0) return;
       if (anim.attackSerial && anim.attackSerial !== attackSerial) {
         attackSerial = anim.attackSerial;
@@ -457,6 +475,7 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
       if (aura) { aura.material.opacity = 0.22 + Math.sin(t * 14) * 0.06; aura.scale.y = 1.45 + Math.sin(t * 9) * 0.05; }
     },
     setHairColor(hex) { hairMat.color.setHex(hex ?? L.hairColor); },
+    setKiColor(hex) { if(L.kiColor===hex)return;L.kiColor=hex;chargeAura?.setColor(hex); },
     /** Shows a transformation as in the story (data/form_looks.js); "" or null = base form. */
     setForm(id) {
       id = id || "";
@@ -514,6 +533,8 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
     dispose() {
       if (lodEntry) lodModels.delete(lodEntry);
       clearForm();
+      chargeAura?.dispose(); chargeAura = null;
+      kaiokenAura?.dispose(); kaiokenAura = null;
       this.setAura(null);
       for (const o of owned) o.dispose?.();
       f.dispose();

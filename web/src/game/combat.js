@@ -7,6 +7,7 @@ import { COMBAT as C } from '../data/combat.js';
 import { RPG, ZONE_LEVELS, camp } from '../data/rpg.js';
 import { MOVES } from '../data/moves.js';
 import { FORMS } from '../data/forms.js';
+import { kiColor } from '../data/appearance.js';
 import { defaultLook } from './look.js';
 import { trySpendKi } from './ki.js';
 import { stepMovement } from './movement.js';
@@ -107,6 +108,7 @@ export function createCombat(game, events) {
     return {origin,dir:{x:delta.x/d,y:delta.y/d,z:delta.z/d}};
   }
   function fire(id, charge=0) {
+    if(id==='Kaioken'){const error=game.kaioken.toggle();if(error)notify(error);return !error;}
     const def=moveDef(id);
     if(def?.kind==='avatar'){
       if(!canManifestAvatar(game.slot,p)){notify('The Avatar requires learned training and active Perfected or True Ultra Instinct.');return false;}
@@ -114,7 +116,7 @@ export function createCombat(game, events) {
     }
     if(!def || !trySpendKi(p,def.kiCost*(p.kiCostScale || 1))) { notify('Not enough ki. Hold Charge to recover.'); return false; }
     const {origin,dir}=aim();
-    const damage=C.meleeDamage*p.kiPower*def.power*(1+charge)*(p.form==='UltraEgo'?1+(p.egoBoost || 0):1);
+    const damage=C.meleeDamage*p.kiPower*def.power*(1+charge)*game.kaioken.multiplier()*(p.form==='UltraEgo'?1+(p.egoBoost || 0):1);
     if(def.kind==='avatar'){
       avatar.remaining=A.duration;avatar.readyAt=clock+A.cooldown;avatar.nextStrike=clock;avatar.damage=damage;
       notify('Ultra Instinct Energy Avatar manifested!');
@@ -124,28 +126,33 @@ export function createCombat(game, events) {
       else if(id==='EnergyField')p.barrierUntil=clock+C.utilityDuration;
       else if(id==='CandyBeam') {const e=targetInFront(C.utilityRange);if(e)hit(e,e.health<e.maxHealth*C.candyThreshold?e.health:C.candyDamage,p);}
       else if(id==='InstantTransmission') {const e=targetInFront(C.lockRange);if(e){p.pos.x=e.pos.x-Math.sin(e.yaw)*C.teleportOffset;p.pos.z=e.pos.z-Math.cos(e.yaw)*C.teleportOffset;p.pos.y=e.pos.y;}}
-      else if(id==='Kaioken')p.powerUntil=clock+C.utilityDuration;
       else if(id==='UltraInstinctSign'){p.uiTechniqueUntil=clock+C.uiTechniqueDuration;notify('Ultra Instinct Sign focus: small dodge chance, no form stat boost.');}
       else p.evadeUntil=clock+C.utilityDuration;
     } else if(def.kind==='melee') { const e=targetInFront(C.meleeRange+1);if(e)hit(e,damage,p,true); }
     else if(def.kind==='beam' || def.kind==='ultimate') {
       const end={x:origin.x+dir.x*C.beamRange,y:origin.y+dir.y*C.beamRange,z:origin.z+dir.z*C.beamRange};
       for(const e of enemies)if(e.health>0 && segmentDistance({x:e.pos.x,y:e.pos.y+1,z:e.pos.z},origin,end)<C.beamRadius)hit(e,damage,p,true);
-      emit('beam',{from:origin,to:end,color:0x63cfff});
-    } else projectiles.push({id:++serial,pos:origin,dir,life:C.projectileLife,damage,owner:p});
+      emit('beam',{from:origin,to:end,color:kiColor(game.slot.appearance)});
+    } else projectiles.push({id:++serial,pos:origin,dir,life:C.projectileLife,damage,owner:p,color:kiColor(game.slot.appearance)});
     p.attackSerial=(p.attackSerial||0)+1;p.attackKind='cross';
     emit('attack',{id:p.id,kind:def.kind,pos:copy(p.pos)}); return true;
   }
   const avatarInfo=()=>({active:avatar.remaining>0 && canManifestAvatar(game.slot,p),remaining:canManifestAvatar(game.slot,p)?avatar.remaining:0,cooldown:Math.max(0,avatar.readyAt-clock),pulse:avatar.pulse});
   const combat = {
     enemies, projectiles,
+    // Presentation reads the same ray used by fire(); no independent visual aim calculation.
+    aimState() {
+      const ray=aim(),locked=enemies.find(e=>e.id===p.lockTarget && e.health>0);
+      return {...ray,locked:!!locked,point:locked?{x:locked.pos.x,y:locked.pos.y+1,z:locked.pos.z}:
+        {x:ray.origin.x+ray.dir.x*C.beamRange,y:ray.origin.y+ray.dir.y*C.beamRange,z:ray.origin.z+ray.dir.z*C.beamRange}};
+    },
     avatarState(){return {...avatarInfo(),pos:copy(p.pos),yaw:p.yaw};},
     setStory(value){story=value;sync();},
-    availableTechniques(){return ['EnergyWave',...game.slot.moves.filter(id=>MOVES[id] && (MOVES[id].power>0 || supportedUtilities.includes(id)))];},
+    availableTechniques(){return [...new Set(['EnergyWave',...game.slot.moves.filter(id=>MOVES[id] && (MOVES[id].power>0 || supportedUtilities.includes(id))),...(game.kaioken.ranks().length?['Kaioken']:[])])];},
     setTechnique(id){if(!combat.availableTechniques().includes(id))return false;technique=id;(game.slot.loadout ||= {}).technique=id;return true;},
     snapshot(){
       const e=enemies.find(e=>e.id===p.lockTarget && e.health>0);
-      return {avatar:avatarInfo(),instinctFocus:Math.max(0,(p.uiTechniqueUntil || 0)-clock),technique,techniqueName:moveDef(technique)?.name,beamCharge:Math.min(1,beamTime/C.beamCharge),meleeCd,blastCd,beamCd,
+      return {kaioken:game.kaioken.snapshot(),avatar:avatarInfo(),instinctFocus:Math.max(0,(p.uiTechniqueUntil || 0)-clock),technique,techniqueName:moveDef(technique)?.name,beamCharge:Math.min(1,beamTime/C.beamCharge),meleeCd,blastCd,beamCd,
         target:e?{id:e.id,name:e.name,level:e.level,health:e.health,maxHealth:e.maxHealth,boss:e.boss}:null,
         respawn:respawnAt?Math.max(0,respawnAt-clock):0};
     },
@@ -174,7 +181,7 @@ export function createCombat(game, events) {
           combo=clock-lastSwing<C.comboWindow?(combo%4)+1:1;lastSwing=clock;meleeCd=C.meleeCooldown;
           const target=targetInFront(C.meleeRange*(FORMS[p.form]?.size || 1));p.attackSerial=(p.attackSerial||0)+1;p.attackKind=['jab','cross','hook','leg kick'][combo-1];
           emit('attack',{id:p.id,kind:'melee',combo,pos:copy(p.pos)});
-          if(target)hit(target,C.meleeDamage*p.strength*(p.form==='UltraEgo'?1+(p.egoBoost || 0):1)*(p.powerUntil>clock?C.powerBuff:1)*(combo===4?C.comboFinish:1),p,combo===4);
+          if(target)hit(target,C.meleeDamage*p.strength*game.kaioken.multiplier()*(p.form==='UltraEgo'?1+(p.egoBoost || 0):1)*(combo===4?C.comboFinish:1),p,combo===4);
         }
         if(it.kiBlast && blastCd===0 && fire('KiBlast'))blastCd=C.blastCooldown;
         if(it.beam && beamCd===0){beamHeld=true;beamTime=Math.min(C.beamCharge,beamTime+dt);}
@@ -200,8 +207,7 @@ export function createCombat(game, events) {
         }
       }
       if(p.form!=='UltraEgo')p.egoBoost=0;
-      if(p.powerUntil>clock)p.health=Math.max(1,p.health-p.maxHealth*C.powerHealthDrain*dt);
-      if(clock-lastDamage>C.regenDelay && !(p.powerUntil>clock))p.health=Math.min(p.maxHealth,p.health+p.maxHealth*C.playerRegen*dt);
+      if(clock-lastDamage>C.regenDelay && !game.kaioken.snapshot().active)p.health=Math.min(p.maxHealth,p.health+p.maxHealth*C.playerRegen*dt);
       for(let i=projectiles.length-1;i>=0;i--){
         const b=projectiles[i],old=copy(b.pos);b.life-=dt;
         b.pos.x+=b.dir.x*C.projectileSpeed*dt;b.pos.y+=b.dir.y*C.projectileSpeed*dt;b.pos.z+=b.dir.z*C.projectileSpeed*dt;

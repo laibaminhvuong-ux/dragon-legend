@@ -13,6 +13,7 @@ import { FORMS } from "../data/forms.js";
 import { getZone } from "./zones.js";
 import { stepMovement } from "./movement.js";
 import { createCombat } from "./combat.js";
+import { createKaioken } from "./kaioken.js";
 import { resolveCollisions } from "./collision.js";
 import { regenKi } from "./ki.js";
 
@@ -33,6 +34,7 @@ export const INTENTS = {
   kiBlast: false, // edge
   beam: false, // held (charge), fires on release
   transform: false, // edge
+  kaioken: false, // edge: independent technique overlay
   lockOn: false, // edge
   interact: false, // edge
 };
@@ -89,7 +91,7 @@ export function createGame(slotIndex, slot, events = null) {
       race: slot.race,
       raceName: getRace(slot.race)?.name || slot.race,
       form: player.form,
-      formName: player.form ? FORMS[player.form]?.name || player.form : "",
+      formName: (player.form ? FORMS[player.form]?.name || player.form : "Base")+(player.kaioken?` + Kaiyoken x${player.kaioken}`:''),
       level: slot.level,
       xp: slot.xp,
       xpNext: xpToNext(slot.level),
@@ -97,7 +99,7 @@ export function createGame(slotIndex, slot, events = null) {
       zeni: slot.zeni,
       health: player.health, maxHealth: player.maxHealth,
       ki: Math.floor(player.ki), maxKi: player.maxKi,
-      powerLevel: player.powerLevel,
+      powerLevel: Math.floor(player.powerLevel*(game.kaioken?.multiplier() || 1)),
       flying: player.flying, charging: player.charging, dashing: player.dashing, blocking: player.blocking,
       lockTarget: player.lockTarget,
       zone: zone.id, zoneName: zone.name,
@@ -124,7 +126,7 @@ export function createGame(slotIndex, slot, events = null) {
       if(player.health<=0 || player.stun>0)return 'You cannot transform right now.';
       if(id && !usableForms(slot).includes(id))return 'Unlock this form, its level and its chosen path first.';
       if(id && player.ki<FORMS[id].kiDrain*player.kiCostScale)return 'Charge more ki first.';
-      player.form=id;if(id!=='UltraEgo')player.egoBoost=0;refreshDerived();return null;
+      player.form=id;if(id!=='UltraEgo')player.egoBoost=0;refreshDerived();game.kaioken.update(0);return null;
     },
     customizeAppearance(changes) {
       const next={race:slot.race,...slot.appearance,...changes};
@@ -166,6 +168,8 @@ export function createGame(slotIndex, slot, events = null) {
         }
         if (!unlocked.length) emit("notify", { text: "Complete your race's transformation quests to unlock a form." });
       }
+      if(intents.kaioken){const error=game.kaioken.toggle();if(error)emit('notify',{text:error});}
+      game.kaioken.update(dt);
       game.combat.update(dt, intents);
       if(player.form && (player.charging || Math.hypot(player.vel.x,player.vel.y,player.vel.z)>.5))game.addFormMastery(MASTERY.perSecond*dt);
       if (!player.flying && !player.dashing && !player.charging && !player.form && player.health > 0) regenKi(player, dt);
@@ -206,6 +210,7 @@ export function createGame(slotIndex, slot, events = null) {
   };
 
   refreshDerived(true);
+  game.kaioken = createKaioken(game);
   game.combat = createCombat(game, events);
   return game;
 }

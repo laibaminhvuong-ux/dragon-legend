@@ -6,7 +6,8 @@ export function createCombatView(gfx, combat, events) {
   const root=new THREE.Group();root.name='combat';gfx.scene.add(root);
   const models=new Map(), balls=new Map(), effects=[];
   let avatarView=null;
-  const sphere=new THREE.SphereGeometry(.17,10,8), energy=new THREE.MeshBasicMaterial({color:0x78dfff});
+  const sphere=new THREE.SphereGeometry(.17,10,8), energies=new Map();
+  const energy=color=>{if(!energies.has(color))energies.set(color,new THREE.MeshBasicMaterial({color}));return energies.get(color);};
   const barGeo=new THREE.PlaneGeometry(1.35,.12),barBack=new THREE.MeshBasicMaterial({color:0x281b22,depthTest:false}),barFill=new THREE.MeshBasicMaterial({color:0xf06d51,depthTest:false});
   function text(value,color='#ffffff') {
     const canvas=document.createElement('canvas');canvas.width=512;canvas.height=80;
@@ -55,11 +56,13 @@ export function createCombatView(gfx, combat, events) {
       }
       for(const [id,v]of models)if(!seen.has(id)){v.model.dispose();disposeSprite(v.tag);v.health.removeFromParent();models.delete(id);}
       const shots=new Set();for(const b of combat.projectiles){
-        shots.add(b.id);let mesh=balls.get(b.id);if(!mesh){mesh=new THREE.Mesh(sphere,energy);mesh.userData.noAO=true;root.add(mesh);balls.set(b.id,mesh);}mesh.position.set(b.pos.x,b.pos.y,b.pos.z);
+        shots.add(b.id);let mesh=balls.get(b.id);if(!mesh){mesh=new THREE.Mesh(sphere,energy(b.color ?? 0x63cfff));mesh.userData.noAO=true;root.add(mesh);balls.set(b.id,mesh);}mesh.position.set(b.pos.x,b.pos.y,b.pos.z);
       }
       for(const [id,m]of balls)if(!shots.has(id)){m.removeFromParent();balls.delete(id);}
+      const liveColors=new Set(combat.projectiles.map(b=>b.color ?? 0x63cfff));
+      for(const [color,material]of energies)if(!liveColors.has(color)){material.dispose();energies.delete(color);}
       for(let i=effects.length-1;i>=0;i--){const e=effects[i];e.life-=dt;if(e.life<=0){removeEffect(e);effects.splice(i,1);}else if(e.sprite)e.sprite.position.y+=dt*.9;else e.mesh.material.opacity=e.life/.3*.8;}
     },
-    dispose(){avatarView?.dispose();offDamage();offBeam();for(const v of models.values()){v.model.dispose();disposeSprite(v.tag);}effects.forEach(removeEffect);sphere.dispose();energy.dispose();barGeo.dispose();barBack.dispose();barFill.dispose();root.removeFromParent();models.clear();balls.clear();},
+    dispose(){avatarView?.dispose();offDamage();offBeam();for(const v of models.values()){v.model.dispose();disposeSprite(v.tag);}effects.forEach(removeEffect);sphere.dispose();for(const m of energies.values())m.dispose();energies.clear();barGeo.dispose();barBack.dispose();barFill.dispose();root.removeFromParent();models.clear();balls.clear();},
   };
 }

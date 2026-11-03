@@ -1,4 +1,5 @@
 import { INSTINCT_AVATAR } from "./data/avatar.js";
+import { kiColor } from './data/appearance.js';
 // Boot: builds the shared `app` object, the scenes and the loop.
 //
 // `app` is what every system and screen gets:
@@ -224,7 +225,7 @@ app.scenes.register("play", {
     const mv = input.axis("move"), yaw = play.cam.yaw;
     it.moveX = Math.sin(yaw) * mv.y - Math.cos(yaw) * mv.x;
     it.moveZ = Math.cos(yaw) * mv.y + Math.sin(yaw) * mv.x;
-    for (const a of ["jump", "dash", "flight", "melee", "kiBlast", "transform", "lockOn", "interact"]) it[a] = input.pressed(a);
+    for (const a of ["jump", "dash", "flight", "melee", "kiBlast", "transform", "kaioken", "lockOn", "interact"]) it[a] = input.pressed(a);
     for (const a of ["ascend", "descend", "charge", "block", "beam"]) it[a] = input.down(a);
     it.melee = input.down("melee") || it.melee;
     play.prev = { ...game.player.pos };
@@ -247,7 +248,7 @@ app.scenes.register("play", {
     if (!frozen) { const d = app.input.takeLook(frameDt); play.cam.addLook(d); play.tutorial.look(Math.abs(d.x) + Math.abs(d.y)); }
     else app.input.takeLook(frameDt);
     tutorialPanel.update();
-    const lookKey = JSON.stringify(app.game.slot.appearance);
+    const lookKey = JSON.stringify({...app.game.slot.appearance,kiColor:undefined,kiColorHex:undefined});
     if (play.outfit !== lookKey) {
       if (play.outfit !== undefined) {
         play.model.dispose();
@@ -257,9 +258,10 @@ app.scenes.register("play", {
       play.outfit=lookKey;
     }
     play.model.object3d.visible = p.health > 0;
+    play.model.setKiColor(kiColor(app.game.slot.appearance));
     play.model.object3d.position.set(pos.x, pos.y, pos.z);
     play.model.object3d.rotation.y = p.yaw;
-    play.model.update(animDt, { speed: Math.hypot(p.vel.x, p.vel.z), onGround: p.onGround, flying: p.flying, charging: p.charging, dashing: p.dashing, blocking: p.blocking, attackSerial: p.attackSerial, attackKind: p.attackKind });
+    play.model.update(animDt, { speed: Math.hypot(p.vel.x, p.vel.z), onGround: p.onGround, flying: p.flying, charging: p.charging, kaioken:p.kaioken, dashing: p.dashing, blocking: p.blocking, attackSerial: p.attackSerial, attackKind: p.attackKind });
     if (play.lastForm !== p.form) {
       play.lastForm = p.form;
       play.model.setForm(p.form); // hair, eyes, skin, size and aura as in the story (data/form_looks.js)

@@ -165,7 +165,8 @@ export function createStory(game, events = null) {
     const st = qs(q.id);
     st.status = q.repeat ? "repeatable" : "done";
     st.completions = (st.completions || 0) + 1;
-    const giver = CHARACTERS[NPC[q.giver].who].name;
+    const finalNpc=q.dragonHunt?q.steps.at(-1).npc:q.giver;
+    const giver = CHARACTERS[NPC[finalNpc].who].name;
     say(giver, q.done, "done", q.id);
     const R = q.rewards || {};
     const lines = [];
@@ -174,6 +175,7 @@ export function createStory(game, events = null) {
     if (typeof xpGain === "string" && xpGain.startsWith("level:")) xpGain = Math.max(40, Math.round(xpToNext(slot.level) * Number(xpGain.slice(6))));
     if (R.zeni) { game.addZeni(R.zeni); lines.push(`${R.zeni} zeni`); }
     if (R.statPoints) { slot.statPoints += R.statPoints; lines.push(`${R.statPoints} stat points`); }
+    if (R.restore) {player.health=player.maxHealth;player.ki=player.maxKi;lines.push('health and Ki restored');}
     for (const m of R.moves || []) if (!slot.moves.includes(m) && (!MOVES[m].races || MOVES[m].races.includes(slot.race))) { slot.moves.push(m); lines.push(`technique: ${MOVES[m].name}`); }
     for (const f of R.forms || []) if (formForRace(f,slot.race) && !slot.forms.includes(f)) { slot.forms.push(f); lines.push(`transformation: ${FORMS[f].name}`); }
     for (const o of R.outfits || []) if (!slot.outfits.includes(o)) { slot.outfits.push(o); lines.push(`outfit: ${o}`); }
@@ -244,7 +246,7 @@ export function createStory(game, events = null) {
         }
         if (!marker && QUESTS.some((q) => q.giver === n.id && canAccept(q))) marker = "!";
         const c = CHARACTERS[n.who];
-        return { id: n.id, name: c.name, look: c.look, scale: c.scale || 1, ...npcPos(n), rot: n.rot || 0, boss: !!n.boss, marker,
+        return { id: n.id, name: c.name, look: c.look, dragon:c.dragon, scale: c.scale || 1, ...npcPos(n), rot: n.rot || 0, boss: !!n.boss, marker,
           main: marker === "!" && QUESTS.some((q) => q.giver === n.id && q.main && canAccept(q)) };
       }).concat(travelGuide() || []);
     },
@@ -397,7 +399,7 @@ export function createStory(game, events = null) {
         const s = stepOf(q);
         if (s.type === "talk" && s.npc === n.id) {
           // the last step's reply is the quest-giver's closing line (said by complete())
-          if (qs(q.id).step < q.steps.length - 1 || n.id !== q.giver) say(n.name, TALK_REPLIES[n.id] || "Alright. Let's go.", "progress", q.id);
+          if (qs(q.id).step < q.steps.length - 1 || (!q.dragonHunt && n.id !== q.giver)) say(n.name, s.reply || TALK_REPLIES[n.id] || "Alright. Let's go.", "progress", q.id);
           advance(q);
           return "talk";
         }
@@ -475,7 +477,8 @@ export function createStory(game, events = null) {
               const label = ITEM_NAMES[step.item] || step.item;
               emit("notify", { text: `Found ${label} (${st.collected.length} / ${step.spots.length})` });
               if (st.collected.length >= step.spots.length) {
-                if (step.item === "dragon_ball") S.flags.shenron = true;
+                if (step.summonFlag) S.flags[step.summonFlag] = true;
+                else if (step.item === "dragon_ball") S.flags.shenron = true;
                 advance(q);
               }
             }

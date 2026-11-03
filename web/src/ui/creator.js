@@ -4,13 +4,14 @@
 import * as THREE from "three";
 import { createCharacterModel } from "../character/index.js";
 import { RACE_ORDER, RACES, getRace } from "../data/races.js";
-import { FACES, HAIR_STYLES, HAIR_COLORS, BUILDS, TINTS, findById } from "../data/appearance.js";
+import { FACES, HAIR_STYLES, HAIR_COLORS, KI_COLORS, BUILDS, TINTS, findById } from "../data/appearance.js";
 import { OUTFITS, starterOutfits, outfitAllowed } from "../data/outfits.js";
 import { defaultLook } from "../game/look.js";
 import { h, btn, hex } from "./dom.js";
 import { STR } from "./strings.js";
+import { kiColourInput } from './kiColourInput.js';
 
-const IDLE_ANIM = { speed: 0, onGround: true, flying: false, charging: false, dashing: false, blocking: false };
+const IDLE_ANIM = { speed: 0, onGround: true, flying: false, charging: true, dashing: false, blocking: false };
 
 /** Keeps every field valid for its race (used after a race change and for randomize). */
 function fixLook(look) {
@@ -20,6 +21,7 @@ function fixLook(look) {
   if (!findById(FACES, out.face)) out.face = FACES[0].id;
   if (!race.hairStyles.includes(out.hair)) out.hair = race.hairStyles[0];
   if (!Number.isInteger(out.hairColor) || out.hairColor < 0 || out.hairColor >= HAIR_COLORS.length) out.hairColor = 0;
+  if (!Number.isInteger(out.kiColor) || out.kiColor < 0 || out.kiColor >= KI_COLORS.length) out.kiColor = 0;
   if (!findById(BUILDS, out.build)) out.build = "Average";
   if (!OUTFITS[out.outfit]?.starter || !outfitAllowed(out.outfit, race.id)) out.outfit = starterOutfits(race.id)[0];
   if (!Number.isInteger(out.outfitTint) || out.outfitTint < 0 || out.outfitTint >= TINTS.length) out.outfitTint = 0;
@@ -68,6 +70,7 @@ export function creator(app) {
     scene.add(pedestal);
 
     camera = new THREE.PerspectiveCamera(32, 1, 0.1, 60);
+    camera.layers.enable(1);
     camera.position.set(0, 1.32, 4.4);
     camera.lookAt(0, 0.95, 0);
 
@@ -172,6 +175,8 @@ export function creator(app) {
       STR.creator.hairColor,
       swatchRow(HAIR_COLORS, look.hairColor, (i) => setLook({ ...look, hairColor: i })),
     ));
+    optionHost.append(optionSection('Ki colour', swatchRow(KI_COLORS, look.kiColorHex? -1:look.kiColor, (i) => setLook({ ...look, kiColor: i, kiColorHex:null }))));
+    optionHost.append(kiColourInput(look,(value,phase)=>{look={...look,kiColorHex:value};model?.setKiColor(Number.parseInt(value.slice(1),16));if(!phase?.preview)renderOptions();}));
 
     optionHost.append(optionSection(
       STR.creator.outfit,
