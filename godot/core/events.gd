@@ -11,6 +11,11 @@ signal travel(zone: String)
 signal enemy_defeated(d: Dictionary)
 signal levelup(level: int, gained: int)
 signal stats(hud: Dictionary)
+# combat, for views and VFX (payloads carry Vector3 coordinates)
+signal attack(d: Dictionary)
+signal damage(d: Dictionary)
+signal beam(d: Dictionary)
+signal avatar_strike(d: Dictionary)
 
 ## Emits a JS-style event: name as in the JS game, payload the same object it sends.
 func emit_named(name: String, payload: Variant = null) -> void:
@@ -25,4 +30,8 @@ func emit_named(name: String, payload: Variant = null) -> void:
 		"enemyDefeated": enemy_defeated.emit(d)
 		"levelup": levelup.emit(int(d.get("level", 0)), int(d.get("gained", 0)))
 		"stats": stats.emit(d)
+		"attack": attack.emit(d)
+		"damage": damage.emit(d)
+		"beam": beam.emit(d)
+		"avatarStrike": avatar_strike.emit(d)
 		_: push_warning("Events: unknown event '%s'" % name)

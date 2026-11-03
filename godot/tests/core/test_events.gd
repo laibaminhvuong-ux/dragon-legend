@@ -29,3 +29,17 @@ func test_unknown_name_warns() -> void:
 	e.emit_named("nope", {})  # a warning, not a crash
 	ok(true)
 	e.free()
+
+func test_combat_events_pass_through() -> void:
+	var e := _bus()
+	e.attack.connect(func(d: Dictionary) -> void: got.append(["attack", d]))
+	e.damage.connect(func(d: Dictionary) -> void: got.append(["damage", d]))
+	e.beam.connect(func(d: Dictionary) -> void: got.append(["beam", d]))
+	e.avatar_strike.connect(func(d: Dictionary) -> void: got.append(["avatar", d]))
+	var at := {"kind": "KiBlast", "from": Vector3(1, 2, 3)}
+	e.emit_named("attack", at)
+	e.emit_named("damage", {"amount": 12})
+	e.emit_named("beam", {"to": Vector3.ZERO})
+	e.emit_named("avatarStrike", {"target": "e1"})
+	eq(got, [["attack", at], ["damage", {"amount": 12}], ["beam", {"to": Vector3.ZERO}], ["avatar", {"target": "e1"}]])
+	e.free()
