@@ -6,7 +6,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="$ROOT/godot/assets/textures"
 mkdir -p "$OUT"
 # kind -> Poly Haven texture id
-declare -A TEX=( [grass]=aerial_grass_rock [forest]=brown_mud_leaves_01 [dirt]=dry_ground_01
+declare -A TEX=( [grass]=leafy_grass [forest]=forest_floor [dirt]=dry_ground_01
                  [rock]=rocky_terrain_02 [sand]=coast_sand_01 [snow]=snow_02 )
 LIC="$ROOT/godot/assets/LICENSES.md"
 printf '# Asset licences\n\nEvery asset here is CC0 (public domain): free for any use, no attribution required.\n\n| Asset | Used for | Source | Licence |\n|---|---|---|---|\n' > "$LIC"
