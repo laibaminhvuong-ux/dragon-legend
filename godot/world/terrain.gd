@@ -9,36 +9,27 @@ const CHUNK := 64.0
 const CELL := {"low": 4.0, "medium": 3.0, "high": 2.0}
 const SHADER := preload("res://world/shaders/terrain.gdshader")
 
+## Bump when the grid format or the splat weights change: old caches/bakes are then ignored.
+const GRID_VERSION := 2
+const BAKED_DIR := "res://world/baked"
+static var cache_dir := "user://cache/terrain"
+
 static func build(zone: RefCounted, quality := "high") -> Node3D:
 	var root := Node3D.new()
 	root.name = "Terrain"
-	var cell: float = CELL.get(quality, 2.0)
-	var half: float = zone.size / 2.0
-	var n := int(ceil(zone.size / cell))
-	var floor_y: float = float(zone.kill_y) if zone.kill_y != null else -100.0
-	# sample the grid once: heights, splat weights
-	var h := PackedFloat32Array(); h.resize((n + 1) * (n + 1))
-	var col := PackedColorArray(); col.resize(h.size())
-	var extra := PackedVector2Array(); extra.resize(h.size())
-	for j in n + 1:
-		for i in n + 1:
-			var x := -half + i * cell
-			var z := -half + j * cell
-			var k := j * (n + 1) + i
-			h[k] = zone.height_at(x, z)
-			var w := _weights(zone, x, z)
-			col[k] = w[0]
-			extra[k] = w[1]
-	# keep the sampled grid: grass and other placement read heights/weights from it instead of re-running the rules
-	root.set_meta("grid", {"n": n, "cell": cell, "half": half, "h": h, "col": col, "extra": extra})
+	var grid := grid_for(zone, quality)
+	root.set_meta("grid", grid)
 	var mat := material(zone)
 	if zone.def.terrain.has("path"):  # a narrow road over the void: a ribbon that follows its curve
 		_path_ribbon(root, zone, mat)
 		return root
+	var n: int = grid.n
+	var cell: float = grid.cell
 	var per := int(CHUNK / cell)
+	var floor_y: float = float(zone.kill_y) if zone.kill_y != null else -100.0
 	for cj in range(0, n, per):
 		for ci in range(0, n, per):
-			var mesh := _chunk(h, col, extra, n, ci, cj, mini(per, n - ci), mini(per, n - cj), cell, half, floor_y)
+			var mesh := _chunk(grid, ci, cj, mini(per, n - ci), mini(per, n - cj), floor_y)
 			if mesh == null:
 				continue
 			mesh.surface_set_material(0, mat)
@@ -53,6 +44,56 @@ static func build(zone: RefCounted, quality := "high") -> Node3D:
 			body.add_child(shape)
 			root.add_child(body)
 	return root
+
+## The sampled grid for a world: from the game's baked files, else this PC's cache, else sampled from the
+## rules (slow: several seconds) and cached. { n, cell, half, h, col, extra, from_cache }
+static func grid_for(zone: RefCounted, quality: String) -> Dictionary:
+	var key := cache_key(zone, quality)
+	for path in ["%s/%s.grid" % [BAKED_DIR, key], "%s/%s.grid" % [cache_dir, key]]:
+		if FileAccess.file_exists(path):
+			var f := FileAccess.open_compressed(path, FileAccess.READ, FileAccess.COMPRESSION_ZSTD)
+			if f != null:
+				var g: Variant = f.get_var()
+				f.close()
+				if g is Dictionary and g.get("key") == key:
+					g.from_cache = true
+					return g
+	var grid := sample_grid(zone, quality)
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(cache_dir))
+	save_grid(grid, "%s/%s.grid" % [cache_dir, key])
+	return grid
+
+static func save_grid(grid: Dictionary, path: String) -> void:
+	var f := FileAccess.open_compressed(path, FileAccess.WRITE, FileAccess.COMPRESSION_ZSTD)
+	if f != null:
+		var g := grid.duplicate()
+		g.erase("from_cache")
+		f.store_var(g)
+		f.close()
+
+## world + quality + a hash of the world's recipe and the grid version: any change misses the cache.
+static func cache_key(zone: RefCounted, quality: String) -> String:
+	return "%s_%s_%08x" % [zone.id, quality, hash(JSON.stringify(zone.def, "", true) + str(GRID_VERSION)) & 0xffffffff]
+
+## Samples heights and ground weights from the rules on a regular grid.
+static func sample_grid(zone: RefCounted, quality: String) -> Dictionary:
+	var cell: float = CELL.get(quality, 2.0)
+	var half: float = zone.size / 2.0
+	var n := int(ceil(zone.size / cell))
+	var h := PackedFloat32Array(); h.resize((n + 1) * (n + 1))
+	var col := PackedColorArray(); col.resize(h.size())
+	var extra := PackedVector2Array(); extra.resize(h.size())
+	if not zone.def.terrain.has("path"):  # path worlds are a ribbon; their grid stays flat (no grass anyway)
+		for j in n + 1:
+			for i in n + 1:
+				var x := -half + i * cell
+				var z := -half + j * cell
+				var k := j * (n + 1) + i
+				h[k] = zone.height_at(x, z)
+				var w := _weights(zone, x, z)
+				col[k] = w[0]
+				extra[k] = w[1]
+	return {"key": cache_key(zone, quality), "n": n, "cell": cell, "half": half, "h": h, "col": col, "extra": extra}
 
 ## Height and ground weights at (x, z) from a terrain grid (bilinear): { y, grass, dirt, rock, sand, snow, forest }.
 static func sample(grid: Dictionary, x: float, z: float) -> Dictionary:
@@ -86,29 +127,41 @@ static func _weights(zone: RefCounted, x: float, z: float) -> Array:
 		e.y = clampf((zone.forest_at(x, z) - 0.05) * 3.0, 0.0, 1.0)
 	return [c, e]
 
-static func _chunk(h: PackedFloat32Array, col: PackedColorArray, extra: PackedVector2Array, n: int, ci: int, cj: int, w: int, d: int, cell: float, half: float, floor_y: float) -> ArrayMesh:
-	var st := SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	var tris := 0
-	for j in range(cj, cj + d):
-		for i in range(ci, ci + w):
-			var k00 := j * (n + 1) + i
-			var k10 := k00 + 1
-			var k01 := k00 + n + 1
-			var k11 := k01 + 1
-			if h[k00] <= floor_y or h[k10] <= floor_y or h[k01] <= floor_y or h[k11] <= floor_y:
+## One chunk as an indexed mesh straight from the grid (much faster than SurfaceTool). Void quads are skipped.
+static func _chunk(grid: Dictionary, ci: int, cj: int, w: int, d: int, floor_y: float) -> ArrayMesh:
+	var n: int = grid.n
+	var cell: float = grid.cell
+	var half: float = grid.half
+	var h: PackedFloat32Array = grid.h
+	var col: PackedColorArray = grid.col
+	var extra: PackedVector2Array = grid.extra
+	var verts := PackedVector3Array(); var norms := PackedVector3Array()
+	var cols := PackedColorArray(); var uv2 := PackedVector2Array()
+	var idx := PackedInt32Array()
+	var stride := w + 1
+	for j in range(cj, cj + d + 1):
+		for i in range(ci, ci + w + 1):
+			var k := j * (n + 1) + i
+			verts.append(Vector3(-half + i * cell, h[k], -half + j * cell))
+			norms.append(_normal(h, n, i, j, cell))
+			cols.append(col[k])
+			uv2.append(extra[k])
+	for j in d:
+		for i in w:
+			var a := j * stride + i
+			var gk := (cj + j) * (n + 1) + ci + i
+			if h[gk] <= floor_y or h[gk + 1] <= floor_y or h[gk + n + 1] <= floor_y or h[gk + n + 2] <= floor_y:
 				continue  # void: nothing to stand on here
-			for k in [k00, k10, k11, k00, k11, k01]:
-				var gi: int = k % (n + 1)
-				var gj: int = k / (n + 1)
-				st.set_color(col[k])
-				st.set_uv2(extra[k])
-				st.set_normal(_normal(h, n, gi, gj, cell))
-				st.add_vertex(Vector3(-half + gi * cell, h[k], -half + gj * cell))
-			tris += 2
-	if tris == 0:
+			idx.append_array(PackedInt32Array([a, a + 1, a + stride + 1, a, a + stride + 1, a + stride]))
+	if idx.is_empty():
 		return null
-	return st.commit()
+	var arr := []
+	arr.resize(Mesh.ARRAY_MAX)
+	arr[Mesh.ARRAY_VERTEX] = verts; arr[Mesh.ARRAY_NORMAL] = norms; arr[Mesh.ARRAY_COLOR] = cols
+	arr[Mesh.ARRAY_TEX_UV2] = uv2; arr[Mesh.ARRAY_INDEX] = idx
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr)
+	return mesh
 
 ## Path worlds (Serpent Road): the road surface plus stone edges dropping away on both sides, in 64 m pieces,
 ## each with collision from the same triangles.
