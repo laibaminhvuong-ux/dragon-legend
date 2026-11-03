@@ -51,7 +51,8 @@ func test_bad_copy_is_byte_exact() -> void:
 	f.store_buffer(raw)
 	f.close()
 	var s := _store()
-	eq(s.list_slots(), [null, null, null])
+	eq(s.list_slots().size(), RuleSchema.SLOT_COUNT)
+	ok(s.list_slots().all(func(v: Variant) -> bool: return v == null), "all empty")
 	eq(FileAccess.get_file_as_bytes(path + ".bad"), raw, ".bad has exactly the original bytes")
 	s.free(); _cleanup()
 

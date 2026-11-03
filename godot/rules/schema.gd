@@ -3,6 +3,8 @@ extends RefCounted
 # Saved dictionaries retain JS camelCase keys. Only rule method names use snake_case.
 const Tables = preload("res://rules/tables.gd")
 const SCHEMA_VERSION := 6
+## Character slots per profile (user request 2026-11-03: 10; the classic game and old codes have 3).
+const SLOT_COUNT := 10
 const CODE_PREFIX := "DL1:"
 var stats: Dictionary
 var races: Dictionary
@@ -20,7 +22,9 @@ func _init(data: Object = null) -> void:
 	start_zones = Tables.table("start_zones", data)
 
 func new_profile() -> Dictionary:
-	return {"version":SCHEMA_VERSION,"slots":[null,null,null],"lastSlot":-1}
+	var slots: Array = []
+	slots.resize(SLOT_COUNT)
+	return {"version":SCHEMA_VERSION,"slots":slots,"lastSlot":-1}
 
 static func _number(value: Variant) -> bool:
 	return (value is int or value is float) and is_finite(float(value))
@@ -196,9 +200,10 @@ func migrate(input: Variant) -> Dictionary:
 	if not input is Dictionary or not input.get("slots") is Array:
 		return new_profile()
 	var result: Dictionary = input.duplicate(true)
-	var slots: Array = [null,null,null]
+	var slots: Array = []
+	slots.resize(SLOT_COUNT)
 	var version: int = int(input.version) if _number(input.get("version")) else 1
-	for i in mini(3, input.slots.size()):
+	for i in mini(SLOT_COUNT, input.slots.size()):
 		var value: Variant = input.slots[i]
 		if not value is Dictionary or not value.get("race") or not value.get("appearance") is Dictionary:
 			continue

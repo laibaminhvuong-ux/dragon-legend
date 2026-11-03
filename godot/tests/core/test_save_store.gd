@@ -1,5 +1,5 @@
 extends TestCase
-# SaveStore: 3 slots in one JSON file, atomic writes, a corrupt file is kept as .bad instead of being lost.
+# SaveStore: 10 slots in one JSON file, atomic writes, a corrupt file is kept as .bad instead of being lost.
 
 var path := "user://test_profile_%d.json" % Time.get_ticks_usec()
 
@@ -23,15 +23,16 @@ func test_round_trip() -> void:
 	eq(b.list_slots()[1]["level"], 5.0, "summary")
 	a.free(); b.free(); _cleanup()
 
-func test_three_slots_only() -> void:
+func test_ten_slots_only() -> void:
 	var s := _store()
-	eq(s.save_slot(3, {}), false, "slot 3 refused")
+	eq(s.SLOTS, 10)
+	eq(s.save_slot(10, {}), false, "slot 10 refused")
 	eq(s.save_slot(-1, {}), false, "slot -1 refused")
 	eq(s.load_slot(-1), null)
-	eq(s.delete_slot(7), false)
-	s.save_slot(2, {"race": "Human"})
+	eq(s.delete_slot(12), false)
+	s.save_slot(9, {"race": "Human"})
 	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
-	eq(data["slots"].size(), 3, "file always has 3 slots")
+	eq(data["slots"].size(), 10, "file always has 10 slots")
 	s.free(); _cleanup()
 
 func test_corrupt_file_kept_as_bad() -> void:
@@ -40,7 +41,7 @@ func test_corrupt_file_kept_as_bad() -> void:
 	f.store_string(broken)
 	f.close()
 	var s := _store()
-	eq(s.list_slots(), [null, null, null], "starts empty")
+	eq(s.list_slots(), _empty(), "starts empty")
 	ok(FileAccess.file_exists(path + ".bad"), ".bad copy exists")
 	eq(FileAccess.get_file_as_string(path + ".bad"), broken, ".bad keeps the original bytes")
 	eq(FileAccess.get_file_as_string(path), broken, "original untouched until the next save")
@@ -56,3 +57,8 @@ func test_delete() -> void:
 	var again := _store()
 	eq(again.load_slot(0), null, "deleted on disk too")
 	again.free(); s.free(); _cleanup()
+
+func _empty() -> Array:
+	var a: Array = []
+	a.resize(RuleSchema.SLOT_COUNT)
+	return a

@@ -8,7 +8,9 @@ func _json_value(value: Variant) -> Variant:
 func test_v1_to_v6_import_and_migration_match_js() -> void:
 	var rules := Schema.new()
 	for row: Dictionary in Tables.table("parity").saves:
-		var expected: Dictionary = row.expected
+		# The JS oracle has 3 slots; the Godot game has SLOT_COUNT (10), the rest empty.
+		var expected: Dictionary = row.expected.duplicate(true)
+		expected.slots = _pad(expected.slots)
 		eq(_json_value(rules.migrate(row.input)),expected,"migrate version %d" % row.version)
 		var result: Dictionary = rules.import_code(row.code)
 		ok(result.ok,"import version %d" % row.version)
@@ -72,7 +74,7 @@ func test_normalize_repairs_fields_preserves_unknown_flags_and_unlocks() -> void
 	eq(result.formMastery.bad,0)
 	eq(result.formMastery.text,0)
 	eq(slot.appearance.kiColorHex,"AbC","normalization does not mutate input")
-	eq(rules.migrate(null).slots,[null,null,null])
+	eq(rules.migrate(null).slots,_pad([]))
 	for value: String in ["-ab","+ab","0xz","#12345g","#12345678"]:
 		eq(rules.normalize_ki_hex(value),null)
 
@@ -88,3 +90,8 @@ func test_live_save_store_calls_new_slot_and_normalize() -> void:
 	eq(slot.appearance.accessory,"None")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(store.path))
 	store.free()
+
+func _pad(slots: Array) -> Array:
+	var a: Array = slots.duplicate()
+	a.resize(Schema.SLOT_COUNT)
+	return a

@@ -57,13 +57,16 @@ func draw() -> void:
 	var tag := UiKit.label("Create a fighter, then take on the story.")
 	tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_root.add_child(tag)
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 16)
-	row.alignment = BoxContainer.ALIGNMENT_CENTER
-	_root.add_child(row)
+	var grid := GridContainer.new()
+	grid.columns = 5
+	grid.add_theme_constant_override("h_separation", 12)
+	grid.add_theme_constant_override("v_separation", 12)
+	var center := CenterContainer.new()
+	center.add_child(grid)
+	_root.add_child(center)
 	var slots: Array = SaveStore.list_slots()
-	for i in 3:
-		row.add_child(_card(slots[i] if i < slots.size() else null, i))
+	for i in SaveStore.SLOTS:
+		grid.add_child(_card(slots[i] if i < slots.size() else null, i))
 	var foot := HBoxContainer.new()
 	foot.alignment = BoxContainer.ALIGNMENT_CENTER
 	foot.add_child(UiKit.button("Save codes", func() -> void: _codes = not _codes; draw()))
@@ -91,7 +94,7 @@ func draw() -> void:
 
 func _card(slot: Variant, i: int) -> PanelContainer:
 	var p := PanelContainer.new()
-	p.custom_minimum_size = Vector2(260, 220)
+	p.custom_minimum_size = Vector2(236, 168)
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 8)
 	p.add_child(v)
@@ -132,7 +135,7 @@ class SaveCodePanel extends PanelContainer:
 		_done = done
 		var v := VBoxContainer.new(); add_child(v)
 		v.add_child(UiKit.label("Save codes", "HeaderMedium"))
-		v.add_child(UiKit.label("A save code carries all three fighters. Copy it somewhere safe, or paste one in to restore. Codes from the web version work too.", "Muted", true))
+		v.add_child(UiKit.label("A save code carries all ten fighters. Copy it somewhere safe, or paste one in to restore. Codes from the web version work too.", "Muted", true))
 		_edit = TextEdit.new(); _edit.custom_minimum_size = Vector2(760, 90); _edit.placeholder_text = "Paste a save code here…"
 		_edit.wrap_mode = TextEdit.LINE_WRAPPING_BOUNDARY
 		v.add_child(_edit)
@@ -144,7 +147,7 @@ class SaveCodePanel extends PanelContainer:
 		var imp := UiKit.button("Import", func() -> void: pass)
 		imp.pressed.connect(func() -> void:
 			if not _confirm:
-				_confirm = true; imp.text = "Import anyway"; _msg.text = "Importing replaces all three slots. Click again to confirm."
+				_confirm = true; imp.text = "Import anyway"; _msg.text = "Importing replaces all ten slots. Click again to confirm."
 				return
 			var r := SaveStore.import_code(_edit.text)
 			_msg.text = "Save restored." if r.get("ok", false) else str(r.get("error", "That code didn't work."))

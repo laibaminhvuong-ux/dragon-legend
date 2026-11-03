@@ -1,11 +1,11 @@
 extends Node
-# Autoload "SaveStore": the player's 3 save slots in one file (user://profile.json by default).
-# File: { "version": 1, "slots": [slot|null, slot|null, slot|null] }; a slot is the same Dictionary as the
+# Autoload "SaveStore": the player's 10 save slots (RuleSchema.SLOT_COUNT) in one file (user://profile.json by default).
+# File: { "version": 1, "slots": [slot|null × 10] }; a slot is the same Dictionary as the
 # JS game's schema v6. Writes are atomic (write .tmp, then rename). A file that can't be read is copied to
 # <path>.bad and the game starts with empty slots; the corrupt file is only replaced by the next real save.
 # When Codex's res://rules/schema.gd exists, slots go through its normalize() / new_slot().
 
-const SLOTS := 3
+const SLOTS := RuleSchema.SLOT_COUNT
 
 var path := "user://profile.json":
 	set(value):
@@ -90,7 +90,7 @@ func export_code() -> String:
 	var sc := _get_schema()
 	return sc.export_code(export_profile()) if sc != null else ""
 
-## Replaces all three slots from a save code. Returns {ok, error}.
+## Replaces all slots from a save code. Returns {ok, error}.
 func import_code(code: String) -> Dictionary:
 	var sc := _get_schema()
 	if sc == null:
@@ -120,7 +120,8 @@ func _summary(s: Dictionary) -> Dictionary:
 func _ensure_loaded() -> void:
 	if _slots.size() == SLOTS:
 		return
-	_slots = [null, null, null]
+	_slots = []
+	_slots.resize(SLOTS)
 	var main: Variant = _read(path) if FileAccess.file_exists(path) else null
 	if main == null and FileAccess.file_exists(path):
 		_keep_bad()
