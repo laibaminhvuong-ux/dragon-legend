@@ -1,0 +1,18 @@
+; Dragon Legend: Godot version (see docs/superpowers/specs/2026-11-02-godot-port-design.md)
+config_version=5
+
+[application]
+config/name="Dragon Legend"
+run/main_scene="res://scenes/main.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus")
+config/icon="res://icon.png"
+
+[debug]
+gdscript/warnings/inference_on_variant=2
+
+[display]
+window/size/viewport_width=1600
+window/size/viewport_height=900
+
+[rendering]
+renderer/rendering_method="forward_plus"

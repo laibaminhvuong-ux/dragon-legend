@@ -7,3 +7,6 @@ mobile/www/
 mobile/android/app/build/
 *.log
 .DS_Store
+godot/.godot/
+godot/.import/
+.superpowers/
