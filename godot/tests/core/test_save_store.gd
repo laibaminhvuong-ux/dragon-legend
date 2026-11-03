@@ -6,6 +6,7 @@ var path := "user://test_profile_%d.json" % Time.get_ticks_usec()
 func _store() -> Node:
 	var s: Node = load("res://core/save_store.gd").new()
 	s.path = path
+	s.use_schema = false  # raw file handling; schema normalization has its own tests
 	return s
 
 func _cleanup() -> void:

@@ -14,11 +14,29 @@ var path := "user://profile.json":
 
 var _slots: Array = []  # loaded lazily
 var _readonly := false  # set when a corrupt file couldn't be backed up: never overwrite it
+var _pending_rewrite := false  # migrated on load: write the current version on the next save
+## Off only in tests of the raw file handling; the game always goes through Codex's schema.
+var use_schema := true
 var _schema: Object = null
 
+var _schema_checked := false
+
 func _ready() -> void:
-	if ResourceLoader.exists("res://rules/schema.gd"):
-		_schema = load("res://rules/schema.gd").new()
+	_get_schema()  # load the rules' schema up front at start-up (it's also loaded lazily when needed)
+
+## Codex's rules/schema.gd when present (loaded lazily, so fresh instances in tests use it too).
+func _get_schema() -> Object:
+	if not use_schema:
+		return null
+	if not _schema_checked:
+		_schema_checked = true
+		if ResourceLoader.exists("res://rules/schema.gd"):
+			_schema = load("res://rules/schema.gd").new()
+	return _schema
+
+func _version() -> int:
+	var sc := _get_schema()
+	return int(sc.get_script().get("SCHEMA_VERSION")) if sc != null and sc.get_script().get("SCHEMA_VERSION") != null else 1
 
 func list_slots() -> Array:
 	_ensure_loaded()
@@ -32,8 +50,9 @@ func load_slot(i: int) -> Variant:
 		return null
 	_ensure_loaded()
 	var s: Variant = _slots[i]
-	if s is Dictionary and _schema != null and _schema.has_method("normalize"):
-		return _schema.normalize(s.duplicate(true))
+	var sc := _get_schema()
+	if s is Dictionary and sc != null and sc.has_method("normalize"):
+		return sc.normalize(s.duplicate(true))
 	return s.duplicate(true) if s is Dictionary else null
 
 func save_slot(i: int, slot: Dictionary) -> bool:
@@ -43,7 +62,8 @@ func save_slot(i: int, slot: Dictionary) -> bool:
 	return _change(i, slot.duplicate(true))
 
 func create_slot(i: int, look: Dictionary) -> bool:
-	var slot: Dictionary = _schema.new_slot(look) if _schema != null and _schema.has_method("new_slot") else {"appearance": look}
+	var sc := _get_schema()
+	var slot: Dictionary = sc.new_slot(look) if sc != null and sc.has_method("new_slot") else {"appearance": look}
 	return save_slot(i, slot)
 
 func delete_slot(i: int) -> bool:
@@ -99,6 +119,11 @@ func _read(p: String) -> Variant:
 	return json.data
 
 func _fill(data: Dictionary) -> void:
+	# a file from an older save version goes through the rules' migration exactly once (it's rewritten as current)
+	var sc := _get_schema()
+	if sc != null and sc.has_method("migrate") and int(data.get("version", 1)) < _version():
+		data = sc.migrate(data.duplicate(true))
+		_pending_rewrite = true
 	var slots: Array = data["slots"]
 	for i in mini(SLOTS, slots.size()):
 		_slots[i] = slots[i] if slots[i] is Dictionary else null
@@ -125,7 +150,7 @@ func _write() -> bool:
 	if f == null:
 		push_warning("SaveStore: cannot write %s" % tmp)
 		return false
-	f.store_string(JSON.stringify({"version": 1, "slots": _slots}, "\t"))
+	f.store_string(JSON.stringify({"version": _version(), "slots": _slots}, "\t"))
 	f.close()
 	var err := DirAccess.rename_absolute(ProjectSettings.globalize_path(tmp), ProjectSettings.globalize_path(path))
 	return err == OK

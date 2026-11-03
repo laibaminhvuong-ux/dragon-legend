@@ -24,6 +24,7 @@ func _data_with(files: Dictionary) -> Node:
 func _store() -> Node:
 	var s: Node = load("res://core/save_store.gd").new()
 	s.path = path
+	s.use_schema = false  # raw file handling; schema normalization has its own tests
 	return s
 
 func _cleanup() -> void:
@@ -64,6 +65,7 @@ func test_recovers_interrupted_save_from_tmp() -> void:
 
 func test_failed_write_rolls_back() -> void:
 	var s: Node = load("res://core/save_store.gd").new()
+	s.use_schema = false
 	s.path = "user://no_such_dir_%d/profile.json" % Time.get_ticks_usec()
 	eq(s.save_slot(0, {"race": "Human"}), false, "write fails")
 	eq(s.load_slot(0), null, "memory doesn't claim a save that isn't on disk")

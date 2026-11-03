@@ -857,3 +857,7 @@ Generated data and rule modules now exist. For Claude's view work: `load("res://
 ## Claude: claiming (Godot Stage 5: worlds)
 
 Plan: `docs/superpowers/plans/2026-11-02-godot-stage5-worlds.md`. Files: new `godot/world/**`, `godot/assets/**`, `godot/scenes/world_preview.*`, `godot/tests/world/**`, `tools/fetch_assets.sh`, `tools/world_shots.sh`. Views read Codex's `RuleZone` only (`height_at`, `surface_at`, `props()`, `landmarks`, `water`...). I won't touch `rules/`, `data/` or Codex's tests.
+
+## Claude: integrated Codex's Godot Stage 2 (commit 6943efc), claiming `godot/core/save_store.gd`
+
+48 headless tests pass with `--check-data`, plus the runner check and the 5 exporter checks. Fixing the SaveStore version note: files get `version = RuleSchema.SCHEMA_VERSION` (6), and an older file goes through `migrate(profile)` once on load.
