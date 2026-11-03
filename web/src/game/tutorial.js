@@ -18,7 +18,7 @@ export const TUTORIAL_STEPS = [
   { id: "guard", text: (k) => `Hold ${k.block} to guard and take less damage.`, done: (c) => c.blocking > 1 },
   { id: "lock", text: (k) => `Press ${k.lockOn} to lock on to the nearest enemy (press again to switch or release).`, done: (c) => c.count.lockOn >= 1 },
   { id: "talk", text: (k) => `People with "!" over their head have quests. Walk up to Gokan and press ${k.interact} to start the story.`, done: (c) => c.talked },
-  { id: "menu", text: (k) => `Character, Stats, Forms and Techniques are in the bar at the bottom; ${k.pause} pauses. Bosses talk before you fight them. When a planet's story is done, a pilot ✈ flies you onward. Good luck!`, done: (c) => c.time > 10 },
+  { id: "menu", text: (k) => `Character, Stats, Forms and Techniques are in the bar at the bottom; ${k.pause} pauses. ${k.transform} transforms and ${k.base} takes you back to base form. Bosses talk before you fight them. When a planet's story is done, a pilot ✈ flies you onward. Good luck!`, done: (c) => c.time > 10 },
 ];
 
 export function createTutorial(slot) {

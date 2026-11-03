@@ -185,7 +185,7 @@ export function rpg(app) {
     prompt.hidden=!interact || app.paused || isOpen;
     prompt.textContent=interact?`[${hints.interact}] ${interact.action} · ${interact.name}`:'';
     actions.textContent=`${hints.melee} Melee · ${hints.blast} Ki blast · ${hints.beam} ${combat.techniqueName} · ${hints.block} Guard · ${hints.charge} Charge · ${hints.lock} Lock-on`;
-    controls.textContent=`${hints.flight} Flight · Space / Ctrl Up / Down · ${hints.dash} Dash · ${key('kaioken')} Kaiyoken · Find ! markers for quests`;
+    controls.textContent=`${hints.flight} Flight · Space / Ctrl Up / Down · ${hints.dash} Dash · ${key('kaioken')} Kaiyoken · ${key('base')} Base form · Find ! markers for quests`;
     target.hidden=!combat.target;
     target.textContent=combat.target?`${combat.target.boss?'BOSS · ':''}${combat.target.name} · Lv. ${combat.target.level} · ${Math.ceil(combat.target.health)} / ${Math.ceil(combat.target.maxHealth)} HP`:'';
     const rowsKey=JSON.stringify(rows);

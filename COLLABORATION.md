@@ -760,3 +760,8 @@ Released (flight animation): the fighter's walk cycle is off while `airborne` (s
 
 User request: publish the game as an app with one link that suits every platform. Files: `desktop/package.json` (Mac dmg and Linux AppImage targets), new `mobile/` (Capacitor Android shell), new `.github/workflows/release.yml` (builds Windows/Mac/Linux/Android on release), new `docs/` (GitHub Pages download page that picks the right file for the visitor's device).
 Released (publishing). v0.0.0 is live: https://github.com/laibaminhvuong-ux/dragon-legend/releases/tag/v0.0.0 . The download page is https://laibaminhvuong-ux.github.io/dragon-legend/ (`docs/`, GitHub Pages from main) and sends each device to `releases/latest/download/<fixed file name>`. Windows files were built and GPU-tested locally. Mac dmg, Linux AppImage and Android APK came from CI. The Windows CI job failed (`esbuild` vs `esbuild.cmd`), fixed in the workflow for the next release. The package was checked: 254 app files, no saves, no test flag set. Next public version: 0.0.1.
+
+## Claude: claiming (B = back to base form, release 0.0.1)
+
+Files: `web/src/core/input.js` (new `base` action, B), `web/src/main.js`, `web/src/ui/rpg.js` (controls hint), `web/src/game/tutorial.js` (mention B), version files.
+Released (B = base form): new `base` action (B, keyboard only since every gamepad button is taken) calls `game.selectForm("")` and shows "Back to base form.". The controls hint and the last tutorial tip mention it. Checks pass: core, scenes, forms, kaioken and rpg in node, plus the ui, smoke and forms_smoke browser checks and a key test. Released as **v0.0.1**.

@@ -224,6 +224,10 @@ app.scenes.register("play", {
     if (input.pressed("pause")) app.setPaused(!app.paused);
     if (!app.paused && input.pressed("menu")) return app.openFighterMenu?.("Stats");
     if (!app.paused && input.pressed("radar")) dragonRadar.toggle();
+    if (!app.paused && input.pressed("base") && game.player.form) { // B: drop any transformation, back to base form
+      const err = game.selectForm("");
+      events.emit("notify", { text: err || "Back to base form." });
+    }
     if (app.paused || app.dialogueOpen || !play) return;
     const it = emptyIntents();
     const mv = input.axis("move"), yaw = play.cam.yaw;
