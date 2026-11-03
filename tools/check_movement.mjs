@@ -75,4 +75,17 @@ test('world gravity scales the jump acceleration', () => {
   step(normal, { jump:true });step(heavy, { jump:true });
   assert.ok(heavy.player.vel.y < normal.player.vel.y - 3);
 });
+test('flying forward follows the camera: look up to climb, down to dive', () => {
+  const g = fresh(), p = g.player;
+  step(g, { flight: true, ascend: true }); step(g, { ascend: true }, 59);
+  const y0 = p.pos.y;
+  step(g, { moveZ: 1, flyPitch: 1 }, 60); const y1 = p.pos.y;
+  assert.ok(y1 > y0 + 10, `looking up climbs (${(y1 - y0).toFixed(1)} m)`);
+  step(g, { moveZ: 1, flyPitch: 0 }, 30); assert.equal(p.pos.y, y1, 'level flight holds height');
+  step(g, { moveZ: 1, flyPitch: -1 }, 30); assert.ok(p.pos.y < y1 - 5, 'looking down dives');
+  assert.ok(p.flying, 'diving does not land by itself in mid-air');
+  const before = p.pos.y; step(g, { moveZ: 1, flyPitch: 1, ascend: true }, 10);
+  assert.ok(p.vel.y <= M.flightSpeed + 1e-9 && p.pos.y > before, 'Space adds to it, capped at flight speed');
+  step(g, { moveZ: 1, flyPitch: 1, charge: true }, 1);
+});
 console.log(`${count} movement checks passed`);

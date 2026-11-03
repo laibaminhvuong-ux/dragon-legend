@@ -18,6 +18,7 @@ import { createScenes } from "./core/scenes.js";
 import { createLoop } from "./core/loop.js";
 import { createRenderer } from "./render/renderer.js";
 import { createFollowCamera } from "./render/camera.js";
+import { CAMERA } from "./data/camera.js";
 import { createGame, emptyIntents } from "./game/game.js";
 import { getZone } from "./game/zones.js";
 import { createStory } from "./game/story.js";
@@ -194,6 +195,7 @@ app.scenes.register("play", {
     app.playerModel=model;
     const cam = createFollowCamera(app.gfx.camera, app.game.zone);
     cam.setYaw(app.game.player.yaw);
+    app.followCamera = cam; // for tests and tools: yaw/pitch/addLook
     play = { model, cam, storyView, combatView, prev: { ...app.game.player.pos }, saveTimer: 0,
       scenes: createSceneDirector(app.game.slot), tutorial: createTutorial(app.game.slot) };
     tutorialPanel.attach(play.tutorial);
@@ -235,6 +237,12 @@ app.scenes.register("play", {
     it.moveZ = Math.cos(yaw) * mv.y + Math.sin(yaw) * mv.x;
     for (const a of ["jump", "dash", "flight", "melee", "kiBlast", "transform", "kaioken", "lockOn", "interact"]) it[a] = input.pressed(a);
     for (const a of ["ascend", "descend", "charge", "block", "beam"]) it[a] = input.down(a);
+    // flying forward goes where the camera looks: look up to climb, down to dive (small dead zone around the normal view)
+    if (game.player.flying && mv.y > 0) {
+      const tilt = CAMERA.pitch - play.cam.pitch, dead = 0.1;
+      const v = Math.sign(tilt) * Math.max(0, Math.abs(tilt) - dead) / 0.55;
+      it.flyPitch = Math.max(-1, Math.min(1, v)) * mv.y;
+    }
     it.melee = input.down("melee") || it.melee;
     play.prev = { ...game.player.pos };
     game.update(dt, it);

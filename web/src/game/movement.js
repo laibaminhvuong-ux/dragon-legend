@@ -43,7 +43,9 @@ export function stepMovement(e, it, dt, zone) {
   if (canMove && !e.charging && len > 0.05) e.yaw = turnTowards(e.yaw, Math.atan2(wish.x, wish.z), M.turnSpeed * dt);
 
   if (e.flying) {
-    e.vel.y = ((it.ascend ? 1 : 0) - (it.descend ? 1 : 0)) * M.flightAscend;
+    // Space/Ctrl climb and sink; flying forward also follows the camera up or down (it.flyPitch)
+    const steer = canMove && !e.charging ? Math.max(-1, Math.min(1, it.flyPitch || 0)) : 0;
+    e.vel.y = Math.max(-M.flightSpeed, Math.min(M.flightSpeed, ((it.ascend ? 1 : 0) - (it.descend ? 1 : 0)) * M.flightAscend + steer * M.flightSpeed * 0.85));
   } else {
     if (e.onGround && it.jump && canMove && !e.charging) {
       e.vel.y = M.jumpSpeed;

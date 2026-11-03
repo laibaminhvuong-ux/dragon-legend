@@ -28,6 +28,7 @@ export const INTENTS = {
   dash: false, // edge
   flight: false, // edge (toggle)
   ascend: false, descend: false, // held
+  flyPitch: 0, // -1..1 while flying: where the camera looks, up (+) or down (-), times forward input
   charge: false, // held
   melee: false, // edge
   block: false, // held

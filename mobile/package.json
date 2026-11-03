@@ -1,6 +1,6 @@
 {
   "name": "dragon-legend-mobile",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "Dragon Legend for Android (Capacitor shell around the same game)",
   "dependencies": {

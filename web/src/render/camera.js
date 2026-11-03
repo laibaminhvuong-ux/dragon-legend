@@ -9,6 +9,7 @@ export function createFollowCamera(camera, zone) {
   const blend = (dt, rate) => 1 - Math.exp(-Math.max(0, dt) * rate);
   return {
     get yaw() { return state.yaw; },
+    get pitch() { return state.pitch; }, // + = above, looking down
     addLook(d) {
       if (!d) return;
       state.yaw -= Number.isFinite(d.x) ? d.x : 0;
