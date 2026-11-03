@@ -20,3 +20,4 @@ renderer/rendering_method="forward_plus"
 [autoload]
 
 Data="*res://core/data.gd"
+Events="*res://core/events.gd"
