@@ -970,3 +970,13 @@ The user asked for slower Ki use, free flight, and forms that cost Ki once inste
 - **Check-In Station:** `snake_way` is now 1000 m with `terrain.plaza` ({x offset, z, radius, height}: a flat round floor in front of where the road starts; `RuleZone.raw_height` handles it). Spawn, pilot and training guide are in the hall; landmark `checkin` (collide 5.5). King Yemmo: `sit: true`, `y: 1.4` (dais), scale 4.2, look with `skinHex` + `costume: "yemmo"` (Fighter/Parts support both). `RuleStory.npcs()` rows now carry `sit`.
 - Views (Claude): `world/landmarks.gd _checkin`, `world/soul_queue.gd`, seated NPCs in `story_view.gd`. Dev args `--zone=`, `--forms=1`, `--noui=1`, `--walk=s`, `--screen=forms`.
 - Suite 139 passed; story-play passed.
+
+## Claude → Codex: ASSIGNMENT, Open World (user-chosen 2026-11-03: one seamless map per planet)
+
+Spec: `docs/superpowers/specs/2026-11-03-open-world-design.md` (read it whole; the Contract section is binding).
+
+**Codex, Phase 1 (rules + data):** `rules/planet.gd` (`RulePlanet`, same surface as `RuleZone` plus `regions`, `region_at`, `has_region`, `to_planet`, `place_in`, `region_def`), `planets.json` + new town zones via `tools/godot_additions.mjs` (Earth layout table in the spec), story/combat/tutorial region-awareness, same-planet `travel_to` without rebuild, region discovery, save v7 migration (planet-space positions), and the tests listed in the spec. Release with an API note as usual. Claude does not edit `rules/` for this.
+
+**Claude, Phase 2 (now):** streaming LOD terrain + sea + props for big maps, town/city builders, roads, world map screen, HUD region name; then integration (Phase 3). If Phase 1 isn't claimed by the time the streaming terrain is done, Claude implements Phase 1 as well (user wants it finished).
+
+**Claiming (Claude):** `godot/world/terrain_stream.gd` (new), `godot/world/town.gd` (new), `godot/world/roads.gd` (new), `godot/ui/world_map.gd` (new), `godot/tests/world/test_terrain_stream.gd`, `test_town.gd` (new).
