@@ -38,15 +38,22 @@ func _init(owner_game: RefCounted,bus: Object = null) -> void:
 	p = game.player
 	zone = game.zone
 	technique = game.slot.loadout.get("technique","EnergyWave")
-	var base: Dictionary = camp(zone)
-	for i in 3:
-		spawn({"key":"patrol_"+zone.id,"name":"Hostile Trainee","level":rpg.ZONE_LEVELS.get(zone.id,1),"look":game.schema.default_look("Human").merged({"outfitTint":3},true),
-			"x":base.x+(0 if zone.def.terrain.has("path") else (i-1)*4),"z":base.z+i*4,"boss":false},i)
+	# three trainees near each area's start (on a planet map: every area, with its own key and level)
+	for area: String in zone.region_ids():
+		var base: Dictionary = camp_in(zone,area)
+		for i in 3:
+			spawn({"key":"patrol_"+area,"name":"Hostile Trainee","level":rpg.ZONE_LEVELS.get(area,1),"look":game.schema.default_look("Human").merged({"outfitTint":3},true),
+				"x":base.x+(0 if zone.def.terrain.has("path") else (i-1)*4),"z":base.z+i*4,"boss":false},i)
 	if technique not in available_techniques():
 		technique = "EnergyWave"
 	game.slot.loadout.technique = technique
 static func camp(world: RuleZone) -> Dictionary:
 	return world.place(0 if world.def.terrain.has("path") else world.spawn.x+18,world.spawn.z+22)
+static func camp_in(world: RuleZone,area: String) -> Dictionary:
+	if not (world is RulePlanet):
+		return camp(world)
+	var sp: Dictionary = world.region_spawn(area)
+	return {"x":float(sp.x)+18,"z":float(sp.z)+22}
 func emit(event: String,value: Dictionary = {}) -> void:
 	RuleRuntime.emit(events,event,value)
 func notify(text: String) -> void:
@@ -70,18 +77,19 @@ func sync() -> void:
 	var definitions: Dictionary = {}
 	if _story!=null and _story.get_ref()!=null:
 		for d: Dictionary in _story.get_ref().encounters():
-			definitions[d.key] = d
+			definitions[str(d.get("uid",d.key))] = d
 	for i in range(enemies.size()-1,-1,-1):
 		var e: Dictionary = enemies[i]
-		if String(e.key).begins_with("patrol_") or definitions.has(e.key):
+		if (String(e.key).begins_with("patrol_") and not e.has("uid")) or definitions.has(str(e.get("uid",e.key))):
 			continue
 		enemies.remove_at(i)
 		game.entities.erase(e)
 		if p.lockTarget==e.id:
 			p.lockTarget = null
-	for d: Dictionary in definitions.values():
-		if not enemies.any(func(e: Dictionary) -> bool:return e.key==d.key):
-			spawn(d.merged({"look":d.look if d.get("look") is Dictionary else game.schema.default_look("Saiyan")},true))
+	for uid: String in definitions:
+		var d: Dictionary = definitions[uid]
+		if not enemies.any(func(e: Dictionary) -> bool:return str(e.get("uid",e.key))==uid and (e.has("uid") or not String(e.key).begins_with("patrol_"))):
+			spawn(d.merged({"look":d.look if d.get("look") is Dictionary else game.schema.default_look("Saiyan")},true),100+int(d.get("index",0)))
 func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = false) -> void:
 	if party!=null and party.get_ref()!=null:
 		var owner: Variant = party.get_ref().game_for_player(str(target.id)) if target.get("kind")=="player" else party.get_ref().game_for_player(str(source.get("id","")))

@@ -1092,3 +1092,11 @@ Reviewed and integrated: `network/**`, `ui/server_menu.gd`, the Server button, o
 ## Claude: fix, travel to another world was undone by the save on close (user report, 2026-11-03); Codex please note
 
 The user couldn't enter King Kae's planet: the portal fired and travel saved `zone: king_kai`, but main's teardown `save_now()` called `RuleGame.to_save()`, which (since the open-world change) sets `slot.zone = current_region()` and the old position, so the destination was overwritten. This also broke pilot travel between planets. Fix: `RuleGame.leaving_to` (set by `PlaySession.travel` for cross-world travel); while set, `to_save()` keeps the destination and a null position. Regression test `test_play::test_travel_to_another_world_survives_the_save_on_close`; story-play now also saves on close after each travel like main does. Suite 188 passed; story-play passed. Co-op travel (room.gd) builds a new RuleGame immediately and is unaffected.
+
+## Claude: group quest fights, per-area trainees, jump while running (user requests, 2026-11-03); Codex please note
+
+- **Group fights:** `RuleStory.encounters()` now returns rows with a unique `uid`. A defeat step with `count > 1` (Saibamen, Cell Juniors, scouts, hunts) puts `max(GROUP_MIN=10, count)` enemies spread over the quest's area (`spread_point()`: sunflower spiral, along the road on road worlds, inside the planetoid). Bosses (`count == 1`) stay one enemy. Every kill of the key counts as before. `RuleCombat.sync()` keys spawns by `uid`.
+- **Trainees on planet maps:** each area gets its own three `patrol_<area>` trainees at its start (`camp_in()`). Before this fix, on planet maps they were keyed by the planet id, so hunt quests on Earth/Nameck/... could never be finished.
+- **Views:** `combat_view.gd` (Codex file, small edit) hides and stops animating enemies beyond `DRAW_RANGE` 200 m (Earth now has 42 trainees): 43 → 56–60 fps.
+- **Input:** `GameInput._input` no longer requires exact modifiers, so Space/E/Q/F work while Shift (run) is held. That was why the user couldn't jump while running.
+- Tests: `tests/rules/test_quest_spawns.gd` (3), `tests/core/test_jump_keys.gd` (2). Suite 193 passed; story-play passed.

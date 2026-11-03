@@ -1,4 +1,5 @@
 extends Node3D
+const DRAW_RANGE := 200.0   # metres; enemies further away are hidden and not animated
 # Combat presentation (port of web/src/combat/view.js, with better effects). Reads RuleCombat's entities and
 # events only; it never awards damage or rewards. Enemies are Fighters with name tags and health bars; ki blasts
 # glow and trail sparks; beams have a hot core and an impact burst; hits spark and float damage numbers.
@@ -141,9 +142,11 @@ func update_view(dt: float) -> void:
 			v = {"fighter": f, "tag": tag, "bar": bar}
 			views[id] = v
 		var alive := float(e.health) > 0.0
+		# far-away enemies (open-world maps have trainees in every area) are neither drawn nor animated
+		var near: bool = (e.pos as Vector3).distance_squared_to(combat.p.pos) < DRAW_RANGE * DRAW_RANGE
 		var f: Fighter = v.fighter
-		f.visible = alive; v.tag.visible = alive; v.bar.visible = alive
-		if not alive:
+		f.visible = alive and near; v.tag.visible = alive and near; v.bar.visible = alive and near
+		if not alive or not near:
 			continue
 		var pos: Vector3 = e.pos
 		var vel: Vector3 = e.vel

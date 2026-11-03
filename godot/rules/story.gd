@@ -341,17 +341,48 @@ func enemy_defeated(enemy: String,defeated_zone: String = "") -> void:
 			emit("questProgress",{"id":q.id,"objective":s.text})
 			if st.count>=s.get("count",1):
 				advance(q)
+## Enemies the active quests need on this map. A boss (one kill) is one enemy at its spot; a group fight (several
+## kills, e.g. Saibamen or a hunt) puts at least GROUP_MIN of them spread around the quest's area (user request
+## 2026-11-03). Each row has a unique "uid"; every kill of the key counts.
+const GROUP_MIN := 10
 func encounters() -> Array:
 	var out: Array = []
 	for q: Dictionary in active_quests():
 		var s: Dictionary = step_of(q)
-		if s.type!="defeat" or not zone.has_region(s.zone) or s.enemy.begins_with("patrol_"):
+		if s.type!="defeat" or not zone.has_region(s.zone):
 			continue
+		var count: int = int(s.get("count",1))
 		var n: Dictionary = npc.get(s.enemy,{})
 		var c: Dictionary = characters[n.who] if not n.is_empty() else {}
-		var p: Dictionary = npc_pos(n) if not n.is_empty() and visible(n) else at(s)
-		out.append({"key":s.enemy,"questId":q.id,"step":slot.quests[q.id].step,"name":c.get("name",s.enemy.replace("_"," ")),"look":c.get("look"),"scale":c.get("scale",1),"x":p.x,"y":p.get("y",zone.height_at(p.x,p.z)),"z":p.z,"level":q.get("level",1),"boss":s.get("count",1)==1})
+		var name: String = c.get("name",s.enemy.replace("_"," ")) if not s.enemy.begins_with("patrol_") else "Hostile Trainee"
+		var look: Variant = c.get("look") if not s.enemy.begins_with("patrol_") else game().schema.default_look("Human").merged({"outfitTint":3},true)
+		var row := {"key":s.enemy,"questId":q.id,"step":slot.quests[q.id].step,"name":name,"look":look,"scale":c.get("scale",1),"level":q.get("level",1)}
+		if count<=1:
+			if s.enemy.begins_with("patrol_"):
+				continue
+			var p: Dictionary = npc_pos(n) if not n.is_empty() and visible(n) else at(s)
+			out.append(row.merged({"uid":s.enemy,"x":p.x,"y":p.get("y",zone.height_at(p.x,p.z)),"z":p.z,"boss":true},true))
+			continue
+		var total: int = maxi(GROUP_MIN,count)
+		for i in total:
+			var p: Dictionary = spread_point(s.zone,i,total)
+			out.append(row.merged({"uid":"%s#%d" % [s.enemy,i],"index":i,"x":p.x,"z":p.z,"boss":false},true))
 	return out
+
+## Point i of n spread over an area (a sunflower spiral, so they never bunch up); on a road world, along the road.
+func spread_point(zone_id: String,i: int,n: int) -> Dictionary:
+	var region: RuleZone = (zone as RulePlanet).regions[zone_id].zone if zone is RulePlanet and (zone as RulePlanet).regions.has(zone_id) else zone
+	if region.def.terrain.has("path"):
+		var p: Dictionary = region.def.terrain.path
+		return zone.place_in(zone_id,(1.6 if i%2==0 else -1.6),lerpf(float(p.from)+40.0,float(p.to)-20.0,(i+0.5)/n))
+	var reach: float = float(region.size)*0.5*0.75
+	if zone is RulePlanet:
+		reach = minf(reach,float((zone as RulePlanet).regions[zone_id].radius)*0.85)
+	if region.def.terrain.has("planetoid"):
+		reach = float(region.def.terrain.planetoid.radius)*0.7
+	var a: float = i*2.399963
+	var d: float = reach*sqrt((i+0.5)/n)
+	return zone.place_in(zone_id,cos(a)*d,sin(a)*d)
 func radar() -> Dictionary:
 	var here: Array = []
 	var away: Dictionary = {}

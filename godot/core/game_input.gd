@@ -27,7 +27,7 @@ func _input(e: InputEvent) -> void:
 		_look += (e as InputEventMouseMotion).relative * 0.0025
 		last_device = "keyboard"
 	for a: String in ACTIONS:
-		if e.is_action_pressed(a, false, true):
+		if e.is_action_pressed(a, false, false):   # not exact: Shift (run) or Ctrl held must not block other keys
 			_pressed[a] = true
 			last_device = "gamepad" if (e is InputEventJoypadButton or e is InputEventJoypadMotion) else "keyboard"
 
