@@ -38,6 +38,12 @@ func press(action: String) -> void:
 func pressed(action: String) -> bool:
 	return _pressed.get(action, false)
 
+## A press used up by whoever reads it (toggles must not flip twice in one step).
+func take(action: String) -> bool:
+	var was: bool = _pressed.get(action, false)
+	_pressed.erase(action)
+	return was
+
 func down(action: String) -> bool:
 	return InputMap.has_action(action) and Input.is_action_pressed(action)
 

@@ -29,6 +29,7 @@ var save_timer := 0.0
 var pending_travel := ""
 var quality := "medium"
 var _music_check := 0.0
+var fast_mode := false        # Shift toggles running / fast flight (user request 2026-11-03)
 var forced: Dictionary = {}       # intents merged over the input's (tests, touch controls)
 var _look_key := ""
 var _last_form := "?"
@@ -117,7 +118,11 @@ func intents() -> Dictionary:
 	for a: String in ["ascend", "descend", "charge", "block", "beam"]:
 		it[a] = input.down(a)
 	# hold Shift (or push the stick all the way) to run / fly fast; otherwise walk / cruise
-	it.sprint = input.down("sprint") or (input.last_device == "gamepad" and mv.length() > 0.9)
+	# tap Shift to switch between walking/running (slow/fast flight); gamepad: stick pushed all the way is fast
+	if input.take("sprint"):
+		fast_mode = not fast_mode
+		Events.emit_named("notify", {"text": ("Fast: running / full-speed flight" if fast_mode else "Walking / slow flight") + " (%s to switch)" % UiKit.key_name("sprint")})
+	it.sprint = fast_mode or (input.last_device == "gamepad" and mv.length() > 0.9)
 	if game.player.flying and mv.y > 0:
 		var tilt := float(Data.camera.pitch) - follow.pitch
 		var dead := 0.1

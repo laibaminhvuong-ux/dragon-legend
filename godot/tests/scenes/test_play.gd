@@ -132,3 +132,18 @@ func test_travel_to_another_world_survives_the_save_on_close() -> void:
 	eq(str(saved.zone), "namek", "still saved in the destination")
 	eq(saved.get("position"), null, "arrives at the destination's spawn")
 	_end(p)
+
+func test_shift_toggles_running_and_fast_flight() -> void:
+	# User request 2026-11-03: tap Shift to switch between walking and running (and slow / fast flight); no holding.
+	var p := _session()
+	var gi: GameInput = p.input
+	eq(p.intents().sprint, false, "starts walking")
+	gi.press("sprint")
+	ok(p.intents().sprint, "one tap: running")
+	gi.end_tick()
+	ok(p.intents().sprint, "stays running without holding")
+	gi.press("sprint")
+	eq(p.intents().sprint, false, "tap again: walking")
+	gi.end_tick()
+	eq(p.intents().sprint, false)
+	_end(p)

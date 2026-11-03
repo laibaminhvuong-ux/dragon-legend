@@ -1100,3 +1100,6 @@ The user couldn't enter King Kae's planet: the portal fired and travel saved `zo
 - **Views:** `combat_view.gd` (Codex file, small edit) hides and stops animating enemies beyond `DRAW_RANGE` 200 m (Earth now has 42 trainees): 43 → 56–60 fps.
 - **Input:** `GameInput._input` no longer requires exact modifiers, so Space/E/Q/F work while Shift (run) is held. That was why the user couldn't jump while running.
 - Tests: `tests/rules/test_quest_spawns.gd` (3), `tests/core/test_jump_keys.gd` (2). Suite 193 passed; story-play passed.
+
+## Claude: Shift is now a toggle (user request, 2026-11-03)
+Tapping Shift switches between walking/slow flight and running/fast flight (`PlaySession.fast_mode`; `GameInput.take()` uses a press once). A toast confirms the mode; the HUD action line shows "Shift Run ON/off". The rules are unchanged (intent `sprint`). Test `test_play::test_shift_toggles_running_and_fast_flight`; suite 194 passed.

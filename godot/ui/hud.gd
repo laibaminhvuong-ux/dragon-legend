@@ -173,9 +173,9 @@ func _slow_update() -> void:
 	var frozen := play.is_frozen()
 	_prompt.visible = inter is Dictionary and not frozen
 	_prompt.text = "[%s] %s · %s" % [UiKit.key_name("interact"), inter.action, inter.name] if inter is Dictionary else ""
-	_actions.text = "%s Melee · %s Ki blast · %s %s · %s Guard · %s Charge · %s Lock-on · %s Flight · %s Run/fast · %s Dash · %s Kaiyoken · %s Base form · %s Menu" % [
+	_actions.text = "%s Melee · %s Ki blast · %s %s · %s Guard · %s Charge · %s Lock-on · %s Flight · %s Run %s · %s Dash · %s Kaiyoken · %s Base form · %s Menu" % [
 		UiKit.key_name("melee"), UiKit.key_name("ki_blast"), UiKit.key_name("beam"), str(c.get("techniqueName", "Energy Wave")), UiKit.key_name("block"),
-		UiKit.key_name("charge"), UiKit.key_name("lock_on"), UiKit.key_name("flight"), UiKit.key_name("sprint"), UiKit.key_name("dash"), UiKit.key_name("kaioken"), UiKit.key_name("base"), UiKit.key_name("menu")]
+		UiKit.key_name("charge"), UiKit.key_name("lock_on"), UiKit.key_name("flight"), UiKit.key_name("sprint"), "ON" if play.fast_mode else "off", UiKit.key_name("dash"), UiKit.key_name("kaioken"), UiKit.key_name("base"), UiKit.key_name("menu")]
 	var tgt: Variant = c.get("target")
 	_target.visible = tgt is Dictionary
 	if tgt is Dictionary:
