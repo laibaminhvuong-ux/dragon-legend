@@ -10,3 +10,8 @@ Every asset here is CC0 (public domain): free for any use, no attribution requir
 | forest_floor | forest ground | https://polyhaven.com/a/forest_floor | CC0 |
 | leafy_grass | grass ground | https://polyhaven.com/a/leafy_grass | CC0 |
 | coast_sand_01 | sand ground | https://polyhaven.com/a/coast_sand_01 | CC0 |
+| boulder_01 | model | https://polyhaven.com/a/boulder_01 | CC0 |
+| namaqualand_boulder_04 | model | https://polyhaven.com/a/namaqualand_boulder_04 | CC0 |
+| rock_moss_set_01 | model | https://polyhaven.com/a/rock_moss_set_01 | CC0 |
+| shrub_03 | model | https://polyhaven.com/a/shrub_03 | CC0 |
+| dead_tree_trunk | model | https://polyhaven.com/a/dead_tree_trunk | CC0 |

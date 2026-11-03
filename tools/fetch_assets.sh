@@ -21,3 +21,22 @@ for kind in "${!TEX[@]}"; do
   echo "| $id | $kind ground | https://polyhaven.com/a/$id | CC0 |" >> "$LIC"
 done
 echo "assets in $OUT"; ls "$OUT"/*/ | head -40
+
+# CC0 models (glTF, 1k textures): rocks, a shrub and a dead tree. Light enough for the game; Godot makes LODs.
+MOD="$ROOT/godot/assets/models"
+mkdir -p "$MOD"
+for id in boulder_01 namaqualand_boulder_04 rock_moss_set_01 shrub_03 dead_tree_trunk; do
+  mkdir -p "$MOD/$id"
+  json=$(curl -sf "https://api.polyhaven.com/files/$id")
+  echo "$json" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)['gltf']['1k']['gltf']
+print(d['url'])
+for path,v in d.get('include',{}).items(): print(path+' '+v['url'])
+" | while read -r a b; do
+    if [ -z "$b" ]; then f="$MOD/$id/$id.gltf"; url=$a; else f="$MOD/$id/$a"; url=$b; fi
+    mkdir -p "$(dirname "$f")"; [ -s "$f" ] || curl -sfL -o "$f" "$url"
+  done
+  echo "| $id | model | https://polyhaven.com/a/$id | CC0 |" >> "$LIC"
+done
+du -sh "$MOD"
