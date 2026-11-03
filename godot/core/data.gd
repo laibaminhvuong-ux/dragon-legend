@@ -26,6 +26,12 @@ var avatar: Dictionary = {}
 var rpg: Dictionary = {}
 var appearance: Dictionary = {}
 
+## The named tables (anything else is only reachable through table()). An allow-list, so a data file
+## named like a Node property ("script", "name"...) can never overwrite the autoload itself.
+const TABLES := ["quests", "npcs", "characters", "links", "forms", "mastery_evolutions", "moves", "races",
+	"outfits", "accessories", "zones", "stats", "combat", "movement", "camera", "cutscenes", "form_looks",
+	"dragon_hunts", "kaioken", "avatar", "rpg", "appearance"]
+
 var errors: Array[String] = []
 var _extra: Dictionary = {}  # files that aren't one of the named tables
 
@@ -48,10 +54,16 @@ func load_dir(path: String) -> void:
 			push_warning("Data: could not read " + msg)
 			continue
 		var name := f.get_basename()
-		if name in self and _is_table(name):
-			set(name, json.data)
-		else:
+		if not _is_table(name):
 			_extra[name] = json.data
+			continue
+		var want := typeof(get(name))
+		if name != "dragon_hunts" and typeof(json.data) != want:
+			var msg := "%s: expected %s, got %s" % [f, type_string(want), type_string(typeof(json.data))]
+			errors.append(msg)
+			push_warning("Data: wrong shape, " + msg)
+			continue
+		set(name, json.data)
 
 func table(name: String) -> Variant:
 	if _is_table(name):
@@ -62,4 +74,4 @@ func table(name: String) -> Variant:
 	return null
 
 func _is_table(name: String) -> bool:
-	return name not in ["errors", "_extra"] and name in self and not name.begins_with("_")
+	return name in TABLES

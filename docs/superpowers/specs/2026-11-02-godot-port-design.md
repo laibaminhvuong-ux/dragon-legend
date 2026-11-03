@@ -50,8 +50,9 @@ against each other.
   game's own (`data/names.js` ran). Functions are not exported; any rule that was code in a data file moves to `rules/`.
 - **Events (`Events` autoload, signal bus):** `notify(text)`, `dialogue(d: Dictionary)`,
   `quest_accepted(id, title)`, `quest_completed(id, title)`, `quest_progress(id, objective)`, `travel(zone)`,
-  `enemy_defeated(d)`, `levelup(level)`, `stats()`. Rules receive an `events` object and call
-  `events.emit_signal(...)` with the same payloads the JS game emits today.
+  `enemy_defeated(d)`, `levelup(level, gained)`, `stats(hud: Dictionary)`. Rules emit with
+  **`Events.emit_named("questAccepted", {id, title})`**, using the JS event name and the same payload object the JS
+  game emits. `emit_named` maps it onto the typed signal.
 - **Saves (`SaveStore` autoload, Codex writes `rules/schema.gd`, Claude the file I/O):** 3 slots in
   `user://profile.json`. A slot is the same Dictionary shape as today (schema v6). `rules/schema.gd` provides
   `new_slot(look)`, `normalize(slot)` and migration. Saves move from the current game through the existing

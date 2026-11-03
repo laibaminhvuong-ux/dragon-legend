@@ -13,6 +13,7 @@ var path := "user://profile.json":
 		_slots = []
 
 var _slots: Array = []  # loaded lazily
+var _readonly := false  # set when a corrupt file couldn't be backed up: never overwrite it
 var _schema: Object = null
 
 func _ready() -> void:
@@ -39,8 +40,7 @@ func save_slot(i: int, slot: Dictionary) -> bool:
 	if not _valid(i):
 		return false
 	_ensure_loaded()
-	_slots[i] = slot.duplicate(true)
-	return _write()
+	return _change(i, slot.duplicate(true))
 
 func create_slot(i: int, look: Dictionary) -> bool:
 	var slot: Dictionary = _schema.new_slot(look) if _schema != null and _schema.has_method("new_slot") else {"appearance": look}
@@ -50,8 +50,16 @@ func delete_slot(i: int) -> bool:
 	if not _valid(i):
 		return false
 	_ensure_loaded()
-	_slots[i] = null
-	return _write()
+	return _change(i, null)
+
+## Changes one slot and writes; if the write fails, memory goes back to what is on disk.
+func _change(i: int, value: Variant) -> bool:
+	var before: Variant = _slots[i]
+	_slots[i] = value
+	if _write():
+		return true
+	_slots[i] = before
+	return false
 
 func _valid(i: int) -> bool:
 	return i >= 0 and i < SLOTS
@@ -67,26 +75,51 @@ func _ensure_loaded() -> void:
 	if _slots.size() == SLOTS:
 		return
 	_slots = [null, null, null]
-	if not FileAccess.file_exists(path):
+	var main: Variant = _read(path) if FileAccess.file_exists(path) else null
+	if main == null and FileAccess.file_exists(path):
+		_keep_bad()
+	if main == null:
+		# a save interrupted between writing .tmp and the rename: finish it
+		var tmp: Variant = _read(path + ".tmp") if FileAccess.file_exists(path + ".tmp") else null
+		if tmp == null:
+			return
+		main = tmp
+		_fill(main)
+		if not _readonly:
+			_write()
 		return
-	var text := FileAccess.get_file_as_string(path)
+	_fill(main)
+
+func _read(p: String) -> Variant:
 	var json := JSON.new()
-	var good: bool = json.parse(text) == OK and json.data is Dictionary and json.data.get("slots") is Array
-	if not good:
-		_keep_bad(text)
-		return
-	var slots: Array = json.data["slots"]
+	if json.parse(FileAccess.get_file_as_string(p)) != OK:
+		return null
+	if not (json.data is Dictionary and json.data.get("slots") is Array):
+		return null
+	return json.data
+
+func _fill(data: Dictionary) -> void:
+	var slots: Array = data["slots"]
 	for i in mini(SLOTS, slots.size()):
 		_slots[i] = slots[i] if slots[i] is Dictionary else null
 
-func _keep_bad(text: String) -> void:
+## Keeps the unreadable file's exact bytes as <path>.bad. If that fails, the store goes read-only so the
+## corrupt original is never overwritten.
+func _keep_bad() -> void:
+	var raw := FileAccess.get_file_as_bytes(path)
 	var bad := FileAccess.open(path + ".bad", FileAccess.WRITE)
 	if bad != null:
-		bad.store_string(text)
+		bad.store_buffer(raw)
 		bad.close()
+	if bad == null or FileAccess.get_file_as_bytes(path + ".bad") != raw:
+		_readonly = true
+		push_warning("SaveStore: %s could not be read or backed up; not writing to it" % path)
+		return
 	push_warning("SaveStore: %s could not be read; kept a copy as %s.bad and started with empty slots" % [path, path])
 
 func _write() -> bool:
+	if _readonly:
+		return false
 	var tmp := path + ".tmp"
 	var f := FileAccess.open(tmp, FileAccess.WRITE)
 	if f == null:
