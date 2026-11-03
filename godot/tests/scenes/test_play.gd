@@ -101,3 +101,11 @@ func test_views_follow_the_rules() -> void:
 		cv.update_view(DT)
 	eq(cv.effects.size(), before, "effects expire")
 	_end(p)
+
+func test_travel_survives_the_save_on_exit() -> void:
+	var p := _session()
+	Events.emit_named("travel", {"zone": "kame_island"})
+	p.step(DT)
+	p.save_now()   # main saves again while tearing the session down
+	eq(str(SaveStore.load_slot(0).zone), "kame_island", "still saved in the destination")
+	_end(p)
