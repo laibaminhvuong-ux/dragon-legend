@@ -1,0 +1,215 @@
+{
+  "Saiyan": {
+    "id": "Saiyan",
+    "name": "Saiyar",
+    "description": "A warrior race that grows stronger after every battle.",
+    "skins": [
+      16768180,
+      15778710,
+      13145710,
+      9856070,
+      6242605
+    ],
+    "hairStyles": [
+      "Spiky",
+      "Wild",
+      "Swept",
+      "LongSpiky"
+    ],
+    "tail": true,
+    "powerMultiplier": 1.1,
+    "xpBonusBelowLevel": null,
+    "statBonus": {
+      "Strength": 5
+    },
+    "forms": [
+      "Oozaru",
+      "GoldenOozaru",
+      "SSJ4",
+      "FalseSSJ",
+      "SSJ",
+      "SSJGrade2",
+      "SSJGrade3",
+      "SSJFullPower",
+      "Kaioken",
+      "SSJ2",
+      "SSJRage",
+      "Kaioken10",
+      "SSJ3",
+      "SSJGod",
+      "SSJBlue",
+      "LegendarySSJ",
+      "Beast",
+      "UIOmen",
+      "UIPerfected",
+      "UITrue",
+      "UltraEgo"
+    ]
+  },
+  "HalfSaiyan": {
+    "id": "HalfSaiyan",
+    "name": "Half-Saiyar",
+    "description": "Saiyar and human blood. Grows fast early and hides huge potential.",
+    "skins": [
+      16768180,
+      15778710,
+      13145710,
+      9856070,
+      6242605
+    ],
+    "hairStyles": [
+      "Spiky",
+      "Wild",
+      "Swept",
+      "Bowl",
+      "LongSpiky",
+      "Short",
+      "Ponytail",
+      "None"
+    ],
+    "tail": false,
+    "powerMultiplier": 1.05,
+    "xpBonusBelowLevel": {
+      "level": 500,
+      "bonus": 0.25
+    },
+    "statBonus": {
+      "KiPower": 5
+    },
+    "forms": [
+      "Oozaru",
+      "GoldenOozaru",
+      "SSJ4",
+      "FalseSSJ",
+      "SSJ",
+      "SSJGrade2",
+      "SSJGrade3",
+      "SSJFullPower",
+      "Kaioken",
+      "SSJ2",
+      "SSJRage",
+      "Kaioken10",
+      "SSJ3",
+      "SSJGod",
+      "SSJBlue",
+      "LegendarySSJ",
+      "Beast",
+      "UIOmen",
+      "UIPerfected",
+      "UITrue",
+      "UltraEgo"
+    ]
+  },
+  "Human": {
+    "id": "Human",
+    "name": "Human",
+    "description": "Disciplined fighters whose technique makes up for raw power.",
+    "skins": [
+      16768180,
+      15778710,
+      13145710,
+      9856070,
+      6242605
+    ],
+    "hairStyles": [
+      "Spiky",
+      "Wild",
+      "Swept",
+      "Bowl",
+      "LongSpiky",
+      "Short",
+      "Ponytail",
+      "None"
+    ],
+    "tail": false,
+    "powerMultiplier": 1,
+    "xpBonusBelowLevel": {
+      "level": 2000,
+      "bonus": 0.1
+    },
+    "statBonus": {
+      "Speed": 5
+    },
+    "forms": [
+      "Kaioken",
+      "Kaioken10",
+      "PotentialUnleashed"
+    ]
+  },
+  "Namekian": {
+    "id": "Namekian",
+    "name": "Nameckian",
+    "description": "Calm warriors from Nameck who can regenerate and stretch their limbs.",
+    "skins": [
+      7255120,
+      5939270,
+      8569700
+    ],
+    "hairStyles": [
+      "None"
+    ],
+    "tail": false,
+    "powerMultiplier": 1,
+    "xpBonusBelowLevel": null,
+    "statBonus": {
+      "Health": 5
+    },
+    "forms": [
+      "NamekFusion",
+      "Giant",
+      "Orange"
+    ]
+  },
+  "FrostDemon": {
+    "id": "FrostDemon",
+    "name": "Frost Fiend",
+    "description": "A ruthless race that holds back power in smaller forms.",
+    "skins": [
+      15790325,
+      13153500,
+      11189990,
+      3947590
+    ],
+    "hairStyles": [
+      "None"
+    ],
+    "tail": true,
+    "powerMultiplier": 1.05,
+    "xpBonusBelowLevel": null,
+    "statBonus": {
+      "Ki": 5
+    },
+    "forms": [
+      "FinalForm",
+      "FullPower",
+      "Golden",
+      "Black"
+    ]
+  },
+  "Majin": {
+    "id": "Majin",
+    "name": "Majinn",
+    "description": "Rubbery magical beings with endless stamina.",
+    "skins": [
+      16097480,
+      15106740,
+      11842750,
+      7887520
+    ],
+    "hairStyles": [
+      "None"
+    ],
+    "tail": false,
+    "powerMultiplier": 1,
+    "xpBonusBelowLevel": null,
+    "statBonus": {
+      "Health": 3,
+      "Ki": 3
+    },
+    "forms": [
+      "SuperMajin",
+      "KidForm",
+      "PureMajin"
+    ]
+  }
+}

@@ -1,0 +1,1476 @@
+{
+  "goku": {
+    "name": "Gokan",
+    "look": {
+      "race": "Saiyan",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "Wild",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "TurtleGi",
+      "outfitTint": 0
+    }
+  },
+  "gohan_kid": {
+    "name": "Gohin",
+    "look": {
+      "race": "HalfSaiyan",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "Short",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 2
+    },
+    "scale": 0.68
+  },
+  "gohan": {
+    "name": "Gohin",
+    "look": {
+      "race": "HalfSaiyan",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "Short",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "TurtleGi",
+      "outfitTint": 2
+    }
+  },
+  "goten": {
+    "name": "Gotin",
+    "look": {
+      "race": "HalfSaiyan",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Wild",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 0
+    },
+    "scale": 0.6
+  },
+  "trunks_kid": {
+    "name": "Kid Tronks",
+    "look": {
+      "race": "HalfSaiyan",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Short",
+      "hairColor": 2,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 6
+    },
+    "scale": 0.62
+  },
+  "trunks": {
+    "name": "Future Tronks",
+    "look": {
+      "race": "HalfSaiyan",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "Short",
+      "hairColor": 2,
+      "build": "Average",
+      "outfit": "CapsuleCorp",
+      "outfitTint": 1
+    }
+  },
+  "pan": {
+    "name": "Panna",
+    "look": {
+      "race": "HalfSaiyan",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Short",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 5,
+      "female": true
+    },
+    "scale": 0.5
+  },
+  "piccolo": {
+    "name": "Piccor",
+    "look": {
+      "race": "Namekian",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "NamekRobe",
+      "outfitTint": 2
+    }
+  },
+  "krillin": {
+    "name": "Krilan",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 0
+    },
+    "scale": 0.85
+  },
+  "roshi": {
+    "name": "Master Roshu",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 5,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 6
+    },
+    "scale": 0.8
+  },
+  "bulma": {
+    "name": "Bulna",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Ponytail",
+      "hairColor": 2,
+      "build": "Slim",
+      "outfit": "CapsuleCorp",
+      "outfitTint": 4,
+      "female": true
+    }
+  },
+  "dr_brief": {
+    "name": "Dr. Brisk",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "Short",
+      "hairColor": 5,
+      "build": "Short",
+      "outfit": "CapsuleCorp",
+      "outfitTint": 4
+    }
+  },
+  "chichi": {
+    "name": "Chi-Mei",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Fierce",
+      "hair": "Ponytail",
+      "hairColor": 0,
+      "build": "Slim",
+      "outfit": "CraneGi",
+      "outfitTint": 2,
+      "female": true
+    }
+  },
+  "yamcha": {
+    "name": "Yamcho",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "LongSpiky",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "TurtleGi",
+      "outfitTint": 0
+    }
+  },
+  "tien": {
+    "name": "Tenzo",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "CraneGi",
+      "outfitTint": 6
+    }
+  },
+  "farmer": {
+    "name": "Farmer",
+    "look": {
+      "race": "Human",
+      "skin": 2,
+      "face": "Fierce",
+      "hair": "Short",
+      "hairColor": 1,
+      "build": "Average",
+      "outfit": "CraneGi",
+      "outfitTint": 1
+    }
+  },
+  "raditz": {
+    "name": "Radix",
+    "look": {
+      "race": "Saiyan",
+      "skin": 0,
+      "face": "Fierce",
+      "hair": "LongSpiky",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3
+    },
+    "scale": 1.08
+  },
+  "nappa": {
+    "name": "Nappo",
+    "look": {
+      "race": "Saiyan",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3
+    },
+    "scale": 1.2
+  },
+  "vegeta": {
+    "name": "Vegara",
+    "look": {
+      "race": "Saiyan",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "Swept",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 1
+    },
+    "scale": 0.95
+  },
+  "saibaman": {
+    "name": "Saibling",
+    "look": {
+      "race": "Namekian",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Slim",
+      "outfit": "MajinVest",
+      "outfitTint": 6
+    },
+    "scale": 0.75
+  },
+  "king_kai": {
+    "name": "King Kae",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 2,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 3
+    },
+    "scale": 0.85
+  },
+  "bubbles": {
+    "name": "Bubbo",
+    "look": {
+      "race": "Human",
+      "skin": 3,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 3
+    },
+    "scale": 0.5
+  },
+  "king_yemma": {
+    "name": "King Yemmo",
+    "look": {
+      "race": "Majin",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "CraneGi",
+      "outfitTint": 2
+    },
+    "scale": 2.4
+  },
+  "princess_snake": {
+    "name": "Princess Serpa",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Ponytail",
+      "hairColor": 4,
+      "build": "Slim",
+      "outfit": "AngelRobe",
+      "outfitTint": 5,
+      "female": true
+    }
+  },
+  "moori": {
+    "name": "Elder Mooru",
+    "look": {
+      "race": "Namekian",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "NamekRobe",
+      "outfitTint": 4
+    }
+  },
+  "dende": {
+    "name": "Dendo",
+    "look": {
+      "race": "Namekian",
+      "skin": 2,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "NamekRobe",
+      "outfitTint": 4
+    },
+    "scale": 0.7
+  },
+  "nail": {
+    "name": "Nael",
+    "look": {
+      "race": "Namekian",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "NamekRobe",
+      "outfitTint": 2
+    }
+  },
+  "guru": {
+    "name": "Grand Elder Gura",
+    "look": {
+      "race": "Namekian",
+      "skin": 1,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "NamekRobe",
+      "outfitTint": 4
+    },
+    "scale": 2.3
+  },
+  "frieza": {
+    "name": "Frigor",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "FrostArmor",
+      "outfitTint": 2
+    },
+    "scale": 0.9
+  },
+  "golden_frieza": {
+    "name": "Golden Frigor",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 3,
+      "build": "Average",
+      "outfit": "FrostArmor",
+      "outfitTint": 0
+    }
+  },
+  "zarbon": {
+    "name": "Zarvon",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Ponytail",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "FrostArmor",
+      "outfitTint": 4
+    }
+  },
+  "dodoria": {
+    "name": "Dodorra",
+    "look": {
+      "race": "Majin",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "FrostArmor",
+      "outfitTint": 4
+    },
+    "scale": 1.25
+  },
+  "ginyu": {
+    "name": "Captain Ginnu",
+    "look": {
+      "race": "Majin",
+      "skin": 3,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3
+    }
+  },
+  "recoome": {
+    "name": "Rekume",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Fierce",
+      "hair": "Wild",
+      "hairColor": 4,
+      "build": "Muscular",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3
+    },
+    "scale": 1.3
+  },
+  "burter": {
+    "name": "Burtor",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 2,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3
+    },
+    "scale": 1.2
+  },
+  "jeice": {
+    "name": "Jayce",
+    "look": {
+      "race": "Majin",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "Short",
+      "hairColor": 5,
+      "build": "Average",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3
+    }
+  },
+  "guldo": {
+    "name": "Guldor",
+    "look": {
+      "race": "Namekian",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3
+    },
+    "scale": 0.7
+  },
+  "frieza_soldier": {
+    "name": "Frigor Force soldier",
+    "look": {
+      "race": "Human",
+      "skin": 3,
+      "face": "Fierce",
+      "hair": "Short",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "FrostArmor",
+      "outfitTint": 3
+    }
+  },
+  "yardrat_elder": {
+    "name": "Yardran Elder",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 1,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "AngelRobe",
+      "outfitTint": 2
+    },
+    "scale": 0.85
+  },
+  "yardrat": {
+    "name": "Yardran",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "AngelRobe",
+      "outfitTint": 6
+    },
+    "scale": 0.8
+  },
+  "mecha_frieza": {
+    "name": "Mecha Frigor",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 2,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "FrostArmor",
+      "outfitTint": 3
+    }
+  },
+  "king_cold": {
+    "name": "King Kold",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 3,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "FrostArmor",
+      "outfitTint": 2
+    },
+    "scale": 1.8
+  },
+  "android_19": {
+    "name": "Cyborg 19",
+    "look": {
+      "race": "Majin",
+      "skin": 2,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "PrideTrooper",
+      "outfitTint": 4
+    },
+    "scale": 1.1
+  },
+  "gero": {
+    "name": "Dr. Gerro (Cyborg 20)",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "Short",
+      "hairColor": 5,
+      "build": "Slim",
+      "outfit": "PrideTrooper",
+      "outfitTint": 4
+    }
+  },
+  "android_17": {
+    "name": "Cyborg 17",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "Short",
+      "hairColor": 0,
+      "build": "Slim",
+      "outfit": "CapsuleCorp",
+      "outfitTint": 6
+    }
+  },
+  "android_18": {
+    "name": "Cyborg 18",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "Short",
+      "hairColor": 3,
+      "build": "Slim",
+      "outfit": "CapsuleCorp",
+      "outfitTint": 3,
+      "female": true
+    }
+  },
+  "android_16": {
+    "name": "Cyborg 16",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "Short",
+      "hairColor": 4,
+      "build": "Tall",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 6
+    },
+    "scale": 1.25
+  },
+  "cell": {
+    "name": "Cel",
+    "look": {
+      "race": "Namekian",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "FrostArmor",
+      "outfitTint": 6
+    }
+  },
+  "cell_jr": {
+    "name": "Cel Jr.",
+    "look": {
+      "race": "Namekian",
+      "skin": 2,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "FrostArmor",
+      "outfitTint": 6
+    },
+    "scale": 0.6
+  },
+  "kami": {
+    "name": "Kamu",
+    "look": {
+      "race": "Namekian",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "AngelRobe",
+      "outfitTint": 4
+    }
+  },
+  "mr_popo": {
+    "name": "Mr. Pobo",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 3,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "AngelRobe",
+      "outfitTint": 5
+    }
+  },
+  "mr_satan": {
+    "name": "Mr. Sadan",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "Wild",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "CraneGi",
+      "outfitTint": 4
+    }
+  },
+  "videl": {
+    "name": "Vidal",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "Ponytail",
+      "hairColor": 0,
+      "build": "Slim",
+      "outfit": "CraneGi",
+      "outfitTint": 3,
+      "female": true
+    }
+  },
+  "announcer": {
+    "name": "Tournament Announcer",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Short",
+      "hairColor": 3,
+      "build": "Slim",
+      "outfit": "CapsuleCorp",
+      "outfitTint": 3
+    }
+  },
+  "supreme_kai": {
+    "name": "Supreme Kae",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 1,
+      "face": "Calm",
+      "hair": "Short",
+      "hairColor": 5,
+      "build": "Slim",
+      "outfit": "AngelRobe",
+      "outfitTint": 1
+    }
+  },
+  "kibito": {
+    "name": "Kibitto",
+    "look": {
+      "race": "Majin",
+      "skin": 1,
+      "face": "Calm",
+      "hair": "LongSpiky",
+      "hairColor": 5,
+      "build": "Tall",
+      "outfit": "AngelRobe",
+      "outfitTint": 5
+    }
+  },
+  "elder_kai": {
+    "name": "Old Kae",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "Short",
+      "hairColor": 5,
+      "build": "Short",
+      "outfit": "AngelRobe",
+      "outfitTint": 5
+    },
+    "scale": 0.85
+  },
+  "spopovich": {
+    "name": "Spopovik",
+    "look": {
+      "race": "Human",
+      "skin": 2,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "CraneGi",
+      "outfitTint": 3
+    },
+    "scale": 1.25
+  },
+  "babidi": {
+    "name": "Babido",
+    "look": {
+      "race": "Majin",
+      "skin": 2,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "AngelRobe",
+      "outfitTint": 3
+    },
+    "scale": 0.6
+  },
+  "dabura": {
+    "name": "Dabora",
+    "look": {
+      "race": "Majin",
+      "skin": 1,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "FrostArmor",
+      "outfitTint": 3
+    },
+    "scale": 1.3
+  },
+  "pui_pui": {
+    "name": "Poi Poi",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 2
+    }
+  },
+  "yakon": {
+    "name": "Yakkon",
+    "look": {
+      "race": "Majin",
+      "skin": 2,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "MajinVest",
+      "outfitTint": 6
+    },
+    "scale": 1.5
+  },
+  "majin_vegeta": {
+    "name": "Majinn Vegara",
+    "look": {
+      "race": "Saiyan",
+      "skin": 0,
+      "face": "Fierce",
+      "hair": "Swept",
+      "hairColor": 3,
+      "build": "Average",
+      "outfit": "SaiyanSuit",
+      "outfitTint": 1
+    },
+    "scale": 0.95
+  },
+  "fat_buu": {
+    "name": "Majinn Boo",
+    "look": {
+      "race": "Majin",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "MajinVest",
+      "outfitTint": 2
+    },
+    "scale": 1.35
+  },
+  "super_buu": {
+    "name": "Super Boo",
+    "look": {
+      "race": "Majin",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "MajinVest",
+      "outfitTint": 3
+    }
+  },
+  "kid_buu": {
+    "name": "Kid Boo",
+    "look": {
+      "race": "Majin",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "MajinVest",
+      "outfitTint": 3
+    },
+    "scale": 0.8
+  },
+  "gotenks": {
+    "name": "Gotinks",
+    "look": {
+      "race": "HalfSaiyan",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Wild",
+      "hairColor": 2,
+      "build": "Short",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 1
+    },
+    "scale": 0.75
+  },
+  "beerus": {
+    "name": "Beeros",
+    "look": {
+      "race": "Majin",
+      "skin": 3,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Slim",
+      "outfit": "AngelRobe",
+      "outfitTint": 3
+    }
+  },
+  "whis": {
+    "name": "Wiss",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 2,
+      "face": "Calm",
+      "hair": "Short",
+      "hairColor": 5,
+      "build": "Tall",
+      "outfit": "AngelRobe",
+      "outfitTint": 2
+    }
+  },
+  "oracle_fish": {
+    "name": "Oracle Fish",
+    "look": {
+      "race": "Namekian",
+      "skin": 2,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "AngelRobe",
+      "outfitTint": 0
+    },
+    "scale": 0.5
+  },
+  "sorbet": {
+    "name": "Sorbel",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 2,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "FrostArmor",
+      "outfitTint": 3
+    },
+    "scale": 0.8
+  },
+  "tagoma": {
+    "name": "Tagomo",
+    "look": {
+      "race": "Human",
+      "skin": 2,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "FrostArmor",
+      "outfitTint": 3
+    },
+    "scale": 1.2
+  },
+  "champa": {
+    "name": "Champo",
+    "look": {
+      "race": "Majin",
+      "skin": 3,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "AngelRobe",
+      "outfitTint": 3
+    },
+    "scale": 1.25
+  },
+  "vados": {
+    "name": "Vadosa",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 2,
+      "face": "Smirk",
+      "hair": "Ponytail",
+      "hairColor": 5,
+      "build": "Slim",
+      "outfit": "AngelRobe",
+      "outfitTint": 1,
+      "female": true
+    }
+  },
+  "hit": {
+    "name": "Hitto",
+    "look": {
+      "race": "Majin",
+      "skin": 3,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "AngelRobe",
+      "outfitTint": 3
+    }
+  },
+  "cabba": {
+    "name": "Kabba",
+    "look": {
+      "race": "Saiyan",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "Spiky",
+      "hairColor": 0,
+      "build": "Slim",
+      "outfit": "EliteArmor",
+      "outfitTint": 5
+    }
+  },
+  "frost": {
+    "name": "Frosk",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "FrostArmor",
+      "outfitTint": 1
+    }
+  },
+  "botamo": {
+    "name": "Botama",
+    "look": {
+      "race": "Majin",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "MajinVest",
+      "outfitTint": 0
+    },
+    "scale": 1.4
+  },
+  "magetta": {
+    "name": "Magetto",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 3,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "PrideTrooper",
+      "outfitTint": 3
+    },
+    "scale": 1.6
+  },
+  "mai": {
+    "name": "Future Mae",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "Short",
+      "hairColor": 0,
+      "build": "Slim",
+      "outfit": "CapsuleCorp",
+      "outfitTint": 6,
+      "female": true
+    }
+  },
+  "goku_black": {
+    "name": "Gokan Black",
+    "look": {
+      "race": "Saiyan",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "Wild",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "TurtleGi",
+      "outfitTint": 3
+    }
+  },
+  "zamasu": {
+    "name": "Zamazu",
+    "look": {
+      "race": "Namekian",
+      "skin": 2,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 5,
+      "build": "Slim",
+      "outfit": "AngelRobe",
+      "outfitTint": 6
+    }
+  },
+  "grand_priest": {
+    "name": "Grand Priest",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 2,
+      "face": "Calm",
+      "hair": "Short",
+      "hairColor": 5,
+      "build": "Tall",
+      "outfit": "AngelRobe",
+      "outfitTint": 1
+    },
+    "scale": 1.05
+  },
+  "zeno": {
+    "name": "Grand Zenno",
+    "look": {
+      "race": "Majin",
+      "skin": 2,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "AngelRobe",
+      "outfitTint": 2
+    },
+    "scale": 0.6
+  },
+  "jiren": {
+    "name": "Jiran",
+    "look": {
+      "race": "Majin",
+      "skin": 2,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "PrideTrooper",
+      "outfitTint": 5
+    },
+    "scale": 1.25
+  },
+  "toppo": {
+    "name": "Toppa",
+    "look": {
+      "race": "Human",
+      "skin": 2,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "PrideTrooper",
+      "outfitTint": 5
+    },
+    "scale": 1.35
+  },
+  "kefla": {
+    "name": "Kafla",
+    "look": {
+      "race": "Saiyan",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Ponytail",
+      "hairColor": 0,
+      "build": "Slim",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 6,
+      "female": true
+    }
+  },
+  "broly": {
+    "name": "Brolo",
+    "look": {
+      "race": "Saiyan",
+      "skin": 0,
+      "face": "Fierce",
+      "hair": "LongSpiky",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "SaiyanSuit",
+      "outfitTint": 6
+    },
+    "scale": 1.35
+  },
+  "paragus": {
+    "name": "Paragos",
+    "look": {
+      "race": "Saiyan",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "Short",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3
+    }
+  },
+  "cheelai": {
+    "name": "Chelai",
+    "look": {
+      "race": "Namekian",
+      "skin": 2,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 5,
+      "build": "Slim",
+      "outfit": "FrostArmor",
+      "outfitTint": 4,
+      "female": true
+    },
+    "scale": 0.85
+  },
+  "lemo": {
+    "name": "Lemmo",
+    "look": {
+      "race": "Human",
+      "skin": 2,
+      "face": "Calm",
+      "hair": "Short",
+      "hairColor": 1,
+      "build": "Short",
+      "outfit": "FrostArmor",
+      "outfitTint": 4
+    },
+    "scale": 0.85
+  },
+  "gamma1": {
+    "name": "Gama 1",
+    "look": {
+      "race": "Majin",
+      "skin": 2,
+      "face": "Cold",
+      "hair": "Short",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "PrideTrooper",
+      "outfitTint": 5
+    }
+  },
+  "gamma2": {
+    "name": "Gama 2",
+    "look": {
+      "race": "Majin",
+      "skin": 2,
+      "face": "Smirk",
+      "hair": "Short",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "PrideTrooper",
+      "outfitTint": 5
+    }
+  },
+  "hedo": {
+    "name": "Dr. Heddo",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Bowl",
+      "hairColor": 0,
+      "build": "Slim",
+      "outfit": "CapsuleCorp",
+      "outfitTint": 4
+    }
+  },
+  "magenta": {
+    "name": "Majenta",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Short",
+      "hairColor": 5,
+      "build": "Short",
+      "outfit": "CapsuleCorp",
+      "outfitTint": 5
+    }
+  },
+  "cell_max": {
+    "name": "Cel Max",
+    "look": {
+      "race": "Namekian",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "FrostArmor",
+      "outfitTint": 5
+    },
+    "scale": 3.2
+  },
+  "shenron": {
+    "name": "Shenra",
+    "look": {
+      "race": "Namekian",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "NamekRobe",
+      "outfitTint": 6
+    },
+    "scale": 3,
+    "dragon": "earth"
+  },
+  "merus": {
+    "name": "Meros",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 2,
+      "face": "Calm",
+      "hair": "Short",
+      "hairColor": 5,
+      "build": "Tall",
+      "outfit": "AngelRobe",
+      "outfitTint": 2
+    }
+  },
+  "moro": {
+    "name": "Morro",
+    "look": {
+      "race": "Majin",
+      "skin": 1,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "FrostArmor",
+      "outfitTint": 3
+    },
+    "scale": 1.3
+  },
+  "saganbo": {
+    "name": "Sagambo",
+    "look": {
+      "race": "Saiyan",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3
+    },
+    "scale": 1.2
+  },
+  "granolah": {
+    "name": "Granolo",
+    "look": {
+      "race": "HalfSaiyan",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "Short",
+      "hairColor": 2,
+      "build": "Average",
+      "outfit": "CapsuleCorp",
+      "outfitTint": 1
+    }
+  },
+  "monaito": {
+    "name": "Monaido",
+    "look": {
+      "race": "Namekian",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "AngelRobe",
+      "outfitTint": 4
+    }
+  },
+  "gas": {
+    "name": "Gaz",
+    "look": {
+      "race": "Majin",
+      "skin": 3,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "AngelRobe",
+      "outfitTint": 3
+    }
+  },
+  "black_frieza": {
+    "name": "Black Frigor",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "FrostArmor",
+      "outfitTint": 2
+    },
+    "scale": 0.9
+  },
+  "porunga": {
+    "name": "Porunda",
+    "look": {
+      "race": "Namekian",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "NamekRobe",
+      "outfitTint": 6
+    },
+    "scale": 5,
+    "dragon": "namek"
+  },
+  "super_shenron": {
+    "name": "Super Shenra",
+    "look": {
+      "race": "Namekian",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "NamekRobe",
+      "outfitTint": 6
+    },
+    "scale": 8,
+    "dragon": "super"
+  },
+  "toronbo": {
+    "name": "Toronba",
+    "look": {
+      "race": "Namekian",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "NamekRobe",
+      "outfitTint": 6
+    },
+    "scale": 4,
+    "dragon": "cereal"
+  },
+  "training_guide": {
+    "name": "Training Guide",
+    "look": {
+      "race": "Human",
+      "skin": 2,
+      "hair": "Short",
+      "hairColor": 0,
+      "face": "Calm",
+      "build": "Average",
+      "outfit": "TurtleGi",
+      "outfitTint": 1
+    }
+  }
+}

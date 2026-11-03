@@ -1,0 +1,26 @@
+{
+  "None": {
+    "name": "None",
+    "after": null
+  },
+  "Scouter": {
+    "name": "Scouter",
+    "after": "m02_raditz",
+    "attach": "head"
+  },
+  "Halo": {
+    "name": "Other World Halo",
+    "after": "m03_snake_way",
+    "attach": "head"
+  },
+  "Cape": {
+    "name": "Training Cape",
+    "after": "t_piccolo_survival",
+    "attach": "back"
+  },
+  "Wristbands": {
+    "name": "Training Wristbands",
+    "after": "t_roshi_kamehameha",
+    "attach": "handR"
+  }
+}

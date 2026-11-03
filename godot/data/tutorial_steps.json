@@ -1,0 +1,58 @@
+[
+  {
+    "id": "look",
+    "text": "Move the mouse to look around. (Click the game first if the mouse isn't captured.)"
+  },
+  {
+    "id": "move",
+    "text": "Walk around with W A S D."
+  },
+  {
+    "id": "jump",
+    "text": "Press {jump} to jump."
+  },
+  {
+    "id": "dash",
+    "text": "Press {dash} while moving to dash."
+  },
+  {
+    "id": "fly",
+    "text": "Press {flight} to fly. Hold {ascend} to rise and {descend} to sink."
+  },
+  {
+    "id": "land",
+    "text": "Press {flight} again to land."
+  },
+  {
+    "id": "melee",
+    "text": "{melee}: punch. Throw three punches in a row for a combo."
+  },
+  {
+    "id": "blast",
+    "text": "Press {kiBlast} to fire a ki blast."
+  },
+  {
+    "id": "beam",
+    "text": "Hold {beam} to charge your Energy Wave, then let go to fire it."
+  },
+  {
+    "id": "charge",
+    "text": "Attacks use ki (the blue bar). Hold {charge} to charge it back up."
+  },
+  {
+    "id": "guard",
+    "text": "Hold {block} to guard and take less damage."
+  },
+  {
+    "id": "lock",
+    "text": "Press {lockOn} to lock on to the nearest enemy (press again to switch or release)."
+  },
+  {
+    "id": "talk",
+    "text": "People with \"!\" over their head have quests. Walk up to Gokan and press {interact} to start the story."
+  },
+  {
+    "id": "menu",
+    "text": "Character, Stats, Forms and Techniques are in the bar at the bottom; {pause} pauses. {transform} transforms and {base} takes you back to base form. Bosses talk before you fight them. When a planet's story is done, a pilot ✈ flies you onward. Good luck!"
+  }
+]

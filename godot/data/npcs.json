@@ -1,0 +1,1465 @@
+[
+  {
+    "id": "goku_plains",
+    "who": "goku",
+    "zone": "earth_plains",
+    "x": 6,
+    "z": 10,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "gohan_plains",
+    "who": "gohan_kid",
+    "zone": "earth_plains",
+    "x": 8,
+    "z": 12,
+    "rot": 3.141592653589793,
+    "before": "m02_raditz"
+  },
+  {
+    "id": "piccolo_plains",
+    "who": "piccolo",
+    "zone": "earth_plains",
+    "x": -10,
+    "z": 14,
+    "rot": 2.6,
+    "after": "m01_arrival"
+  },
+  {
+    "id": "farmer",
+    "who": "farmer",
+    "zone": "earth_plains",
+    "x": -52,
+    "z": 26,
+    "rot": 0.4
+  },
+  {
+    "id": "raditz",
+    "who": "raditz",
+    "zone": "earth_plains",
+    "x": 42,
+    "z": 46,
+    "boss": true,
+    "after": "m01_arrival",
+    "before": "m02_raditz"
+  },
+  {
+    "id": "chichi",
+    "who": "chichi",
+    "zone": "earth_plains",
+    "x": -6,
+    "z": 22,
+    "rot": 3.141592653589793,
+    "after": "m25_kid_buu"
+  },
+  {
+    "id": "pan_plains",
+    "who": "pan",
+    "zone": "earth_plains",
+    "x": 12,
+    "z": 24,
+    "after": "m33_broly"
+  },
+  {
+    "id": "roshi",
+    "who": "roshi",
+    "zone": "kame_island",
+    "x": 3,
+    "z": 0,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "krillin_kame",
+    "who": "krillin",
+    "zone": "kame_island",
+    "x": -5,
+    "z": 2,
+    "rot": 2.8
+  },
+  {
+    "id": "android_18_kame",
+    "who": "android_18",
+    "zone": "kame_island",
+    "x": -8,
+    "z": 10,
+    "rot": 2.2,
+    "after": "m25_kid_buu"
+  },
+  {
+    "id": "king_yemma",
+    "who": "king_yemma",
+    "zone": "snake_way",
+    "x": 0,
+    "z": -368,
+    "rot": 3.141592653589793,
+    "road": true
+  },
+  {
+    "id": "princess_snake",
+    "who": "princess_snake",
+    "zone": "snake_way",
+    "x": 0,
+    "z": -40,
+    "road": true,
+    "rot": 1.5
+  },
+  {
+    "id": "king_kai",
+    "who": "king_kai",
+    "zone": "king_kai",
+    "x": 2,
+    "z": 2,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "bubbles",
+    "who": "bubbles",
+    "zone": "king_kai",
+    "x": -14,
+    "z": 8,
+    "rot": 1
+  },
+  {
+    "id": "goku_kingkai",
+    "who": "goku",
+    "zone": "king_kai",
+    "x": 6,
+    "z": -6,
+    "rot": 0.5,
+    "after": "m23_majin_buu"
+  },
+  {
+    "id": "krillin_gizard",
+    "who": "krillin",
+    "zone": "gizard_wasteland",
+    "x": -6,
+    "z": 8,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "tien_gizard",
+    "who": "tien",
+    "zone": "gizard_wasteland",
+    "x": 4,
+    "z": 10,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "yamcha_gizard",
+    "who": "yamcha",
+    "zone": "gizard_wasteland",
+    "x": 12,
+    "z": 6,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "saibamen",
+    "who": "saibaman",
+    "zone": "gizard_wasteland",
+    "x": 40,
+    "z": 60,
+    "boss": true,
+    "after": "m04_kaioken",
+    "before": "m05_saibamen"
+  },
+  {
+    "id": "nappa",
+    "who": "nappa",
+    "zone": "gizard_wasteland",
+    "x": 30,
+    "z": 80,
+    "boss": true,
+    "after": "m05_saibamen",
+    "before": "m06_nappa"
+  },
+  {
+    "id": "vegeta_gizard",
+    "who": "vegeta",
+    "zone": "gizard_wasteland",
+    "x": 22,
+    "z": 90,
+    "boss": true,
+    "after": "m05_saibamen",
+    "before": "m07_vegeta"
+  },
+  {
+    "id": "sorbet",
+    "who": "sorbet",
+    "zone": "gizard_wasteland",
+    "x": -40,
+    "z": 120,
+    "boss": true,
+    "after": "m27_whis",
+    "before": "m28_golden_frieza"
+  },
+  {
+    "id": "tagoma",
+    "who": "tagoma",
+    "zone": "gizard_wasteland",
+    "x": -30,
+    "z": 128,
+    "boss": true,
+    "after": "m27_whis",
+    "before": "m28_golden_frieza"
+  },
+  {
+    "id": "golden_frieza",
+    "who": "golden_frieza",
+    "zone": "gizard_wasteland",
+    "x": -20,
+    "z": 150,
+    "boss": true,
+    "after": "m27_whis",
+    "before": "m28_golden_frieza"
+  },
+  {
+    "id": "moori",
+    "who": "moori",
+    "zone": "namek",
+    "x": -22,
+    "z": 14,
+    "rot": 0.6
+  },
+  {
+    "id": "dende",
+    "who": "dende",
+    "zone": "namek",
+    "x": -14,
+    "z": 18,
+    "rot": 0.9
+  },
+  {
+    "id": "bulma_namek",
+    "who": "bulma",
+    "zone": "namek",
+    "x": 14,
+    "z": -16,
+    "rot": -0.4
+  },
+  {
+    "id": "nail",
+    "who": "nail",
+    "zone": "namek",
+    "x": 150,
+    "z": 74,
+    "rot": 3.6
+  },
+  {
+    "id": "guru",
+    "who": "guru",
+    "zone": "namek",
+    "x": 160,
+    "z": 92,
+    "onTop": true,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "dodoria",
+    "who": "dodoria",
+    "zone": "namek",
+    "x": -60,
+    "z": 30,
+    "boss": true,
+    "after": "m08_namek",
+    "before": "m09_village"
+  },
+  {
+    "id": "zarbon",
+    "who": "zarbon",
+    "zone": "namek",
+    "x": -150,
+    "z": 60,
+    "boss": true,
+    "after": "m10_guru",
+    "before": "m11_dragon_balls"
+  },
+  {
+    "id": "ginyu_force",
+    "who": "ginyu",
+    "zone": "namek",
+    "x": 20,
+    "z": -150,
+    "boss": true,
+    "after": "m11_dragon_balls",
+    "before": "m12_ginyu"
+  },
+  {
+    "id": "recoome",
+    "who": "recoome",
+    "zone": "namek",
+    "x": 30,
+    "z": -152,
+    "boss": true,
+    "after": "m11_dragon_balls",
+    "before": "m12_ginyu"
+  },
+  {
+    "id": "burter",
+    "who": "burter",
+    "zone": "namek",
+    "x": 10,
+    "z": -148,
+    "boss": true,
+    "after": "m11_dragon_balls",
+    "before": "m12_ginyu"
+  },
+  {
+    "id": "jeice",
+    "who": "jeice",
+    "zone": "namek",
+    "x": 0,
+    "z": -152,
+    "boss": true,
+    "after": "m11_dragon_balls",
+    "before": "m12_ginyu"
+  },
+  {
+    "id": "guldo",
+    "who": "guldo",
+    "zone": "namek",
+    "x": 40,
+    "z": -150,
+    "boss": true,
+    "after": "m11_dragon_balls",
+    "before": "m12_ginyu"
+  },
+  {
+    "id": "frieza",
+    "who": "frieza",
+    "zone": "namek",
+    "x": 40,
+    "z": -160,
+    "boss": true,
+    "after": "m12_ginyu",
+    "before": "m13_frieza"
+  },
+  {
+    "id": "vegeta_namek",
+    "who": "vegeta",
+    "zone": "namek",
+    "x": 60,
+    "z": -40,
+    "rot": 2,
+    "after": "m09_village",
+    "before": "m13_frieza"
+  },
+  {
+    "id": "yardrat_elder",
+    "who": "yardrat_elder",
+    "zone": "yardrat",
+    "x": -12,
+    "z": 14,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "yardrat_a",
+    "who": "yardrat",
+    "zone": "yardrat",
+    "x": -24,
+    "z": 26,
+    "rot": 1.2
+  },
+  {
+    "id": "yardrat_b",
+    "who": "yardrat",
+    "zone": "yardrat",
+    "x": 8,
+    "z": 22,
+    "rot": 3
+  },
+  {
+    "id": "bulma_cc",
+    "who": "bulma",
+    "zone": "west_city",
+    "x": 10,
+    "z": -6,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "dr_brief",
+    "who": "dr_brief",
+    "zone": "west_city",
+    "x": -8,
+    "z": -4,
+    "rot": 2.5
+  },
+  {
+    "id": "trunks_cc",
+    "who": "trunks",
+    "zone": "west_city",
+    "x": -20,
+    "z": -12,
+    "rot": 2,
+    "after": "m13_frieza"
+  },
+  {
+    "id": "mecha_frieza",
+    "who": "mecha_frieza",
+    "zone": "west_city",
+    "x": 120,
+    "z": 120,
+    "boss": true,
+    "after": "m13_frieza",
+    "before": "m14_future_boy"
+  },
+  {
+    "id": "king_cold",
+    "who": "king_cold",
+    "zone": "west_city",
+    "x": 126,
+    "z": 126,
+    "boss": true,
+    "after": "m13_frieza",
+    "before": "m14_future_boy"
+  },
+  {
+    "id": "vegeta_cc",
+    "who": "vegeta",
+    "zone": "west_city",
+    "x": 22,
+    "z": 10,
+    "rot": 3.5,
+    "after": "m13_frieza"
+  },
+  {
+    "id": "yamcha_cc",
+    "who": "yamcha",
+    "zone": "west_city",
+    "x": -30,
+    "z": 4,
+    "rot": 1,
+    "after": "m07_vegeta"
+  },
+  {
+    "id": "beerus_party",
+    "who": "beerus",
+    "zone": "west_city",
+    "x": 30,
+    "z": -24,
+    "after": "m25_kid_buu",
+    "before": "m26_beerus"
+  },
+  {
+    "id": "whis_party",
+    "who": "whis",
+    "zone": "west_city",
+    "x": 34,
+    "z": -22,
+    "after": "m25_kid_buu",
+    "before": "m26_beerus"
+  },
+  {
+    "id": "goten_cc",
+    "who": "goten",
+    "zone": "west_city",
+    "x": 4,
+    "z": -14,
+    "after": "m21_tournament"
+  },
+  {
+    "id": "trunks_kid_cc",
+    "who": "trunks_kid",
+    "zone": "west_city",
+    "x": 0,
+    "z": -16,
+    "after": "m21_tournament"
+  },
+  {
+    "id": "gohan_cc",
+    "who": "gohan",
+    "zone": "west_city",
+    "x": -12,
+    "z": -18,
+    "after": "m20_cell_games"
+  },
+  {
+    "id": "piccolo_cc",
+    "who": "piccolo",
+    "zone": "west_city",
+    "x": -26,
+    "z": -20,
+    "after": "m20_cell_games"
+  },
+  {
+    "id": "android_19",
+    "who": "android_19",
+    "zone": "gero_lab",
+    "x": 60,
+    "z": 40,
+    "boss": true,
+    "after": "m14_future_boy",
+    "before": "m15_androids"
+  },
+  {
+    "id": "gero",
+    "who": "gero",
+    "zone": "gero_lab",
+    "x": 110,
+    "z": 76,
+    "boss": true,
+    "after": "m14_future_boy",
+    "before": "m15_androids"
+  },
+  {
+    "id": "android_17",
+    "who": "android_17",
+    "zone": "gero_lab",
+    "x": 100,
+    "z": 60,
+    "boss": true,
+    "after": "m15_androids",
+    "before": "m16_17_18"
+  },
+  {
+    "id": "android_18",
+    "who": "android_18",
+    "zone": "gero_lab",
+    "x": 106,
+    "z": 56,
+    "boss": true,
+    "after": "m15_androids",
+    "before": "m16_17_18"
+  },
+  {
+    "id": "android_16",
+    "who": "android_16",
+    "zone": "gero_lab",
+    "x": 92,
+    "z": 62,
+    "after": "m15_androids",
+    "before": "m20_cell_games"
+  },
+  {
+    "id": "imperfect_cell",
+    "who": "cell",
+    "zone": "gero_lab",
+    "x": -60,
+    "z": -70,
+    "boss": true,
+    "after": "m16_17_18",
+    "before": "m17_imperfect_cell"
+  },
+  {
+    "id": "piccolo_gero",
+    "who": "piccolo",
+    "zone": "gero_lab",
+    "x": 4,
+    "z": 10,
+    "rot": 3.141592653589793,
+    "after": "m14_future_boy"
+  },
+  {
+    "id": "kami",
+    "who": "kami",
+    "zone": "lookout",
+    "x": 0,
+    "z": -4,
+    "rot": 3.141592653589793,
+    "before": "m17_imperfect_cell"
+  },
+  {
+    "id": "dende_lookout",
+    "who": "dende",
+    "zone": "lookout",
+    "x": 0,
+    "z": -4,
+    "rot": 3.141592653589793,
+    "after": "m17_imperfect_cell"
+  },
+  {
+    "id": "mr_popo",
+    "who": "mr_popo",
+    "zone": "lookout",
+    "x": 8,
+    "z": -8,
+    "rot": 3.6
+  },
+  {
+    "id": "goten_lookout",
+    "who": "goten",
+    "zone": "lookout",
+    "x": -14,
+    "z": 4,
+    "after": "m22_babidi"
+  },
+  {
+    "id": "trunks_kid_lookout",
+    "who": "trunks_kid",
+    "zone": "lookout",
+    "x": -10,
+    "z": 6,
+    "after": "m22_babidi"
+  },
+  {
+    "id": "mr_popo_htc",
+    "who": "mr_popo",
+    "zone": "htc",
+    "x": 0,
+    "z": 4,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "mr_satan",
+    "who": "mr_satan",
+    "zone": "cell_games",
+    "x": -20,
+    "z": -30,
+    "rot": 0.4
+  },
+  {
+    "id": "perfect_cell",
+    "who": "cell",
+    "zone": "cell_games",
+    "x": 0,
+    "z": 0,
+    "boss": true,
+    "after": "m18_time_chamber",
+    "before": "m20_cell_games"
+  },
+  {
+    "id": "cell_juniors",
+    "who": "cell_jr",
+    "zone": "cell_games",
+    "x": 10,
+    "z": 14,
+    "boss": true,
+    "after": "m19_perfect_cell",
+    "before": "m20_cell_games"
+  },
+  {
+    "id": "gohan_games",
+    "who": "gohan",
+    "zone": "cell_games",
+    "x": -10,
+    "z": -20,
+    "rot": 0.2,
+    "after": "m18_time_chamber"
+  },
+  {
+    "id": "announcer",
+    "who": "announcer",
+    "zone": "papaya_island",
+    "x": 6,
+    "z": -26,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "videl",
+    "who": "videl",
+    "zone": "papaya_island",
+    "x": -14,
+    "z": -30,
+    "rot": 1.8
+  },
+  {
+    "id": "mr_satan_papaya",
+    "who": "mr_satan",
+    "zone": "papaya_island",
+    "x": -24,
+    "z": -10,
+    "rot": 2.2
+  },
+  {
+    "id": "supreme_kai",
+    "who": "supreme_kai",
+    "zone": "papaya_island",
+    "x": 26,
+    "z": -30,
+    "rot": -1.8
+  },
+  {
+    "id": "buu_good",
+    "who": "fat_buu",
+    "zone": "papaya_island",
+    "x": -30,
+    "z": -14,
+    "rot": 2,
+    "after": "m25_kid_buu"
+  },
+  {
+    "id": "kibito",
+    "who": "kibito",
+    "zone": "papaya_island",
+    "x": 30,
+    "z": -26,
+    "rot": -2
+  },
+  {
+    "id": "spopovich",
+    "who": "spopovich",
+    "zone": "papaya_island",
+    "x": 0,
+    "z": 20,
+    "boss": true,
+    "after": "m21_tournament",
+    "before": "m22_babidi"
+  },
+  {
+    "id": "babidi",
+    "who": "babidi",
+    "zone": "babidi_ship",
+    "x": 0,
+    "z": -2,
+    "rot": 3.141592653589793,
+    "before": "m23_majin_buu"
+  },
+  {
+    "id": "pui_pui",
+    "who": "pui_pui",
+    "zone": "babidi_ship",
+    "x": -20,
+    "z": 0,
+    "boss": true,
+    "before": "m22_babidi"
+  },
+  {
+    "id": "yakon",
+    "who": "yakon",
+    "zone": "babidi_ship",
+    "x": 20,
+    "z": 0,
+    "boss": true,
+    "before": "m22_babidi"
+  },
+  {
+    "id": "dabura",
+    "who": "dabura",
+    "zone": "babidi_ship",
+    "x": 6,
+    "z": -10,
+    "boss": true,
+    "before": "m22_babidi"
+  },
+  {
+    "id": "majin_vegeta",
+    "who": "majin_vegeta",
+    "zone": "babidi_ship",
+    "x": -10,
+    "z": -40,
+    "boss": true,
+    "after": "m21_tournament",
+    "before": "m22_babidi"
+  },
+  {
+    "id": "fat_buu",
+    "who": "fat_buu",
+    "zone": "babidi_ship",
+    "x": 0,
+    "z": -30,
+    "boss": true,
+    "after": "m22_babidi",
+    "before": "m23_majin_buu"
+  },
+  {
+    "id": "super_buu",
+    "who": "super_buu",
+    "zone": "babidi_ship",
+    "x": 30,
+    "z": -60,
+    "boss": true,
+    "after": "m24_z_sword",
+    "before": "m25_kid_buu"
+  },
+  {
+    "id": "supreme_kai_world",
+    "who": "supreme_kai",
+    "zone": "kai_world",
+    "x": 10,
+    "z": 10,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "kibito_world",
+    "who": "kibito",
+    "zone": "kai_world",
+    "x": 16,
+    "z": 12,
+    "rot": 3.4,
+    "before": "m23_majin_buu"
+  },
+  {
+    "id": "elder_kai",
+    "who": "elder_kai",
+    "zone": "kai_world",
+    "x": 112,
+    "z": -84,
+    "rot": -0.8,
+    "afterStep": [
+      "m24_z_sword",
+      2
+    ]
+  },
+  {
+    "id": "gohan_kai",
+    "who": "gohan",
+    "zone": "kai_world",
+    "x": 106,
+    "z": -78,
+    "rot": 0.4,
+    "after": "m23_majin_buu"
+  },
+  {
+    "id": "kid_buu",
+    "who": "kid_buu",
+    "zone": "kai_world",
+    "x": -60,
+    "z": 30,
+    "boss": true,
+    "after": "m24_z_sword",
+    "before": "m25_kid_buu"
+  },
+  {
+    "id": "goku_kai",
+    "who": "goku",
+    "zone": "kai_world",
+    "x": -20,
+    "z": 20,
+    "rot": 2.4,
+    "after": "m24_z_sword"
+  },
+  {
+    "id": "beerus",
+    "who": "beerus",
+    "zone": "beerus_planet",
+    "x": -6,
+    "z": 14,
+    "rot": 3.141592653589793,
+    "after": "m26_beerus"
+  },
+  {
+    "id": "whis",
+    "who": "whis",
+    "zone": "beerus_planet",
+    "x": 6,
+    "z": 12,
+    "rot": 3.141592653589793,
+    "after": "m26_beerus"
+  },
+  {
+    "id": "oracle_fish",
+    "who": "oracle_fish",
+    "zone": "beerus_planet",
+    "x": 50,
+    "z": 34,
+    "rot": 2,
+    "after": "m26_beerus"
+  },
+  {
+    "id": "vegeta_beerus",
+    "who": "vegeta",
+    "zone": "beerus_planet",
+    "x": 24,
+    "z": -10,
+    "rot": 2.4,
+    "after": "m27_whis"
+  },
+  {
+    "id": "champa",
+    "who": "champa",
+    "zone": "nameless_planet",
+    "x": -30,
+    "z": 66,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "vados",
+    "who": "vados",
+    "zone": "nameless_planet",
+    "x": -24,
+    "z": 64,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "beerus_u6",
+    "who": "beerus",
+    "zone": "nameless_planet",
+    "x": 30,
+    "z": 66,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "botamo",
+    "who": "botamo",
+    "zone": "nameless_planet",
+    "x": -8,
+    "z": 10,
+    "boss": true,
+    "before": "m29_u6"
+  },
+  {
+    "id": "frost",
+    "who": "frost",
+    "zone": "nameless_planet",
+    "x": -4,
+    "z": 16,
+    "boss": true,
+    "before": "m29_u6"
+  },
+  {
+    "id": "magetta",
+    "who": "magetta",
+    "zone": "nameless_planet",
+    "x": 4,
+    "z": 18,
+    "boss": true,
+    "before": "m29_u6"
+  },
+  {
+    "id": "cabba",
+    "who": "cabba",
+    "zone": "nameless_planet",
+    "x": 10,
+    "z": 12,
+    "boss": true,
+    "before": "m29_u6"
+  },
+  {
+    "id": "hit",
+    "who": "hit",
+    "zone": "nameless_planet",
+    "x": 14,
+    "z": 6,
+    "boss": true,
+    "before": "m29_u6"
+  },
+  {
+    "id": "cabba_after",
+    "who": "cabba",
+    "zone": "nameless_planet",
+    "x": -12,
+    "z": -50,
+    "rot": 0.6,
+    "after": "m29_u6"
+  },
+  {
+    "id": "trunks_future",
+    "who": "trunks",
+    "zone": "future_earth",
+    "x": 16,
+    "z": -16,
+    "rot": 3.141592653589793
+  },
+  {
+    "id": "mai",
+    "who": "mai",
+    "zone": "future_earth",
+    "x": 24,
+    "z": -14,
+    "rot": 3.6
+  },
+  {
+    "id": "goku_black",
+    "who": "goku_black",
+    "zone": "future_earth",
+    "x": 10,
+    "z": 90,
+    "boss": true,
+    "before": "m30_goku_black"
+  },
+  {
+    "id": "zamasu",
+    "who": "zamasu",
+    "zone": "future_earth",
+    "x": 20,
+    "z": 96,
+    "boss": true,
+    "before": "m31_zamasu"
+  },
+  {
+    "id": "grand_priest",
+    "who": "grand_priest",
+    "zone": "world_of_void",
+    "x": 0,
+    "z": 120,
+    "rot": 3.141592653589793,
+    "offPlatform": true,
+    "y": 30
+  },
+  {
+    "id": "zeno",
+    "who": "zeno",
+    "zone": "world_of_void",
+    "x": 0,
+    "z": 160,
+    "rot": 3.141592653589793,
+    "offPlatform": true,
+    "y": 34
+  },
+  {
+    "id": "goku_top",
+    "who": "goku",
+    "zone": "world_of_void",
+    "x": -8,
+    "z": -60,
+    "rot": 0
+  },
+  {
+    "id": "vegeta_top",
+    "who": "vegeta",
+    "zone": "world_of_void",
+    "x": 8,
+    "z": -60,
+    "rot": 0
+  },
+  {
+    "id": "android_17_top",
+    "who": "android_17",
+    "zone": "world_of_void",
+    "x": 16,
+    "z": -58,
+    "rot": -0.3
+  },
+  {
+    "id": "frieza_top",
+    "who": "frieza",
+    "zone": "world_of_void",
+    "x": -16,
+    "z": -58,
+    "rot": 0.3
+  },
+  {
+    "id": "toppo",
+    "who": "toppo",
+    "zone": "world_of_void",
+    "x": 40,
+    "z": 20,
+    "boss": true,
+    "before": "m32_tournament"
+  },
+  {
+    "id": "kefla",
+    "who": "kefla",
+    "zone": "world_of_void",
+    "x": -40,
+    "z": 30,
+    "boss": true,
+    "before": "m32_tournament"
+  },
+  {
+    "id": "jiren",
+    "who": "jiren",
+    "zone": "world_of_void",
+    "x": 0,
+    "z": 50,
+    "boss": true,
+    "before": "m32_tournament"
+  },
+  {
+    "id": "cheelai",
+    "who": "cheelai",
+    "zone": "broly_glacier",
+    "x": -10,
+    "z": -30,
+    "rot": 0.6
+  },
+  {
+    "id": "lemo",
+    "who": "lemo",
+    "zone": "broly_glacier",
+    "x": -16,
+    "z": -26,
+    "rot": 1
+  },
+  {
+    "id": "paragus",
+    "who": "paragus",
+    "zone": "broly_glacier",
+    "x": 60,
+    "z": 40,
+    "before": "m33_broly"
+  },
+  {
+    "id": "broly",
+    "who": "broly",
+    "zone": "broly_glacier",
+    "x": 40,
+    "z": 60,
+    "boss": true,
+    "before": "m33_broly"
+  },
+  {
+    "id": "broly_after",
+    "who": "broly",
+    "zone": "broly_glacier",
+    "x": -30,
+    "z": -40,
+    "rot": 0.8,
+    "after": "m33_broly"
+  },
+  {
+    "id": "piccolo_rr",
+    "who": "piccolo",
+    "zone": "red_ribbon",
+    "x": -10,
+    "z": -70,
+    "rot": 0.2
+  },
+  {
+    "id": "pan_rr",
+    "who": "pan",
+    "zone": "red_ribbon",
+    "x": -4,
+    "z": -72,
+    "rot": 0
+  },
+  {
+    "id": "gamma1",
+    "who": "gamma1",
+    "zone": "red_ribbon",
+    "x": -20,
+    "z": 10,
+    "boss": true,
+    "before": "m34_super_hero"
+  },
+  {
+    "id": "gamma2",
+    "who": "gamma2",
+    "zone": "red_ribbon",
+    "x": 20,
+    "z": 10,
+    "boss": true,
+    "before": "m34_super_hero"
+  },
+  {
+    "id": "hedo",
+    "who": "hedo",
+    "zone": "red_ribbon",
+    "x": 30,
+    "z": 40,
+    "before": "m34_super_hero"
+  },
+  {
+    "id": "magenta",
+    "who": "magenta",
+    "zone": "red_ribbon",
+    "x": 0,
+    "z": 50,
+    "before": "m34_super_hero"
+  },
+  {
+    "id": "cell_max",
+    "who": "cell_max",
+    "zone": "red_ribbon",
+    "x": 60,
+    "z": 70,
+    "boss": true,
+    "before": "m34_super_hero"
+  },
+  {
+    "id": "shenron",
+    "who": "shenron",
+    "zone": "lookout",
+    "x": -30,
+    "z": 20,
+    "rot": 0.6,
+    "flagged": "shenron",
+    "before": "s_dragon_radar",
+    "afterStep": [
+      "s_dragon_radar",
+      1
+    ]
+  },
+  {
+    "id": "merus_namek",
+    "who": "merus",
+    "zone": "new_namek",
+    "x": -8,
+    "z": -15
+  },
+  {
+    "id": "moro_namek",
+    "who": "moro",
+    "zone": "new_namek",
+    "x": 40,
+    "z": 25,
+    "boss": true,
+    "before": "m35_moro_escape"
+  },
+  {
+    "id": "merus_earth",
+    "who": "merus",
+    "zone": "earth_plains",
+    "x": -18,
+    "z": 8,
+    "after": "m35_moro_escape"
+  },
+  {
+    "id": "saganbo_earth",
+    "who": "saganbo",
+    "zone": "earth_plains",
+    "x": 60,
+    "z": 20,
+    "boss": true,
+    "after": "m35_moro_escape",
+    "before": "m36_patrol_defence"
+  },
+  {
+    "id": "moro_earth",
+    "who": "moro",
+    "zone": "earth_plains",
+    "x": 70,
+    "z": 50,
+    "boss": true,
+    "after": "m36_patrol_defence",
+    "before": "m37_moro_final"
+  },
+  {
+    "id": "gohan_endgame",
+    "who": "gohan",
+    "zone": "beerus_planet",
+    "x": -10,
+    "z": -12
+  },
+  {
+    "id": "vegeta_cereal",
+    "who": "vegeta",
+    "zone": "planet_cereal",
+    "x": -10,
+    "z": -18
+  },
+  {
+    "id": "monaito_cereal",
+    "who": "monaito",
+    "zone": "planet_cereal",
+    "x": -5,
+    "z": -12
+  },
+  {
+    "id": "granolah_cereal",
+    "who": "granolah",
+    "zone": "planet_cereal",
+    "x": 40,
+    "z": 20,
+    "boss": true,
+    "before": "m38_granolah"
+  },
+  {
+    "id": "gas_cereal",
+    "who": "gas",
+    "zone": "planet_cereal",
+    "x": 55,
+    "z": 35,
+    "boss": true,
+    "after": "m39_bardock",
+    "before": "m40_gas"
+  },
+  {
+    "id": "frieza_cereal",
+    "who": "black_frieza",
+    "zone": "planet_cereal",
+    "x": 40,
+    "z": 55,
+    "boss": true,
+    "after": "m40_gas",
+    "before": "m41_black_frieza"
+  },
+  {
+    "id": "jiren_training",
+    "who": "jiren",
+    "zone": "world_of_void",
+    "x": 0,
+    "z": 25,
+    "boss": true,
+    "after": "m32_tournament"
+  },
+  {
+    "id": "dragon_namek",
+    "who": "porunga",
+    "zone": "namek",
+    "x": 20,
+    "z": 25,
+    "flagged": "summon_namek",
+    "before": "s_namek_dragon",
+    "afterStep": [
+      "s_namek_dragon",
+      1
+    ]
+  },
+  {
+    "id": "dragon_super",
+    "who": "super_shenron",
+    "zone": "nameless_planet",
+    "x": 0,
+    "z": 92,
+    "flagged": "summon_super",
+    "before": "s_super_dragon",
+    "afterStep": [
+      "s_super_dragon",
+      1
+    ]
+  },
+  {
+    "id": "dragon_cereal",
+    "who": "toronbo",
+    "zone": "planet_cereal",
+    "x": -28,
+    "z": 18,
+    "flagged": "summon_cereal",
+    "before": "s_cereal_dragon",
+    "afterStep": [
+      "s_cereal_dragon",
+      1
+    ]
+  },
+  {
+    "id": "guide_earth_plains",
+    "who": "training_guide",
+    "zone": "earth_plains",
+    "x": 5,
+    "z": 3
+  },
+  {
+    "id": "guide_kame_island",
+    "who": "training_guide",
+    "zone": "kame_island",
+    "x": 5,
+    "z": -7
+  },
+  {
+    "id": "guide_snake_way",
+    "who": "training_guide",
+    "zone": "snake_way",
+    "x": 1.5,
+    "z": -377
+  },
+  {
+    "id": "guide_king_kai",
+    "who": "training_guide",
+    "zone": "king_kai",
+    "x": 5,
+    "z": -11
+  },
+  {
+    "id": "guide_gizard_wasteland",
+    "who": "training_guide",
+    "zone": "gizard_wasteland",
+    "x": 5,
+    "z": 3
+  },
+  {
+    "id": "guide_namek",
+    "who": "training_guide",
+    "zone": "namek",
+    "x": 5,
+    "z": 3
+  },
+  {
+    "id": "guide_yardrat",
+    "who": "training_guide",
+    "zone": "yardrat",
+    "x": 5,
+    "z": 3
+  },
+  {
+    "id": "guide_west_city",
+    "who": "training_guide",
+    "zone": "west_city",
+    "x": 5,
+    "z": -27
+  },
+  {
+    "id": "guide_gero_lab",
+    "who": "training_guide",
+    "zone": "gero_lab",
+    "x": 5,
+    "z": 3
+  },
+  {
+    "id": "guide_lookout",
+    "who": "training_guide",
+    "zone": "lookout",
+    "x": 5,
+    "z": -37
+  },
+  {
+    "id": "guide_htc",
+    "who": "training_guide",
+    "zone": "htc",
+    "x": 5,
+    "z": 3
+  },
+  {
+    "id": "guide_cell_games",
+    "who": "training_guide",
+    "zone": "cell_games",
+    "x": 5,
+    "z": -57
+  },
+  {
+    "id": "guide_papaya_island",
+    "who": "training_guide",
+    "zone": "papaya_island",
+    "x": 5,
+    "z": -47
+  },
+  {
+    "id": "guide_babidi_ship",
+    "who": "training_guide",
+    "zone": "babidi_ship",
+    "x": 5,
+    "z": -57
+  },
+  {
+    "id": "guide_kai_world",
+    "who": "training_guide",
+    "zone": "kai_world",
+    "x": 5,
+    "z": 3
+  },
+  {
+    "id": "guide_beerus_planet",
+    "who": "training_guide",
+    "zone": "beerus_planet",
+    "x": 5,
+    "z": -27
+  },
+  {
+    "id": "guide_nameless_planet",
+    "who": "training_guide",
+    "zone": "nameless_planet",
+    "x": 5,
+    "z": -57
+  },
+  {
+    "id": "guide_future_earth",
+    "who": "training_guide",
+    "zone": "future_earth",
+    "x": 5,
+    "z": -37
+  },
+  {
+    "id": "guide_world_of_void",
+    "who": "training_guide",
+    "zone": "world_of_void",
+    "x": 5,
+    "z": -67
+  },
+  {
+    "id": "guide_broly_glacier",
+    "who": "training_guide",
+    "zone": "broly_glacier",
+    "x": 5,
+    "z": -37
+  },
+  {
+    "id": "guide_red_ribbon",
+    "who": "training_guide",
+    "zone": "red_ribbon",
+    "x": 5,
+    "z": -77
+  },
+  {
+    "id": "guide_new_namek",
+    "who": "training_guide",
+    "zone": "new_namek",
+    "x": 5,
+    "z": 3
+  },
+  {
+    "id": "guide_planet_cereal",
+    "who": "training_guide",
+    "zone": "planet_cereal",
+    "x": 5,
+    "z": 3
+  }
+]

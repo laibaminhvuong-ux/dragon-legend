@@ -1,0 +1,123 @@
+{
+  "earth_plains": [
+    "kame_island",
+    "west_city",
+    "gizard_wasteland",
+    "snake_way",
+    "lookout",
+    "gero_lab",
+    "cell_games",
+    "papaya_island",
+    "babidi_ship",
+    "broly_glacier",
+    "red_ribbon"
+  ],
+  "kame_island": [
+    "earth_plains",
+    "west_city",
+    "papaya_island"
+  ],
+  "snake_way": [
+    "earth_plains",
+    "king_kai"
+  ],
+  "king_kai": [
+    "snake_way",
+    "earth_plains",
+    "kai_world"
+  ],
+  "gizard_wasteland": [
+    "earth_plains",
+    "west_city"
+  ],
+  "namek": [
+    "west_city",
+    "yardrat",
+    "new_namek"
+  ],
+  "yardrat": [
+    "namek",
+    "west_city"
+  ],
+  "west_city": [
+    "earth_plains",
+    "kame_island",
+    "namek",
+    "lookout",
+    "beerus_planet",
+    "nameless_planet",
+    "future_earth",
+    "red_ribbon",
+    "gizard_wasteland",
+    "new_namek",
+    "planet_cereal"
+  ],
+  "gero_lab": [
+    "earth_plains",
+    "lookout"
+  ],
+  "lookout": [
+    "earth_plains",
+    "west_city",
+    "htc",
+    "cell_games"
+  ],
+  "htc": [
+    "lookout"
+  ],
+  "cell_games": [
+    "earth_plains",
+    "lookout"
+  ],
+  "papaya_island": [
+    "earth_plains",
+    "kame_island",
+    "babidi_ship",
+    "kai_world"
+  ],
+  "babidi_ship": [
+    "earth_plains",
+    "papaya_island",
+    "kai_world"
+  ],
+  "kai_world": [
+    "papaya_island",
+    "king_kai",
+    "world_of_void"
+  ],
+  "beerus_planet": [
+    "west_city",
+    "nameless_planet",
+    "world_of_void",
+    "new_namek",
+    "planet_cereal"
+  ],
+  "nameless_planet": [
+    "beerus_planet",
+    "west_city"
+  ],
+  "future_earth": [
+    "west_city"
+  ],
+  "world_of_void": [
+    "beerus_planet",
+    "kai_world"
+  ],
+  "broly_glacier": [
+    "earth_plains",
+    "west_city"
+  ],
+  "red_ribbon": [
+    "west_city",
+    "earth_plains"
+  ],
+  "new_namek": [
+    "namek",
+    "west_city",
+    "beerus_planet"
+  ],
+  "planet_cereal": [
+    "beerus_planet",
+    "west_city"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "pitch": 0.25,
+  "minPitch": -0.6,
+  "maxPitch": 1.2,
+  "distance": 6,
+  "height": 1.6,
+  "followRate": 18,
+  "clearance": 0.4,
+  "lockHeight": 1.1,
+  "lockTurnRate": 8,
+  "lockDistanceScale": 0.55,
+  "maxLockDistance": 12
+}

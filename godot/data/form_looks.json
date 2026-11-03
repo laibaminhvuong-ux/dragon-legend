@@ -1,0 +1,554 @@
+{
+  "SSJ": {
+    "hair": {
+      "style": "ssj1",
+      "color": 15907084,
+      "glow": 0.18
+    },
+    "eyes": 2075023,
+    "aura": {
+      "color": 16762910,
+      "core": 16774336,
+      "size": 1,
+      "flicker": 0.8,
+      "sparks": 0
+    }
+  },
+  "SSJ2": {
+    "hair": {
+      "style": "ssj2",
+      "color": 16238102,
+      "glow": 0.24
+    },
+    "eyes": 2075023,
+    "aura": {
+      "color": 16763938,
+      "core": 16774336,
+      "size": 1.08,
+      "flicker": 1,
+      "sparks": 1,
+      "sparkColor": 12576511
+    }
+  },
+  "SSJ3": {
+    "hair": {
+      "style": "ssj3",
+      "color": 15906828,
+      "glow": 0.24
+    },
+    "eyes": 2075023,
+    "brows": false,
+    "aura": {
+      "color": 16763176,
+      "core": 16774856,
+      "size": 1.18,
+      "flicker": 1,
+      "sparks": 2,
+      "sparkColor": 13495039
+    }
+  },
+  "SSJGod": {
+    "hair": {
+      "style": "same",
+      "color": 13112380,
+      "glow": 0.25
+    },
+    "eyes": 11801660,
+    "slim": true,
+    "aura": {
+      "color": 16730666,
+      "core": 16763034,
+      "size": 1.05,
+      "flicker": 0.45,
+      "sparks": 0,
+      "motes": 16756848,
+      "style": "calm"
+    }
+  },
+  "SSJBlue": {
+    "hair": {
+      "style": "ssj1",
+      "color": 2798832,
+      "glow": 0.3
+    },
+    "eyes": 2784511,
+    "aura": {
+      "color": 2795775,
+      "core": 14219007,
+      "size": 1.1,
+      "flicker": 0.6,
+      "sparks": 0,
+      "motes": 13169407
+    }
+  },
+  "FalseSSJ": {
+    "hair": {
+      "style": "ssj1",
+      "color": 2760724,
+      "glow": 0.05
+    },
+    "eyes": 14210248,
+    "aura": {
+      "color": 16747050,
+      "core": 16769184,
+      "size": 1.05,
+      "flicker": 1,
+      "sparks": 1,
+      "sparkColor": 16769200
+    }
+  },
+  "SSJGrade2": {
+    "hair": {
+      "style": "ssj1",
+      "color": 15907084,
+      "glow": 0.2
+    },
+    "eyes": 2075023,
+    "scale": 1.04,
+    "aura": {
+      "color": 16762910,
+      "core": 16774336,
+      "size": 1.1,
+      "flicker": 0.9,
+      "sparks": 0
+    },
+    "bulk": [
+      1.22,
+      1.03,
+      1.18
+    ]
+  },
+  "SSJGrade3": {
+    "hair": {
+      "style": "grade3",
+      "color": 15907084,
+      "glow": 0.2
+    },
+    "eyes": 2075023,
+    "scale": 1.1,
+    "aura": {
+      "color": 16762910,
+      "core": 16773296,
+      "size": 1.2,
+      "flicker": 0.7,
+      "sparks": 0
+    },
+    "bulk": [
+      1.42,
+      1.07,
+      1.32
+    ]
+  },
+  "SSJFullPower": {
+    "hair": {
+      "style": "ssj1",
+      "color": 16106014,
+      "glow": 0.22
+    },
+    "eyes": 2075023,
+    "aura": {
+      "color": 16763955,
+      "core": 16774864,
+      "size": 0.95,
+      "flicker": 0.35,
+      "sparks": 0,
+      "style": "calm"
+    }
+  },
+  "LegendarySSJ": {
+    "hair": {
+      "style": "legendary",
+      "color": 14082122,
+      "glow": 0.3
+    },
+    "eyes": 15921906,
+    "scale": 1.25,
+    "aura": {
+      "color": 5046122,
+      "core": 14745560,
+      "size": 1.25,
+      "flicker": 1,
+      "sparks": 2,
+      "sparkColor": 13172688
+    },
+    "bulk": [
+      1.34,
+      1.15,
+      1.25
+    ]
+  },
+  "SSJ4": {
+    "hair": {
+      "style": "ssj4",
+      "color": 1445902,
+      "glow": 0
+    },
+    "eyes": 15774750,
+    "flush": [
+      11806750,
+      0.18
+    ],
+    "aura": {
+      "color": 16726564,
+      "core": 16767120,
+      "size": 1.1,
+      "flicker": 0.9,
+      "sparks": 1,
+      "sparkColor": 16763040
+    }
+  },
+  "Oozaru": {
+    "hair": null,
+    "eyes": 13636638,
+    "flush": [
+      5911576,
+      0.55
+    ],
+    "scale": 3.2,
+    "aura": {
+      "color": 16734778,
+      "core": 16760992,
+      "size": 1,
+      "flicker": 0.5,
+      "sparks": 0
+    }
+  },
+  "GoldenOozaru": {
+    "hair": null,
+    "eyes": 13636638,
+    "flush": [
+      14725168,
+      0.55
+    ],
+    "scale": 3.2,
+    "aura": {
+      "color": 16762910,
+      "core": 16773296,
+      "size": 1.1,
+      "flicker": 0.7,
+      "sparks": 1,
+      "sparkColor": 16773312
+    }
+  },
+  "UIOmen": {
+    "hair": {
+      "style": "same",
+      "color": 1447454,
+      "glow": 0.05
+    },
+    "eyes": 13160156,
+    "aura": {
+      "color": 10139903,
+      "core": 16777215,
+      "size": 1,
+      "flicker": 0.3,
+      "sparks": 0,
+      "motes": 14740735,
+      "style": "calm"
+    }
+  },
+  "UIPerfected": {
+    "hair": {
+      "style": "same",
+      "color": 14673136,
+      "glow": 0.4
+    },
+    "eyes": 13160156,
+    "aura": {
+      "color": 14214399,
+      "core": 16777215,
+      "size": 1.05,
+      "flicker": 0.3,
+      "sparks": 0,
+      "motes": 16777215,
+      "style": "calm"
+    }
+  },
+  "UITrue": {
+    "hair": {
+      "style": "same",
+      "color": 1447454,
+      "glow": 0.05
+    },
+    "eyes": 13160156,
+    "scale": 1.03,
+    "aura": {
+      "color": 12111103,
+      "core": 16777215,
+      "size": 1.12,
+      "flicker": 0.45,
+      "sparks": 0,
+      "motes": 15791359,
+      "style": "calm"
+    }
+  },
+  "UltraEgo": {
+    "hair": {
+      "style": "ego",
+      "color": 6957752,
+      "glow": 0.3
+    },
+    "eyes": 13646496,
+    "scale": 1.05,
+    "aura": {
+      "color": 10103551,
+      "core": 15780095,
+      "size": 1.15,
+      "flicker": 0.85,
+      "sparks": 0
+    }
+  },
+  "HSSJ": {
+    "hair": {
+      "style": "ssj1",
+      "color": 15907084,
+      "glow": 0.18
+    },
+    "eyes": 2075023,
+    "aura": {
+      "color": 16762910,
+      "core": 16774336,
+      "size": 1,
+      "flicker": 0.8,
+      "sparks": 0
+    }
+  },
+  "HSSJ2": {
+    "hair": {
+      "style": "ssj2",
+      "color": 16238102,
+      "glow": 0.24
+    },
+    "eyes": 2075023,
+    "aura": {
+      "color": 16763938,
+      "core": 16774336,
+      "size": 1.08,
+      "flicker": 1,
+      "sparks": 1,
+      "sparkColor": 12576511
+    }
+  },
+  "SSJRage": {
+    "hair": {
+      "style": "ssj2",
+      "color": 15780922,
+      "glow": 0.24
+    },
+    "eyes": 2075023,
+    "aura": {
+      "color": 8046847,
+      "core": 16773808,
+      "size": 1.12,
+      "flicker": 1,
+      "sparks": 2,
+      "sparkColor": 11461375
+    }
+  },
+  "Ultimate": {
+    "hair": null,
+    "eyes": null,
+    "aura": {
+      "color": 15266047,
+      "core": 16777215,
+      "size": 1,
+      "flicker": 0.35,
+      "sparks": 0,
+      "motes": 16777215,
+      "style": "calm"
+    }
+  },
+  "Beast": {
+    "hair": {
+      "style": "beast",
+      "color": 15526646,
+      "glow": 0.3
+    },
+    "eyes": 13639738,
+    "aura": {
+      "color": 10898943,
+      "core": 15786239,
+      "size": 1.15,
+      "flicker": 1,
+      "sparks": 1,
+      "sparkColor": 14993663
+    }
+  },
+  "Kaioken": {
+    "hair": null,
+    "eyes": null,
+    "flush": [
+      14690846,
+      0.4
+    ],
+    "aura": {
+      "color": 16722462,
+      "core": 16751748,
+      "size": 1.05,
+      "flicker": 0.9,
+      "sparks": 0
+    }
+  },
+  "Kaioken10": {
+    "hair": null,
+    "eyes": null,
+    "flush": [
+      15210510,
+      0.62
+    ],
+    "aura": {
+      "color": 16718354,
+      "core": 16757920,
+      "size": 1.22,
+      "flicker": 1,
+      "sparks": 1,
+      "sparkColor": 16763064
+    }
+  },
+  "PotentialUnleashed": {
+    "hair": null,
+    "eyes": null,
+    "aura": {
+      "color": 15659775,
+      "core": 16777215,
+      "size": 0.95,
+      "flicker": 0.35,
+      "sparks": 0,
+      "motes": 16777215,
+      "style": "calm"
+    }
+  },
+  "NamekFusion": {
+    "hair": null,
+    "eyes": null,
+    "scale": 1.08,
+    "aura": {
+      "color": 14218960,
+      "core": 16777215,
+      "size": 1,
+      "flicker": 0.5,
+      "sparks": 0
+    }
+  },
+  "Giant": {
+    "scale": 1.9,
+    "hair": null,
+    "eyes": null,
+    "aura": {
+      "color": 7923320,
+      "core": 14745560,
+      "size": 1,
+      "flicker": 0.5,
+      "sparks": 0
+    }
+  },
+  "Orange": {
+    "hair": null,
+    "eyes": 13114920,
+    "skin": 15764012,
+    "scale": 1.3,
+    "aura": {
+      "color": 16747050,
+      "core": 16769200,
+      "size": 1.1,
+      "flicker": 0.8,
+      "sparks": 1,
+      "sparkColor": 16767136
+    }
+  },
+  "FinalForm": {
+    "hair": null,
+    "eyes": 11801642,
+    "skin": 16184570,
+    "dome": 10107600,
+    "aura": {
+      "color": 13138175,
+      "core": 16049407,
+      "size": 1,
+      "flicker": 0.6,
+      "sparks": 0
+    }
+  },
+  "FullPower": {
+    "hair": null,
+    "eyes": 11801642,
+    "skin": 16184570,
+    "dome": 10107600,
+    "scale": 1.1,
+    "aura": {
+      "color": 11820287,
+      "core": 15785215,
+      "size": 1.12,
+      "flicker": 1,
+      "sparks": 1,
+      "sparkColor": 15125759
+    }
+  },
+  "Golden": {
+    "hair": null,
+    "eyes": 11801642,
+    "skin": 15909424,
+    "skinMetal": 0.55,
+    "dome": 8006328,
+    "aura": {
+      "color": 16765500,
+      "core": 16774344,
+      "size": 1.12,
+      "flicker": 0.8,
+      "sparks": 0
+    }
+  },
+  "Black": {
+    "hair": null,
+    "eyes": 14685226,
+    "skin": 1841698,
+    "skinMetal": 0.3,
+    "dome": 8006328,
+    "aura": {
+      "color": 6953640,
+      "core": 13667583,
+      "size": 1.15,
+      "flicker": 1,
+      "sparks": 2,
+      "sparkColor": 16734826
+    }
+  },
+  "SuperMajin": {
+    "hair": null,
+    "eyes": 13114950,
+    "scale": 1.08,
+    "aura": {
+      "color": 16743112,
+      "core": 16769266,
+      "size": 1.05,
+      "flicker": 0.7,
+      "sparks": 0
+    }
+  },
+  "KidForm": {
+    "hair": null,
+    "eyes": 13114950,
+    "scale": 0.78,
+    "aura": {
+      "color": 16731316,
+      "core": 16765164,
+      "size": 1.1,
+      "flicker": 1,
+      "sparks": 1,
+      "sparkColor": 16761064
+    }
+  },
+  "PureMajin": {
+    "hair": null,
+    "eyes": 14685244,
+    "scale": 0.84,
+    "aura": {
+      "color": 16727200,
+      "core": 16769264,
+      "size": 1.2,
+      "flicker": 1,
+      "sparks": 2,
+      "sparkColor": 16756956
+    }
+  }
+}

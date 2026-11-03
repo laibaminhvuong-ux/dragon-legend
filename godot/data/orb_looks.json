@@ -1,0 +1,19 @@
+{
+  "dragon_ball": {
+    "scale": 1,
+    "color": 16747040
+  },
+  "namek_ball": {
+    "scale": 2.2,
+    "color": 16747040
+  },
+  "super_ball": {
+    "scale": 4,
+    "color": 16764489,
+    "projection": true
+  },
+  "cereal_ball": {
+    "scale": 0.55,
+    "color": 16757854
+  }
+}

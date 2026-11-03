@@ -1,0 +1,39 @@
+[
+  {
+    "from": "SSJ",
+    "key": "SSJ",
+    "to": "SSJGrade2",
+    "required": 250
+  },
+  {
+    "from": "SSJGrade2",
+    "key": "SSJ",
+    "to": "SSJGrade3",
+    "required": 500
+  },
+  {
+    "from": "SSJGrade3",
+    "key": "SSJ",
+    "to": "SSJFullPower",
+    "required": 1000
+  },
+  {
+    "from": "Oozaru",
+    "key": "Oozaru",
+    "to": "GoldenOozaru",
+    "required": 1000
+  },
+  {
+    "from": "GoldenOozaru",
+    "key": "GoldenOozaru",
+    "to": "SSJ4",
+    "required": 2000
+  },
+  {
+    "from": "SSJ2",
+    "key": "SSJ2",
+    "to": "SSJRage",
+    "required": 1200,
+    "after": "m31_zamasu"
+  }
+]

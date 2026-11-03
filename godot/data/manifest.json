@@ -1,0 +1,266 @@
+{
+  "format_version": 1,
+  "schema_version": 6,
+  "source": "web/src (evaluated exports; installed content and display names)",
+  "sources": {
+    "web/src/data/accessories.js": "7f9a1566c51a4834ec6585c85d149d2e060c90b4ef7e828024222a43aca88268",
+    "web/src/data/appearance.js": "e752d530dd9f110f2901f935932c201c8643e9c71fde83eb13304092ea37d3d5",
+    "web/src/data/avatar.js": "d393f0fe9e77732c3df83b18fe58e4370f7b3d67f348fd37bc992dafd1c365b0",
+    "web/src/data/camera.js": "856bc8c842a18a38802337b59fa8dd5d1d5a36499db8a4af195e139e4a4fe3ae",
+    "web/src/data/character.js": "797675880ec8ff66a0aa96be72b59afc5907ef67e732d8f0b3212fe089e32ded",
+    "web/src/data/combat.js": "75ff157723e33201867670456880094e30143928d78ec238407ddb4ca91964c0",
+    "web/src/data/cutscenes.js": "b40bfd7a4167645b640f1e18772aae31a31acabcbe81b7b39114b70cfcd34f4b",
+    "web/src/data/dragon_hunts.js": "9262651f368d6305bd678cfa458924f1a75f09b60a162efb4c07ab3fef763431",
+    "web/src/data/endgame.js": "6b912fcfb6757fea6b313a6c18b6b6ff8cc8a1fac3529e7d7d63b90c8ef61368",
+    "web/src/data/form_looks.js": "687649e6d6849977b3c8bdc8da899fc71a03db117f6f1ec8d679366d16c33168",
+    "web/src/data/forms.js": "a19f40bd472009809c5a2fb45bba4c2334d43dc0cee28299fa6ae4b400075e8f",
+    "web/src/data/index.js": "751f2c072cf05b0d69ed69457af540b60d42f999db79f132944feb423232dab2",
+    "web/src/data/kaioken.js": "875769e3fd35d6789247ce2688acabfaf64bedb77d3da0e6fdf4f20b3185d610",
+    "web/src/data/movement.js": "57b7561108884a467faa426f812e9f49f3bfff6dc91dc1398136ecc37304b778",
+    "web/src/data/moves.js": "fdf6e83edc9a24b72c2445309b05383e568d43443298defe10f8eb41be5a816e",
+    "web/src/data/music.js": "6b3f8f56e5126493d606633c52360df4fbb4658b3da084fb5718117e3b6d1bb3",
+    "web/src/data/names.js": "9b2517880430abe2dab0c79a619556fe188383eb05eec8d0c735ed4fc382dbf0",
+    "web/src/data/outfits.js": "c9d8a95266d72303a6816579debc06dc1e33f695ec3b463f4b399812871d1b47",
+    "web/src/data/races.js": "02da0ebd96c5256634cbff5fac98bcdc6997037e6ea45f7fc758c99fcf3eff5a",
+    "web/src/data/rpg.js": "7033d6c4c6f624f11272d41fcf105c9cf41f80fbf1fffc7737a14361f1bafbae",
+    "web/src/data/stats.js": "cbca3fce0bfb5b52143535a57d41aa7e345c8337cbe1948b30c0456ee8836568",
+    "web/src/data/story.js": "fe4e6b29ecacecd955d5a2e6ec297762fbcd0da719acff75d9daa157e3895201",
+    "web/src/data/zones.js": "67ba14f66057180d12423cb1a48fc3727863d54a2e8f1ff74f585530a447efcf",
+    "web/src/game/collision.js": "fa078daa6d133fcd154f956442ce5e648d6ec3d216f4c6f5d08280a3a13945c5",
+    "web/src/game/combat.js": "1732d621761bd00788cbc9898d56d82008197eb425e212805f7ec1d8eabe4f70",
+    "web/src/game/cutscene.js": "6faf2677bdb7c32d06c63965d935033d967e0c5f09407e1ddd976ef94f30499f",
+    "web/src/game/forms.js": "b713ecf0a67fb0fa9d939c6c0a98b2da8100c6f7674d92f371677e7b0cefd111",
+    "web/src/game/game.js": "a86a459015bd0dd213546046815daa62e57c8408d9751a2033be249b55955e8a",
+    "web/src/game/kaioken.js": "8739f601a4816288324547a5875305bc5df15d5218b1a3cef890ec6013598cc9",
+    "web/src/game/ki.js": "26fe561b150927f7e07808aa9638448e6a49e229e7976c8cd507997c793b5ef1",
+    "web/src/game/look.js": "93dbfc923182b547e956f7c44b499d8edabbffb290f624498a11774823145624",
+    "web/src/game/mastery.js": "e29defcffe3465aea16f5ea64a7973783f5c76e50944166a140a2a2dec5a363d",
+    "web/src/game/movement.js": "03fcf92f07c2a23921a0e8d1be1200026c268fb3a7b8502c4e1d4cce0a9fddff",
+    "web/src/game/noise.js": "49b9b13af01850e0b3089f9f09f828c597b99f268f048092b7e427052de03793",
+    "web/src/game/placement.js": "180798312060c995578468c940a318e5f2f8da69d3166945bed5ea0ec566d4fa",
+    "web/src/game/progression.js": "03266983befc2599f8f377c90ba30eb8b48a26e3818cf1f68786c382efc9975c",
+    "web/src/game/schema.js": "fd68320240851a7725c80154b872c8b12ab1a004cf6492ae325e639ff9edd58b",
+    "web/src/game/story.js": "78427bc84e7997290d5ceac4847db659337db401cecff65a637d790071901a3e",
+    "web/src/game/tutorial.js": "6396d9262a04df0b6f54f8319469de787dac94cf95d849ccf0f0144c366c66b3",
+    "web/src/game/zones.js": "c38525cfada5f1496007b9e0555d13926ef1ec944abbc238832901109696e0e4",
+    "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
+  },
+  "files": {
+    "quests.json": {
+      "sha256": "4a7520fd6c53bc3c0dbd6ed4cb32e1ee3f20a4aaed267ae9b94bc9daeb65b7b3",
+      "bytes": 111799,
+      "kind": "array",
+      "entries": 127
+    },
+    "npcs.json": {
+      "sha256": "e086f4d7dcfeedb4accb5647fb31ce9889baedb654c564124bc44748611ab65c",
+      "bytes": 24932,
+      "kind": "array",
+      "entries": 168
+    },
+    "characters.json": {
+      "sha256": "5ff0f056fa1a3cd617a55acb823ac597d1d0631938b7a0f8d4c5e3e0b9b5ef35",
+      "bytes": 28316,
+      "kind": "object",
+      "entries": 108
+    },
+    "links.json": {
+      "sha256": "8f8480e2c850ef3239b7c7fe9d97af608afb1c2255b467117e8cd82182832ca1",
+      "bytes": 1892,
+      "kind": "object",
+      "entries": 23
+    },
+    "start_zones.json": {
+      "sha256": "c6a8a3ac57c5413452bed9e89335da7cfa55b042044b236dece98bf4ff900cab",
+      "bytes": 38,
+      "kind": "array",
+      "entries": 2
+    },
+    "forms.json": {
+      "sha256": "4a8f0ab82fafc2a9d530ecedf2f8bc175344cc190aed703945ff398b42f2df74",
+      "bytes": 11030,
+      "kind": "object",
+      "entries": 35
+    },
+    "mastery_evolutions.json": {
+      "sha256": "abb8e8d6c64c931f5988b5b279bfc2a8b1d87407834c12a1f318eb39c8889bf4",
+      "bytes": 605,
+      "kind": "array",
+      "entries": 6
+    },
+    "mastery_tuning.json": {
+      "sha256": "9afb673d1ca7e1a27c438bbaa8b5c97d05764784f1f83a0373a902130610e740",
+      "bytes": 77,
+      "kind": "object",
+      "entries": 4
+    },
+    "moves.json": {
+      "sha256": "e2f8e1c28a42e56d80c9fd04bdcba15f3ef2a6809b0b80db608e76eb04b08a94",
+      "bytes": 5727,
+      "kind": "object",
+      "entries": 26
+    },
+    "move_order.json": {
+      "sha256": "413dfb7ce4d6abc307d96aae44537f730c0afb6c8153f9cd2e5b957057dedab9",
+      "bytes": 445,
+      "kind": "array",
+      "entries": 26
+    },
+    "races.json": {
+      "sha256": "11121e6f105f875fa83072d2a57bc9ee63e4fc6637077cb08053a87ad5b5e4f3",
+      "bytes": 3839,
+      "kind": "object",
+      "entries": 6
+    },
+    "race_order.json": {
+      "sha256": "df575f90061e6bde34e19738a6603e0930a8857efb003ef44fd1ae9496828aed",
+      "bytes": 83,
+      "kind": "array",
+      "entries": 6
+    },
+    "outfits.json": {
+      "sha256": "21a30b26d59fadd6340861a8e9317c9f96efd70592994533abb0dbea6f3f2c6d",
+      "bytes": 2307,
+      "kind": "object",
+      "entries": 13
+    },
+    "outfit_order.json": {
+      "sha256": "69af7f2a8ba9b9106e0856eab74c59195657476dc74b7a751ccb0d488d0282c1",
+      "bytes": 207,
+      "kind": "array",
+      "entries": 13
+    },
+    "accessories.json": {
+      "sha256": "f165f2e4d7fc2b15deb3966b395cefc583e8278a6fc86d4fe537e12a0fd6456a",
+      "bytes": 466,
+      "kind": "object",
+      "entries": 5
+    },
+    "zones.json": {
+      "sha256": "b25b600eb40df8e044bafdf358aa6d71f3d6e8da1ab7198902f5d2355de9468d",
+      "bytes": 36340,
+      "kind": "object",
+      "entries": 23
+    },
+    "zone_order.json": {
+      "sha256": "520a6eceb91126c21ca6905ec5f3ffe9c6ddf6783b4d6a714f0ef4f986525931",
+      "bytes": 377,
+      "kind": "array",
+      "entries": 23
+    },
+    "stats.json": {
+      "sha256": "554a12822f1e9f5b697ddeb0452d54af4998de54cdd8a46faa09da8b1b9fd13f",
+      "bytes": 562,
+      "kind": "object",
+      "entries": 16
+    },
+    "combat.json": {
+      "sha256": "b9978fec5ea92567914e88e7cc984e2cdc281299cc01a883f905f168edb66d0c",
+      "bytes": 1419,
+      "kind": "object",
+      "entries": 58
+    },
+    "movement.json": {
+      "sha256": "b5e1940b565d1f4c1391e34f4fdcc5101645a95fe1b3651377bf45d30a321804",
+      "bytes": 268,
+      "kind": "object",
+      "entries": 13
+    },
+    "camera.json": {
+      "sha256": "735d1b515bf4afa7458049cc12cd0ba8a20f3c4c5dbbc9a5aad9b7ae3022861d",
+      "bytes": 229,
+      "kind": "object",
+      "entries": 11
+    },
+    "cutscenes.json": {
+      "sha256": "e443248289cc3c56317fc691d15f683b4cfe94bda9ec74d62be230b2c0a213da",
+      "bytes": 22115,
+      "kind": "object",
+      "entries": 51
+    },
+    "form_looks.json": {
+      "sha256": "851ec725634136aefe7999524d85af9d8946f5e3cc7cf281ccb500b97e98b933",
+      "bytes": 9607,
+      "kind": "object",
+      "entries": 35
+    },
+    "dragon_hunts.json": {
+      "sha256": "eb93fddbfabd21f6b13d19cc113590729836693fc69969616635546d6bafaac9",
+      "bytes": 3389,
+      "kind": "array",
+      "entries": 3
+    },
+    "dragon_looks.json": {
+      "sha256": "fa547f4912a22fbc7beb8e82173ab7628bd4556fd14402711bb98d105d9772c8",
+      "bytes": 521,
+      "kind": "object",
+      "entries": 4
+    },
+    "orb_looks.json": {
+      "sha256": "e2976cb85e1060865fd942a227bafd3cd5e024b2648bb773632ae564461b9cb7",
+      "bytes": 278,
+      "kind": "object",
+      "entries": 4
+    },
+    "kaioken.json": {
+      "sha256": "609e6b032ef744917885a8bd825a25b3c2eb1cfbe792b4ef90dd9847c9a176cc",
+      "bytes": 422,
+      "kind": "object",
+      "entries": 4
+    },
+    "avatar.json": {
+      "sha256": "88c7f575bb818541d63fd7335cf5571a99550843ef7a7f2b14d7f4346ed78623",
+      "bytes": 323,
+      "kind": "object",
+      "entries": 14
+    },
+    "rpg.json": {
+      "sha256": "fb24ee7734a729544947e3afebc0e615837e51b81cf18a8bc470ca5b9d9f46de",
+      "bytes": 855,
+      "kind": "object",
+      "entries": 3
+    },
+    "appearance.json": {
+      "sha256": "62a876fb4853116fb3d7cea7bf7084720c2f57db98a5207c2a3038077b0323ff",
+      "bytes": 1957,
+      "kind": "object",
+      "entries": 8
+    },
+    "names.json": {
+      "sha256": "4cf7f58da7948f96ae878290a6b200ca171d59eb2ae40248c619fbe5bde7b049",
+      "bytes": 7303,
+      "kind": "object",
+      "entries": 2
+    },
+    "character.json": {
+      "sha256": "6992fcedc73396c082741e2a4805383bc9601f39c341f4a4fe102b21a7764035",
+      "bytes": 3013,
+      "kind": "object",
+      "entries": 4
+    },
+    "music.json": {
+      "sha256": "fc684cee9603af78826579011d7a5bdb78c3a96bbf17c2178d9eb2c1fff740d3",
+      "bytes": 9408,
+      "kind": "object",
+      "entries": 3
+    },
+    "tutorial_steps.json": {
+      "sha256": "c658098e0192644e65ab2a9ca894c69537ab16faa6617592a20aea1d589a5728",
+      "bytes": 1557,
+      "kind": "array",
+      "entries": 14
+    },
+    "schema.json": {
+      "sha256": "86a3e6f09411d0c12bfab8cfdfb27c71d2cb76eeef7f9a83c62b705df9ed438c",
+      "bytes": 91,
+      "kind": "object",
+      "entries": 4
+    },
+    "parity.json": {
+      "sha256": "b650321cdd5da0b59b1b7af5accf2261ef76d8b921cd0daef124f2d118892234",
+      "bytes": 1262017,
+      "kind": "object",
+      "entries": 5
+    }
+  }
+}

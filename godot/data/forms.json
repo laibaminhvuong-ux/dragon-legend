@@ -1,0 +1,527 @@
+{
+  "SSJ": {
+    "id": "SSJ",
+    "race": "Saiyan",
+    "name": "Super Saiyar",
+    "unlockLevel": 250,
+    "multiplier": 1.5,
+    "kiDrain": 2,
+    "auraColor": 16768060,
+    "hairColor": 16768060,
+    "unlockQuest": "Form_SSJ",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ]
+  },
+  "SSJ2": {
+    "id": "SSJ2",
+    "race": "Saiyan",
+    "name": "Super Saiyar 2",
+    "unlockLevel": 500,
+    "multiplier": 2,
+    "kiDrain": 4,
+    "auraColor": 16768060,
+    "hairColor": 16768060,
+    "unlockQuest": "Form_SSJ2",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ]
+  },
+  "SSJ3": {
+    "id": "SSJ3",
+    "race": "Saiyan",
+    "name": "Super Saiyar 3",
+    "unlockLevel": 750,
+    "multiplier": 2.6,
+    "kiDrain": 8,
+    "auraColor": 16768060,
+    "hairColor": 16768060,
+    "unlockQuest": "Form_SSJ3",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ]
+  },
+  "SSJGod": {
+    "id": "SSJGod",
+    "race": "Saiyan",
+    "name": "Super Saiyar God",
+    "unlockLevel": 1000,
+    "multiplier": 3.2,
+    "kiDrain": 6,
+    "auraColor": 15083560,
+    "hairColor": 13114940,
+    "unlockQuest": "Form_SSJGod",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ]
+  },
+  "SSJBlue": {
+    "id": "SSJBlue",
+    "race": "Saiyan",
+    "name": "Super Saiyar Blue",
+    "unlockLevel": 1250,
+    "multiplier": 4,
+    "kiDrain": 9,
+    "auraColor": 3983615,
+    "hairColor": 3983615,
+    "unlockQuest": "Form_SSJBlue",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ]
+  },
+  "HSSJ": {
+    "id": "HSSJ",
+    "race": "HalfSaiyan",
+    "name": "Super Saiyar",
+    "unlockLevel": 250,
+    "multiplier": 1.5,
+    "kiDrain": 2,
+    "auraColor": 16768060,
+    "hairColor": 16768060,
+    "unlockQuest": "Form_HSSJ",
+    "legacy": true
+  },
+  "HSSJ2": {
+    "id": "HSSJ2",
+    "race": "HalfSaiyan",
+    "name": "Super Saiyar 2",
+    "unlockLevel": 500,
+    "multiplier": 2,
+    "kiDrain": 4,
+    "auraColor": 16768060,
+    "hairColor": 16768060,
+    "unlockQuest": "Form_HSSJ2",
+    "legacy": true
+  },
+  "SSJRage": {
+    "id": "SSJRage",
+    "race": "HalfSaiyan",
+    "name": "Super Saiyar Rage",
+    "unlockLevel": 500,
+    "multiplier": 2.5,
+    "kiDrain": 6,
+    "auraColor": 7915775,
+    "hairColor": 16768060,
+    "unlockQuest": "Form_SSJRage",
+    "legacy": false,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "mastery": {
+      "from": "SSJ2",
+      "key": "SSJ2",
+      "to": "SSJRage",
+      "required": 1200,
+      "after": "m31_zamasu"
+    }
+  },
+  "Ultimate": {
+    "id": "Ultimate",
+    "race": "HalfSaiyan",
+    "name": "Ultimate",
+    "unlockLevel": 1000,
+    "multiplier": 3,
+    "kiDrain": 3,
+    "auraColor": 15790335,
+    "hairColor": null,
+    "unlockQuest": "Form_Ultimate",
+    "legacy": true
+  },
+  "Beast": {
+    "id": "Beast",
+    "race": "HalfSaiyan",
+    "name": "Beast",
+    "unlockLevel": 2000,
+    "multiplier": 7.2,
+    "kiDrain": 9,
+    "auraColor": 13122815,
+    "hairColor": 15461365,
+    "unlockQuest": "Form_Beast",
+    "path": "beast",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ]
+  },
+  "Kaioken": {
+    "id": "Kaioken",
+    "race": "Human",
+    "name": "Kaiyoken",
+    "unlockLevel": 250,
+    "multiplier": 1.4,
+    "kiDrain": 3,
+    "auraColor": 15083560,
+    "hairColor": null,
+    "unlockQuest": "Form_Kaioken",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan",
+      "Human"
+    ]
+  },
+  "Kaioken10": {
+    "id": "Kaioken10",
+    "race": "Human",
+    "name": "Kaiyoken x10",
+    "unlockLevel": 500,
+    "multiplier": 2.1,
+    "kiDrain": 8,
+    "auraColor": 15083560,
+    "hairColor": null,
+    "unlockQuest": "Form_Kaioken10",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan",
+      "Human"
+    ]
+  },
+  "PotentialUnleashed": {
+    "id": "PotentialUnleashed",
+    "race": "Human",
+    "name": "Potential Unleashed",
+    "unlockLevel": 900,
+    "multiplier": 3,
+    "kiDrain": 2,
+    "auraColor": 15790335,
+    "hairColor": null,
+    "unlockQuest": "Form_PotentialUnleashed"
+  },
+  "NamekFusion": {
+    "id": "NamekFusion",
+    "race": "Namekian",
+    "name": "Nameckian Fusion",
+    "unlockLevel": 250,
+    "multiplier": 1.5,
+    "kiDrain": 1,
+    "auraColor": 14479580,
+    "hairColor": null,
+    "unlockQuest": "Form_NamekFusion"
+  },
+  "Giant": {
+    "id": "Giant",
+    "race": "Namekian",
+    "name": "Giant Form",
+    "unlockLevel": 500,
+    "multiplier": 2.1,
+    "kiDrain": 5,
+    "auraColor": 7923320,
+    "hairColor": null,
+    "unlockQuest": "Form_Giant"
+  },
+  "Orange": {
+    "id": "Orange",
+    "race": "Namekian",
+    "name": "Orange",
+    "unlockLevel": 1100,
+    "multiplier": 3.4,
+    "kiDrain": 7,
+    "auraColor": 16747560,
+    "hairColor": null,
+    "unlockQuest": "Form_Orange"
+  },
+  "FinalForm": {
+    "id": "FinalForm",
+    "race": "FrostDemon",
+    "name": "Final Form",
+    "unlockLevel": 250,
+    "multiplier": 1.5,
+    "kiDrain": 1,
+    "auraColor": 13138175,
+    "hairColor": null,
+    "unlockQuest": "Form_FinalForm"
+  },
+  "FullPower": {
+    "id": "FullPower",
+    "race": "FrostDemon",
+    "name": "100% Full Power",
+    "unlockLevel": 550,
+    "multiplier": 2.2,
+    "kiDrain": 6,
+    "auraColor": 13138175,
+    "hairColor": null,
+    "unlockQuest": "Form_FullPower"
+  },
+  "Golden": {
+    "id": "Golden",
+    "race": "FrostDemon",
+    "name": "Golden",
+    "unlockLevel": 1000,
+    "multiplier": 3.1,
+    "kiDrain": 7,
+    "auraColor": 16768060,
+    "hairColor": null,
+    "unlockQuest": "Form_Golden"
+  },
+  "Black": {
+    "id": "Black",
+    "race": "FrostDemon",
+    "name": "Black",
+    "unlockLevel": 1300,
+    "multiplier": 3.9,
+    "kiDrain": 9,
+    "auraColor": 9845960,
+    "hairColor": null,
+    "unlockQuest": "Form_Black"
+  },
+  "SuperMajin": {
+    "id": "SuperMajin",
+    "race": "Majin",
+    "name": "Super Majinn",
+    "unlockLevel": 250,
+    "multiplier": 1.5,
+    "kiDrain": 2,
+    "auraColor": 16742600,
+    "hairColor": null,
+    "unlockQuest": "Form_SuperMajin"
+  },
+  "KidForm": {
+    "id": "KidForm",
+    "race": "Majin",
+    "name": "Kid Form",
+    "unlockLevel": 600,
+    "multiplier": 2.3,
+    "kiDrain": 5,
+    "auraColor": 16732340,
+    "hairColor": null,
+    "unlockQuest": "Form_KidForm"
+  },
+  "PureMajin": {
+    "id": "PureMajin",
+    "race": "Majin",
+    "name": "Pure Majinn",
+    "unlockLevel": 1100,
+    "multiplier": 3.3,
+    "kiDrain": 7,
+    "auraColor": 16727200,
+    "hairColor": null,
+    "unlockQuest": "Form_PureMajin"
+  },
+  "Oozaru": {
+    "id": "Oozaru",
+    "race": "Saiyan",
+    "name": "Ohzaru (Great Ape)",
+    "unlockLevel": 100,
+    "multiplier": 1.3,
+    "kiDrain": 2,
+    "auraColor": 12482630,
+    "hairColor": null,
+    "unlockQuest": "Form_Oozaru",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "size": 3.2
+  },
+  "FalseSSJ": {
+    "id": "FalseSSJ",
+    "race": "Saiyan",
+    "name": "False Super Saiyar",
+    "unlockLevel": 150,
+    "multiplier": 1.4,
+    "kiDrain": 2,
+    "auraColor": 16768060,
+    "hairColor": null,
+    "unlockQuest": "Form_FalseSSJ",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ]
+  },
+  "SSJFullPower": {
+    "id": "SSJFullPower",
+    "race": "Saiyan",
+    "name": "Full Power Super Saiyar",
+    "unlockLevel": 250,
+    "multiplier": 1.75,
+    "kiDrain": 0.6,
+    "auraColor": 16768060,
+    "hairColor": 16768060,
+    "unlockQuest": "Form_SSJFullPower",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "mastery": {
+      "from": "SSJGrade3",
+      "key": "SSJ",
+      "to": "SSJFullPower",
+      "required": 1000
+    }
+  },
+  "GoldenOozaru": {
+    "id": "GoldenOozaru",
+    "race": "Saiyan",
+    "name": "Golden Ohzaru",
+    "unlockLevel": 100,
+    "multiplier": 2.4,
+    "kiDrain": 7,
+    "auraColor": 16768060,
+    "hairColor": 16768060,
+    "unlockQuest": "Form_GoldenOozaru",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "size": 3.2,
+    "mastery": {
+      "from": "Oozaru",
+      "key": "Oozaru",
+      "to": "GoldenOozaru",
+      "required": 1000
+    }
+  },
+  "SSJ4": {
+    "id": "SSJ4",
+    "race": "Saiyan",
+    "name": "Super Saiyar 4",
+    "unlockLevel": 100,
+    "multiplier": 2.9,
+    "kiDrain": 5,
+    "auraColor": 15743797,
+    "hairColor": null,
+    "unlockQuest": "Form_SSJ4",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "mastery": {
+      "from": "GoldenOozaru",
+      "key": "GoldenOozaru",
+      "to": "SSJ4",
+      "required": 2000
+    }
+  },
+  "LegendarySSJ": {
+    "id": "LegendarySSJ",
+    "race": "Saiyan",
+    "name": "Legendary Super Saiyar (Brolo)",
+    "unlockLevel": 1400,
+    "multiplier": 4.5,
+    "kiDrain": 8,
+    "auraColor": 9371458,
+    "hairColor": 10223445,
+    "unlockQuest": "Form_LegendarySSJ",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ]
+  },
+  "UIOmen": {
+    "id": "UIOmen",
+    "race": "Saiyan",
+    "name": "Ultra Intuition -Sign- (Form)",
+    "unlockLevel": 2000,
+    "multiplier": 5,
+    "kiDrain": 8,
+    "auraColor": 13363967,
+    "hairColor": null,
+    "unlockQuest": "Form_UIOmen",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "path": "instinct",
+    "dodgeChance": 0.35
+  },
+  "UIPerfected": {
+    "id": "UIPerfected",
+    "race": "Saiyan",
+    "name": "Perfected Ultra Intuition",
+    "unlockLevel": 2000,
+    "multiplier": 5.8,
+    "kiDrain": 10,
+    "auraColor": 15004159,
+    "hairColor": 15658751,
+    "unlockQuest": "Form_UIPerfected",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "path": "instinct",
+    "dodgeChance": 0.6
+  },
+  "UITrue": {
+    "id": "UITrue",
+    "race": "Saiyan",
+    "name": "True Ultra Intuition",
+    "unlockLevel": 2000,
+    "multiplier": 6.2,
+    "kiDrain": 9,
+    "auraColor": 12049151,
+    "hairColor": null,
+    "unlockQuest": "Form_UITrue",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "path": "instinct",
+    "dodgeChance": 0.5
+  },
+  "UltraEgo": {
+    "id": "UltraEgo",
+    "race": "Saiyan",
+    "name": "Ultra Self",
+    "unlockLevel": 2000,
+    "multiplier": 6.2,
+    "kiDrain": 10,
+    "auraColor": 11812095,
+    "hairColor": 9651149,
+    "unlockQuest": "Form_UltraEgo",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "path": "ego",
+    "damageGrowth": 0.025
+  },
+  "SSJGrade2": {
+    "id": "SSJGrade2",
+    "race": "Saiyan",
+    "name": "Super Saiyar Grade 2 (Super Vegara)",
+    "unlockLevel": 250,
+    "multiplier": 1.85,
+    "kiDrain": 4,
+    "auraColor": 16768060,
+    "hairColor": 16768060,
+    "unlockQuest": "Form_SSJGrade2",
+    "speedFactor": 0.9,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "mastery": {
+      "from": "SSJ",
+      "key": "SSJ",
+      "to": "SSJGrade2",
+      "required": 250
+    }
+  },
+  "SSJGrade3": {
+    "id": "SSJGrade3",
+    "race": "Saiyan",
+    "name": "Super Saiyar Grade 3 (Super Tronks)",
+    "unlockLevel": 250,
+    "multiplier": 2.1,
+    "kiDrain": 8,
+    "auraColor": 16768060,
+    "hairColor": 16768060,
+    "unlockQuest": "Form_SSJGrade3",
+    "speedFactor": 0.7,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "mastery": {
+      "from": "SSJGrade2",
+      "key": "SSJ",
+      "to": "SSJGrade3",
+      "required": 500
+    }
+  }
+}

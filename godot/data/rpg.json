@@ -1,0 +1,41 @@
+{
+  "RPG": {
+    "huntCount": 3,
+    "huntXp": 0.8,
+    "killXp": 0.16,
+    "zeniPerLevel": 12
+  },
+  "SHOP": {
+    "capsule": {
+      "name": "Recovery Capsule",
+      "price": 75,
+      "description": "Restore 40% health and ki. Keep it in your inventory for later.",
+      "heal": 0.4
+    }
+  },
+  "ZONE_LEVELS": {
+    "earth_plains": 10,
+    "kame_island": 10,
+    "snake_way": 20,
+    "king_kai": 20,
+    "gizard_wasteland": 50,
+    "west_city": 100,
+    "namek": 120,
+    "yardrat": 180,
+    "gero_lab": 240,
+    "lookout": 280,
+    "htc": 320,
+    "cell_games": 360,
+    "papaya_island": 430,
+    "babidi_ship": 480,
+    "kai_world": 550,
+    "beerus_planet": 680,
+    "nameless_planet": 800,
+    "future_earth": 950,
+    "world_of_void": 750,
+    "broly_glacier": 780,
+    "red_ribbon": 1900,
+    "new_namek": 850,
+    "planet_cereal": 1250
+  }
+}

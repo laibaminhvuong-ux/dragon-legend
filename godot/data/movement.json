@@ -1,0 +1,15 @@
+{
+  "gravity": 24,
+  "jumpSpeed": 9,
+  "airControl": 0.35,
+  "turnSpeed": 14,
+  "groundAccel": 60,
+  "dashCost": 12,
+  "dashSpeed": 30,
+  "dashDuration": 0.18,
+  "dashCooldown": 0.85,
+  "flightSpeed": 17,
+  "flightAscend": 10,
+  "flightDrain": 4,
+  "chargeRate": 15
+}

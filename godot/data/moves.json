@@ -1,0 +1,233 @@
+{
+  "KiBlast": {
+    "name": "Ki Blast",
+    "kind": "blast",
+    "kiCost": 5,
+    "power": 1,
+    "races": null,
+    "desc": "A quick ball of ki."
+  },
+  "Kamehameha": {
+    "name": "Kamehamera",
+    "kind": "beam",
+    "kiCost": 30,
+    "power": 4,
+    "races": null,
+    "desc": "The Turtle School's signature wave, taught by Master Roshu."
+  },
+  "DestructoDisc": {
+    "name": "Destro Disc",
+    "kind": "blast",
+    "kiCost": 25,
+    "power": 3.5,
+    "races": null,
+    "desc": "A razor-thin spinning disc of ki that cuts through anything."
+  },
+  "SolarFlare": {
+    "name": "Solar Flash",
+    "kind": "utility",
+    "kiCost": 15,
+    "power": 0,
+    "races": null,
+    "desc": "A blinding flash that stuns everyone facing you."
+  },
+  "TriBeam": {
+    "name": "Triad Beam",
+    "kind": "beam",
+    "kiCost": 45,
+    "power": 5,
+    "races": null,
+    "desc": "Tenzo's devastating triangle blast. Costs a lot of ki."
+  },
+  "WolfFangFist": {
+    "name": "Wolf Claw Fist",
+    "kind": "melee",
+    "kiCost": 12,
+    "power": 2.5,
+    "races": null,
+    "desc": "Yamcho's flurry of wolf-like strikes."
+  },
+  "Kaioken": {
+    "name": "Kaiyoken",
+    "kind": "utility",
+    "kiCost": 0,
+    "power": 0,
+    "races": null,
+    "desc": "An independent technique: toggle it in Forms / Techniques or with K. Combine it with a Saiyar form while keeping your beam equipped. Extra power costs continuous Ki and health; a cooldown follows. Train Kaiyoken x10 to unlock the higher intensity."
+  },
+  "SpiritBomb": {
+    "name": "Spirit Sphere",
+    "kind": "ultimate",
+    "kiCost": 100,
+    "power": 12,
+    "races": null,
+    "desc": "Gather energy from all living things into one giant sphere. Takes a long charge."
+  },
+  "SpecialBeamCannon": {
+    "name": "Spiral Beam Cannon",
+    "kind": "beam",
+    "kiCost": 40,
+    "power": 5.5,
+    "races": null,
+    "desc": "Piccor's piercing spiral beam."
+  },
+  "Masenko": {
+    "name": "Masenka",
+    "kind": "beam",
+    "kiCost": 25,
+    "power": 3.5,
+    "races": null,
+    "desc": "A quick overhead beam Piccor taught Gohin."
+  },
+  "GalickGun": {
+    "name": "Galik Blaster",
+    "kind": "beam",
+    "kiCost": 30,
+    "power": 4.2,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "desc": "Vegara's purple Saiyar beam."
+  },
+  "FinalFlash": {
+    "name": "Final Blaze",
+    "kind": "beam",
+    "kiCost": 60,
+    "power": 7,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "desc": "Vegara's all-out beam, fired with both palms."
+  },
+  "BigBangAttack": {
+    "name": "Big Burst Attack",
+    "kind": "blast",
+    "kiCost": 40,
+    "power": 5,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "desc": "A single overwhelming sphere of ki."
+  },
+  "DeathBeam": {
+    "name": "Doom Beam",
+    "kind": "blast",
+    "kiCost": 10,
+    "power": 2.4,
+    "races": [
+      "FrostDemon"
+    ],
+    "desc": "Frigor's fingertip laser. Fast and precise."
+  },
+  "DeathBall": {
+    "name": "Doom Orb",
+    "kind": "ultimate",
+    "kiCost": 90,
+    "power": 10,
+    "races": [
+      "FrostDemon"
+    ],
+    "desc": "A planet-destroying sphere of energy."
+  },
+  "Regeneration": {
+    "name": "Regeneration",
+    "kind": "utility",
+    "kiCost": 35,
+    "power": 0,
+    "races": [
+      "Namekian",
+      "Majin"
+    ],
+    "desc": "Restore lost health by spending ki."
+  },
+  "CandyBeam": {
+    "name": "Sweet Beam",
+    "kind": "utility",
+    "kiCost": 30,
+    "power": 0,
+    "races": [
+      "Majin"
+    ],
+    "desc": "Turn a weakened enemy into candy."
+  },
+  "InstantTransmission": {
+    "name": "Instant Transfer",
+    "kind": "utility",
+    "kiCost": 20,
+    "power": 0,
+    "races": null,
+    "desc": "Taught by the Yardrats: lock onto a ki signature and teleport. Lets you travel to any world you have visited."
+  },
+  "Afterimage": {
+    "name": "Afterimage Technique",
+    "kind": "utility",
+    "kiCost": 10,
+    "power": 0,
+    "races": null,
+    "desc": "Move so fast you leave an image of yourself behind."
+  },
+  "ExplodingDemonWave": {
+    "name": "Bursting Demon Wave",
+    "kind": "beam",
+    "kiCost": 35,
+    "power": 4.5,
+    "races": [
+      "Namekian"
+    ],
+    "desc": "A powerful two-handed Nameckian wave."
+  },
+  "FusionDance": {
+    "name": "Fusion Step",
+    "kind": "utility",
+    "kiCost": 0,
+    "power": 0,
+    "races": null,
+    "desc": "The Metamoran dance. Perfect poses fuse two fighters for thirty minutes."
+  },
+  "Hakai": {
+    "name": "Hakaido",
+    "kind": "ultimate",
+    "kiCost": 80,
+    "power": 11,
+    "races": null,
+    "desc": "A God of Destruction's erasure. Beeros allows only the worthy to learn its basics."
+  },
+  "GodKi": {
+    "name": "God Ki Control",
+    "kind": "utility",
+    "kiCost": 0,
+    "power": 0,
+    "races": null,
+    "desc": "Wiss's training: calm, efficient ki. Your ki drains more slowly while transformed."
+  },
+  "UltraInstinctSign": {
+    "name": "Ultra Intuition -Sign-",
+    "kind": "utility",
+    "kiCost": 10,
+    "power": 0,
+    "races": null,
+    "desc": "Brief focus with a small dodge chance and no transformation stat boost. Much weaker than an Ultra Intuition form."
+  },
+  "UltraInstinctAvatar": {
+    "name": "Ultra Intuition Energy Avatar",
+    "kind": "avatar",
+    "kiCost": 60,
+    "power": 4,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "desc": "Manifest a giant energy body for 60 seconds. It strikes a wide area in front of you. Requires learned Avatar training and active Perfected or True Ultra Intuition; 120-second cooldown."
+  },
+  "EnergyField": {
+    "name": "Energy Field",
+    "kind": "utility",
+    "kiCost": 20,
+    "power": 0,
+    "races": null,
+    "desc": "A ki barrier that blocks blasts. Taught by Jiran's rival, Toppa."
+  }
+}

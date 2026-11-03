@@ -1,0 +1,125 @@
+{
+  "TurtleGi": {
+    "id": "TurtleGi",
+    "name": "Turtle School Gi",
+    "starter": true,
+    "races": null,
+    "unlock": "starter",
+    "price": 0
+  },
+  "SaiyanArmor": {
+    "id": "SaiyanArmor",
+    "name": "Saiyar Battle Armor",
+    "starter": true,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan",
+      "FrostDemon"
+    ],
+    "unlock": "starter",
+    "price": 0
+  },
+  "NamekRobe": {
+    "id": "NamekRobe",
+    "name": "Nameckian Robe",
+    "starter": true,
+    "races": [
+      "Namekian"
+    ],
+    "unlock": "starter",
+    "price": 0
+  },
+  "CapsuleCorp": {
+    "id": "CapsuleCorp",
+    "name": "Kapsule Corp Jacket",
+    "starter": true,
+    "races": [
+      "HalfSaiyan",
+      "Human",
+      "Saiyan"
+    ],
+    "unlock": "starter",
+    "price": 0
+  },
+  "CraneGi": {
+    "id": "CraneGi",
+    "name": "Crane School Gi",
+    "starter": false,
+    "races": null,
+    "unlock": "shop",
+    "price": 1500
+  },
+  "FrostArmor": {
+    "id": "FrostArmor",
+    "name": "Frigor Force Armor",
+    "starter": true,
+    "races": [
+      "FrostDemon"
+    ],
+    "unlock": "starter",
+    "price": 0
+  },
+  "MajinVest": {
+    "id": "MajinVest",
+    "name": "Majinn Vest",
+    "starter": true,
+    "races": [
+      "Majin"
+    ],
+    "unlock": "starter",
+    "price": 0
+  },
+  "WeightedGi": {
+    "id": "WeightedGi",
+    "name": "Weighted Training Gi",
+    "starter": false,
+    "races": null,
+    "unlock": "quest",
+    "price": null
+  },
+  "EliteArmor": {
+    "id": "EliteArmor",
+    "name": "Elite Saiyar Armor",
+    "starter": false,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "unlock": "quest",
+    "price": null
+  },
+  "SaiyanSuit": {
+    "id": "SaiyanSuit",
+    "name": "Saiyar Bodysuit",
+    "starter": false,
+    "races": null,
+    "unlock": "shop",
+    "price": 3000
+  },
+  "GiantsRobe": {
+    "id": "GiantsRobe",
+    "name": "Demon Clan Robe",
+    "starter": false,
+    "races": [
+      "Namekian"
+    ],
+    "unlock": "quest",
+    "price": null
+  },
+  "PrideTrooper": {
+    "id": "PrideTrooper",
+    "name": "Pride Trooper Uniform",
+    "starter": false,
+    "races": null,
+    "unlock": "quest",
+    "price": null
+  },
+  "AngelRobe": {
+    "id": "AngelRobe",
+    "name": "Angel's Robe",
+    "starter": false,
+    "races": null,
+    "unlock": "quest",
+    "price": null
+  }
+}

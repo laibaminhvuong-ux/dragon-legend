@@ -1,0 +1,19 @@
+{
+  "id": "UltraInstinctAvatar",
+  "forms": [
+    "UIPerfected",
+    "UITrue"
+  ],
+  "path": "instinct",
+  "duration": 60,
+  "cooldown": 120,
+  "strikeInterval": 0.8,
+  "range": 14,
+  "halfWidth": 4,
+  "verticalReach": 10,
+  "scale": 5,
+  "cameraScale": 2.4,
+  "color": 9555711,
+  "coreColor": 15267071,
+  "opacity": 0.2
+}

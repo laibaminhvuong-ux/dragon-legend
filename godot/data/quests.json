@@ -1,0 +1,4521 @@
+[
+  {
+    "id": "m01_arrival",
+    "saga": "Saiyar Saga",
+    "title": "A Saiyar Arrives",
+    "giver": "goku_plains",
+    "main": true,
+    "level": 1,
+    "offer": "Something crashed out past the farm this morning. Gohin says it was a falling star, but I felt a huge power from it. Let's check it out!",
+    "done": "A spaceship pod... and that power is still moving. Stay sharp!",
+    "steps": [
+      {
+        "type": "talk",
+        "npc": "farmer",
+        "text": "Ask the farmer what he saw"
+      },
+      {
+        "type": "reach",
+        "zone": "earth_plains",
+        "x": 48,
+        "z": 52,
+        "r": 9,
+        "text": "Inspect the crater"
+      }
+    ],
+    "rewards": {
+      "xp": 14264,
+      "zeni": 100
+    }
+  },
+  {
+    "id": "m02_raditz",
+    "saga": "Saiyar Saga",
+    "title": "Radix",
+    "giver": "piccolo_plains",
+    "main": true,
+    "level": 10,
+    "after": [
+      "m01_arrival"
+    ],
+    "offer": "That Saiyar, Radix, has taken Gokan's son. I hate the idea, but we fight him together. Don't slow me down.",
+    "done": "Hmph. You held your own. Gokan is dead, but two more Saiyars are coming in a year. He'll train in the Other World, and I'll train the boy.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "raditz",
+        "zone": "earth_plains",
+        "x": 42,
+        "z": 46,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Radix"
+      },
+      {
+        "type": "talk",
+        "npc": "goku_plains",
+        "text": "Check on Gokan"
+      }
+    ],
+    "rewards": {
+      "xp": 56026,
+      "zeni": 300,
+      "moves": [
+        "KiBlast"
+      ],
+      "unlock": [
+        "snake_way",
+        "gizard_wasteland"
+      ]
+    }
+  },
+  {
+    "id": "m03_snake_way",
+    "saga": "Saiyar Saga",
+    "title": "Serpent Road",
+    "giver": "king_yemma",
+    "main": true,
+    "level": 20,
+    "after": [
+      "m02_raditz"
+    ],
+    "offer": "So you want to train with King Kae? He lives at the end of Serpent Road: a million kilometres of road. Don't fall off, or you'll land in Hell!",
+    "done": "Made it to the end! King Kae's planet is just above.",
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "snake_way",
+        "text": "Go to Serpent Road"
+      },
+      {
+        "type": "reach",
+        "zone": "snake_way",
+        "x": 0,
+        "z": 382,
+        "r": 10,
+        "text": "Run to the end of Serpent Road"
+      }
+    ],
+    "rewards": {
+      "xp": 121890,
+      "unlock": [
+        "king_kai"
+      ]
+    }
+  },
+  {
+    "id": "m04_kaioken",
+    "saga": "Saiyar Saga",
+    "title": "King Kae's Training",
+    "giver": "king_kai",
+    "main": true,
+    "level": 20,
+    "after": [
+      "m03_snake_way"
+    ],
+    "offer": "Ten times Earth's gravity here, kid! First catch Bubbo. Then, if you can make me laugh, I'll teach you the Kaiyoken and the Spirit Sphere.",
+    "done": "Hah! Not bad! The Kaiyoken multiplies your power, but push it too far and your body breaks. The Spirit Sphere borrows energy from every living thing.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "mode": "move",
+        "text": "Chase Bubbo under 10x gravity (keep moving)"
+      },
+      {
+        "type": "talk",
+        "npc": "king_kai",
+        "text": "Tell King Kae a joke"
+      },
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 20,
+        "mode": "charge",
+        "text": "Gather energy for the Spirit Sphere (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "xp": 121890,
+      "moves": [
+        "Kaioken",
+        "SpiritBomb"
+      ],
+      "unlock": [
+        "earth_plains"
+      ]
+    }
+  },
+  {
+    "id": "m05_saibamen",
+    "saga": "Saiyar Saga",
+    "title": "The Saiyars Land",
+    "giver": "krillin_gizard",
+    "main": true,
+    "level": 40,
+    "after": [
+      "m04_kaioken"
+    ],
+    "offer": "Nappo and Vegara are here, and they planted Saiblings! Gokan's still on his way back. We have to hold them off!",
+    "done": "Yamcho... no, we got through it. But Nappo is next.",
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "gizard_wasteland",
+        "text": "Go to the Gizzard Wastes"
+      },
+      {
+        "type": "defeat",
+        "enemy": "saibamen",
+        "zone": "gizard_wasteland",
+        "x": 40,
+        "z": 60,
+        "r": 10,
+        "count": 6,
+        "text": "Defeat the Saiblings"
+      }
+    ],
+    "rewards": {
+      "xp": 297311,
+      "zeni": 400
+    }
+  },
+  {
+    "id": "m06_nappa",
+    "saga": "Saiyar Saga",
+    "title": "Nappo",
+    "giver": "tien_gizard",
+    "main": true,
+    "level": 50,
+    "after": [
+      "m05_saibamen"
+    ],
+    "offer": "That brute is too strong for us alone. Hit him with everything while I prepare a Triad Beam!",
+    "done": "We did it... I'll teach you the Triad Beam. Just don't burn your life force out like I nearly did.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "nappa",
+        "zone": "gizard_wasteland",
+        "x": 30,
+        "z": 80,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Nappo"
+      }
+    ],
+    "rewards": {
+      "xp": 402756,
+      "moves": [
+        "TriBeam",
+        "SolarFlare"
+      ]
+    }
+  },
+  {
+    "id": "m07_vegeta",
+    "saga": "Saiyar Saga",
+    "title": "Prince of the Saiyars",
+    "giver": "krillin_gizard",
+    "main": true,
+    "level": 70,
+    "after": [
+      "m06_nappa"
+    ],
+    "offer": "Vegara is the real threat. If he turns into a Great Ape under the moon, we're done. Gokan's here, fight with him!",
+    "done": "Vegara ran... Bulna found out he was heading for Nameck. Their Dragon Orbs could bring everyone back!",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "vegeta_gizard",
+        "zone": "gizard_wasteland",
+        "x": 22,
+        "z": 90,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Vegara (and survive his Great Ape form)"
+      }
+    ],
+    "rewards": {
+      "xp": 643389,
+      "zeni": 800,
+      "moves": [
+        "DestructoDisc"
+      ],
+      "unlock": [
+        "west_city"
+      ]
+    }
+  },
+  {
+    "id": "m08_namek",
+    "saga": "Nameck & Frigor Saga",
+    "title": "Journey to Nameck",
+    "giver": "bulma_cc",
+    "main": true,
+    "level": 100,
+    "after": [
+      "m07_vegeta"
+    ],
+    "offer": "Dad built a ship from Gokan's old pod. It'll get us to Nameck. Their Dragon Orbs can revive everyone the Saiyars killed. Get in!",
+    "done": "Nameck! Green sky, blue grass... and I'm picking up Frigor's soldiers on the scouter.",
+    "steps": [
+      {
+        "type": "reach",
+        "zone": "west_city",
+        "x": 30,
+        "z": -8,
+        "r": 7,
+        "text": "Board the Kapsule Corp ship"
+      },
+      {
+        "type": "travel",
+        "zone": "namek",
+        "text": "Fly to Planet Nameck"
+      }
+    ],
+    "rewards": {
+      "xp": 1068550,
+      "unlock": [
+        "namek"
+      ]
+    }
+  },
+  {
+    "id": "m09_village",
+    "saga": "Nameck & Frigor Saga",
+    "title": "Mooru's Village",
+    "giver": "moori",
+    "main": true,
+    "level": 100,
+    "after": [
+      "m08_namek"
+    ],
+    "offer": "Frigor's men, led by Dodorra, are burning the villages for the Dragon Orbs. Please, protect my people and the boy Dendo.",
+    "done": "You saved us. Dendo will take you to the Grand Elder. He can draw out the strength sleeping in you.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "dodoria",
+        "zone": "namek",
+        "x": -60,
+        "z": 30,
+        "r": 10,
+        "count": 1,
+        "text": "Drive off Dodorra and his soldiers"
+      },
+      {
+        "type": "talk",
+        "npc": "dende",
+        "text": "Talk to Dendo"
+      }
+    ],
+    "rewards": {
+      "xp": 1068550,
+      "zeni": 600
+    }
+  },
+  {
+    "id": "m10_guru",
+    "saga": "Nameck & Frigor Saga",
+    "title": "The Grand Elder",
+    "giver": "dende",
+    "main": true,
+    "level": 110,
+    "after": [
+      "m09_village"
+    ],
+    "offer": "Grand Elder Gura lives on the tallest pillar. Fly up with me. He can unlock your hidden potential!",
+    "done": "Hmm... great power slept inside you. It is awake now. Use it to protect Nameck.",
+    "steps": [
+      {
+        "type": "reach",
+        "zone": "namek",
+        "x": 160,
+        "z": 92,
+        "r": 14,
+        "text": "Fly up to Gura's house"
+      },
+      {
+        "type": "talk",
+        "npc": "guru",
+        "text": "Kneel before Grand Elder Gura"
+      }
+    ],
+    "rewards": {
+      "xp": 1225485,
+      "statPoints": 9,
+      "items": {
+        "potentialUnlocked": 1
+      }
+    }
+  },
+  {
+    "id": "m11_dragon_balls",
+    "saga": "Nameck & Frigor Saga",
+    "title": "The Nameckian Dragon Orbs",
+    "giver": "bulma_namek",
+    "main": true,
+    "level": 120,
+    "after": [
+      "m10_guru"
+    ],
+    "offer": "The radar shows three Nameckian Dragon Orbs nearby. Grab them before Vegara or Frigor does! And watch out for Zarvon.",
+    "done": "We have them! Now we just need the password... and to survive the Ginnu Force.",
+    "steps": [
+      {
+        "type": "collect",
+        "item": "namek_ball",
+        "zone": "namek",
+        "spots": [
+          {
+            "x": -170,
+            "z": 70
+          },
+          {
+            "x": 230,
+            "z": -140
+          },
+          {
+            "x": -40,
+            "z": 240
+          }
+        ],
+        "text": "Find the 3 Nameckian Dragon Orbs"
+      },
+      {
+        "type": "defeat",
+        "enemy": "zarbon",
+        "zone": "namek",
+        "x": -150,
+        "z": 60,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Zarvon"
+      }
+    ],
+    "rewards": {
+      "xp": 1389438,
+      "zeni": 1200
+    }
+  },
+  {
+    "id": "m12_ginyu",
+    "saga": "Nameck & Frigor Saga",
+    "title": "The Ginnu Force",
+    "giver": "vegeta_namek",
+    "main": true,
+    "level": 140,
+    "after": [
+      "m11_dragon_balls"
+    ],
+    "offer": "Frigor called his elite Ginnu Force. Rekume, Burtor, Jayce, Guldor and Ginnu himself. Don't get in my way, and don't let Ginnu swap bodies with you.",
+    "done": "Ginnu is a frog now. Kakarro... is a Super Saiyar? No. Not yet. But Frigor is coming.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "guldo",
+        "zone": "namek",
+        "x": 40,
+        "z": -150,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Guldor (he can freeze time)"
+      },
+      {
+        "type": "defeat",
+        "enemy": "recoome",
+        "zone": "namek",
+        "x": 30,
+        "z": -152,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Rekume"
+      },
+      {
+        "type": "defeat",
+        "enemy": "burter",
+        "zone": "namek",
+        "x": 10,
+        "z": -148,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Burtor, the fastest in the universe"
+      },
+      {
+        "type": "defeat",
+        "enemy": "jeice",
+        "zone": "namek",
+        "x": 0,
+        "z": -152,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Jayce"
+      },
+      {
+        "type": "defeat",
+        "enemy": "ginyu_force",
+        "zone": "namek",
+        "x": 20,
+        "z": -150,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Captain Ginnu"
+      }
+    ],
+    "rewards": {
+      "xp": 1737262,
+      "zeni": 1500,
+      "outfits": [
+        "EliteArmor"
+      ]
+    }
+  },
+  {
+    "id": "m13_frieza",
+    "saga": "Nameck & Frigor Saga",
+    "title": "Frigor",
+    "giver": "nail",
+    "main": true,
+    "level": 160,
+    "after": [
+      "m12_ginyu"
+    ],
+    "offer": "Frigor has come for the Grand Elder. I will hold him as long as I can. Gather your strength and face him with Gokan.",
+    "done": "Krilan... Frigor killed him, and Gokan snapped. A golden warrior... a Super Saiyar. Nameck is about to explode. Get to the ship!",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "frieza",
+        "zone": "namek",
+        "x": 40,
+        "z": -160,
+        "r": 10,
+        "count": 1,
+        "text": "Survive Frigor's transformations and defeat him"
+      },
+      {
+        "type": "reach",
+        "zone": "namek",
+        "x": 18,
+        "z": -22,
+        "r": 7,
+        "text": "Escape to the Kapsule Corp ship before Nameck explodes"
+      }
+    ],
+    "rewards": {
+      "xp": 2110074,
+      "zeni": 3000,
+      "unlock": [
+        "yardrat"
+      ]
+    }
+  },
+  {
+    "id": "s_yardrat",
+    "saga": "Nameck & Frigor Saga",
+    "title": "Instant Transfer",
+    "giver": "yardrat_elder",
+    "main": false,
+    "level": 140,
+    "after": [
+      "m13_frieza"
+    ],
+    "offer": "You fell from the sky like the other Saiyar. We Yardrats teach a way to move: feel a ki far away, and be there. Calm your spirit first.",
+    "done": "You can now lock onto any ki you have felt and arrive in an instant. Travel pads in every world will take you anywhere you have been.",
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "yardrat",
+        "text": "Go to Planet Yardran"
+      },
+      {
+        "type": "train",
+        "zone": "yardrat",
+        "seconds": 40,
+        "mode": "charge",
+        "text": "Meditate with the Yardrats (hold Charge)"
+      },
+      {
+        "type": "talk",
+        "npc": "yardrat_elder",
+        "text": "Show the Elder what you learned"
+      }
+    ],
+    "rewards": {
+      "xp": 673293,
+      "moves": [
+        "InstantTransmission",
+        "Afterimage"
+      ],
+      "items": {
+        "instantTransmission": 1
+      }
+    }
+  },
+  {
+    "id": "m14_future_boy",
+    "saga": "Cyborg Saga",
+    "title": "The Boy from the Future",
+    "giver": "trunks_cc",
+    "main": true,
+    "level": 200,
+    "after": [
+      "m13_frieza"
+    ],
+    "offer": "Frigor survived. He and his father King Kold are landing near West Capital. I came from the future to stop them, and to warn you about the Cyborgs.",
+    "done": "In three years two Cyborgs will destroy everything. Please, get stronger. I'll wait for you in the northern mountains.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "mecha_frieza",
+        "zone": "west_city",
+        "x": 120,
+        "z": 120,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Mecha Frigor"
+      },
+      {
+        "type": "defeat",
+        "enemy": "king_cold",
+        "zone": "west_city",
+        "x": 126,
+        "z": 126,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat King Kold"
+      },
+      {
+        "type": "talk",
+        "npc": "trunks_cc",
+        "text": "Hear Tronks's warning"
+      }
+    ],
+    "rewards": {
+      "xp": 2924632,
+      "zeni": 3000,
+      "unlock": [
+        "gero_lab",
+        "lookout"
+      ]
+    }
+  },
+  {
+    "id": "m15_androids",
+    "saga": "Cyborg Saga",
+    "title": "Cyborgs 19 and 20",
+    "giver": "piccolo_gero",
+    "main": true,
+    "level": 220,
+    "after": [
+      "m14_future_boy"
+    ],
+    "offer": "These Cyborgs absorb ki through their hands. Don't fire blasts at them. Break them up close. Dr. Gerro is Cyborg 20. Follow him to his lab!",
+    "done": "He opened the capsules before we could stop him. 17 and 18 are awake.",
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "gero_lab",
+        "text": "Go to the northern mountains"
+      },
+      {
+        "type": "defeat",
+        "enemy": "android_19",
+        "zone": "gero_lab",
+        "x": 60,
+        "z": 40,
+        "r": 10,
+        "count": 1,
+        "text": "Destroy Cyborg 19"
+      },
+      {
+        "type": "defeat",
+        "enemy": "gero",
+        "zone": "gero_lab",
+        "x": 110,
+        "z": 76,
+        "r": 10,
+        "count": 1,
+        "text": "Chase Dr. Gerro to his lab"
+      }
+    ],
+    "rewards": {
+      "xp": 3363958,
+      "zeni": 2000
+    }
+  },
+  {
+    "id": "m16_17_18",
+    "saga": "Cyborg Saga",
+    "title": "17, 18 and 16",
+    "giver": "piccolo_gero",
+    "main": true,
+    "level": 240,
+    "after": [
+      "m15_androids"
+    ],
+    "offer": "Cyborgs 17 and 18 are stronger than anything Tronks warned us about. And there's a third one, 16, who won't fight unless it's Gokan.",
+    "done": "They let us live... and left with 16 to find Gokan. Something else is out there, too. A shell, in Ginger Town.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "android_17",
+        "zone": "gero_lab",
+        "x": 100,
+        "z": 60,
+        "r": 10,
+        "count": 1,
+        "text": "Fight Cyborg 17"
+      },
+      {
+        "type": "defeat",
+        "enemy": "android_18",
+        "zone": "gero_lab",
+        "x": 106,
+        "z": 56,
+        "r": 10,
+        "count": 1,
+        "text": "Fight Cyborg 18"
+      },
+      {
+        "type": "talk",
+        "npc": "android_16",
+        "text": "Talk to Cyborg 16"
+      }
+    ],
+    "rewards": {
+      "xp": 3823315,
+      "zeni": 2000
+    }
+  },
+  {
+    "id": "m17_imperfect_cell",
+    "saga": "Cel Saga",
+    "title": "Imperfect Cel",
+    "giver": "trunks_cc",
+    "main": true,
+    "level": 260,
+    "after": [
+      "m16_17_18"
+    ],
+    "offer": "Another time machine, and an empty shell next to it. A creature made from all of your cells came from another future. It's in Ginger Town, draining people.",
+    "done": "Piccor has fused with Kamu to fight it. Cel escaped to absorb the Cyborgs... we need to train faster than time allows.",
+    "steps": [
+      {
+        "type": "reach",
+        "zone": "gero_lab",
+        "x": 70,
+        "z": -40,
+        "r": 8,
+        "text": "Inspect the empty shell"
+      },
+      {
+        "type": "defeat",
+        "enemy": "imperfect_cell",
+        "zone": "gero_lab",
+        "x": -60,
+        "z": -70,
+        "r": 10,
+        "count": 1,
+        "text": "Fight Imperfect Cel in Ginger Town"
+      }
+    ],
+    "rewards": {
+      "xp": 4301869,
+      "zeni": 2500
+    }
+  },
+  {
+    "id": "m18_time_chamber",
+    "saga": "Cel Saga",
+    "title": "The Hyperbolic Time Room",
+    "giver": "mr_popo",
+    "main": true,
+    "level": 270,
+    "after": [
+      "m17_imperfect_cell"
+    ],
+    "offer": "A year inside the Room of Spirit and Time is a single day outside. The air is thin, it is ten times heavier, and it gets very hot and very cold. Do not stay too long.",
+    "done": "You have done a year of training. You are a different fighter now.",
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "htc",
+        "text": "Enter the Hyperbolic Time Room"
+      },
+      {
+        "type": "train",
+        "zone": "htc",
+        "seconds": 90,
+        "mode": "move",
+        "text": "Train for a 'year' under 10x gravity (keep moving)"
+      },
+      {
+        "type": "train",
+        "zone": "htc",
+        "seconds": 30,
+        "mode": "charge",
+        "text": "Push your ki past its limit (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "xp": 4548108,
+      "statPoints": 6,
+      "unlock": [
+        "htc",
+        "cell_games"
+      ]
+    }
+  },
+  {
+    "id": "m19_perfect_cell",
+    "saga": "Cel Saga",
+    "title": "Perfect Cel",
+    "giver": "gohan_games",
+    "main": true,
+    "level": 300,
+    "after": [
+      "m18_time_chamber"
+    ],
+    "offer": "Cel absorbed 17 and 18 and became perfect. Now he's holding a tournament: the Cel Games. Father says I'm the one who has to win it.",
+    "done": "Cel made seven little copies of himself... he wants to watch us suffer.",
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "cell_games",
+        "text": "Go to the Cel Games arena"
+      },
+      {
+        "type": "defeat",
+        "enemy": "perfect_cell",
+        "zone": "cell_games",
+        "x": 0,
+        "z": 0,
+        "r": 10,
+        "count": 1,
+        "text": "Face Perfect Cel in the ring"
+      }
+    ],
+    "rewards": {
+      "xp": 5313676,
+      "zeni": 4000
+    }
+  },
+  {
+    "id": "m20_cell_games",
+    "saga": "Cel Saga",
+    "title": "The Cel Games",
+    "giver": "gohan_games",
+    "main": true,
+    "level": 320,
+    "after": [
+      "m19_perfect_cell"
+    ],
+    "offer": "Cyborg 16 is gone... I can't hold it back anymore. Help me with the Cel Juniors, then we finish this with one last Kamehamera!",
+    "done": "It's over. Cel is gone. Mr. Sadan is taking the credit, and honestly, let him.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "cell_juniors",
+        "zone": "cell_games",
+        "x": 10,
+        "z": 14,
+        "r": 10,
+        "count": 7,
+        "text": "Defeat the Cel Juniors"
+      },
+      {
+        "type": "train",
+        "zone": "cell_games",
+        "seconds": 15,
+        "mode": "charge",
+        "text": "Beam struggle! Pour your ki into the Kamehamera (hold Charge)",
+        "x": 0,
+        "z": 0,
+        "r": 30
+      }
+    ],
+    "rewards": {
+      "xp": 5845673,
+      "zeni": 8000,
+      "moves": [
+        "Masenko"
+      ],
+      "unlock": [
+        "papaya_island"
+      ]
+    }
+  },
+  {
+    "id": "m21_tournament",
+    "saga": "Majinn Boo Saga",
+    "title": "The Grand Martial Arts Tournament",
+    "giver": "announcer",
+    "main": true,
+    "level": 360,
+    "after": [
+      "m20_cell_games"
+    ],
+    "offer": "Welcome to the 25th Grand Martial Arts Tournament! Show us your power on the punching machine to qualify!",
+    "done": "Two strangers in Kae robes are watching the fighters. And Spopovik just broke the punching machine...",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "papaya_island",
+        "seconds": 12,
+        "mode": "charge",
+        "text": "Hit the punching machine (hold Charge)",
+        "x": 0,
+        "z": 0,
+        "r": 30
+      },
+      {
+        "type": "talk",
+        "npc": "supreme_kai",
+        "text": "Talk to the strange man in the crowd"
+      }
+    ],
+    "rewards": {
+      "xp": 6959147,
+      "zeni": 5000,
+      "unlock": [
+        "babidi_ship"
+      ]
+    }
+  },
+  {
+    "id": "m22_babidi",
+    "saga": "Majinn Boo Saga",
+    "title": "Babido's Spaceship",
+    "giver": "supreme_kai",
+    "main": true,
+    "level": 380,
+    "after": [
+      "m21_tournament"
+    ],
+    "offer": "I am the Supreme Kae. A wizard named Babido is gathering energy to revive Majinn Boo. Spopovik drained Gohin for him. We must stop Babido's minions: Poi Poi, Yakkon and Dabora.",
+    "done": "Babido got into Vegara's heart. Vegara let himself be controlled... and released enough energy to wake Boo.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "spopovich",
+        "zone": "papaya_island",
+        "x": 0,
+        "z": 20,
+        "r": 10,
+        "count": 1,
+        "text": "Stop Spopovik at the tournament"
+      },
+      {
+        "type": "travel",
+        "zone": "babidi_ship",
+        "text": "Follow them to Babido's ship"
+      },
+      {
+        "type": "defeat",
+        "enemy": "pui_pui",
+        "zone": "babidi_ship",
+        "x": -20,
+        "z": 0,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Poi Poi"
+      },
+      {
+        "type": "defeat",
+        "enemy": "yakon",
+        "zone": "babidi_ship",
+        "x": 20,
+        "z": 0,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Yakkon (he eats light)"
+      },
+      {
+        "type": "defeat",
+        "enemy": "dabura",
+        "zone": "babidi_ship",
+        "x": 6,
+        "z": -10,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Dabora, King of the Demon Realm"
+      },
+      {
+        "type": "defeat",
+        "enemy": "majin_vegeta",
+        "zone": "babidi_ship",
+        "x": -10,
+        "z": -40,
+        "r": 10,
+        "count": 1,
+        "text": "Fight Majinn Vegara"
+      }
+    ],
+    "rewards": {
+      "xp": 7539687,
+      "zeni": 6000,
+      "moves": [
+        "FinalFlash"
+      ]
+    }
+  },
+  {
+    "id": "m23_majin_buu",
+    "saga": "Majinn Boo Saga",
+    "title": "Majinn Boo",
+    "giver": "babidi",
+    "main": true,
+    "level": 400,
+    "after": [
+      "m22_babidi"
+    ],
+    "offer": "Papapara! Majinn Boo is awake! Go on, Boo, destroy them all!",
+    "done": "Vegara gave his life and Boo still pulled himself back together. The Supreme Kae says there is a sword in his world that can save us.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "fat_buu",
+        "zone": "babidi_ship",
+        "x": 0,
+        "z": -30,
+        "r": 10,
+        "count": 1,
+        "text": "Fight Majinn Boo"
+      },
+      {
+        "type": "talk",
+        "npc": "goten_lookout",
+        "text": "At the Lookout, learn the Fusion Step with Gotin and Tronks"
+      }
+    ],
+    "rewards": {
+      "xp": 8135527,
+      "moves": [
+        "FusionDance"
+      ],
+      "unlock": [
+        "kai_world"
+      ]
+    }
+  },
+  {
+    "id": "m24_z_sword",
+    "saga": "Majinn Boo Saga",
+    "title": "The Z Sword",
+    "giver": "supreme_kai_world",
+    "main": true,
+    "level": 420,
+    "after": [
+      "m23_majin_buu"
+    ],
+    "offer": "Legend says whoever pulls the Z Sword from its stone gains incredible power. Gohin is trying. Go and see.",
+    "done": "The sword broke... and an Old Kae was sealed inside! He says he can draw out your full potential, if you can sit still for it.",
+    "steps": [
+      {
+        "type": "reach",
+        "zone": "kai_world",
+        "x": 120,
+        "z": -90,
+        "r": 12,
+        "text": "Climb to the Z Sword"
+      },
+      {
+        "type": "talk",
+        "npc": "gohan_kai",
+        "text": "Watch Gohin swing the sword"
+      },
+      {
+        "type": "train",
+        "zone": "kai_world",
+        "seconds": 60,
+        "mode": "still",
+        "text": "Sit through Old Kae's unlocking ritual (stand still near him)",
+        "x": 112,
+        "z": -84,
+        "r": 10
+      },
+      {
+        "type": "talk",
+        "npc": "elder_kai",
+        "text": "Thank Old Kae"
+      }
+    ],
+    "rewards": {
+      "xp": 8746287,
+      "statPoints": 9,
+      "items": {
+        "potentialUnleashed": 1
+      }
+    }
+  },
+  {
+    "id": "m25_kid_buu",
+    "saga": "Majinn Boo Saga",
+    "title": "Kid Boo and the Spirit Sphere",
+    "giver": "goku_kai",
+    "main": true,
+    "level": 450,
+    "after": [
+      "m24_z_sword"
+    ],
+    "offer": "Boo absorbed everyone and split into his pure form, Kid Boo. He's on the Sacred World now. Everyone on Earth is lending their energy. Raise your hands!",
+    "done": "...we did it. Boo is gone. Maybe someday he'll be reborn as a good guy. I'd like to fight him again!",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "super_buu",
+        "zone": "babidi_ship",
+        "x": 30,
+        "z": -60,
+        "r": 10,
+        "count": 1,
+        "text": "Fight Super Boo"
+      },
+      {
+        "type": "travel",
+        "zone": "kai_world",
+        "text": "Go to the Sacred World of the Kae"
+      },
+      {
+        "type": "defeat",
+        "enemy": "kid_buu",
+        "zone": "kai_world",
+        "x": -60,
+        "z": 30,
+        "r": 10,
+        "count": 1,
+        "text": "Hold off Kid Boo"
+      },
+      {
+        "type": "train",
+        "zone": "kai_world",
+        "seconds": 30,
+        "mode": "charge",
+        "text": "Charge the Spirit Sphere with the whole Earth (hold Charge)",
+        "x": -40,
+        "z": 25,
+        "r": 30
+      }
+    ],
+    "rewards": {
+      "xp": 9689628,
+      "zeni": 15000,
+      "moves": [
+        "Kamehameha"
+      ],
+      "outfits": [
+        "WeightedGi"
+      ]
+    }
+  },
+  {
+    "id": "m26_beerus",
+    "saga": "Battle of Gods",
+    "title": "The God of Destruction",
+    "giver": "beerus_party",
+    "main": true,
+    "level": 500,
+    "after": [
+      "m25_kid_buu"
+    ],
+    "offer": "Mmm, this pudding is delicious. I'm looking for a 'Super Saiyar God'. If I'm not entertained, I'll destroy the Earth. No pressure.",
+    "done": "Not bad at all. I'll let the Earth live. Wiss, take the Saiyars' little friend to our planet. They should learn what real training is.",
+    "steps": [
+      {
+        "type": "talk",
+        "npc": "bulma_cc",
+        "text": "Help Bulna calm everyone down at the party"
+      },
+      {
+        "type": "defeat",
+        "enemy": "beerus_party",
+        "zone": "west_city",
+        "x": 30,
+        "z": -24,
+        "r": 10,
+        "count": 1,
+        "text": "Fight Beeros and survive"
+      }
+    ],
+    "rewards": {
+      "xp": 11331745,
+      "zeni": 10000,
+      "unlock": [
+        "beerus_planet"
+      ]
+    }
+  },
+  {
+    "id": "m27_whis",
+    "saga": "Battle of Gods",
+    "title": "Training with Wiss",
+    "giver": "whis",
+    "main": true,
+    "level": 520,
+    "after": [
+      "m26_beerus"
+    ],
+    "offer": "Ohoho, welcome. First, there is no wasted motion in my training. Calm your mind, keep your ki steady. Let us begin.",
+    "done": "Very good. Your ki no longer leaks. By the way, a certain Frigor is coming back to Earth. I thought you should know.",
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "beerus_planet",
+        "text": "Go to Beeros's planet"
+      },
+      {
+        "type": "train",
+        "zone": "beerus_planet",
+        "seconds": 60,
+        "mode": "move",
+        "text": "Run Wiss's laps around the temple"
+      },
+      {
+        "type": "train",
+        "zone": "beerus_planet",
+        "seconds": 40,
+        "mode": "charge",
+        "text": "Hold your ki perfectly still (hold Charge)"
+      },
+      {
+        "type": "talk",
+        "npc": "whis",
+        "text": "Report to Wiss"
+      }
+    ],
+    "rewards": {
+      "xp": 12012211,
+      "moves": [
+        "GodKi"
+      ]
+    }
+  },
+  {
+    "id": "m28_golden_frieza",
+    "saga": "Resurrection 'F'",
+    "title": "Resurrection 'F'",
+    "giver": "krillin_gizard",
+    "main": true,
+    "level": 560,
+    "after": [
+      "m27_whis"
+    ],
+    "offer": "Frigor's back! Sorbel revived him with the Dragon Orbs, and he trained for four months! His army is landing out here!",
+    "done": "Golden Frigor... and he still lost. Too bad he got so cocky.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "sorbet",
+        "zone": "gizard_wasteland",
+        "x": -40,
+        "z": 120,
+        "r": 10,
+        "count": 1,
+        "text": "Stop Sorbel and the Frigor Force"
+      },
+      {
+        "type": "defeat",
+        "enemy": "tagoma",
+        "zone": "gizard_wasteland",
+        "x": -30,
+        "z": 128,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Tagomo"
+      },
+      {
+        "type": "defeat",
+        "enemy": "golden_frieza",
+        "zone": "gizard_wasteland",
+        "x": -20,
+        "z": 150,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Golden Frigor"
+      }
+    ],
+    "rewards": {
+      "xp": 13412198,
+      "zeni": 12000,
+      "unlock": [
+        "nameless_planet"
+      ]
+    }
+  },
+  {
+    "id": "m29_u6",
+    "saga": "Universe 6 Saga",
+    "title": "Champo's Tournament",
+    "giver": "champa",
+    "main": true,
+    "level": 600,
+    "after": [
+      "m28_golden_frieza"
+    ],
+    "offer": "Brother Beeros thinks his universe is better than mine. Five fighters each, winner takes the Super Dragon Orbs! Let's see your team!",
+    "done": "Hmph! Next time, Beeros! Next time!",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "botamo",
+        "zone": "nameless_planet",
+        "x": -8,
+        "z": 10,
+        "r": 10,
+        "count": 1,
+        "text": "Push Botama out of the ring"
+      },
+      {
+        "type": "defeat",
+        "enemy": "frost",
+        "zone": "nameless_planet",
+        "x": -4,
+        "z": 16,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Frosk (watch for his poison needle)"
+      },
+      {
+        "type": "defeat",
+        "enemy": "magetta",
+        "zone": "nameless_planet",
+        "x": 4,
+        "z": 18,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Magetto"
+      },
+      {
+        "type": "defeat",
+        "enemy": "cabba",
+        "zone": "nameless_planet",
+        "x": 10,
+        "z": 12,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Kabba"
+      },
+      {
+        "type": "defeat",
+        "enemy": "hit",
+        "zone": "nameless_planet",
+        "x": 14,
+        "z": 6,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Hitto, the legendary assassin"
+      }
+    ],
+    "rewards": {
+      "xp": 14862710,
+      "zeni": 20000,
+      "outfits": [
+        "SaiyanSuit"
+      ],
+      "unlock": [
+        "future_earth"
+      ]
+    }
+  },
+  {
+    "id": "m30_goku_black",
+    "saga": "Future Tronks Saga",
+    "title": "Gokan Black",
+    "giver": "trunks_cc",
+    "main": true,
+    "level": 640,
+    "after": [
+      "m29_u6"
+    ],
+    "offer": "Something with Gokan's face is destroying my future, calling it 'justice'. The time machine has just enough energy for one more trip. Please, come with me.",
+    "done": "Black is Zamazu. A Kae who stole Gokan's body with the Super Dragon Orbs. And there's a second Zamazu... immortal.",
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "future_earth",
+        "text": "Take the time machine to Future Earth"
+      },
+      {
+        "type": "talk",
+        "npc": "mai",
+        "text": "Meet Mae at the resistance hideout"
+      },
+      {
+        "type": "defeat",
+        "enemy": "goku_black",
+        "zone": "future_earth",
+        "x": 10,
+        "z": 90,
+        "r": 10,
+        "count": 1,
+        "text": "Fight Gokan Black (Super Saiyar Rosé)"
+      }
+    ],
+    "rewards": {
+      "xp": 16362040,
+      "zeni": 15000
+    }
+  },
+  {
+    "id": "m31_zamasu",
+    "saga": "Future Tronks Saga",
+    "title": "Merged Zamazu",
+    "giver": "trunks_future",
+    "main": true,
+    "level": 680,
+    "after": [
+      "m30_goku_black"
+    ],
+    "offer": "Black and Zamazu fused with the Potaro. Mom's notes mention the Evil Containment Wave... and everyone's hope. Lend me your energy!",
+    "done": "Zenno erased this timeline to stop Zamazu... Mae and I will live in another one. Thank you. All of you.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "zamasu",
+        "zone": "future_earth",
+        "x": 20,
+        "z": 96,
+        "r": 10,
+        "count": 1,
+        "text": "Fight Merged Zamazu"
+      },
+      {
+        "type": "train",
+        "zone": "future_earth",
+        "seconds": 25,
+        "mode": "charge",
+        "text": "Lend your energy to Tronks's Sword of Hope (hold Charge)",
+        "x": 16,
+        "z": 90,
+        "r": 30
+      }
+    ],
+    "rewards": {
+      "xp": 17908654,
+      "zeni": 20000,
+      "unlock": [
+        "world_of_void"
+      ]
+    }
+  },
+  {
+    "id": "m32_tournament",
+    "saga": "Tournament of Might",
+    "title": "The Tournament of Might",
+    "giver": "grand_priest",
+    "main": true,
+    "level": 720,
+    "after": [
+      "m31_zamasu"
+    ],
+    "offer": "Eight universes, ten fighters each, forty-eight minutes. Anyone who falls off the stage is eliminated. The losing universes will be erased by Grand Zenno. Begin!",
+    "done": "Universe 7 wins. Cyborg 17 wished every erased universe back. Grand Zenno enjoyed himself very much.",
+    "steps": [
+      {
+        "type": "talk",
+        "npc": "goku_top",
+        "text": "Line up with Universe 7's team"
+      },
+      {
+        "type": "defeat",
+        "enemy": "toppo",
+        "zone": "world_of_void",
+        "x": 40,
+        "z": 20,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Toppa, God of Destruction candidate"
+      },
+      {
+        "type": "defeat",
+        "enemy": "kefla",
+        "zone": "world_of_void",
+        "x": -40,
+        "z": 30,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Kafla (Potaro fusion)"
+      },
+      {
+        "type": "train",
+        "zone": "world_of_void",
+        "seconds": 30,
+        "mode": "still",
+        "text": "Find Ultra Intuition: stay calm in the centre (stand still)",
+        "x": 0,
+        "z": 30,
+        "r": 16
+      },
+      {
+        "type": "defeat",
+        "enemy": "jiren",
+        "zone": "world_of_void",
+        "x": 0,
+        "z": 50,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Jiran"
+      }
+    ],
+    "rewards": {
+      "xp": 19501143,
+      "zeni": 50000,
+      "moves": [
+        "UltraInstinctSign",
+        "EnergyField"
+      ],
+      "unlock": [
+        "broly_glacier"
+      ]
+    }
+  },
+  {
+    "id": "m33_broly",
+    "saga": "Legend Super: Brolo",
+    "title": "Brolo",
+    "giver": "cheelai",
+    "main": true,
+    "level": 780,
+    "after": [
+      "m32_tournament"
+    ],
+    "offer": "Frigor brought a Saiyar called Brolo here to fight. He's not evil, just... his father Paragos controls him. Please don't kill him.",
+    "done": "We wished Brolo away to his old planet. Gokan says he'll visit and teach him. And Frigor... ran away again.",
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "broly_glacier",
+        "text": "Go to the northern glacier"
+      },
+      {
+        "type": "defeat",
+        "enemy": "broly",
+        "zone": "broly_glacier",
+        "x": 40,
+        "z": 60,
+        "r": 10,
+        "count": 1,
+        "text": "Withstand Brolo's Legendary Super Saiyar rage"
+      },
+      {
+        "type": "talk",
+        "npc": "cheelai",
+        "text": "Help Chelai with the Dragon Orb wish"
+      }
+    ],
+    "rewards": {
+      "xp": 21973111,
+      "zeni": 40000,
+      "unlock": [
+        "new_namek"
+      ]
+    }
+  },
+  {
+    "id": "m35_moro_escape",
+    "title": "Morro: The Escaped Prisoner",
+    "giver": "merus_namek",
+    "level": 850,
+    "after": [
+      "m33_broly"
+    ],
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "new_namek",
+        "text": "Travel with the Star Patrol to New Nameck"
+      },
+      {
+        "type": "defeat",
+        "enemy": "moro_namek",
+        "zone": "new_namek",
+        "x": 40,
+        "z": 25,
+        "r": 12,
+        "count": 1,
+        "text": "Drive Morro away from New Nameck"
+      }
+    ],
+    "rewards": {
+      "unlock": [
+        "earth_plains"
+      ],
+      "zeni": 80000,
+      "xp": 24978701
+    },
+    "saga": "Star Patrol Prisoner Saga",
+    "main": true,
+    "offer": "Morro: The Escaped Prisoner. Follow the objective and help the others stop this threat.",
+    "done": "Morro: The Escaped Prisoner complete. Prepare for the next stage."
+  },
+  {
+    "id": "m36_patrol_defence",
+    "title": "Defend Earth with the Star Patrol",
+    "giver": "merus_earth",
+    "level": 950,
+    "after": [
+      "m35_moro_escape"
+    ],
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "saganbo_earth",
+        "zone": "earth_plains",
+        "x": 60,
+        "z": 20,
+        "r": 12,
+        "count": 1,
+        "text": "Defeat the empowered Sagambo"
+      },
+      {
+        "type": "train",
+        "zone": "earth_plains",
+        "seconds": 35,
+        "text": "Refine your calm under Meros",
+        "mode": "still"
+      }
+    ],
+    "rewards": {
+      "zeni": 100000,
+      "xp": 29489357
+    },
+    "saga": "Star Patrol Prisoner Saga",
+    "main": true,
+    "offer": "Defend Earth with the Star Patrol. Follow the objective and help the others stop this threat.",
+    "done": "Defend Earth with the Star Patrol complete. Prepare for the next stage."
+  },
+  {
+    "id": "m37_moro_final",
+    "title": "Morro: Perfected Resolve",
+    "giver": "merus_earth",
+    "level": 1100,
+    "after": [
+      "m36_patrol_defence"
+    ],
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "moro_earth",
+        "zone": "earth_plains",
+        "x": 70,
+        "z": 50,
+        "r": 12,
+        "count": 1,
+        "text": "Stop Morro after his copied angel power"
+      },
+      {
+        "type": "train",
+        "zone": "earth_plains",
+        "seconds": 30,
+        "text": "Focus your energy to finish the battle",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "unlock": [
+        "planet_cereal"
+      ],
+      "zeni": 150000,
+      "xp": 36707064
+    },
+    "saga": "Star Patrol Prisoner Saga",
+    "main": true,
+    "offer": "Morro: Perfected Resolve. Follow the objective and help the others stop this threat.",
+    "done": "Morro: Perfected Resolve complete. Prepare for the next stage."
+  },
+  {
+    "id": "m38_granolah",
+    "title": "Granolo: The Survivor",
+    "giver": "vegeta_cereal",
+    "level": 1250,
+    "after": [
+      "m37_moro_final"
+    ],
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "planet_cereal",
+        "text": "Reach Planet Grain"
+      },
+      {
+        "type": "defeat",
+        "enemy": "granolah_cereal",
+        "zone": "planet_cereal",
+        "x": 40,
+        "z": 20,
+        "r": 12,
+        "count": 1,
+        "text": "Face Granolo and his precision attacks"
+      },
+      {
+        "type": "talk",
+        "npc": "monaito_cereal",
+        "text": "Hear Monaido’s account of the past"
+      }
+    ],
+    "rewards": {
+      "zeni": 175000,
+      "xp": 44433119
+    },
+    "saga": "Granolo the Survivor Saga",
+    "main": true,
+    "offer": "Granolo: The Survivor. Follow the objective and help the others stop this threat.",
+    "done": "Granolo: The Survivor complete. Prepare for the next stage."
+  },
+  {
+    "id": "m39_bardock",
+    "title": "Bardak’s Resolve",
+    "giver": "monaito_cereal",
+    "level": 1400,
+    "after": [
+      "m38_granolah"
+    ],
+    "steps": [
+      {
+        "type": "talk",
+        "npc": "monaito_cereal",
+        "text": "Learn how Bardak protected the survivors"
+      },
+      {
+        "type": "train",
+        "zone": "planet_cereal",
+        "seconds": 30,
+        "text": "Accept your own fighting spirit",
+        "mode": "still"
+      }
+    ],
+    "rewards": {
+      "zeni": 180000,
+      "xp": 52636045
+    },
+    "saga": "Granolo the Survivor Saga",
+    "main": true,
+    "offer": "Bardak’s Resolve. Follow the objective and help the others stop this threat.",
+    "done": "Bardak’s Resolve complete. Prepare for the next stage."
+  },
+  {
+    "id": "m40_gas",
+    "title": "Gaz: The Strongest Wish",
+    "giver": "vegeta_cereal",
+    "level": 1600,
+    "after": [
+      "m39_bardock"
+    ],
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "gas_cereal",
+        "zone": "planet_cereal",
+        "x": 55,
+        "z": 35,
+        "r": 12,
+        "count": 1,
+        "text": "Overcome Gaz with your allies"
+      }
+    ],
+    "rewards": {
+      "zeni": 225000,
+      "xp": 64270260
+    },
+    "saga": "Granolo the Survivor Saga",
+    "main": true,
+    "offer": "Gaz: The Strongest Wish. Follow the objective and help the others stop this threat.",
+    "done": "Gaz: The Strongest Wish complete. Prepare for the next stage."
+  },
+  {
+    "id": "m41_black_frieza",
+    "title": "The Arrival of Black Frigor",
+    "giver": "monaito_cereal",
+    "level": 1800,
+    "after": [
+      "m40_gas"
+    ],
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "frieza_cereal",
+        "zone": "planet_cereal",
+        "x": 40,
+        "z": 55,
+        "r": 12,
+        "count": 1,
+        "text": "Survive Black Frigor’s overwhelming power"
+      },
+      {
+        "type": "talk",
+        "npc": "monaito_cereal",
+        "text": "Recover and prepare for what comes next"
+      }
+    ],
+    "rewards": {
+      "unlock": [
+        "red_ribbon"
+      ],
+      "zeni": 300000,
+      "xp": 76654159
+    },
+    "saga": "Granolo the Survivor Saga",
+    "main": true,
+    "offer": "The Arrival of Black Frigor. Follow the objective and help the others stop this threat.",
+    "done": "The Arrival of Black Frigor complete. Prepare for the next stage."
+  },
+  {
+    "id": "m34_super_hero",
+    "saga": "Legend Super: Super Hero",
+    "title": "Super Hero",
+    "giver": "piccolo_rr",
+    "main": true,
+    "level": 1900,
+    "after": [
+      "m41_black_frieza"
+    ],
+    "offer": "The Crimson Ribbon Army is back, with two androids who think they're heroes, and they're working on Cel Max. They kidnapped Panna. Gohin's on his way. We're going in.",
+    "done": "Gama 2 gave his life for us. Gohin reached a new level: Beast. Next time I'm not losing to these kids.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "gamma1",
+        "zone": "red_ribbon",
+        "x": -20,
+        "z": 10,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Gama 1"
+      },
+      {
+        "type": "defeat",
+        "enemy": "gamma2",
+        "zone": "red_ribbon",
+        "x": 20,
+        "z": 10,
+        "r": 10,
+        "count": 1,
+        "text": "Convince Gama 2 to stop"
+      },
+      {
+        "type": "defeat",
+        "enemy": "cell_max",
+        "zone": "red_ribbon",
+        "x": 60,
+        "z": 70,
+        "r": 10,
+        "count": 1,
+        "text": "Bring down Cel Max"
+      }
+    ],
+    "rewards": {
+      "xp": 83113546,
+      "zeni": 80000
+    }
+  },
+  {
+    "id": "t_roshi_kamehameha",
+    "saga": "Turtle School",
+    "title": "The Kamehamera",
+    "giver": "roshi",
+    "level": 30,
+    "offer": "You want to learn the Kamehamera? It took me fifty years! Deliver my milk around the island first, then focus your ki in your hands.",
+    "done": "Kamehame... HA! Very good. Turtle School is proud of you.",
+    "steps": [
+      {
+        "type": "reach",
+        "zone": "kame_island",
+        "x": 18,
+        "z": 10,
+        "r": 5,
+        "text": "Deliver milk to the north shore"
+      },
+      {
+        "type": "reach",
+        "zone": "kame_island",
+        "x": -20,
+        "z": -6,
+        "r": 5,
+        "text": "Deliver milk to the west shore"
+      },
+      {
+        "type": "train",
+        "zone": "kame_island",
+        "seconds": 20,
+        "mode": "charge",
+        "text": "Gather ki in your palms (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "xp": 70749,
+      "moves": [
+        "Kamehameha"
+      ],
+      "outfits": [
+        "TurtleGi"
+      ]
+    }
+  },
+  {
+    "id": "t_krillin_disc",
+    "saga": "Turtle School",
+    "title": "Krilan's Sparring",
+    "giver": "krillin_kame",
+    "level": 40,
+    "after": [
+      "t_roshi_kamehameha"
+    ],
+    "offer": "Spar with me! Run the beach until you can't feel your legs. I'll show you my Destro Disc after.",
+    "done": "Careful with that disc, it cuts through anything. Even you!",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "kame_island",
+        "seconds": 40,
+        "mode": "move",
+        "text": "Run laps around Kama House"
+      }
+    ],
+    "rewards": {
+      "xp": 106965,
+      "moves": [
+        "DestructoDisc"
+      ]
+    }
+  },
+  {
+    "id": "t_piccolo_survival",
+    "saga": "Saiyar Saga",
+    "title": "Survival Training",
+    "giver": "piccolo_plains",
+    "level": 20,
+    "after": [
+      "m02_raditz"
+    ],
+    "offer": "Gohin survived six months alone in the wild. Prove you can do the same. Stay out in the plains, keep moving, and don't come crying to me.",
+    "done": "...Fine. You're not useless. Spiral Beam Cannon. Watch closely.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "earth_plains",
+        "seconds": 60,
+        "mode": "move",
+        "text": "Survive in the wild plains (keep moving, away from spawn)",
+        "x": 120,
+        "z": 0,
+        "r": 110
+      }
+    ],
+    "rewards": {
+      "xp": 39915,
+      "moves": [
+        "SpecialBeamCannon",
+        "Masenko"
+      ]
+    }
+  },
+  {
+    "id": "s_farmer",
+    "saga": "Saiyar Saga",
+    "title": "The Farmer's Shotgun",
+    "giver": "farmer",
+    "level": 10,
+    "after": [
+      "m01_arrival"
+    ],
+    "offer": "That weirdo with the hair caught my bullet with two fingers! My truck rolled into the field. Push it back for me? It's out by the big rock.",
+    "done": "Thank ye kindly. Here, take some zeni for your trouble.",
+    "steps": [
+      {
+        "type": "reach",
+        "zone": "earth_plains",
+        "x": -95,
+        "z": -10,
+        "r": 8,
+        "text": "Find the farmer's truck"
+      }
+    ],
+    "rewards": {
+      "xp": 15653,
+      "zeni": 250
+    }
+  },
+  {
+    "id": "s_princess_snake",
+    "saga": "Saiyar Saga",
+    "title": "Princess Serpa's Palace",
+    "giver": "princess_snake",
+    "level": 20,
+    "after": [
+      "m03_snake_way"
+    ],
+    "offer": "Visitors on Serpent Road are so rare! Stay for a meal? No? Then at least run me some flowers from the far end of the road.",
+    "done": "How sweet. Do come back!",
+    "steps": [
+      {
+        "type": "reach",
+        "zone": "snake_way",
+        "x": 0,
+        "z": 200,
+        "r": 10,
+        "text": "Pick flowers further down Serpent Road"
+      }
+    ],
+    "rewards": {
+      "xp": 39915,
+      "zeni": 300
+    }
+  },
+  {
+    "id": "r_kingkai_gravity",
+    "saga": "Training",
+    "title": "Gravity Training (repeatable)",
+    "giver": "king_kai",
+    "level": 20,
+    "after": [
+      "m04_kaioken"
+    ],
+    "repeat": true,
+    "offer": "Back for more? Ten times gravity, one minute, keep moving!",
+    "done": "Your body is getting used to it. Come back any time!",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 60,
+        "mode": "move",
+        "text": "Train under 10x gravity (keep moving)"
+      }
+    ],
+    "rewards": {
+      "xp": "levels:5"
+    }
+  },
+  {
+    "id": "r_htc_year",
+    "saga": "Training",
+    "title": "Another Year Inside (repeatable)",
+    "giver": "mr_popo_htc",
+    "level": 270,
+    "after": [
+      "m18_time_chamber"
+    ],
+    "repeat": true,
+    "offer": "One more 'year'? Mr. Pobo will keep the door open.",
+    "done": "You are getting stronger. Mr. Pobo is impressed.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "htc",
+        "seconds": 90,
+        "mode": "move",
+        "text": "Train in the Time Chamber (keep moving)"
+      }
+    ],
+    "rewards": {
+      "xp": "levels:5"
+    }
+  },
+  {
+    "id": "r_whis_laps",
+    "saga": "Training",
+    "title": "Wiss's Laps (repeatable)",
+    "giver": "whis",
+    "level": 520,
+    "after": [
+      "m27_whis"
+    ],
+    "repeat": true,
+    "offer": "Shall we go again? Without wasted motion, please.",
+    "done": "Lovely. Now, is there any more of that ramen?",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "beerus_planet",
+        "seconds": 60,
+        "mode": "move",
+        "text": "Run laps on Beeros's planet"
+      }
+    ],
+    "rewards": {
+      "xp": "levels:5"
+    }
+  },
+  {
+    "id": "s_dragon_radar",
+    "saga": "Earth",
+    "title": "The Dragon Radar",
+    "giver": "bulma_cc",
+    "level": 80,
+    "after": [
+      "m07_vegeta"
+    ],
+    "offer": "My Dragon Radar shows all seven of Earth's Dragon Orbs scattered across the planet. Gather them and summon Shenra at Kamu's Lookout!",
+    "done": "SHENRON: Speak your wish. ... It shall be granted. Your power grows!",
+    "steps": [
+      {
+        "type": "collect",
+        "item": "dragon_ball",
+        "zone": null,
+        "spots": [
+          {
+            "zone": "earth_plains",
+            "x": -180,
+            "z": -30
+          },
+          {
+            "zone": "kame_island",
+            "x": 14,
+            "z": -16
+          },
+          {
+            "zone": "west_city",
+            "x": 110,
+            "z": 90
+          },
+          {
+            "zone": "gizard_wasteland",
+            "x": -90,
+            "z": -200
+          },
+          {
+            "zone": "gero_lab",
+            "x": -170,
+            "z": 150
+          },
+          {
+            "zone": "papaya_island",
+            "x": 70,
+            "z": 70
+          },
+          {
+            "zone": "cell_games",
+            "x": 160,
+            "z": -120
+          }
+        ],
+        "text": "Gather Earth's 7 Dragon Orbs",
+        "summonFlag": "shenron"
+      },
+      {
+        "type": "talk",
+        "npc": "shenron",
+        "text": "Summon Shenra at the Lookout and make a wish"
+      }
+    ],
+    "rewards": {
+      "xp": 294324,
+      "statPoints": 15,
+      "zeni": 5000
+    },
+    "dragonHunt": "earth"
+  },
+  {
+    "id": "s_moori_water",
+    "saga": "Nameck & Frigor Saga",
+    "title": "Ajisa Saplings",
+    "giver": "moori",
+    "level": 110,
+    "after": [
+      "m09_village"
+    ],
+    "offer": "Frigor's soldiers burned our Ajisa trees. Plant new saplings on the islands to the east and west.",
+    "done": "Nameck will grow green again. Thank you, friend.",
+    "steps": [
+      {
+        "type": "reach",
+        "zone": "namek",
+        "x": 160,
+        "z": 60,
+        "r": 10,
+        "text": "Plant saplings on the east island"
+      },
+      {
+        "type": "reach",
+        "zone": "namek",
+        "x": -160,
+        "z": 50,
+        "r": 10,
+        "text": "Plant saplings on the west island"
+      }
+    ],
+    "rewards": {
+      "xp": 470962,
+      "zeni": 800
+    }
+  },
+  {
+    "id": "s_nail_fusion_lore",
+    "saga": "Nameck & Frigor Saga",
+    "title": "Warrior of Nameck",
+    "giver": "nail",
+    "level": 120,
+    "after": [
+      "m10_guru"
+    ],
+    "offer": "I am Gura's guardian. Fight beside me against Frigor's scouts on the far islands. A Nameckian warrior must know the Bursting Demon Wave.",
+    "done": "You fight with honour.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "frieza_scouts",
+        "zone": "namek",
+        "x": 230,
+        "z": -150,
+        "r": 10,
+        "count": 5,
+        "text": "Defeat Frigor's scouts on the south-east island"
+      }
+    ],
+    "rewards": {
+      "xp": 535719,
+      "moves": [
+        "ExplodingDemonWave",
+        "Regeneration"
+      ]
+    }
+  },
+  {
+    "id": "s_yamcha_wolf",
+    "saga": "Earth",
+    "title": "Wolf Claw Fist",
+    "giver": "yamcha_cc",
+    "level": 90,
+    "after": [
+      "m07_vegeta"
+    ],
+    "offer": "Hey, don't laugh, I was a desert bandit once! Run the streets of West Capital with me and I'll teach you the Wolf Claw Fist.",
+    "done": "Wolf Claw Fist! See? Still got it.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "west_city",
+        "seconds": 40,
+        "mode": "move",
+        "text": "Run through West Capital (keep moving)"
+      }
+    ],
+    "rewards": {
+      "xp": 350117,
+      "moves": [
+        "WolfFangFist"
+      ]
+    }
+  },
+  {
+    "id": "s_vegeta_pride",
+    "saga": "Cyborg Saga",
+    "title": "Saiyar Pride",
+    "giver": "vegeta_cc",
+    "level": 220,
+    "after": [
+      "m14_future_boy"
+    ],
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "offer": "You call yourself a Saiyar? Train in Bulna's gravity room until you can't stand, then we'll talk about the Galik Blaster.",
+    "done": "Hmph. Galik Blaster. And the Big Burst Attack. Don't embarrass our race.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "west_city",
+        "seconds": 60,
+        "mode": "move",
+        "text": "Train in the gravity room at Kapsule Corp",
+        "x": 0,
+        "z": 30,
+        "r": 24
+      }
+    ],
+    "rewards": {
+      "xp": 1318634,
+      "moves": [
+        "GalickGun",
+        "BigBangAttack"
+      ]
+    }
+  },
+  {
+    "id": "s_frieza_army_deserter",
+    "saga": "Nameck & Frigor Saga",
+    "title": "Frigor Force Deserter",
+    "giver": "bulma_namek",
+    "level": 120,
+    "after": [
+      "m09_village"
+    ],
+    "races": [
+      "FrostDemon"
+    ],
+    "offer": "You're one of Frigor's kind, huh? There's a deserter from his army hiding on the west island. He says he'll teach you if you get him off the planet.",
+    "done": "Doom Beam. Doom Orb. Use them better than Frigor ever did.",
+    "steps": [
+      {
+        "type": "reach",
+        "zone": "namek",
+        "x": -170,
+        "z": 60,
+        "r": 12,
+        "text": "Find the deserter on the west island"
+      }
+    ],
+    "rewards": {
+      "xp": 535719,
+      "moves": [
+        "DeathBeam",
+        "DeathBall"
+      ]
+    }
+  },
+  {
+    "id": "s_buu_candy",
+    "saga": "Majinn Boo Saga",
+    "title": "Majinn Sweets",
+    "giver": "buu_good",
+    "level": 380,
+    "after": [
+      "m25_kid_buu"
+    ],
+    "races": [
+      "Majin"
+    ],
+    "offer": "You're Majinn like Boo! Boo make candy! You make candy too! Hold your magic, like this!",
+    "done": "Sweet Beam! Yummy. Boo share with Mister Satan.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "papaya_island",
+        "seconds": 20,
+        "mode": "charge",
+        "text": "Gather Majinn magic with Boo (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "xp": 2980595,
+      "moves": [
+        "CandyBeam",
+        "Regeneration"
+      ]
+    }
+  },
+  {
+    "id": "s_beerus_hakai",
+    "saga": "Battle of Gods",
+    "title": "Hakaido",
+    "giver": "beerus",
+    "level": 700,
+    "after": [
+      "m32_tournament"
+    ],
+    "offer": "Destruction is the other half of creation. I'll show you the basics of Hakaido, if you can keep up with Wiss for once.",
+    "done": "Don't go destroying planets. That's my job.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "beerus_planet",
+        "seconds": 90,
+        "mode": "move",
+        "text": "Keep up with Wiss (keep moving)"
+      },
+      {
+        "type": "train",
+        "zone": "beerus_planet",
+        "seconds": 30,
+        "mode": "charge",
+        "text": "Focus destructive energy (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "xp": 7431932,
+      "moves": [
+        "Hakai"
+      ]
+    }
+  },
+  {
+    "id": "s_oracle_fish",
+    "saga": "Battle of Gods",
+    "title": "The Oracle Fish",
+    "giver": "oracle_fish",
+    "level": 500,
+    "after": [
+      "m26_beerus"
+    ],
+    "offer": "Blub. I see the future, blub. Bring Lord Beeros a pudding from Earth and I'll tell you a prophecy.",
+    "done": "Blub. A Saiyar will become a god. Possibly several. Blub.",
+    "steps": [
+      {
+        "type": "reach",
+        "zone": "west_city",
+        "x": 10,
+        "z": -6,
+        "r": 6,
+        "text": "Buy a pudding at Kapsule Corp"
+      },
+      {
+        "type": "reach",
+        "zone": "beerus_planet",
+        "x": -6,
+        "z": 14,
+        "r": 6,
+        "text": "Bring the pudding to Beeros"
+      }
+    ],
+    "rewards": {
+      "xp": 4492281,
+      "zeni": 3000
+    }
+  },
+  {
+    "id": "s_cabba",
+    "saga": "Universe 6 Saga",
+    "title": "Kabba's Super Saiyar",
+    "giver": "cabba_after",
+    "level": 600,
+    "after": [
+      "m29_u6"
+    ],
+    "offer": "Master Vegara said anger unlocks the Super Saiyar. Will you spar with me? I want to protect my planet Sadala.",
+    "done": "Thank you! Universe 6's Saiyars will grow strong too.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "nameless_planet",
+        "seconds": 40,
+        "mode": "move",
+        "text": "Spar with Kabba (keep moving)"
+      }
+    ],
+    "rewards": {
+      "xp": 5900840,
+      "zeni": 6000
+    }
+  },
+  {
+    "id": "s_resistance",
+    "saga": "Future Tronks Saga",
+    "title": "Supplies for the Resistance",
+    "giver": "mai",
+    "level": 640,
+    "after": [
+      "m30_goku_black"
+    ],
+    "offer": "We're out of food and capsules. Search the ruins for supply crates.",
+    "done": "This will keep us alive another month.",
+    "steps": [
+      {
+        "type": "collect",
+        "item": "supplies",
+        "zone": "future_earth",
+        "spots": [
+          {
+            "x": -40,
+            "z": 50
+          },
+          {
+            "x": 70,
+            "z": 30
+          },
+          {
+            "x": -110,
+            "z": 100
+          },
+          {
+            "x": 30,
+            "z": 120
+          }
+        ],
+        "text": "Find 4 supply crates in the ruins"
+      }
+    ],
+    "rewards": {
+      "xp": 6499132,
+      "zeni": 8000
+    }
+  },
+  {
+    "id": "s_u7_team",
+    "saga": "Tournament of Might",
+    "title": "Recruit Universe 7",
+    "giver": "goku_top",
+    "level": 720,
+    "after": [
+      "m31_zamasu"
+    ],
+    "offer": "We need ten fighters! I've got Vegara, 17 and... Frigor. Yeah, I know. Go say hi to the team so we're ready!",
+    "done": "Ten fighters! Let's go!",
+    "steps": [
+      {
+        "type": "talk",
+        "npc": "vegeta_top",
+        "text": "Talk to Vegara"
+      },
+      {
+        "type": "talk",
+        "npc": "android_17_top",
+        "text": "Talk to Cyborg 17"
+      },
+      {
+        "type": "talk",
+        "npc": "frieza_top",
+        "text": "Talk to Frigor (carefully)"
+      }
+    ],
+    "rewards": {
+      "xp": 7752019,
+      "zeni": 10000
+    }
+  },
+  {
+    "id": "s_cheelai",
+    "saga": "Legend Super: Brolo",
+    "title": "Chelai's Escape",
+    "giver": "lemo",
+    "level": 780,
+    "after": [
+      "m33_broly"
+    ],
+    "offer": "Me and Chelai are done with Frigor. Help us grab supplies from his ship and we'll go live with Brolo.",
+    "done": "Thanks. Look after yourself.",
+    "steps": [
+      {
+        "type": "reach",
+        "zone": "broly_glacier",
+        "x": 90,
+        "z": -40,
+        "r": 14,
+        "text": "Raid the Frigor Force ship"
+      }
+    ],
+    "rewards": {
+      "xp": 8738839,
+      "zeni": 10000
+    }
+  },
+  {
+    "id": "s_pan_babysit",
+    "saga": "Legend Super: Super Hero",
+    "title": "Babysitting Panna",
+    "giver": "pan_rr",
+    "level": 820,
+    "after": [
+      "m34_super_hero"
+    ],
+    "offer": "Mister Piccor flies me to kindergarten! Can you fly with me too? Let's fly fly fly!",
+    "done": "Again! Again!",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "red_ribbon",
+        "seconds": 40,
+        "mode": "fly",
+        "text": "Fly with Panna (flight on)"
+      }
+    ],
+    "rewards": {
+      "xp": 9418279,
+      "zeni": 5000
+    }
+  },
+  {
+    "id": "Form_SSJ",
+    "saga": "Transformations",
+    "title": "The Legendary Super Saiyar",
+    "giver": "goku_kingkai",
+    "level": 250,
+    "after": [
+      "m13_frieza"
+    ],
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "offer": "On Nameck I got angry enough to break through. You can too. Feel your limit and push past it.",
+    "done": "Golden hair, green eyes. You're a Super Saiyar!",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 40,
+        "mode": "charge",
+        "text": "Push past your limit (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SSJ"
+      ],
+      "xp": 2407411
+    }
+  },
+  {
+    "id": "Form_SSJ2",
+    "saga": "Transformations",
+    "title": "Super Saiyar 2",
+    "giver": "gohan_games",
+    "level": 500,
+    "after": [
+      "m20_cell_games",
+      "Form_SSJFullPower"
+    ],
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "offer": "When 16 died, something snapped in me. Lightning, all around. You've got it in you too.",
+    "done": "That's it! Super Saiyar 2!",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "cell_games",
+        "seconds": 50,
+        "mode": "charge",
+        "text": "Find the rage in the Cel Games ring (hold Charge)",
+        "x": 0,
+        "z": 0,
+        "r": 30
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SSJ2"
+      ],
+      "xp": 6758604
+    }
+  },
+  {
+    "id": "Form_SSJ3",
+    "saga": "Transformations",
+    "title": "Super Saiyar 3",
+    "giver": "goku_kingkai",
+    "level": 750,
+    "after": [
+      "m23_majin_buu",
+      "Form_SSJ2"
+    ],
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "offer": "In the Other World I found a third level. It eats ki like crazy, but your hair gets really long!",
+    "done": "Super Saiyar 3! Don't hold it too long.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 60,
+        "mode": "charge",
+        "text": "Hold your power under 10x gravity (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SSJ3"
+      ],
+      "xp": 12385448
+    }
+  },
+  {
+    "id": "Form_SSJGod",
+    "saga": "Transformations",
+    "title": "Super Saiyar God",
+    "giver": "whis",
+    "level": 1000,
+    "after": [
+      "m27_whis",
+      "Form_SSJ3"
+    ],
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "offer": "A Super Saiyar God is born when five righteous Saiyars pour their energy into a sixth. Find them in West Capital.",
+    "done": "Red hair, calm ki. The power of a god.",
+    "steps": [
+      {
+        "type": "talk",
+        "npc": "goku_plains",
+        "text": "Ask Gokan for his energy"
+      },
+      {
+        "type": "talk",
+        "npc": "vegeta_cc",
+        "text": "Ask Vegara (he'll complain)"
+      },
+      {
+        "type": "talk",
+        "npc": "gohan_cc",
+        "text": "Ask Gohin"
+      },
+      {
+        "type": "talk",
+        "npc": "goten_cc",
+        "text": "Ask Gotin"
+      },
+      {
+        "type": "talk",
+        "npc": "trunks_kid_cc",
+        "text": "Ask Kid Tronks"
+      },
+      {
+        "type": "train",
+        "zone": "west_city",
+        "seconds": 30,
+        "mode": "charge",
+        "text": "Receive the ritual's energy (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SSJGod"
+      ],
+      "xp": 19044880
+    }
+  },
+  {
+    "id": "Form_SSJBlue",
+    "saga": "Transformations",
+    "title": "Super Saiyar Blue",
+    "giver": "whis",
+    "level": 1250,
+    "after": [
+      "Form_SSJGod"
+    ],
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "offer": "God ki with a Super Saiyar's body. Perfect control is required. Again, no wasted motion.",
+    "done": "Super Saiyar God Super Saiyar. Or 'Blue', if you prefer.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "beerus_planet",
+        "seconds": 90,
+        "mode": "charge",
+        "text": "Master god ki under Wiss (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SSJBlue"
+      ],
+      "xp": 26596109
+    }
+  },
+  {
+    "id": "Form_HSSJ",
+    "saga": "Transformations",
+    "title": "Super Saiyar (Half-Saiyar)",
+    "giver": "mr_popo_htc",
+    "level": 250,
+    "after": [
+      "m18_time_chamber"
+    ],
+    "races": [
+      "HalfSaiyan"
+    ],
+    "offer": "Gokan and Gohin stayed in Super Saiyar for a whole year in here, to make it feel natural. You should do the same.",
+    "done": "Mr. Pobo sees golden hair.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "htc",
+        "seconds": 60,
+        "mode": "charge",
+        "text": "Stay at full power in the Time Chamber (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "HSSJ"
+      ],
+      "xp": 7500
+    },
+    "legacy": true
+  },
+  {
+    "id": "Form_HSSJ2",
+    "saga": "Transformations",
+    "title": "Super Saiyar 2 (Half-Saiyar)",
+    "giver": "gohan_games",
+    "level": 500,
+    "after": [
+      "m20_cell_games"
+    ],
+    "races": [
+      "HalfSaiyan"
+    ],
+    "offer": "Your hidden power is like mine. Let it out, the way I did against Cel.",
+    "done": "Super Saiyar 2! You're like me!",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "cell_games",
+        "seconds": 50,
+        "mode": "charge",
+        "text": "Let the anger out in the ring (hold Charge)",
+        "x": 0,
+        "z": 0,
+        "r": 30
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "HSSJ2"
+      ],
+      "xp": 21213
+    },
+    "legacy": true
+  },
+  {
+    "id": "Form_SSJRage",
+    "saga": "Transformations",
+    "title": "Super Saiyar Rage",
+    "giver": "trunks_future",
+    "level": 500,
+    "after": [
+      "Form_SSJ2",
+      "m31_zamasu"
+    ],
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "offer": "When I saw what Black did to my world, my anger and everyone's hope became one power. Find yours.",
+    "done": "Super Saiyar Rage. Use it to protect people.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "future_earth",
+        "seconds": 60,
+        "mode": "charge",
+        "text": "Feel the ruined world's rage (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SSJRage"
+      ],
+      "xp": 42932
+    },
+    "automatic": true
+  },
+  {
+    "id": "Form_Ultimate",
+    "saga": "Transformations",
+    "title": "Ultimate",
+    "giver": "elder_kai",
+    "level": 1000,
+    "after": [
+      "m24_z_sword"
+    ],
+    "races": [
+      "HalfSaiyan"
+    ],
+    "offer": "Your potential is like the boy Gohin's. Sit. Hours of ritual, then everything you could ever be. No transformation, just you.",
+    "done": "There. Your full potential, and no ki drain to speak of.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "kai_world",
+        "seconds": 90,
+        "mode": "still",
+        "text": "Sit through the ritual (stand still near Old Kae)",
+        "x": 112,
+        "z": -84,
+        "r": 10
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "Ultimate"
+      ],
+      "xp": 60000
+    },
+    "legacy": true
+  },
+  {
+    "id": "Form_Beast",
+    "saga": "Transformations",
+    "title": "Beast",
+    "giver": "gohan_endgame",
+    "level": 2000,
+    "after": [
+      "m32_tournament",
+      "Form_SSJBlue"
+    ],
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "offer": "When Gohin saw me 'die' against Cel Max, he went beyond anything. Silver hair, red eyes. You have that in you.",
+    "done": "Beast. Even Gokan would be jealous.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "beerus_planet",
+        "seconds": 60,
+        "text": "Release your potential under Gohin’s guidance",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "Beast"
+      ],
+      "xp": 0
+    },
+    "path": "beast"
+  },
+  {
+    "id": "Form_Kaioken",
+    "saga": "Transformations",
+    "title": "Kaiyoken",
+    "giver": "king_kai",
+    "level": 250,
+    "after": [
+      "m04_kaioken"
+    ],
+    "races": [
+      "Saiyan",
+      "HalfSaiyan",
+      "Human"
+    ],
+    "offer": "Kaiyoken is a technique for humans and Saiyars alike. Train your body to withstand the strain.",
+    "done": "Kaiyoken! Red aura and everything!",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "mode": "charge",
+        "text": "Hold the Kaiyoken under 10x gravity (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "Kaioken"
+      ],
+      "xp": 2407411
+    }
+  },
+  {
+    "id": "Form_Kaioken10",
+    "saga": "Transformations",
+    "title": "Kaiyoken x10",
+    "giver": "king_kai",
+    "level": 500,
+    "after": [
+      "Form_Kaioken"
+    ],
+    "races": [
+      "Saiyan",
+      "HalfSaiyan",
+      "Human"
+    ],
+    "offer": "Times ten. It nearly tore Gokan apart against Vegara. Are you sure? ...Of course you are.",
+    "done": "Kaiyoken times TEN! Ow, ow, ow.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "gizard_wasteland",
+        "seconds": 60,
+        "mode": "charge",
+        "text": "Push to Kaiyoken x10 where Gokan fought Vegara (hold Charge)",
+        "x": 22,
+        "z": 90,
+        "r": 30
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "Kaioken10"
+      ],
+      "xp": 6758604
+    }
+  },
+  {
+    "id": "Form_PotentialUnleashed",
+    "saga": "Transformations",
+    "title": "Potential Unleashed",
+    "giver": "elder_kai",
+    "level": 900,
+    "after": [
+      "m24_z_sword"
+    ],
+    "races": [
+      "Human"
+    ],
+    "offer": "Humans have more hidden potential than they know. Sit still, and I will draw all of it out.",
+    "done": "Potential Unleashed. A human with the calm of a Kae.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "kai_world",
+        "seconds": 80,
+        "mode": "still",
+        "text": "Sit through the ritual (stand still near Old Kae)",
+        "x": 112,
+        "z": -84,
+        "r": 10
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "PotentialUnleashed"
+      ],
+      "xp": 16267566
+    }
+  },
+  {
+    "id": "Form_NamekFusion",
+    "saga": "Transformations",
+    "title": "Fusion with Nael",
+    "giver": "nail",
+    "level": 250,
+    "after": [
+      "m12_ginyu"
+    ],
+    "races": [
+      "Namekian"
+    ],
+    "offer": "I am dying. Put your hand on my chest. My power will live on in you, as one Nameckian.",
+    "done": "Nael's power is part of you now.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "namek",
+        "seconds": 30,
+        "mode": "still",
+        "text": "Fuse with Nael (stand still beside him)",
+        "x": 150,
+        "z": 74,
+        "r": 6
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "NamekFusion"
+      ],
+      "xp": 2407411
+    }
+  },
+  {
+    "id": "Form_Giant",
+    "saga": "Transformations",
+    "title": "Giant Form",
+    "giver": "moori",
+    "level": 500,
+    "after": [
+      "m13_frieza"
+    ],
+    "races": [
+      "Namekian"
+    ],
+    "offer": "Nameckian warriors can grow to enormous size. Breathe in, and keep breathing.",
+    "done": "A giant of Nameck!",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "namek",
+        "seconds": 50,
+        "mode": "charge",
+        "text": "Grow on the open island (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "Giant"
+      ],
+      "xp": 6758604
+    }
+  },
+  {
+    "id": "Form_Orange",
+    "saga": "Transformations",
+    "title": "Orange Piccor",
+    "giver": "piccolo_rr",
+    "level": 1100,
+    "after": [
+      "m34_super_hero"
+    ],
+    "races": [
+      "Namekian"
+    ],
+    "offer": "Shenra unlocked my potential and gave me a new form. Let's see if a fellow Nameckian can reach it.",
+    "done": "Orange! ...It's a good colour. Don't say anything.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "red_ribbon",
+        "seconds": 60,
+        "mode": "charge",
+        "text": "Unleash your hidden power (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "Orange"
+      ],
+      "xp": 21964408
+    }
+  },
+  {
+    "id": "Form_FinalForm",
+    "saga": "Transformations",
+    "title": "Final Form",
+    "giver": "bulma_namek",
+    "level": 250,
+    "after": [
+      "m13_frieza"
+    ],
+    "races": [
+      "FrostDemon"
+    ],
+    "offer": "Your kind hides power in smaller bodies. Frigor transformed three times before he showed his true form. Shed your shell.",
+    "done": "Smooth, white and terrifying. Your final form.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "namek",
+        "seconds": 40,
+        "mode": "charge",
+        "text": "Shed your outer shell (hold Charge)",
+        "x": 40,
+        "z": -160,
+        "r": 30
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "FinalForm"
+      ],
+      "xp": 2407411
+    }
+  },
+  {
+    "id": "Form_FullPower",
+    "saga": "Transformations",
+    "title": "100% Full Power",
+    "giver": "bulma_namek",
+    "level": 550,
+    "after": [
+      "Form_FinalForm"
+    ],
+    "races": [
+      "FrostDemon"
+    ],
+    "offer": "Frigor needed a minute to reach 100%. Muscles, veins, the works.",
+    "done": "100% Full Power.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "namek",
+        "seconds": 60,
+        "mode": "charge",
+        "text": "Power up to 100% (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "FullPower"
+      ],
+      "xp": 7792039
+    }
+  },
+  {
+    "id": "Form_Golden",
+    "saga": "Transformations",
+    "title": "Golden",
+    "giver": "whis",
+    "level": 1000,
+    "after": [
+      "m28_golden_frieza"
+    ],
+    "races": [
+      "FrostDemon"
+    ],
+    "offer": "Frigor trained for only four months and turned gold. Imagine what you could do with real effort.",
+    "done": "Golden. Do watch your stamina.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "gizard_wasteland",
+        "seconds": 80,
+        "mode": "move",
+        "text": "Train like Frigor did for four months (keep moving)"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "Golden"
+      ],
+      "xp": 19044880
+    }
+  },
+  {
+    "id": "Form_Black",
+    "saga": "Transformations",
+    "title": "Black",
+    "giver": "mr_popo_htc",
+    "level": 1300,
+    "after": [
+      "m32_tournament"
+    ],
+    "races": [
+      "FrostDemon"
+    ],
+    "offer": "Frigor spent ten years in here and came out black. Mr. Pobo has the door open.",
+    "done": "Mr. Pobo is a little scared.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "htc",
+        "seconds": 120,
+        "mode": "move",
+        "text": "Ten years in the Time Chamber (keep moving)"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "Black"
+      ],
+      "xp": 28204479
+    }
+  },
+  {
+    "id": "Form_SuperMajin",
+    "saga": "Transformations",
+    "title": "Super Majinn",
+    "giver": "supreme_kai",
+    "level": 250,
+    "after": [
+      "m22_babidi"
+    ],
+    "races": [
+      "Majin"
+    ],
+    "offer": "You carry Majinn magic, like Boo. Bibido's magic grows stronger by taking in power. Absorb what Babido left behind in his ship, before it fades.",
+    "done": "Super Majinn. Please use it more kindly than Boo did.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "babidi_ship",
+        "seconds": 40,
+        "mode": "charge",
+        "text": "Absorb the magic left in Babido's ship (hold Charge)"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SuperMajin"
+      ],
+      "xp": 2407411
+    }
+  },
+  {
+    "id": "Form_KidForm",
+    "saga": "Transformations",
+    "title": "Kid Form",
+    "giver": "supreme_kai_world",
+    "level": 600,
+    "after": [
+      "m25_kid_buu"
+    ],
+    "races": [
+      "Majin"
+    ],
+    "offer": "Kid Boo was Majinn Boo's purest, most chaotic form. Strip away everything you absorbed.",
+    "done": "Small, fast and unpredictable. Please don't destroy anything.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "kai_world",
+        "seconds": 50,
+        "mode": "move",
+        "text": "Shed what you absorbed (keep moving)",
+        "x": -60,
+        "z": 30,
+        "r": 30
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "KidForm"
+      ],
+      "xp": 8873358
+    }
+  },
+  {
+    "id": "Form_PureMajin",
+    "saga": "Transformations",
+    "title": "Pure Majinn",
+    "giver": "supreme_kai_world",
+    "level": 1100,
+    "after": [
+      "Form_KidForm"
+    ],
+    "races": [
+      "Majin"
+    ],
+    "offer": "Majinn magic without any evil left in it. That is what the Grand Supreme Kae's goodness became inside Boo.",
+    "done": "Pure Majinn. Gentle and terrifying at once.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "kai_world",
+        "seconds": 80,
+        "mode": "still",
+        "text": "Meditate at the Kae crystals (stand still)",
+        "x": 30,
+        "z": 60,
+        "r": 10
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "PureMajin"
+      ],
+      "xp": 21964408
+    }
+  },
+  {
+    "id": "Form_Oozaru",
+    "title": "Ohzaru (Great Ape)",
+    "giver": "king_kai",
+    "level": 100,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "m04_kaioken"
+    ],
+    "offer": "Learn to control the Great Ape power in your Saiyar heritage.",
+    "done": "Unlocked Ohzaru (Great Ape).",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "text": "Train to unlock Ohzaru (Great Ape)",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "Oozaru"
+      ],
+      "xp": 622701
+    }
+  },
+  {
+    "id": "Form_FalseSSJ",
+    "title": "False Super Saiyar",
+    "giver": "goku_kingkai",
+    "level": 150,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "m04_kaioken"
+    ],
+    "offer": "Push toward the Super Saiyar threshold.",
+    "done": "Unlocked False Super Saiyar.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "text": "Train to unlock False Super Saiyar",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "FalseSSJ"
+      ],
+      "xp": 1129991
+    }
+  },
+  {
+    "id": "Form_LegendarySSJ",
+    "title": "Legendary Super Saiyar (Brolo)",
+    "giver": "broly_after",
+    "level": 1400,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "m33_broly",
+      "Form_SSJFullPower"
+    ],
+    "offer": "Train with Brolo to contain the Legendary Super Saiyar’s overflowing power.",
+    "done": "Unlocked Legendary Super Saiyar (Brolo).",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "broly_glacier",
+        "seconds": 45,
+        "text": "Train to unlock Legendary Super Saiyar (Brolo)",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "LegendarySSJ"
+      ],
+      "xp": 31514161
+    }
+  },
+  {
+    "id": "Form_SSJGrade2",
+    "title": "Super Saiyar Grade 2 (Super Vegara)",
+    "giver": "king_kai",
+    "level": 250,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "Form_SSJ"
+    ],
+    "offer": "This form evolves automatically through mastery.",
+    "done": "Unlocked Super Saiyar Grade 2 (Super Vegara).",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "text": "Train to unlock Super Saiyar Grade 2 (Super Vegara)",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SSJGrade2"
+      ]
+    },
+    "automatic": true
+  },
+  {
+    "id": "Form_SSJGrade3",
+    "title": "Super Saiyar Grade 3 (Super Tronks)",
+    "giver": "king_kai",
+    "level": 250,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "Form_SSJGrade2"
+    ],
+    "offer": "This form evolves automatically through mastery.",
+    "done": "Unlocked Super Saiyar Grade 3 (Super Tronks).",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "text": "Train to unlock Super Saiyar Grade 3 (Super Tronks)",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SSJGrade3"
+      ]
+    },
+    "automatic": true
+  },
+  {
+    "id": "Form_SSJFullPower",
+    "title": "Full Power Super Saiyar",
+    "giver": "king_kai",
+    "level": 250,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "Form_SSJGrade3"
+    ],
+    "offer": "This form evolves automatically through mastery.",
+    "done": "Unlocked Full Power Super Saiyar.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "text": "Train to unlock Full Power Super Saiyar",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SSJFullPower"
+      ]
+    },
+    "automatic": true
+  },
+  {
+    "id": "Form_GoldenOozaru",
+    "title": "Golden Ohzaru",
+    "giver": "king_kai",
+    "level": 100,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "Form_Oozaru"
+    ],
+    "offer": "This form evolves automatically through mastery.",
+    "done": "Unlocked Golden Ohzaru.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "text": "Train to unlock Golden Ohzaru",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "GoldenOozaru"
+      ]
+    },
+    "automatic": true
+  },
+  {
+    "id": "Form_SSJ4",
+    "title": "Super Saiyar 4",
+    "giver": "king_kai",
+    "level": 100,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "Form_GoldenOozaru"
+    ],
+    "offer": "This form evolves automatically through mastery.",
+    "done": "Unlocked Super Saiyar 4.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "text": "Train to unlock Super Saiyar 4",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SSJ4"
+      ]
+    },
+    "automatic": true
+  },
+  {
+    "id": "Form_UIOmen",
+    "title": "Ultra Intuition -Sign- (Form)",
+    "giver": "whis",
+    "level": 2000,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "m32_tournament",
+      "Form_SSJBlue"
+    ],
+    "offer": "Revisit the Tournament of Might breakthrough: separate the transformation from the weaker focus technique.",
+    "done": "Unlocked Ultra Intuition -Sign- (Form).",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "world_of_void",
+        "seconds": 45,
+        "text": "Train to unlock Ultra Intuition -Sign- (Form)",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "UIOmen"
+      ],
+      "xp": 0
+    },
+    "path": "instinct"
+  },
+  {
+    "id": "Form_UIPerfected",
+    "title": "Perfected Ultra Intuition",
+    "giver": "whis",
+    "level": 2000,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "Form_UIOmen"
+    ],
+    "offer": "Quiet your mind and complete the silver-haired transformation.",
+    "done": "Unlocked Perfected Ultra Intuition.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "world_of_void",
+        "seconds": 45,
+        "text": "Train to unlock Perfected Ultra Intuition",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "UIPerfected"
+      ],
+      "xp": 0
+    },
+    "path": "instinct"
+  },
+  {
+    "id": "t_ui_moro_mastery",
+    "title": "Meros: Ultra Intuition Mastery",
+    "giver": "merus_earth",
+    "level": 2000,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "path": "instinct",
+    "saga": "Star Patrol Prisoner Saga",
+    "after": [
+      "Form_UIPerfected",
+      "m37_moro_final"
+    ],
+    "offer": "Meros teaches you to sustain perfected Ultra Intuition after the Morro battle.",
+    "done": "Your control is stable. Mastery reduces the form’s ki drain.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "earth_plains",
+        "seconds": 60,
+        "text": "Perfect your control under Meros",
+        "mode": "still"
+      }
+    ],
+    "rewards": {
+      "items": {
+        "instinctMastery": 1
+      },
+      "xp": 0
+    }
+  },
+  {
+    "id": "t_ui_avatar",
+    "title": "Ultra Intuition: Energy Avatar",
+    "giver": "merus_earth",
+    "level": 2000,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "path": "instinct",
+    "saga": "Star Patrol Prisoner Saga",
+    "after": [
+      "t_ui_moro_mastery"
+    ],
+    "offer": "Hold your perfected instinct and project its energy beyond your body. The giant Avatar is a technique, not another transformation.",
+    "done": "Your energy Avatar can now be equipped from Techniques. Use it while in Perfected or True Ultra Intuition.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "earth_plains",
+        "seconds": 45,
+        "text": "Channel the Avatar in Perfected or True Ultra Intuition (hold Charge)",
+        "mode": "charge",
+        "requiredForms": [
+          "UIPerfected",
+          "UITrue"
+        ]
+      }
+    ],
+    "rewards": {
+      "moves": [
+        "UltraInstinctAvatar"
+      ],
+      "xp": 0
+    }
+  },
+  {
+    "id": "Form_UITrue",
+    "title": "True Ultra Intuition",
+    "giver": "monaito_cereal",
+    "level": 2000,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "t_ui_moro_mastery",
+      "m40_gas"
+    ],
+    "offer": "Find your own emotional, black-haired Ultra Intuition while facing the legacy of the Gaz battle.",
+    "done": "Unlocked True Ultra Intuition.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "planet_cereal",
+        "seconds": 45,
+        "text": "Train to unlock True Ultra Intuition",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "UITrue"
+      ],
+      "xp": 0
+    },
+    "path": "instinct"
+  },
+  {
+    "id": "Form_UltraEgo",
+    "title": "Ultra Self",
+    "giver": "beerus",
+    "level": 2000,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "m38_granolah",
+      "Form_SSJBlue"
+    ],
+    "offer": "Train in Destruction with Beeros and follow Vegara’s Ultra Self path.",
+    "done": "Unlocked Ultra Self.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "beerus_planet",
+        "seconds": 45,
+        "text": "Train to unlock Ultra Self",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "UltraEgo"
+      ],
+      "xp": 0
+    },
+    "path": "ego"
+  },
+  {
+    "id": "s_namek_dragon",
+    "title": "Seven Orbs of Nameck",
+    "saga": "Nameck",
+    "giver": "dende",
+    "level": 160,
+    "after": [
+      "m13_frieza"
+    ],
+    "dragonHunt": "namek",
+    "offer": "Seven Nameckian Dragon Orbs, seven islands. Find the full set and Dendo will help you summon Porunda for three wishes.",
+    "done": "Your three wishes are granted. Your strength is restored and your training potential grows.",
+    "steps": [
+      {
+        "type": "collect",
+        "item": "namek_ball",
+        "zone": "namek",
+        "spots": [
+          {
+            "x": 22,
+            "z": -20
+          },
+          {
+            "x": 175,
+            "z": 100
+          },
+          {
+            "x": -185,
+            "z": 65
+          },
+          {
+            "x": 50,
+            "z": -200
+          },
+          {
+            "x": -120,
+            "z": -165
+          },
+          {
+            "x": 235,
+            "z": -140
+          },
+          {
+            "x": -35,
+            "z": 240
+          }
+        ],
+        "summonFlag": "summon_namek",
+        "text": "Gather all 7 Porunda Dragon Orbs"
+      },
+      {
+        "type": "talk",
+        "npc": "dragon_namek",
+        "text": "Ask Porunda to restore your strength",
+        "reply": "Wish 1 of 3: it shall be granted."
+      },
+      {
+        "type": "talk",
+        "npc": "dragon_namek",
+        "text": "Ask Porunda for training potential",
+        "reply": "Wish 2 of 3: it shall be granted."
+      },
+      {
+        "type": "talk",
+        "npc": "dragon_namek",
+        "text": "Ask Porunda for prosperity",
+        "reply": "Wish 3 of 3: it shall be granted."
+      }
+    ],
+    "rewards": {
+      "statPoints": 20,
+      "zeni": 15000,
+      "restore": true,
+      "xp": 820967
+    }
+  },
+  {
+    "id": "s_super_dragon",
+    "title": "Super Dragon Orbs: The Golden Dragon",
+    "saga": "Universe Tournament",
+    "giver": "vados",
+    "level": 650,
+    "after": [
+      "m29_u6"
+    ],
+    "dragonHunt": "super",
+    "offer": "The Super Dragon Orbs are planet-sized. Survey seven cosmic retrieval beacons across the divine and tournament worlds; we will assemble the real orbs in space and call the golden Super Shenra. This hunt opens after the Universe 6 tournament.",
+    "done": "Your wish is granted. Your strength is restored and your training potential grows.",
+    "steps": [
+      {
+        "type": "collect",
+        "item": "super_ball",
+        "zone": null,
+        "spots": [
+          {
+            "zone": "beerus_planet",
+            "x": -35,
+            "z": -25
+          },
+          {
+            "zone": "beerus_planet",
+            "x": 45,
+            "z": -15
+          },
+          {
+            "zone": "beerus_planet",
+            "x": -25,
+            "z": 40
+          },
+          {
+            "zone": "nameless_planet",
+            "x": -80,
+            "z": -35
+          },
+          {
+            "zone": "nameless_planet",
+            "x": 80,
+            "z": -35
+          },
+          {
+            "zone": "nameless_planet",
+            "x": -70,
+            "z": 65
+          },
+          {
+            "zone": "nameless_planet",
+            "x": 70,
+            "z": 65
+          }
+        ],
+        "summonFlag": "summon_super",
+        "text": "Survey all 7 Super Dragon Orb retrieval beacons"
+      },
+      {
+        "type": "talk",
+        "npc": "dragon_super",
+        "text": "Ask the golden Super Shenra to restore your strength and expand your potential",
+        "reply": "Wish 1 of 1: it shall be granted."
+      }
+    ],
+    "rewards": {
+      "statPoints": 50,
+      "zeni": 100000,
+      "restore": true,
+      "xp": 6651690
+    }
+  },
+  {
+    "id": "s_cereal_dragon",
+    "title": "Grain: The Two Dragon Orbs",
+    "saga": "Granolo the Survivor Saga",
+    "giver": "monaito_cereal",
+    "level": 1400,
+    "after": [
+      "m38_granolah"
+    ],
+    "dragonHunt": "cereal",
+    "offer": "These are the two small Cerealian Dragon Orbs used in the wishes that empowered Granolo and Gaz. Recover both and I will help you call Toronba. Ask for your own potential, rather than trading away your life.",
+    "done": "Your wish is granted. Your strength is restored and your training potential grows.",
+    "steps": [
+      {
+        "type": "collect",
+        "item": "cereal_ball",
+        "zone": "planet_cereal",
+        "spots": [
+          {
+            "x": -45,
+            "z": -30
+          },
+          {
+            "x": 75,
+            "z": 65
+          }
+        ],
+        "summonFlag": "summon_cereal",
+        "text": "Gather all 2 Toronba Dragon Orbs"
+      },
+      {
+        "type": "talk",
+        "npc": "dragon_cereal",
+        "text": "Ask Toronba to unlock training potential without sacrificing your lifespan",
+        "reply": "Wish 1 of 1: it shall be granted."
+      }
+    ],
+    "rewards": {
+      "statPoints": 35,
+      "zeni": 50000,
+      "restore": true,
+      "xp": 20986968
+    }
+  },
+  {
+    "id": "hunt_earth_plains",
+    "title": "Training Plains: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_earth_plains",
+    "repeat": true,
+    "level": 10,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_earth_plains",
+        "count": 3,
+        "zone": "earth_plains",
+        "x": 18,
+        "z": 22,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 20891,
+      "zeni": 400
+    }
+  },
+  {
+    "id": "hunt_kame_island",
+    "title": "Kama House: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_kame_island",
+    "repeat": true,
+    "level": 10,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_kame_island",
+        "count": 3,
+        "zone": "kame_island",
+        "x": 18,
+        "z": 12,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 20891,
+      "zeni": 400
+    }
+  },
+  {
+    "id": "hunt_snake_way",
+    "title": "Serpent Road: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_snake_way",
+    "repeat": true,
+    "level": 20,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_snake_way",
+        "count": 3,
+        "zone": "snake_way",
+        "x": 0,
+        "z": -358,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 51672,
+      "zeni": 750
+    }
+  },
+  {
+    "id": "hunt_king_kai",
+    "title": "King Kae's Planet: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_king_kai",
+    "repeat": true,
+    "level": 20,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_king_kai",
+        "count": 3,
+        "zone": "king_kai",
+        "x": 18,
+        "z": 8,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 51672,
+      "zeni": 750
+    }
+  },
+  {
+    "id": "hunt_gizard_wasteland",
+    "title": "Gizzard Wastes: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_gizard_wasteland",
+    "repeat": true,
+    "level": 50,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_gizard_wasteland",
+        "count": 3,
+        "zone": "gizard_wasteland",
+        "x": 18,
+        "z": 22,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 187538,
+      "zeni": 1800
+    }
+  },
+  {
+    "id": "hunt_namek",
+    "title": "Planet Nameck: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_namek",
+    "repeat": true,
+    "level": 120,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_namek",
+        "count": 3,
+        "zone": "namek",
+        "x": 18,
+        "z": 22,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 673799,
+      "zeni": 4250
+    }
+  },
+  {
+    "id": "hunt_yardrat",
+    "title": "Planet Yardran: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_yardrat",
+    "repeat": true,
+    "level": 180,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_yardrat",
+        "count": 3,
+        "zone": "yardrat",
+        "x": 18,
+        "z": 22,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 1227682,
+      "zeni": 6350
+    }
+  },
+  {
+    "id": "hunt_west_city",
+    "title": "West Capital · Kapsule Corporation: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_west_city",
+    "repeat": true,
+    "level": 100,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_west_city",
+        "count": 3,
+        "zone": "west_city",
+        "x": 18,
+        "z": -8,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 515109,
+      "zeni": 3550
+    }
+  },
+  {
+    "id": "hunt_gero_lab",
+    "title": "Northern Mountains · Dr. Gerro's Lab: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_gero_lab",
+    "repeat": true,
+    "level": 240,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_gero_lab",
+        "count": 3,
+        "zone": "gero_lab",
+        "x": 18,
+        "z": 22,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 1882340,
+      "zeni": 8450
+    }
+  },
+  {
+    "id": "hunt_lookout",
+    "title": "Kamu's Lookout: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_lookout",
+    "repeat": true,
+    "level": 280,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_lookout",
+        "count": 3,
+        "zone": "lookout",
+        "x": 18,
+        "z": -18,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 2367812,
+      "zeni": 9850
+    }
+  },
+  {
+    "id": "hunt_htc",
+    "title": "Hyperbolic Time Room: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_htc",
+    "repeat": true,
+    "level": 320,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_htc",
+        "count": 3,
+        "zone": "htc",
+        "x": 18,
+        "z": 22,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 2889061,
+      "zeni": 11250
+    }
+  },
+  {
+    "id": "hunt_cell_games",
+    "title": "Cel Games Arena: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_cell_games",
+    "repeat": true,
+    "level": 360,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_cell_games",
+        "count": 3,
+        "zone": "cell_games",
+        "x": 18,
+        "z": -38,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 3443776,
+      "zeni": 12650
+    }
+  },
+  {
+    "id": "hunt_papaya_island",
+    "title": "Grand Martial Arts Tournament: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_papaya_island",
+    "repeat": true,
+    "level": 430,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_papaya_island",
+        "count": 3,
+        "zone": "papaya_island",
+        "x": 18,
+        "z": -28,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 4489491,
+      "zeni": 15100
+    }
+  },
+  {
+    "id": "hunt_babidi_ship",
+    "title": "Babido's Spaceship: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_babidi_ship",
+    "repeat": true,
+    "level": 480,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_babidi_ship",
+        "count": 3,
+        "zone": "babidi_ship",
+        "x": 18,
+        "z": -38,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 5291049,
+      "zeni": 16850
+    }
+  },
+  {
+    "id": "hunt_kai_world",
+    "title": "Sacred World of the Kae: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_kai_world",
+    "repeat": true,
+    "level": 550,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_kai_world",
+        "count": 3,
+        "zone": "kai_world",
+        "x": 18,
+        "z": 22,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 6484546,
+      "zeni": 19300
+    }
+  },
+  {
+    "id": "hunt_beerus_planet",
+    "title": "Beeros's Planet: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_beerus_planet",
+    "repeat": true,
+    "level": 680,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_beerus_planet",
+        "count": 3,
+        "zone": "beerus_planet",
+        "x": 18,
+        "z": -8,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 8905272,
+      "zeni": 23850
+    }
+  },
+  {
+    "id": "hunt_nameless_planet",
+    "title": "Nameless Planet: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_nameless_planet",
+    "repeat": true,
+    "level": 800,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_nameless_planet",
+        "count": 3,
+        "zone": "nameless_planet",
+        "x": 18,
+        "z": -38,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 11356172,
+      "zeni": 28050
+    }
+  },
+  {
+    "id": "hunt_future_earth",
+    "title": "Future Earth: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_future_earth",
+    "repeat": true,
+    "level": 950,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_future_earth",
+        "count": 3,
+        "zone": "future_earth",
+        "x": 18,
+        "z": -18,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 14686751,
+      "zeni": 33300
+    }
+  },
+  {
+    "id": "hunt_world_of_void",
+    "title": "Null Realm: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_world_of_void",
+    "repeat": true,
+    "level": 750,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_world_of_void",
+        "count": 3,
+        "zone": "world_of_void",
+        "x": 18,
+        "z": -48,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 10310915,
+      "zeni": 26300
+    }
+  },
+  {
+    "id": "hunt_broly_glacier",
+    "title": "Northern Glacier: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_broly_glacier",
+    "repeat": true,
+    "level": 780,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_broly_glacier",
+        "count": 3,
+        "zone": "broly_glacier",
+        "x": 18,
+        "z": -18,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 10934039,
+      "zeni": 27350
+    }
+  },
+  {
+    "id": "hunt_red_ribbon",
+    "title": "Crimson Ribbon Army Base: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_red_ribbon",
+    "repeat": true,
+    "level": 1900,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_red_ribbon",
+        "count": 3,
+        "zone": "red_ribbon",
+        "x": 18,
+        "z": -58,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 41474947,
+      "zeni": 66550
+    }
+  },
+  {
+    "id": "hunt_new_namek",
+    "title": "New Nameck: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_new_namek",
+    "repeat": true,
+    "level": 850,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_new_namek",
+        "count": 3,
+        "zone": "new_namek",
+        "x": 18,
+        "z": 22,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 12434541,
+      "zeni": 29800
+    }
+  },
+  {
+    "id": "hunt_planet_cereal",
+    "title": "Planet Grain: Patrol",
+    "saga": "Training contracts",
+    "giver": "guide_planet_cereal",
+    "repeat": true,
+    "level": 1250,
+    "offer": "Defeat 3 hostile trainees near camp. Practice your melee combo, guard and ki attacks. Return for another contract whenever you need XP and zeni.",
+    "done": "Good work! Spend your stat points, learn techniques from story trainers, and take another contract when you are ready.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "patrol_planet_cereal",
+        "count": 3,
+        "zone": "planet_cereal",
+        "x": 18,
+        "z": 22,
+        "r": 12,
+        "text": "Defeat 3 hostile trainees"
+      }
+    ],
+    "rewards": {
+      "xp": 22150149,
+      "zeni": 43800
+    }
+  }
+]

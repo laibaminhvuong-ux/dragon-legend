@@ -1,0 +1,137 @@
+{
+  "BUILDS": [
+    {
+      "id": "Slim",
+      "name": "Slim",
+      "height": 1,
+      "width": 0.9,
+      "depth": 0.9
+    },
+    {
+      "id": "Average",
+      "name": "Average",
+      "height": 1,
+      "width": 1,
+      "depth": 1
+    },
+    {
+      "id": "Muscular",
+      "name": "Muscular",
+      "height": 1.05,
+      "width": 1.15,
+      "depth": 1.1
+    },
+    {
+      "id": "Tall",
+      "name": "Tall",
+      "height": 1.15,
+      "width": 1,
+      "depth": 1
+    },
+    {
+      "id": "Short",
+      "name": "Short",
+      "height": 0.85,
+      "width": 0.95,
+      "depth": 0.95
+    }
+  ],
+  "FACES": [
+    {
+      "id": "Calm",
+      "name": "Calm"
+    },
+    {
+      "id": "Fierce",
+      "name": "Fierce"
+    },
+    {
+      "id": "Smirk",
+      "name": "Smirk"
+    },
+    {
+      "id": "Determined",
+      "name": "Determined"
+    },
+    {
+      "id": "Cold",
+      "name": "Cold"
+    }
+  ],
+  "HAIR_COLORS": [
+    1315864,
+    4599070,
+    9858760,
+    15124600,
+    11806760,
+    15790320
+  ],
+  "HAIR_STYLES": [
+    {
+      "id": "None",
+      "name": "None"
+    },
+    {
+      "id": "Spiky",
+      "name": "Spiky"
+    },
+    {
+      "id": "Wild",
+      "name": "Wild"
+    },
+    {
+      "id": "Swept",
+      "name": "Swept Back"
+    },
+    {
+      "id": "Bowl",
+      "name": "Bowl Cut"
+    },
+    {
+      "id": "LongSpiky",
+      "name": "Long Spiky"
+    },
+    {
+      "id": "Short",
+      "name": "Short"
+    },
+    {
+      "id": "Ponytail",
+      "name": "Ponytail"
+    }
+  ],
+  "KI_CHARGE_LOOK": {
+    "core": 16777215,
+    "flicker": 1,
+    "size": 1.15
+  },
+  "KI_COLORS": [
+    6541311,
+    16054271,
+    16765773,
+    16746046,
+    16732005,
+    6549147,
+    12028671,
+    16745434
+  ],
+  "KI_COLOR_NAMES": [
+    "Cyan",
+    "White",
+    "Gold",
+    "Orange",
+    "Red",
+    "Green",
+    "Violet",
+    "Pink"
+  ],
+  "TINTS": [
+    15759390,
+    2639520,
+    7219340,
+    1973795,
+    15461355,
+    11148830,
+    2652220
+  ]
+}

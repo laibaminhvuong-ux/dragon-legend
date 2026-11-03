@@ -1,0 +1,30 @@
+{
+  "BASE_HEALTH": 100,
+  "BASE_KI": 100,
+  "BASE_RUN_SPEED": 7,
+  "HEALTH_PER_LEVEL": 5,
+  "HEALTH_PER_POINT": 12,
+  "KI_PER_LEVEL": 3,
+  "KI_PER_POINT": 10,
+  "KI_REGEN_PER_SECOND": 2,
+  "MAX_LEVEL": 2000,
+  "MAX_RUN_SPEED": 14,
+  "POINTS_PER_LEVEL": 3,
+  "RUN_SPEED_PER_POINT": 0.02,
+  "SLOT_COUNT": 3,
+  "STARTING_ZENI": 100,
+  "STAT_DISPLAY": {
+    "Health": "Health",
+    "Ki": "Ki",
+    "Strength": "Strength",
+    "KiPower": "Ki Power",
+    "Speed": "Speed"
+  },
+  "STAT_NAMES": [
+    "Health",
+    "Ki",
+    "Strength",
+    "KiPower",
+    "Speed"
+  ]
+}

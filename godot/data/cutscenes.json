@@ -1,0 +1,1108 @@
+{
+  "raditz": {
+    "before": [
+      [
+        "raditz",
+        "So Kakarro found friends. Weaklings, every one of you."
+      ],
+      [
+        "piccolo_plains",
+        "He has Gokan's boy. Strike together, and don't hold back."
+      ],
+      [
+        "you",
+        "Give the kid back, Radix."
+      ],
+      [
+        "raditz",
+        "Then come and take him!"
+      ]
+    ],
+    "after": [
+      [
+        "raditz",
+        "Impossible... Nappo and Vegara will come. They are far stronger than I am..."
+      ],
+      [
+        "piccolo_plains",
+        "Two more Saiyars, in one year. We have a lot of training to do."
+      ]
+    ]
+  },
+  "nappa": {
+    "before": [
+      [
+        "nappa",
+        "Heh. Vegara, can I squash these bugs before Kakarro shows up?"
+      ],
+      [
+        "tien_gizard",
+        "He's made of iron. Keep him busy and I'll find an opening."
+      ],
+      [
+        "you",
+        "You've hurt enough people today."
+      ]
+    ],
+    "after": [
+      [
+        "nappa",
+        "Vegara... help me..."
+      ],
+      [
+        "tien_gizard",
+        "He's down. But Vegara hasn't even moved yet."
+      ]
+    ]
+  },
+  "vegeta_gizard": {
+    "before": [
+      [
+        "vegeta_gizard",
+        "I am the prince of all Saiyars. You are nothing to me."
+      ],
+      [
+        "krillin_gizard",
+        "Watch the sky: if he makes a moon, he turns into a Great Ape!"
+      ],
+      [
+        "you",
+        "Then I'll beat you before the moon rises."
+      ]
+    ],
+    "after": [
+      [
+        "vegeta_gizard",
+        "Defeated by low-class trash... This isn't over. I'll be back, stronger!"
+      ],
+      [
+        "krillin_gizard",
+        "Let him go... Gokan says he's earned another chance. I hope he's right."
+      ]
+    ]
+  },
+  "dodoria": {
+    "before": [
+      [
+        "dodoria",
+        "Another village, another Dragon Orb. Burn it down!"
+      ],
+      [
+        "moori",
+        "Please, stranger. Protect the children!"
+      ],
+      [
+        "you",
+        "Not one more house burns."
+      ]
+    ],
+    "after": [
+      [
+        "dodoria",
+        "Lord Frigor will hear about this..."
+      ],
+      [
+        "moori",
+        "Thank you. Nameck will not forget you."
+      ]
+    ]
+  },
+  "zarbon": {
+    "before": [
+      [
+        "zarbon",
+        "Such a pity. I do hate fighting in my ugly form."
+      ],
+      [
+        "bulma_namek",
+        "Get the Dragon Orb away from him!"
+      ],
+      [
+        "you",
+        "Then don't make me see it."
+      ]
+    ],
+    "after": [
+      [
+        "zarbon",
+        "Even my true form... wasn't enough..."
+      ],
+      [
+        "bulma_namek",
+        "We've got the radar and the ball. Let's move before Frigor notices!"
+      ]
+    ]
+  },
+  "guldo": {
+    "before": [
+      [
+        "guldo",
+        "Ginnu Force, pose! Ah... I'm first. Don't blink, or you'll miss me freeze time!"
+      ],
+      [
+        "vegeta_namek",
+        "Strike when he runs out of breath. He can only stop time while he holds it."
+      ]
+    ],
+    "after": [
+      [
+        "vegeta_namek",
+        "One down. The rest of the Ginnu Force won't be such a joke."
+      ]
+    ]
+  },
+  "recoome": {
+    "before": [
+      [
+        "recoome",
+        "Rekume! Eraser! Gun! Hold still, little fighter."
+      ],
+      [
+        "vegeta_namek",
+        "He's all muscle and no brains. Hit him where it hurts."
+      ]
+    ],
+    "after": [
+      [
+        "recoome",
+        "Ow... no fair..."
+      ],
+      [
+        "vegeta_namek",
+        "Hmph. Next."
+      ]
+    ]
+  },
+  "burter": {
+    "before": [
+      [
+        "burter",
+        "I'm the fastest in the universe. You won't even see me coming."
+      ],
+      [
+        "you",
+        "Let's find out."
+      ]
+    ],
+    "after": [
+      [
+        "burter",
+        "How... how were you faster than me?"
+      ]
+    ]
+  },
+  "jeice": {
+    "before": [
+      [
+        "jeice",
+        "The Ginnu Force doesn't lose, mate. Crusher Ball!"
+      ],
+      [
+        "vegeta_namek",
+        "The captain is behind him. Finish this quickly."
+      ]
+    ],
+    "after": [
+      [
+        "jeice",
+        "I'll... get the captain..."
+      ]
+    ]
+  },
+  "ginyu_force": {
+    "before": [
+      [
+        "ginyu_force",
+        "Captain Ginnu! Your body has a fine power level. I think I'll take it."
+      ],
+      [
+        "vegeta_namek",
+        "Don't let him swap bodies with you! Stay out of the light of his technique!"
+      ],
+      [
+        "you",
+        "My body stays mine."
+      ]
+    ],
+    "after": [
+      [
+        "ginyu_force",
+        "My... beautiful body change..."
+      ],
+      [
+        "vegeta_namek",
+        "The Ginnu Force is finished. Now only Frigor remains."
+      ]
+    ]
+  },
+  "frieza": {
+    "before": [
+      [
+        "frieza",
+        "You've ruined my plans for immortality. For that, I'll take my time with you."
+      ],
+      [
+        "nail",
+        "He has transformed again... Fight with everything Nameck gave you."
+      ],
+      [
+        "you",
+        "This planet isn't yours, Frigor."
+      ],
+      [
+        "frieza",
+        "Every planet is mine. Shall I show you why?"
+      ]
+    ],
+    "after": [
+      [
+        "frieza",
+        "No... a Super Saiyar... the legend was true..."
+      ],
+      [
+        "nail",
+        "Nameck is breaking apart. Go, now, while you still can!"
+      ]
+    ]
+  },
+  "mecha_frieza": {
+    "before": [
+      [
+        "mecha_frieza",
+        "Rebuilt with machine parts, and Earth will be the first to pay."
+      ],
+      [
+        "trunks_cc",
+        "I'll handle this. Watch closely... and help if you can keep up."
+      ]
+    ],
+    "after": [
+      [
+        "trunks_cc",
+        "Frigor won't hurt anyone again. But his father is still here."
+      ]
+    ]
+  },
+  "king_cold": {
+    "before": [
+      [
+        "king_cold",
+        "Young man, would you like to join my army? You'd make a fine soldier."
+      ],
+      [
+        "you",
+        "I don't work for tyrants."
+      ]
+    ],
+    "after": [
+      [
+        "trunks_cc",
+        "Gather everyone. I have something to tell you about the future."
+      ]
+    ]
+  },
+  "android_19": {
+    "before": [
+      [
+        "android_19",
+        "Energy absorption ready. Your ki will make a fine meal."
+      ],
+      [
+        "piccolo_gero",
+        "Don't fire ki blasts! He drinks energy through his palms. Use your fists."
+      ]
+    ],
+    "after": [
+      [
+        "piccolo_gero",
+        "One down. The old one is Dr. Gerro himself. Don't let him escape."
+      ]
+    ]
+  },
+  "gero": {
+    "before": [
+      [
+        "gero",
+        "I have watched every fight you've had. I know exactly how to win."
+      ],
+      [
+        "you",
+        "Then you missed the last one."
+      ]
+    ],
+    "after": [
+      [
+        "gero",
+        "No matter... my real creations are still waiting..."
+      ],
+      [
+        "piccolo_gero",
+        "He's heading for his lab! He's going to wake the others!"
+      ]
+    ]
+  },
+  "android_17": {
+    "before": [
+      [
+        "android_17",
+        "Gerro's dead. We're free. Now, how about some fun?"
+      ],
+      [
+        "piccolo_gero",
+        "These two are nothing like 19 and 20. Careful."
+      ]
+    ],
+    "after": [
+      [
+        "android_17",
+        "Not bad. You're more interesting than Gerro said."
+      ]
+    ]
+  },
+  "android_18": {
+    "before": [
+      [
+        "android_18",
+        "Don't touch my clothes, and maybe I'll go easy on you."
+      ],
+      [
+        "you",
+        "Let's get this over with."
+      ]
+    ],
+    "after": [
+      [
+        "android_18",
+        "Fine. You win this one. Don't get used to it."
+      ]
+    ]
+  },
+  "imperfect_cell": {
+    "before": [
+      [
+        "imperfect_cell",
+        "I have the cells of every great fighter... and I am still hungry."
+      ],
+      [
+        "trunks_cc",
+        "If he absorbs Cyborgs 17 and 18, he becomes perfect. Stop him here!"
+      ]
+    ],
+    "after": [
+      [
+        "imperfect_cell",
+        "You haven't won... I only need to find the androids..."
+      ],
+      [
+        "trunks_cc",
+        "He escaped. He's going for 17!"
+      ]
+    ]
+  },
+  "perfect_cell": {
+    "before": [
+      [
+        "perfect_cell",
+        "Welcome to the Cel Games. I am perfect, and I will prove it before the whole world."
+      ],
+      [
+        "gohan_games",
+        "My dad told me to fight... I'll stand with you."
+      ],
+      [
+        "you",
+        "The world isn't your audience, Cel."
+      ]
+    ],
+    "after": [
+      [
+        "perfect_cell",
+        "This is... impossible... I am perfect..."
+      ],
+      [
+        "gohan_games",
+        "It's over. Dad... we did it."
+      ]
+    ]
+  },
+  "spopovich": {
+    "before": [
+      [
+        "spopovich",
+        "Babido's mark gives me strength. You will not leave this ring."
+      ],
+      [
+        "supreme_kai",
+        "Babido controls him. Follow him afterwards, and we will find the wizard."
+      ]
+    ],
+    "after": [
+      [
+        "supreme_kai",
+        "Quickly. Their ship is hidden nearby, and Babido is gathering energy for Majinn Boo."
+      ]
+    ]
+  },
+  "pui_pui": {
+    "before": [
+      [
+        "pui_pui",
+        "Welcome to the first floor of Babido's ship. You won't reach the second."
+      ],
+      [
+        "you",
+        "We'll see."
+      ]
+    ],
+    "after": [
+      [
+        "babidi",
+        "Useless! Yakkon, you go!"
+      ]
+    ]
+  },
+  "yakon": {
+    "before": [
+      [
+        "yakon",
+        "So much light inside you... I will eat it all."
+      ],
+      [
+        "supreme_kai",
+        "He feeds on light. Give him more than he can swallow!"
+      ]
+    ],
+    "after": [
+      [
+        "babidi",
+        "Dabora! Show them the power of the Demon King!"
+      ]
+    ]
+  },
+  "dabura": {
+    "before": [
+      [
+        "dabura",
+        "I am king of the Demon Realm. My spit turns fighters to stone."
+      ],
+      [
+        "supreme_kai",
+        "Don't let it touch you!"
+      ],
+      [
+        "you",
+        "Then I won't get close... until I do."
+      ]
+    ],
+    "after": [
+      [
+        "dabura",
+        "Majinn Boo will finish what I started..."
+      ],
+      [
+        "babidi",
+        "Ooh, and now I have a better servant in mind... the Saiyar prince!"
+      ]
+    ]
+  },
+  "majin_vegeta": {
+    "before": [
+      [
+        "majin_vegeta",
+        "I let Babido into my heart to become the old Vegara again. Merciless."
+      ],
+      [
+        "you",
+        "This isn't you anymore, Vegara."
+      ],
+      [
+        "majin_vegeta",
+        "It's exactly who I am!"
+      ]
+    ],
+    "after": [
+      [
+        "majin_vegeta",
+        "Bulna... Tronks... take care of them..."
+      ],
+      [
+        "supreme_kai",
+        "He sacrificed himself... but Majinn Boo has awoken."
+      ]
+    ]
+  },
+  "fat_buu": {
+    "before": [
+      [
+        "fat_buu",
+        "Boo wants to play! Then Boo turns you into candy!"
+      ],
+      [
+        "babidi",
+        "Destroy them, Boo! Destroy everything!"
+      ]
+    ],
+    "after": [
+      [
+        "fat_buu",
+        "Boo... tired. Boo not want to be bad."
+      ],
+      [
+        "supreme_kai",
+        "Something is changing inside him... this isn't over."
+      ]
+    ]
+  },
+  "super_buu": {
+    "before": [
+      [
+        "super_buu",
+        "I absorbed the strongest. Who is left to stop me?"
+      ],
+      [
+        "you",
+        "Me."
+      ]
+    ],
+    "after": [
+      [
+        "super_buu",
+        "No... my body... something inside is coming loose..."
+      ]
+    ]
+  },
+  "kid_buu": {
+    "before": [
+      [
+        "kid_buu",
+        "Hehehehe!"
+      ],
+      [
+        "goku_kai",
+        "This is Boo's purest form. Pure chaos. Hold him while I gather the Spirit Sphere!"
+      ],
+      [
+        "you",
+        "Everyone on Earth, raise your hands!"
+      ]
+    ],
+    "after": [
+      [
+        "goku_kai",
+        "Majinn Boo is gone. Next time, I hope he comes back as a good guy. I'd like to fight him again."
+      ]
+    ]
+  },
+  "beerus_party": {
+    "before": [
+      [
+        "beerus_party",
+        "You dare spill my pudding? The Earth will pay for that."
+      ],
+      [
+        "whis_party",
+        "Oh dear. Lord Beeros, perhaps a game instead of destruction?"
+      ],
+      [
+        "you",
+        "If you want a fight, fight me."
+      ]
+    ],
+    "after": [
+      [
+        "beerus_party",
+        "Hmm. You're amusing. I'll spare this planet... for its food."
+      ],
+      [
+        "whis_party",
+        "Lord Beeros is satisfied. How rare."
+      ]
+    ]
+  },
+  "sorbet": {
+    "before": [
+      [
+        "sorbet",
+        "Frigor's army has returned, and our lord is with us."
+      ],
+      [
+        "krillin_gizard",
+        "There's a thousand of them! Stay close!"
+      ]
+    ],
+    "after": [
+      [
+        "krillin_gizard",
+        "That's the commander down. Now for Frigor..."
+      ]
+    ]
+  },
+  "tagoma": {
+    "before": [
+      [
+        "tagoma",
+        "Lord Frigor wishes the Earth's fighters dead. I'll gladly oblige."
+      ]
+    ],
+    "after": [
+      [
+        "golden_frieza",
+        "Pathetic. I suppose I'll have to do it myself."
+      ]
+    ]
+  },
+  "golden_frieza": {
+    "before": [
+      [
+        "golden_frieza",
+        "Four months of training. Behold: Golden Frigor."
+      ],
+      [
+        "krillin_gizard",
+        "He's even stronger than before!"
+      ],
+      [
+        "you",
+        "Gold or not, we beat you once."
+      ]
+    ],
+    "after": [
+      [
+        "golden_frieza",
+        "Curse you... curse all of you!"
+      ],
+      [
+        "krillin_gizard",
+        "He's gone. Wiss rewound time just in case... too close."
+      ]
+    ]
+  },
+  "botamo": {
+    "before": [
+      [
+        "champa",
+        "Botama! Show them Universe 6 is superior!"
+      ],
+      [
+        "you",
+        "He's... very round."
+      ]
+    ],
+    "after": [
+      [
+        "champa",
+        "Botama! Get up! Ugh."
+      ]
+    ]
+  },
+  "frost": {
+    "before": [
+      [
+        "frost",
+        "I am a defender of peace in Universe 6. A pleasure."
+      ],
+      [
+        "you",
+        "Something about you reminds me of Frigor."
+      ]
+    ],
+    "after": [
+      [
+        "frost",
+        "A hidden needle wasn't enough... you saw through me."
+      ]
+    ]
+  },
+  "magetta": {
+    "before": [
+      [
+        "magetta",
+        "..."
+      ],
+      [
+        "champa",
+        "Magetto! Melt them! Magma!"
+      ]
+    ],
+    "after": [
+      [
+        "champa",
+        "Magetto! Don't cry! Ugh, so sensitive."
+      ]
+    ]
+  },
+  "cabba": {
+    "before": [
+      [
+        "cabba",
+        "Master Vegara said a Saiyar grows stronger when pushed to the edge. Please, push me!"
+      ]
+    ],
+    "after": [
+      [
+        "cabba",
+        "Thank you. I learned more from this fight than from years of training."
+      ]
+    ]
+  },
+  "hit": {
+    "before": [
+      [
+        "hit",
+        "My Time-Skip works for one tenth of a second. That is all I need."
+      ],
+      [
+        "champa",
+        "Hitto is Universe 6's legendary assassin! You're done!"
+      ],
+      [
+        "you",
+        "Then I'll be faster than a tenth of a second."
+      ]
+    ],
+    "after": [
+      [
+        "hit",
+        "Impressive. You adapted to my technique. Until we meet again."
+      ]
+    ]
+  },
+  "goku_black": {
+    "before": [
+      [
+        "goku_black",
+        "Rosé. Beautiful, isn't it? A god's power in a mortal's body."
+      ],
+      [
+        "trunks_cc",
+        "He's the one who destroyed my future!"
+      ],
+      [
+        "you",
+        "We end this here, Black."
+      ]
+    ],
+    "after": [
+      [
+        "goku_black",
+        "Zamazu... it's time we became one."
+      ],
+      [
+        "trunks_cc",
+        "They're merging! Get ready!"
+      ]
+    ]
+  },
+  "zamasu": {
+    "before": [
+      [
+        "zamasu",
+        "I am justice. I am the world. Bow to me, mortals."
+      ],
+      [
+        "trunks_future",
+        "This world is all I have left. I'm not giving it up!"
+      ]
+    ],
+    "after": [
+      [
+        "zamasu",
+        "A mortal... defeating a god...? No. I am everywhere..."
+      ],
+      [
+        "trunks_future",
+        "Zenno has erased this timeline's Zamazu. We have to go back."
+      ]
+    ]
+  },
+  "toppo": {
+    "before": [
+      [
+        "toppo",
+        "Justice is my strength. And for Universe 11, I will become a God of Destruction."
+      ],
+      [
+        "you",
+        "Then show me that justice."
+      ]
+    ],
+    "after": [
+      [
+        "toppo",
+        "To lose like this... Jiran will finish this."
+      ]
+    ]
+  },
+  "kefla": {
+    "before": [
+      [
+        "kefla",
+        "Kaulifla and Kael, fused with Potaro. Twice the Saiyar, twice the power!"
+      ],
+      [
+        "you",
+        "I'm not going to hold back."
+      ]
+    ],
+    "after": [
+      [
+        "kefla",
+        "Out of the ring... that's not fair! Next time!"
+      ]
+    ]
+  },
+  "jiren": {
+    "before": [
+      [
+        "jiren",
+        "Strength is everything. Trust is a weakness."
+      ],
+      [
+        "goku_top",
+        "Fight with everything you've got! We'll be right behind you!"
+      ],
+      [
+        "you",
+        "Then I'll show you what trust can do."
+      ]
+    ],
+    "after": [
+      [
+        "jiren",
+        "...Perhaps I was wrong about trust."
+      ],
+      [
+        "goku_top",
+        "Universe 7 survived! Everyone's coming back!"
+      ]
+    ]
+  },
+  "broly": {
+    "before": [
+      [
+        "broly",
+        "Raaaagh!"
+      ],
+      [
+        "cheelai",
+        "He's not evil! Paragos forced him to fight... please, just stop him!"
+      ],
+      [
+        "you",
+        "Easy, Brolo. I don't want to hurt you."
+      ]
+    ],
+    "after": [
+      [
+        "broly",
+        "...Thank you."
+      ],
+      [
+        "cheelai",
+        "We'll take him somewhere quiet. Somewhere he can just live."
+      ]
+    ]
+  },
+  "moro_namek": {
+    "before": [
+      [
+        "moro_namek",
+        "Such a lovely planet. I think I'll eat it."
+      ],
+      [
+        "merus_namek",
+        "Star Patrol! Morro, you are under arrest!"
+      ],
+      [
+        "you",
+        "Not here, Morro."
+      ]
+    ],
+    "after": [
+      [
+        "moro_namek",
+        "My magic... you'll pay for this... I'll be back."
+      ],
+      [
+        "merus_namek",
+        "He'll be locked away. For now."
+      ]
+    ]
+  },
+  "saganbo_earth": {
+    "before": [
+      [
+        "saganbo_earth",
+        "Morro's army doesn't need permission to take this planet."
+      ],
+      [
+        "merus_earth",
+        "Defend the city, Patrol!"
+      ]
+    ],
+    "after": [
+      [
+        "merus_earth",
+        "Good work. But Morro is still out there, and he's gathering power."
+      ]
+    ]
+  },
+  "moro_earth": {
+    "before": [
+      [
+        "moro_earth",
+        "I've absorbed Seven-Three's abilities and a whole planet's life. Give up."
+      ],
+      [
+        "merus_earth",
+        "Remember what I taught you: don't think. Just move."
+      ],
+      [
+        "you",
+        "Your magic won't work on me."
+      ]
+    ],
+    "after": [
+      [
+        "moro_earth",
+        "Impossible... how could I lose?"
+      ],
+      [
+        "merus_earth",
+        "Then my job here is done. Goodbye... and keep training."
+      ]
+    ]
+  },
+  "granolah_cereal": {
+    "before": [
+      [
+        "granolah_cereal",
+        "I gave up my life to become the strongest in the universe. Saiyars will pay for what they did."
+      ],
+      [
+        "vegeta_cereal",
+        "He carries a grudge. Understand it, but don't let it crush you."
+      ],
+      [
+        "you",
+        "Then let's settle it."
+      ]
+    ],
+    "after": [
+      [
+        "granolah_cereal",
+        "The truth... wasn't what I thought."
+      ],
+      [
+        "vegeta_cereal",
+        "Hmph. Your revenge has the wrong target."
+      ]
+    ]
+  },
+  "gas_cereal": {
+    "before": [
+      [
+        "gas_cereal",
+        "My wish made me the strongest in the universe. Shall I show you?"
+      ],
+      [
+        "vegeta_cereal",
+        "He's burning his own life to fight. Don't let up!"
+      ]
+    ],
+    "after": [
+      [
+        "gas_cereal",
+        "Strongest... in the universe... was a lie..."
+      ],
+      [
+        "vegeta_cereal",
+        "It's over. But I sense... something else coming."
+      ]
+    ]
+  },
+  "frieza_cereal": {
+    "before": [
+      [
+        "frieza_cereal",
+        "Ten years of training in a time chamber. Meet my newest form."
+      ],
+      [
+        "monaito_cereal",
+        "That's... Frigor?"
+      ],
+      [
+        "you",
+        "Black this time. Still Frigor."
+      ]
+    ],
+    "after": [
+      [
+        "frieza_cereal",
+        "Hmph. A little surprise. Next time I'll come fully prepared."
+      ]
+    ]
+  },
+  "gamma1": {
+    "before": [
+      [
+        "gamma1",
+        "Crimson Ribbon Army. Gama 1. I fight as a superhero."
+      ],
+      [
+        "piccolo_rr",
+        "They've been lied to. Don't destroy them, just stop them!"
+      ]
+    ],
+    "after": [
+      [
+        "gamma1",
+        "We were... deceived?"
+      ]
+    ]
+  },
+  "gamma2": {
+    "before": [
+      [
+        "gamma2",
+        "Gama 2, the most heroic of them all. Time for my pose!"
+      ],
+      [
+        "you",
+        "You're on the wrong side."
+      ]
+    ],
+    "after": [
+      [
+        "gamma2",
+        "Then let's do one last heroic thing..."
+      ],
+      [
+        "piccolo_rr",
+        "Majenta has released Cel Max! Everyone, get ready!"
+      ]
+    ]
+  },
+  "cell_max": {
+    "before": [
+      [
+        "cell_max",
+        "Grraaaagh!"
+      ],
+      [
+        "piccolo_rr",
+        "It's a mindless giant. Its weak spot is on its head!"
+      ],
+      [
+        "you",
+        "Big doesn't mean strong."
+      ]
+    ],
+    "after": [
+      [
+        "piccolo_rr",
+        "It's over. Panna's safe. We... actually did it."
+      ]
+    ]
+  }
+}

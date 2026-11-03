@@ -1,0 +1,30 @@
+{
+  "earth": {
+    "body": 2724947,
+    "belly": 15256455,
+    "horns": 15123867,
+    "eyes": 15545139,
+    "kind": "serpent"
+  },
+  "namek": {
+    "body": 3638859,
+    "belly": 15129002,
+    "horns": 16051416,
+    "eyes": 15086901,
+    "kind": "muscular"
+  },
+  "super": {
+    "body": 15382321,
+    "belly": 16770720,
+    "horns": 16770720,
+    "eyes": 12918055,
+    "kind": "winged"
+  },
+  "cereal": {
+    "body": 10915938,
+    "belly": 15850938,
+    "horns": 14992786,
+    "eyes": 14365500,
+    "kind": "finned"
+  }
+}

@@ -1,0 +1,156 @@
+[
+  {
+    "id": "s_namek_dragon",
+    "dragon": "namek",
+    "who": "porunga",
+    "name": "Porunda",
+    "item": "namek_ball",
+    "giver": "dende",
+    "level": 160,
+    "after": [
+      "m13_frieza"
+    ],
+    "zone": "namek",
+    "x": 20,
+    "z": 25,
+    "scale": 5,
+    "title": "Seven Orbs of Nameck",
+    "saga": "Nameck",
+    "wishes": 3,
+    "statPoints": 20,
+    "zeni": 15000,
+    "spots": [
+      {
+        "x": 22,
+        "z": -20
+      },
+      {
+        "x": 175,
+        "z": 100
+      },
+      {
+        "x": -185,
+        "z": 65
+      },
+      {
+        "x": 50,
+        "z": -200
+      },
+      {
+        "x": -120,
+        "z": -165
+      },
+      {
+        "x": 235,
+        "z": -140
+      },
+      {
+        "x": -35,
+        "z": 240
+      }
+    ],
+    "offer": "Seven Nameckian Dragon Orbs, seven islands. Find the full set and Dendo will help you summon Porunda for three wishes.",
+    "wishLines": [
+      "Ask Porunda to restore your strength",
+      "Ask Porunda for training potential",
+      "Ask Porunda for prosperity"
+    ]
+  },
+  {
+    "id": "s_super_dragon",
+    "dragon": "super",
+    "who": "super_shenron",
+    "name": "Super Shenra",
+    "item": "super_ball",
+    "giver": "vados",
+    "level": 650,
+    "after": [
+      "m29_u6"
+    ],
+    "zone": "nameless_planet",
+    "x": 0,
+    "z": 92,
+    "scale": 8,
+    "title": "Super Dragon Orbs: The Golden Dragon",
+    "saga": "Universe Tournament",
+    "wishes": 1,
+    "statPoints": 50,
+    "zeni": 100000,
+    "spots": [
+      {
+        "zone": "beerus_planet",
+        "x": -35,
+        "z": -25
+      },
+      {
+        "zone": "beerus_planet",
+        "x": 45,
+        "z": -15
+      },
+      {
+        "zone": "beerus_planet",
+        "x": -25,
+        "z": 40
+      },
+      {
+        "zone": "nameless_planet",
+        "x": -80,
+        "z": -35
+      },
+      {
+        "zone": "nameless_planet",
+        "x": 80,
+        "z": -35
+      },
+      {
+        "zone": "nameless_planet",
+        "x": -70,
+        "z": 65
+      },
+      {
+        "zone": "nameless_planet",
+        "x": 70,
+        "z": 65
+      }
+    ],
+    "offer": "The Super Dragon Orbs are planet-sized. Survey seven cosmic retrieval beacons across the divine and tournament worlds; we will assemble the real orbs in space and call the golden Super Shenra. This hunt opens after the Universe 6 tournament.",
+    "wishLines": [
+      "Ask the golden Super Shenra to restore your strength and expand your potential"
+    ]
+  },
+  {
+    "id": "s_cereal_dragon",
+    "dragon": "cereal",
+    "who": "toronbo",
+    "name": "Toronba",
+    "item": "cereal_ball",
+    "giver": "monaito_cereal",
+    "level": 1400,
+    "after": [
+      "m38_granolah"
+    ],
+    "zone": "planet_cereal",
+    "x": -28,
+    "z": 18,
+    "scale": 4,
+    "title": "Grain: The Two Dragon Orbs",
+    "saga": "Granolo the Survivor Saga",
+    "wishes": 1,
+    "statPoints": 35,
+    "zeni": 50000,
+    "spots": [
+      {
+        "x": -45,
+        "z": -30
+      },
+      {
+        "x": 75,
+        "z": 65
+      }
+    ],
+    "offer": "These are the two small Cerealian Dragon Orbs used in the wishes that empowered Granolo and Gaz. Recover both and I will help you call Toronba. Ask for your own potential, rather than trading away your life.",
+    "wishLines": [
+      "Ask Toronba to unlock training potential without sacrificing your lifespan"
+    ]
+  }
+]

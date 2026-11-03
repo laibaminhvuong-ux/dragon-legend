@@ -1,0 +1,26 @@
+{
+  "cooldown": 20,
+  "minHealth": 0.1,
+  "tiers": {
+    "2": {
+      "multiplier": 2,
+      "kiDrain": 6,
+      "healthDrain": 0.025,
+      "duration": 20
+    },
+    "10": {
+      "multiplier": 10,
+      "kiDrain": 18,
+      "healthDrain": 0.08,
+      "duration": 10
+    }
+  },
+  "aura": {
+    "color": 16722462,
+    "core": 16751748,
+    "size": 1.35,
+    "flicker": 1,
+    "sparks": 1,
+    "sparkColor": 16757920
+  }
+}
