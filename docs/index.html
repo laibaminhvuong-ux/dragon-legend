@@ -8,7 +8,8 @@
 <meta property="og:title" content="The Dragon Legend">
 <meta property="og:description" content="Fly across open worlds, transform, and fight together. Free for Windows, Mac, Android and Linux.">
 <meta property="og:image" content="media/powerup.webp">
-<link rel="icon" href="icon.png">
+<link rel="icon" href="icon.png?v=3">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -178,7 +179,7 @@ footer a { color: var(--muted); }
 
 <nav id="nav">
   <div class="wrap">
-    <a class="brand" href="#top"><img src="icon.png" alt="">The Dragon Legend</a>
+    <a class="brand" href="#top"><img src="icon.png?v=3" alt="">The Dragon Legend</a>
     <button class="menu-toggle" aria-label="Menu" onclick="document.querySelector('nav .links').classList.toggle('open')">☰</button>
     <div class="links">
       <a href="#game">Game</a><a href="#worlds">Worlds</a><a href="#powers">Powers</a><a href="#coop">Co-op</a><a href="#media">Media</a><a href="#updates">Updates</a><a href="#faq">FAQ</a>
@@ -281,7 +282,7 @@ footer a { color: var(--muted); }
 <section id="media">
   <div class="wrap">
     <div class="section-head reveal"><div class="kicker">Media</div><h2>Trailer &amp; screenshots</h2><p>All captured in the game.</p></div>
-    <div class="trailer reveal"><video controls preload="none" playsinline poster="media/trailer-poster.webp"><source src="media/trailer.mp4?v=2" type="video/mp4"><source src="media/trailer.webm?v=2" type="video/webm"></video></div>
+    <div class="trailer reveal"><video controls preload="none" playsinline poster="media/trailer-poster.webp"><source src="media/trailer.mp4?v=4" type="video/mp4"><source src="media/trailer.webm?v=4" type="video/webm"></video></div>
     <div class="gallery reveal" id="gallery">
       <button><img src="media/powerup.webp" alt="Powering up" loading="lazy"></button>
       <button><img src="media/amber.webp" alt="Amber City" loading="lazy"></button>
@@ -362,7 +363,7 @@ footer a { color: var(--muted); }
 </footer>
 
 <div class="lightbox" id="lightbox"><img alt=""></div>
-<div class="player" id="player" role="dialog" aria-label="Trailer"><button class="close" id="player-close" aria-label="Close">✕</button><video id="player-video" controls playsinline preload="none" poster="media/trailer-poster.webp"><source src="media/trailer.mp4?v=2" type="video/mp4"><source src="media/trailer.webm?v=2" type="video/webm"></video></div>
+<div class="player" id="player" role="dialog" aria-label="Trailer"><button class="close" id="player-close" aria-label="Close">✕</button><video id="player-video" controls playsinline preload="none" poster="media/trailer-poster.webp"><source src="media/trailer.mp4?v=4" type="video/mp4"><source src="media/trailer.webm?v=4" type="video/webm"></video></div>
 
 <script>
 // Downloads always point at the newest release: its file names never change.
@@ -406,7 +407,7 @@ function trailerFallback(v) {
   v.dataset.failed = "1";
   const note = document.createElement("p");
   note.className = "video-note";
-  note.innerHTML = 'Your browser couldn\'t play the trailer here. <a href="media/trailer.mp4?v=2" target="_blank" rel="noopener">Open the video file</a>, or try Chrome, Edge or Firefox.';
+  note.innerHTML = 'Your browser couldn\'t play the trailer here. <a href="media/trailer.mp4?v=4" target="_blank" rel="noopener">Open the video file</a>, or try Chrome, Edge or Firefox.';
   v.after(note);
 }
 document.querySelectorAll("video:not(#hero-video)").forEach((v) => {
