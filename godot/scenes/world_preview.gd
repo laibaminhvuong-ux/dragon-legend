@@ -4,11 +4,12 @@ extends Node3D
 # With --shot it waits for the scene to settle, prints "fps <n> build <s>", saves the screenshot and quits.
 
 func _ready() -> void:
-	var args := {"zone": "earth_plains", "quality": "high", "shot": "", "cam": "", "focus": "", "off": ""}
+	var args := {"zone": "earth_plains", "quality": "high", "shot": "", "cam": "", "focus": "", "off": "", "stream": ""}
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--") and a.contains("="):
 			args[a.substr(2, a.find("=") - 2)] = a.substr(a.find("=") + 1)
 	var t0 := Time.get_ticks_msec()
+	WorldView.force_stream = args.stream != ""
 	var world: Node3D = load("res://world/world_view.gd").build(args.zone, args.quality)
 	add_child(world)
 	# --off=grass,props,landmarks,ssao,shadows,fog : switch parts off to measure what they cost
@@ -46,6 +47,8 @@ func _ready() -> void:
 		cam.position = Vector3(s.x, y + 6.0, s.z - 14.0)
 		cam.look_at(Vector3(s.x, y + 2.0, s.z + 30.0))
 	cam.make_current()
+	if world.has_meta("stream"):
+		(world.get_meta("stream") as TerrainStream).target = cam
 	var grass: Node = world.get_meta("grass") if world.has_meta("grass") else null
 	if grass != null:
 		grass.target = cam

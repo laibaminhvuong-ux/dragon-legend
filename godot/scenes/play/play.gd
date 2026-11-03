@@ -73,6 +73,8 @@ func start(index: int, gi: GameInput, q := "medium") -> bool:
 	var grass: Node = world.get_meta("grass") if world.has_meta("grass") else null
 	if grass != null:
 		grass.set("target", player)
+	if world.has_meta("stream"):
+		(world.get_meta("stream") as TerrainStream).target = camera
 	return true
 
 func _build_player() -> void:
