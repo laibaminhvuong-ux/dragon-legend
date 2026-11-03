@@ -82,9 +82,13 @@ against each other.
 - Terrain: one mesh per world built from `rules/zone.gd` heights, with splat-blended ground textures (grass,
   dirt, rock, snow, sand) and normal detail. Instanced grass (MultiMesh) with wind, LOD and distance fade.
   Instanced trees and rocks. A water shader with reflections, foam and depth colour.
-- Characters: **open decision, user to choose**: (A) CC0 rigged asset packs restyled into our fighters
-  (Claude's recommendation), (B) more detailed procedural models, (C) bought or commissioned models. This only
-  affects Claude's character stage. Codex is not blocked.
+- Characters: **decided (user, 2026-11-02): CC0 rigged asset packs restyled into our fighters.** Primary source:
+  Quaternius (CC0): a humanoid base mesh with a standard rig, plus its Universal Animation Library for walk, run,
+  jump, idle, punch/kick combos, hits, flying-style poses. Kenney (CC0) is the fallback. Only CC0 or equally free
+  commercial licences, each recorded in `godot/assets/LICENSES.md`, and nothing ripped from other games. Our
+  look is added on top: race skin tones and features (tails, antennae, horns), gi/armour/cape outfits, our hair
+  styles and every form's hair, eyes, size and aura from `Data.form_looks`. Flight and power-up poses we make
+  ourselves (animation blending + procedural layers).
 - Effects: GPU particles for auras, ki blasts, beams, impacts, dust and speed lines. Shader-based aura flames
   with per-form colours from `Data.form_looks`.
 - Target 60 fps on the user's GTX 1650 Ti at 1080p. Quality presets as today.
