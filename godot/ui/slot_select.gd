@@ -86,7 +86,7 @@ func draw() -> void:
 	_restart.visible = _upd_ready
 	upd.add_child(_restart)
 	_root.add_child(upd)
-	var hint := UiKit.label("WASD move · mouse look · Space jump · Esc pause", "Muted")
+	var hint := UiKit.label("WASD walk · hold Shift to run · mouse look · Space jump · Esc pause", "Muted")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_root.add_child(hint)
 	if _codes:

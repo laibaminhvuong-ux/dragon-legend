@@ -5,7 +5,8 @@ extends Node
 #   -- --play=N           skip the menu and play save slot N (creates a default Saiyan if it's empty), like ?dev
 #      --zone=<id>        (with --play) start that slot at the world's arrival point (GPU checks of a world)
 #      --forms=1          (with --play) a level-2000 dev fighter with every race form unlocked
-#      --noui=1 --walk=<s>  hide the play UI / walk forward for s seconds (GPU screenshots)
+#      --noui=1 --walk=<s>  hide the play UI / move forward for s seconds (GPU screenshots); --sprint=1 holds
+#                         Shift, --fly=1 takes off first
 #   -- --shot=<png> --frames=<n>   save a screenshot after n frames and quit (GPU checks)
 
 var input: GameInput
@@ -215,7 +216,13 @@ func _dev_walk(secs: float) -> void:
 	await get_tree().create_timer(1.0).timeout
 	if play == null: return
 	var yaw: float = play.follow.yaw
-	play.forced = {"move_x": sin(yaw), "move_z": cos(yaw)}
+	if _args.has("fly"):   # take off first (dev: --fly=1): one press of flight, then climb a little
+		play.forced = {"flight": true}
+		await get_tree().process_frame
+		await get_tree().process_frame
+		play.forced = {"ascend": true}
+		await get_tree().create_timer(1.2).timeout
+	play.forced = {"move_x": sin(yaw), "move_z": cos(yaw), "sprint": _args.has("sprint")}
 	await get_tree().create_timer(secs).timeout
 	if play != null: play.forced = {}
 

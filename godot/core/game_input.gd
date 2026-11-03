@@ -11,7 +11,7 @@ var _look := Vector2.ZERO
 var last_device := "keyboard"
 
 const ACTIONS := ["jump", "dash", "flight", "ascend", "descend", "charge", "melee", "block", "ki_blast", "beam", "transform",
-	"lock_on", "interact", "menu", "radar", "base", "kaioken", "pause", "map"]
+	"lock_on", "interact", "menu", "radar", "base", "kaioken", "pause", "map", "sprint"]
 
 func _init() -> void:
 	if not InputMap.has_action("move_forward"):

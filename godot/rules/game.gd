@@ -24,7 +24,7 @@ static func get_zone(id: String) -> RuleZone:
 		_zones[cache_key] = RulePlanet.new(pid) if pid != "" else RuleZone.new(key)
 	return _zones[cache_key]
 static func empty_intents() -> Dictionary:
-	return {"move_x":0,"move_z":0,"jump":false,"dash":false,"flight":false,"ascend":false,"descend":false,"fly_pitch":0,"charge":false,"melee":false,"block":false,"ki_blast":false,"beam":false,"transform":false,"kaioken":false,"lock_on":false,"interact":false}
+	return {"move_x":0,"move_z":0,"jump":false,"dash":false,"flight":false,"ascend":false,"descend":false,"fly_pitch":0,"charge":false,"melee":false,"block":false,"ki_blast":false,"beam":false,"transform":false,"kaioken":false,"lock_on":false,"interact":false,"sprint":true}
 func _init(index: int = 0,saved: Dictionary = {},bus: Object = null) -> void:
 	slot_index = index
 	slot = saved if not saved.is_empty() else schema.new_slot(schema.default_look())
@@ -44,7 +44,7 @@ func _init(index: int = 0,saved: Dictionary = {},bus: Object = null) -> void:
 	var spawn: Vector3 = RuleRuntime.vector(slot.position) if slot.get("position")!=null else Vector3(start.x,zone.height_at(start.x,start.z),start.z)
 	player = {"id":"player","kind":"player","pos":spawn,"vel":Vector3.ZERO,"yaw":0.0,"onGround":spawn.y<=zone.height_at(spawn.x,spawn.z),"form":"",
 		"health":0.0,"maxHealth":0.0,"ki":0.0,"maxKi":0.0,"kiCostScale":1.0,"runSpeed":0.0,"strength":1.0,"kiPower":1.0,"powerLevel":0,
-		"flying":false,"dashing":false,"charging":false,"blocking":false,"stun":0.0,"lockTarget":null,"kaioken":0,"attackSerial":0,"attackKind":"jab"}
+		"flying":false,"sprinting":false,"dashing":false,"charging":false,"blocking":false,"stun":0.0,"lockTarget":null,"kaioken":0,"attackSerial":0,"attackKind":"jab"}
 	entities = [player]
 	refresh_derived(true)
 	kaioken = RuleKaioken.new(self)

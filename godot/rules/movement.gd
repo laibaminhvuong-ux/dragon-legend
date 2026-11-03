@@ -1,6 +1,10 @@
 class_name RuleMovement
 extends RefCounted
 var tuning: Dictionary = RuleTables.table("movement")
+## User request 2026-11-03: Shift (intent "sprint") runs / flies at full speed; without it you walk or cruise.
+## Callers that leave "sprint" out keep full speed (bots, tests, the classic parity traces).
+const WALK_SPEED := 2.3
+const FLY_CRUISE := 0.4
 static func turn_towards(a: float,b: float,step: float) -> float:
 	var delta: float = fposmod(b-a+PI,TAU)-PI
 	return b if absf(delta)<=step else a+signf(delta)*step
@@ -36,7 +40,9 @@ func step(entity: Dictionary,it: Dictionary,dt: float,zone: RefCounted) -> void:
 		entity.dashZ = wish.y if length>0 else cos(entity.yaw)
 	entity.dashing = entity.dashRemaining>0
 	entity.blocking = can_move and it.get("block",false) and not entity.dashing and not entity.charging
-	var speed: float = m.flightSpeed if entity.flying else entity.runSpeed
+	var fast: bool = bool(it.get("sprint", true))
+	entity.sprinting = fast and length > 0.05 and can_move
+	var speed: float = (m.flightSpeed if fast else m.flightSpeed * FLY_CRUISE) if entity.flying else (entity.runSpeed if fast else minf(WALK_SPEED, entity.runSpeed))
 	var target: Vector2 = wish*speed if can_move and not entity.charging else Vector2.ZERO
 	var accel: float = m.groundAccel*(1.0 if entity.onGround or entity.flying else m.airControl)*dt
 	entity.vel.x += clampf(target.x-entity.vel.x,-accel,accel)

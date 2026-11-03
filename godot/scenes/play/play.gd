@@ -116,6 +116,8 @@ func intents() -> Dictionary:
 		it[a] = input.pressed(a)
 	for a: String in ["ascend", "descend", "charge", "block", "beam"]:
 		it[a] = input.down(a)
+	# hold Shift (or push the stick all the way) to run / fly fast; otherwise walk / cruise
+	it.sprint = input.down("sprint") or (input.last_device == "gamepad" and mv.length() > 0.9)
 	if game.player.flying and mv.y > 0:
 		var tilt := float(Data.camera.pitch) - follow.pitch
 		var dead := 0.1
@@ -233,7 +235,7 @@ func render(frame_dt: float, alpha: float) -> void:
 		_last_form = str(p.form)
 		player.set_form(_last_form)
 	var vel: Vector3 = p.vel
-	player.update(anim_dt, {"speed": Vector2(vel.x, vel.z).length(), "vy": vel.y, "onGround": p.onGround, "flying": p.flying,
+	player.update(anim_dt, {"speed": Vector2(vel.x, vel.z).length(), "vy": vel.y, "onGround": p.onGround, "flying": p.flying, "sprint": p.get("sprinting", true),
 		"charging": p.charging, "kaioken": p.kaioken, "dashing": p.dashing, "blocking": p.blocking,
 		"attackSerial": p.attackSerial, "attackKind": p.attackKind, "hurt": float(p.get("hurtUntil", 0.0)) > float(game.combat.get("clock")) if game.combat.get("clock") != null else false})
 	var target: Variant = null

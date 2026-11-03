@@ -197,7 +197,9 @@ func update(dt: float, anim: Dictionary) -> void:
 	w.dash += ((1.0 if anim.get("dashing", false) and state!="dead" else 0.0) - w.dash) * e
 	w.block += ((1.0 if anim.get("blocking", false) and state!="dead" else 0.0) - w.block) * e
 	var fly_speed := Vector2(speed, vy * 0.6).length()
-	w.fast += (clampf((fly_speed - 2.0) / 8.0, 0.0, 1.0) - w.fast) * minf(1.0, dt * 3.0)
+	# slow cruise (no Shift) keeps an upright, lightly leaning glide; only fast flight goes fully horizontal
+	var fast_target := clampf((fly_speed - 2.0) / 8.0, 0.0, 1.0) * (1.0 if anim.get("sprint", true) else 0.3)
+	w.fast += (fast_target - w.fast) * minf(1.0, dt * 3.0)
 	w.climb += (clampf(vy / 10.0, -1.0, 1.0) - w.climb) * minf(1.0, dt * 3.0)
 	if _kick_t >= 0.0:
 		_kick_t += dt
