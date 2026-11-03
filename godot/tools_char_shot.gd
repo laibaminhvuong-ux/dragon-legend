@@ -31,6 +31,19 @@ func _ready() -> void:
 		],
 	}
 	var looks: Array = sets.get(args.get("set", "base"), sets.base)
+	var states: PackedStringArray = str(args.get("states", "")).split(",", false)
+	var STATE := {
+		"idle": {}, "run": {"speed": 6.0}, "sprint": {"speed": 11.0}, "hover": {"flying": true, "onGround": false},
+		"flyfast": {"flying": true, "onGround": false, "speed": 14.0}, "climb": {"flying": true, "onGround": false, "speed": 3.0, "vy": 10.0},
+		"dive": {"flying": true, "onGround": false, "speed": 3.0, "vy": -10.0}, "charge": {"charging": true}, "block": {"blocking": true},
+		"dash": {"dashing": true, "speed": 8.0}, "jump": {"onGround": false, "vy": 4.0}, "talk": {"talking": true}, "sit": {"sitting": true}, "dead": {"dead": true},
+		"jab": {"attackSerial": 1, "attackKind": "jab", "_t": 0.25}, "cross": {"attackSerial": 1, "attackKind": "cross", "_t": 0.35},
+		"kick": {"attackSerial": 1, "attackKind": "leg kick", "_t": 0.2}, "ki": {"attackSerial": 1, "attackKind": "ki", "_t": 0.25},
+	}
+	if not states.is_empty():
+		looks = []
+		for st in states:
+			looks.append({"race": "Saiyan", "hair": "Spiky", "outfit": "TurtleGi", "face": "Fierce", "state": st})
 	var forms: PackedStringArray = str(args.get("forms", "")).split(",", false)
 	if not forms.is_empty():
 		looks = []
@@ -45,11 +58,16 @@ func _ready() -> void:
 		f.position = Vector3((i - 2.5) * 1.1, 0, 0)
 		scene.add_child(f)
 		aps.append(f.anim_player)
-	var ap: AnimationPlayer = aps[0]
-	for p: AnimationPlayer in aps:
-		p.play(args.anim)
-		p.seek(float(args.t), true)
-		p.pause()
+	var fighters := scene.get_children()
+	for i in fighters.size():
+		var st: Dictionary = STATE.get(looks[i].get("state", "idle"), {})
+		var settle := 1.5
+		for k in int(settle * 60):
+			fighters[i].update(1.0 / 60.0, {})
+		var run_t := float(st.get("_t", 1.5))
+		var a := st.duplicate(); a.erase("_t")
+		for k in int(run_t * 60):
+			fighters[i].update(1.0 / 60.0, a)
 	var aabb := AABB()
 	for mi in scene.find_children("*", "MeshInstance3D", true, false):
 		aabb = aabb.merge(mi.global_transform * mi.get_aabb())

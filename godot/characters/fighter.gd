@@ -28,6 +28,8 @@ var cape: MeshInstance3D
 var cape_base: Transform3D
 var dome: MeshInstance3D
 var form_id := ""
+var anim: AnimController
+var _t := 0.0
 var _attachments: Dictionary = {}   # bone -> BoneAttachment3D
 var _skin_pieces: Array = []        # [MeshInstance3D, shade]
 var _form_nodes: Array[Node] = []
@@ -76,7 +78,16 @@ func _build() -> void:
 	if hair_base != "":
 		hair = add_piece("DEF-head", Hair.HEAD_SPACE, Hair.mesh(hair_base), hair_material())
 		_set_hair(hair_color, 0.0)
-	anim_player.play("Idle")
+	anim = AnimController.new(self)
+
+## Per-frame update with the JS anim contract (see AnimController); also swings the cape.
+func update(dt: float, a: Dictionary = {}) -> void:
+	if dt <= 0.0:
+		return
+	_t += dt
+	anim.update(dt, a)
+	if cape != null:
+		cape.transform = cape_base * Transform3D(Basis.from_euler(Vector3(minf(0.9, float(a.get("speed", 0.0)) * 0.08) + sin(_t * 3.0) * 0.03, 0, 0)), Vector3.ZERO)
 
 static func hair_material() -> ShaderMaterial:
 	if _hair_material == null:

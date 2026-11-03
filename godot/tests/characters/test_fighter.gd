@@ -55,7 +55,7 @@ func test_fighter_builds_for_every_race_outfit_build() -> void:
 		for o: String in Outfits.ALL:
 			var b: Dictionary = builds[n % builds.size()]
 			var f := Fighter.create({"race": race, "outfit": o, "build": b.id, "skin": n % 3, "outfitTint": n % 5})
-			ok(f.anim_player.current_animation == "Idle", "%s/%s idles" % [race, o])
+			eq(f.anim.state, "ground", "%s/%s stands" % [race, o])
 			near(f.body.scale.y, float(b.height), 1e-6, "%s build height" % b.id)
 			f.free()
 			n += 1
