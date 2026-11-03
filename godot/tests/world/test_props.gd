@@ -14,7 +14,7 @@ func test_all_props_placed() -> void:
 	for id in ["earth_plains", "namek", "gizard_wasteland"]:
 		var zone: RefCounted = load("res://rules/zone.gd").new(id)
 		var p: RefCounted = zone.props()
-		var want: int = p.trees.size() + p.rocks.size() + p.bushes.size() + p.stones.size()
+		var want: int = p.trees.size() + p.rocks.size() + p.bushes.size() + (p.stones.size() if zone.ground != "stone" else 0)
 		var root: Node3D = load("res://world/props.gd").build(zone, "low")
 		eq(_count(root), want, "%s: every prop drawn" % id)
 		root.free()

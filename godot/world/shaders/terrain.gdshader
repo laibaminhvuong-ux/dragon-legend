@@ -28,6 +28,10 @@ uniform vec4 dirt_tint : source_color = vec4(1.0);
 uniform vec4 rock_tint : source_color = vec4(1.0);
 uniform vec4 sand_tint : source_color = vec4(1.0);
 uniform float tile = 0.22;        // texture repeats per metre (≈4.5 m per tile)
+uniform bool tiled_floor = false; // stone worlds (Lookout, Null Realm): polished tiles instead of a ground scan
+uniform vec4 tile_color : source_color = vec4(0.93, 0.92, 0.89, 1.0);
+uniform vec4 grout_color : source_color = vec4(0.62, 0.6, 0.57, 1.0);
+uniform float tile_size = 2.4;
 
 varying vec3 wpos;
 varying vec3 wnorm;
@@ -91,6 +95,16 @@ void fragment() {
 			+ sand_color.rgb * sand_tint.rgb * w.a + snow_color.rgb * snow) / sum;
 	}
 	albedo *= mix(0.86, 1.12, macro);                      // large-scale light/dark variation
+	if (tiled_floor && w.a > 0.5) {
+		vec2 cellp = wpos.xz / tile_size;
+		vec2 f = fract(cellp);
+		float edge = min(min(f.x, 1.0 - f.x), min(f.y, 1.0 - f.y));
+		float grout = smoothstep(0.012, 0.03, edge);
+		float tint = hash(floor(cellp)) * 0.08 - 0.04;
+		albedo = mix(grout_color.rgb, tile_color.rgb + tint, grout);
+		nrm = vec3(0.5, 0.5, 1.0);
+		rough = mix(0.8, 0.3, grout);
+	}
 	ALBEDO = albedo;
 	NORMAL_MAP = nrm;
 	NORMAL_MAP_DEPTH = 1.0;

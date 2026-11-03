@@ -32,6 +32,9 @@ static func build(zone: RefCounted, quality := "high") -> Node3D:
 	# keep the sampled grid: grass and other placement read heights/weights from it instead of re-running the rules
 	root.set_meta("grid", {"n": n, "cell": cell, "half": half, "h": h, "col": col, "extra": extra})
 	var mat := material(zone)
+	if zone.def.terrain.has("path"):  # a narrow road over the void: a ribbon that follows its curve
+		_path_ribbon(root, zone, mat)
+		return root
 	var per := int(CHUNK / cell)
 	for cj in range(0, n, per):
 		for ci in range(0, n, per):
@@ -75,8 +78,8 @@ static func _weights(zone: RefCounted, x: float, z: float) -> Array:
 	match s:
 		"grass": c.r = 1.0
 		"dirt": c.g = 1.0
-		"rock", "stone": c.b = 1.0
-		"sand", "water": c.a = 1.0
+		"rock": c.b = 1.0
+		"sand", "water", "stone": c.a = 1.0  # stone floors use the fine sand scan, tinted pale (see material)
 		"snow", "white": e.x = 1.0
 		_: c.b = 1.0
 	if s == "grass":
@@ -107,6 +110,57 @@ static func _chunk(h: PackedFloat32Array, col: PackedColorArray, extra: PackedVe
 		return null
 	return st.commit()
 
+## Path worlds (Serpent Road): the road surface plus stone edges dropping away on both sides, in 64 m pieces,
+## each with collision from the same triangles.
+static func _path_ribbon(root: Node3D, zone: RefCounted, mat: Material) -> void:
+	var p: Dictionary = zone.def.terrain.path
+	var half_w: float = float(p.width) / 2.0
+	var z0: float = float(p.get("from", -zone.size / 2.0))
+	var z1: float = float(p.get("to", zone.size / 2.0))
+	var piece := 0
+	var z := z0
+	while z < z1:
+		var st := SurfaceTool.new()
+		st.begin(Mesh.PRIMITIVE_TRIANGLES)
+		var zz := z
+		while zz < minf(z + CHUNK, z1):
+			var a := _road_edge(zone, zz, half_w)
+			var b := _road_edge(zone, minf(zz + 1.0, z1), half_w)
+			# road surface (dirt/grass weights from the rules)
+			for q in [[a.l, a.r, b.r], [a.l, b.r, b.l]]:
+				for v: Vector3 in q:
+					var w := _weights(zone, zone.path_centre(v.z), v.z)
+					st.set_color(w[0]); st.set_uv2(w[1]); st.set_normal(Vector3.UP); st.add_vertex(v)
+			# stone edges: 1.6 m sides going down
+			for side in [[a.l, b.l, -1.0], [a.r, b.r, 1.0]]:
+				var top0: Vector3 = side[0]; var top1: Vector3 = side[1]
+				var down := Vector3(0, -1.6, 0)
+				var n := (top1 - top0).cross(Vector3.UP).normalized() * -float(side[2])
+				for v in [top0, top1, top1 + down, top0, top1 + down, top0 + down]:
+					st.set_color(Color(0, 0, 1, 0)); st.set_uv2(Vector2.ZERO); st.set_normal(n); st.add_vertex(v)
+			zz += 1.0
+		var mesh := st.commit()
+		mesh.surface_set_material(0, mat)
+		var mi := MeshInstance3D.new()
+		mi.mesh = mesh
+		mi.name = "Road_%d" % piece
+		root.add_child(mi)
+		var body := StaticBody3D.new()
+		body.name = mi.name + "_Body"
+		var shape := CollisionShape3D.new()
+		shape.shape = mesh.create_trimesh_shape()
+		body.add_child(shape)
+		root.add_child(body)
+		piece += 1
+		z += CHUNK
+
+static func _road_edge(zone: RefCounted, z: float, half_w: float) -> Dictionary:
+	var c: float = zone.path_centre(z)
+	var dc: float = zone.path_centre(z + 0.5) - zone.path_centre(z - 0.5)
+	var n := Vector2(1.0, -dc).normalized()  # across the road
+	var y: float = zone.height_at(c, z)
+	return {"l": Vector3(c - n.x * half_w, y, z - n.y * half_w), "r": Vector3(c + n.x * half_w, y, z + n.y * half_w)}
+
 static func _normal(h: PackedFloat32Array, n: int, i: int, j: int, cell: float) -> Vector3:
 	var l := h[j * (n + 1) + maxi(i - 1, 0)]
 	var r := h[j * (n + 1) + mini(i + 1, n)]
@@ -135,6 +189,8 @@ static func material(zone: RefCounted) -> ShaderMaterial:
 			var t: Array = tints[kind]
 			c = Color(c.r * float(t[0]), c.g * float(t[1]), c.b * float(t[2]))
 		m.set_shader_parameter("%s_tint" % kind, c)
+	if zone.ground == "stone":  # palace platforms and arenas: polished pale tiles drawn by the shader
+		m.set_shader_parameter("tiled_floor", true)
 	if zone.ground == "white":
 		m.set_shader_parameter("snow_color", Color(0.96, 0.96, 0.94))
 	return m

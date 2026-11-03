@@ -18,7 +18,8 @@ static func build(zone: RefCounted, quality := "high") -> Node3D:
 	_trees(root, p.trees, kind, far)
 	_scanned(root, p.rocks, _rock_meshes(), far * 0.7, true)
 	_scanned(root, p.bushes, _model_meshes("shrub_03"), far * 0.5, false)
-	_stones(root, p.stones)
+	if zone.ground != "stone":  # pebbles look wrong on polished tile floors (they're decoration only)
+		_stones(root, p.stones)
 	return root
 
 # --- trees ---------------------------------------------------------------------------------------------------
