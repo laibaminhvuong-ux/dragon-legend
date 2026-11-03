@@ -27,6 +27,11 @@ func _ready() -> void:
 		cam.position = Vector3(s.x, y + 6.0, s.z - 14.0)
 		cam.look_at(Vector3(s.x, y + 2.0, s.z + 30.0))
 	cam.make_current()
+	var grass: Node = world.get_meta("grass") if world.has_meta("grass") else null
+	if grass != null:
+		grass.target = cam
+		grass.update_around(cam.global_position)
+		print("grass clumps %d" % grass.instance_count())
 	if args.shot != "":
 		await get_tree().create_timer(4.0).timeout
 		print("fps %d build %.1f" % [Engine.get_frames_per_second(), build_s])

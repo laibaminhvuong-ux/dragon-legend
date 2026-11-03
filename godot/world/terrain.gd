@@ -29,6 +29,8 @@ static func build(zone: RefCounted, quality := "high") -> Node3D:
 			var w := _weights(zone, x, z)
 			col[k] = w[0]
 			extra[k] = w[1]
+	# keep the sampled grid: grass and other placement read heights/weights from it instead of re-running the rules
+	root.set_meta("grid", {"n": n, "cell": cell, "half": half, "h": h, "col": col, "extra": extra})
 	var mat := material(zone)
 	var per := int(CHUNK / cell)
 	for cj in range(0, n, per):
@@ -48,6 +50,23 @@ static func build(zone: RefCounted, quality := "high") -> Node3D:
 			body.add_child(shape)
 			root.add_child(body)
 	return root
+
+## Height and ground weights at (x, z) from a terrain grid (bilinear): { y, grass, dirt, rock, sand, snow, forest }.
+static func sample(grid: Dictionary, x: float, z: float) -> Dictionary:
+	var n: int = grid.n
+	var cell: float = grid.cell
+	var fx := clampf((x + float(grid.half)) / cell, 0.0, n - 0.001)
+	var fz := clampf((z + float(grid.half)) / cell, 0.0, n - 0.001)
+	var i := int(fx); var j := int(fz)
+	var u := fx - i; var v := fz - j
+	var k := j * (n + 1) + i
+	var hh: PackedFloat32Array = grid.h
+	var cc: PackedColorArray = grid.col
+	var ee: PackedVector2Array = grid.extra
+	var y := lerpf(lerpf(hh[k], hh[k + 1], u), lerpf(hh[k + n + 1], hh[k + n + 2], u), v)
+	var c := cc[k].lerp(cc[k + 1], u).lerp(cc[k + n + 1].lerp(cc[k + n + 2], u), v)
+	var e := ee[k].lerp(ee[k + 1], u).lerp(ee[k + n + 1].lerp(ee[k + n + 2], u), v)
+	return {"y": y, "grass": c.r, "dirt": c.g, "rock": c.b, "sand": c.a, "snow": e.x, "forest": e.y}
 
 static func _weights(zone: RefCounted, x: float, z: float) -> Array:
 	var s: String = zone.surface_at(x, z)
@@ -108,7 +127,7 @@ static func material(zone: RefCounted) -> ShaderMaterial:
 		m.set_shader_parameter("%s_normal" % kind, g.normal)
 		m.set_shader_parameter("%s_color" % kind, g.color)
 	# the leafy CC0 lawn scan is autumn-ish: lean it towards a lush green field, then apply the world's own tint
-	var base := {"grass": Color(0.72, 1.12, 0.55), "dirt": Color(1, 1, 1), "rock": Color(1, 1, 1), "sand": Color(1, 1, 1)}
+	var base := {"grass": Color(0.84, 1.02, 0.7), "dirt": Color(1, 1, 1), "rock": Color(1, 1, 1), "sand": Color(1, 1, 1)}
 	var tints: Dictionary = zone.biome.get("tints", {})
 	for kind: String in base:
 		var c: Color = base[kind]

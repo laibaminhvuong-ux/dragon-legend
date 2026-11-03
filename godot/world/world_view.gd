@@ -9,7 +9,11 @@ static func build(zone_id: String, quality := "high") -> Node3D:
 	root.name = "World_" + zone_id
 	root.set_meta("zone", zone)
 	root.add_child(load("res://world/atmosphere.gd").build(zone, quality))
-	root.add_child(load("res://world/terrain.gd").build(zone, quality))
+	var terrain: Node3D = load("res://world/terrain.gd").build(zone, quality)
+	root.add_child(terrain)
+	var grass: Node3D = load("res://world/grass.gd").create(terrain, zone, quality)
+	root.add_child(grass)
+	root.set_meta("grass", grass)
 	var water: Node3D = load("res://world/water.gd").build(zone)
 	if water != null:
 		root.add_child(water)
