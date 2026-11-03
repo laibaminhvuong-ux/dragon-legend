@@ -231,7 +231,7 @@ static func _valid_utf8(bytes: PackedByteArray) -> bool:
 func import_code(code: String) -> Dictionary:
 	var text: String = code.strip_edges()
 	if not text.begins_with(CODE_PREFIX):
-		return {"ok":false,"error":"That isn't a Dragon Legend save code"}
+		return {"ok":false,"error":"That isn't a save code for The Dragon Legend"}
 	var payload: String = text.substr(CODE_PREFIX.length())
 	var regex := RegEx.new()
 	regex.compile("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$")
