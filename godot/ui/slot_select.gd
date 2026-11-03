@@ -75,7 +75,9 @@ func draw() -> void:
 		var pm := PauseMenu.new(main, true)
 		pm.name = "Settings"
 		add_child(pm)))
-	foot.add_child(UiKit.button("Quit", func() -> void: main.get_tree().quit()))
+	foot.add_child(UiKit.button("Quit", func() -> void:
+		main.call("_exit_watchdog")
+		main.get_tree().quit()))
 	var ver := UiKit.label("   v" + GameVersion.current(), "Muted")
 	foot.add_child(ver)
 	_root.add_child(foot)

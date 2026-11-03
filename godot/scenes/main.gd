@@ -284,3 +284,16 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_APPLICATION_FOCUS_OUT:
 		if play != null:
 			play.save_now()
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		_exit_watchdog()
+
+## Safety net (user report 2026-11-03: the window hung "Not Responding" after closing): once the game has saved,
+## if shutting down takes longer than a few seconds, the process ends itself.
+var _watchdog: Thread
+func _exit_watchdog() -> void:
+	if _watchdog != null or OS.has_feature("editor"):
+		return
+	_watchdog = Thread.new()
+	_watchdog.start(func() -> void:
+		OS.delay_msec(6000)
+		OS.kill(OS.get_process_id()))
