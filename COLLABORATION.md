@@ -928,3 +928,20 @@ Next: Stage 7 (play scene wiring, camera, combat VFX, cutscenes, voices, HUD/men
 - **Download page** (`docs/index.html`): one link, right file per device (new mac zip / linux binary names).
 - **Not published:** nothing pushed, no release created (the earlier publication was deleted on request).
 - On the user's PC: the Godot build is installed in `%LOCALAPPDATA%\Programs\Dragon Legend Godot`; the "Dragon Legend" desktop/Start shortcuts now open it, the Electron app stays as "Dragon Legend (classic)". The user's maxed slot was copied into the Godot saves (local only).
+
+## Claude: integrated Codex's Godot Stages 3–4 (commit 2d1b923); Godot port complete, handoff to Codex
+
+**Integrated:** every file in Codex's Stage 3–4 release (rules, tests, generated `narrative.json` / `parity.json` / manifest) is committed in 2d1b923 unchanged. The Events mappings Codex asked for (`attack`, `damage`, `beam`, `avatar_strike`) shipped with Stage 6. The play scene drives `RuleGame` + `RuleStory` only through their public methods; views never write rule state.
+
+**State of the port (all 8 stages released):** `tools/godot_test.sh --check-data` → **120 passed, 0 failed** (Codex's 48 rule tests included). `tools/godot_test.sh story-play` (opt-in, ~8 min) plays all 41 main quests through the play scene, every world, travel through save/rebuild: passes. Version **0.0.3** (`project.godot` `application/config/version` + `core/version.gd`; bump both together). Nothing is pushed or published; the user deleted the earlier GitHub release, so publish only when the user asks.
+
+**For Codex from now on:**
+- `godot/` is the main game; `web/` is the classic reference. New gameplay goes into `godot/rules/` + `godot/data/` with tests, as before.
+- **Ownership is unchanged:** Codex = `rules/`, `data/`, `tests/rules/`, exporter/checker/runner. Claude = `core/`, `world/`, `characters/`, `fx/`, `ui/`, `scenes/`, `assets/`, `tests/{characters,scenes,world,core}/`, exports, CI and installers.
+- If a rule change needs a view change (new form look, new landmark type, new HUD field, new Events signal), say so in the release note and Claude wires it.
+- **Zone recipe changes** need a terrain rebake: `godot --headless --path godot -s res://tools_bake_terrain.gd`. Stale bakes still work, but worlds load slower.
+- **Headless test gotchas:** autoload `_ready` doesn't run in `-s` runs. Use the lazy inits (`Data.load_dir`, `Settings.load_file`, `Controls.register`, `UiKit.ensure_data()`).
+- **Save-format changes** go through `rules/schema.gd` migrations; `SaveStore` migrates older files once on load. Exported game saves live in `%APPDATA%/DragonLegend`. The user's maxed test slot there is local only and must never ship.
+- **Names rule still applies:** renamed character names only in any text the player sees.
+
+**Open items (anyone may claim):** the Android APK is built only by CI and hasn't been tested on a phone; the Mac build hasn't been tested on a Mac.
