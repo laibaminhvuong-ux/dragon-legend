@@ -55,10 +55,12 @@ static func region(p: Vector3) -> int:
 	if p.y > 1.36 and p.z > 0.03 and ax < (p.y - 1.33) * 0.9: return UNDERSHIRT
 	return PLATE if p.y > PLATE_Y else TOP
 
-## Region colours for an outfit on a given skin.
-static func colours(parts: Dictionary, skin: Color) -> PackedColorArray:
+## Region colours for an outfit. Alpha 0 marks a region that shows the skin (the shader's skin_color, so a
+## transformation can recolour or flush the skin everywhere at once); alpha 1 is cloth or armour.
+static func colours(parts: Dictionary) -> PackedColorArray:
 	var c := PackedColorArray(); c.resize(COUNT)
 	var hx := func(v: Variant) -> Color: return Color.hex((int(v) << 8) | 0xff)
+	var skin := Color(0, 0, 0, 0)
 	var top: Color = hx.call(parts.top)
 	var sleeves: bool = parts.get("sleeves", false)
 	var armor: bool = parts.has("armor")

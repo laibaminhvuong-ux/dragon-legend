@@ -12,19 +12,36 @@ func _ready() -> void:
 	env.environment.tonemap_mode = Environment.TONE_MAPPER_ACES
 	add_child(env)
 	var sun := DirectionalLight3D.new(); sun.rotation_degrees = Vector3(-40, 30, 0); sun.shadow_enabled = true; add_child(sun)
-	var looks: Array = [
-		{"race": "Saiyan", "outfit": "TurtleGi", "build": "Muscular", "hair": "Spiky"},
-		{"race": "Saiyan", "outfit": "SaiyanArmor", "build": "Average", "hair": "Swept"},
-		{"race": "Namekian", "outfit": "NamekRobe", "build": "Tall", "outfitTint": 2},
-		{"race": "Human", "outfit": "CapsuleCorp", "build": "Slim", "outfitTint": 4},
-		{"race": "FrostDemon", "outfit": "FrostArmor", "build": "Short"},
-		{"race": "Majin", "outfit": "MajinVest", "build": "Muscular"},
-	]
+	var sets := {
+		"base": [
+			{"race": "Saiyan", "outfit": "TurtleGi", "build": "Muscular", "hair": "Spiky", "face": "Determined"},
+			{"race": "Saiyan", "outfit": "SaiyanArmor", "build": "Average", "hair": "Swept", "face": "Fierce"},
+			{"race": "Namekian", "outfit": "NamekRobe", "build": "Tall", "outfitTint": 2, "face": "Calm"},
+			{"race": "Human", "outfit": "CapsuleCorp", "build": "Slim", "outfitTint": 4, "hair": "Bowl", "hairColor": 2, "face": "Smirk"},
+			{"race": "FrostDemon", "outfit": "FrostArmor", "build": "Short", "face": "Cold"},
+			{"race": "Majin", "outfit": "MajinVest", "build": "Muscular", "face": "Smirk"},
+		],
+		"hair": [
+			{"race": "Human", "hair": "Spiky"}, {"race": "Human", "hair": "Wild"}, {"race": "Human", "hair": "Swept"},
+			{"race": "Human", "hair": "LongSpiky"}, {"race": "Human", "hair": "Short", "hairColor": 1}, {"race": "Human", "hair": "Ponytail", "hairColor": 2, "female": true},
+		],
+		"faces": [
+			{"race": "Human", "hair": "Short", "face": "Calm"}, {"race": "Human", "hair": "Short", "face": "Fierce"}, {"race": "Human", "hair": "Short", "face": "Smirk"},
+			{"race": "Human", "hair": "Short", "face": "Determined"}, {"race": "Human", "hair": "Short", "face": "Cold"}, {"race": "Namekian", "face": "Fierce"},
+		],
+	}
+	var looks: Array = sets.get(args.get("set", "base"), sets.base)
+	var forms: PackedStringArray = str(args.get("forms", "")).split(",", false)
+	if not forms.is_empty():
+		looks = []
+		for fm in forms:
+			looks.append({"race": args.get("race", "Saiyan"), "hair": args.get("hair", "Spiky"), "outfit": "TurtleGi", "face": "Fierce", "form": fm})
 	var scene: Node3D = Node3D.new()
 	add_child(scene)
 	var aps: Array = []
 	for i in looks.size():
 		var f: Node3D = load("res://characters/fighter.gd").create(looks[i])
+		if looks[i].has("form"): f.set_form(looks[i].form)
 		f.position = Vector3((i - 2.5) * 1.1, 0, 0)
 		scene.add_child(f)
 		aps.append(f.anim_player)

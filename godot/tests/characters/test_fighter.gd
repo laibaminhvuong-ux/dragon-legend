@@ -39,10 +39,12 @@ func test_dressed_mesh_is_shared() -> void:
 
 func test_every_outfit_paints_every_region() -> void:
 	for o: String in Outfits.ALL:
-		var c := BodyRegions.colours(Outfits.parts(o, 0xe86a1a), Color(0.9, 0.75, 0.6))
+		var c := BodyRegions.colours(Outfits.parts(o, 0xe86a1a))
 		eq(c.size(), BodyRegions.COUNT, "%s has a colour per region" % o)
+		eq(c[BodyRegions.SKIN].a, 0.0, "%s: the head shows skin" % o)
+		eq(c[BodyRegions.PANTS].a, 1.0, "%s: trousers are cloth" % o)
 		for col in c:
-			ok(col.a > 0.99, "%s colours are opaque" % o)
+			ok(col.a == 0.0 or col.a == 1.0, "%s: each region is skin or cloth" % o)
 
 func test_fighter_builds_for_every_race_outfit_build() -> void:
 	var races: Dictionary = Fighter.Tables().races
