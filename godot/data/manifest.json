@@ -46,6 +46,12 @@
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
   "files": {
+    "narrative.json": {
+      "sha256": "577d3502af036024b86cf2b8a125a14d22c57dae3d39c10801f79716043f0056",
+      "bytes": 3209,
+      "kind": "object",
+      "entries": 5
+    },
     "quests.json": {
       "sha256": "4a7520fd6c53bc3c0dbd6ed4cb32e1ee3f20a4aaed267ae9b94bc9daeb65b7b3",
       "bytes": 111799,
@@ -257,10 +263,10 @@
       "entries": 4
     },
     "parity.json": {
-      "sha256": "b650321cdd5da0b59b1b7af5accf2261ef76d8b921cd0daef124f2d118892234",
-      "bytes": 1262017,
+      "sha256": "f1f651b14d3d60ad3d79bcd510ba2d812bb42922631c70eec6c2cd4195a28ff0",
+      "bytes": 1266785,
       "kind": "object",
-      "entries": 5
+      "entries": 7
     }
   }
 }

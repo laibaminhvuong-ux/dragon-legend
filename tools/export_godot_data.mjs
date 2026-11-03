@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // Export evaluated JS content, not source literals: installers and display-name conversion run first.
 import fs from 'node:fs/promises';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
 import path from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
@@ -31,6 +33,8 @@ import * as progression from '../web/src/game/progression.js';
 import {ZONES} from '../web/src/game/zones.js';
 import {freePosition} from '../web/src/game/placement.js';
 import {rng} from '../web/src/game/noise.js';
+import {createGame} from '../web/src/game/game.js';
+import {stepMovement} from '../web/src/game/movement.js';
 import {TUTORIAL_STEPS} from '../web/src/game/tutorial.js';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -41,7 +45,18 @@ function encode(value){return JSON.stringify(value,(_key,v)=>{
  if(typeof v==='function' || typeof v==='undefined' || typeof v==='bigint' || typeof v==='symbol')throw new TypeError('Non-JSON value in Godot table');
  if(typeof v==='number' && !Number.isFinite(v))throw new TypeError('Non-finite number in Godot table');return v;
 },2)+'\n';}
+function narrativeTables(){
+ const source=readFileSync(path.join(root,'web/src/game/story.js'),'utf8');
+ const out={talk_range:4.5,pickup_range:2.6};
+ for(const key of ['TALK_REPLIES','ITEM_NAMES','AMBIENT']){
+  const match=source.match(new RegExp('const '+key+' = (\\{[\\s\\S]*?\\n?\\});'));
+  if(!match)throw new Error('Missing story constant '+key);
+  const value=vm.runInNewContext('('+match[1]+')',{}, {timeout:1000});names.renameDeep(value);out[key.toLowerCase()]=value;
+ }
+ return out;
+}
 export function collectTables(){return {
+ narrative:narrativeTables(),
  quests:story.QUESTS,npcs:story.NPCS,characters:story.CHARACTERS,links:story.LINKS,start_zones:story.START_ZONES,
  forms:forms.FORMS,mastery_evolutions:forms.MASTERY_EVOLUTIONS,mastery_tuning:forms.MASTERY_TUNING,
  moves:moves.MOVES,move_order:moves.MOVE_ORDER,races:races.RACES,race_order:races.RACE_ORDER,
@@ -81,7 +96,24 @@ export function parityFixtures(){
   const slot=newSlot(defaultLook(race),1000);slot.level=level;slot.stats={Health:7,Ki:11,Strength:13,KiPower:17,Speed:19};
   for(const form of ['',...races.RACES[race].forms])progressionCases.push({slot,form,derived:progression.derive(slot,form),xp_next:progression.xpToNext(level),forms:progression.formsAtLevel(race,level)});
  }
- return {format_version:1,zones,saves,progression:progressionCases,xp:Array.from({length:2000},(_,i)=>progression.xpToNext(i+1))};
+ const movementCases=[];
+ const flat={size:1000,gravity:1,heightAt:()=>0};
+ for(const scenario of [
+  [{moveX:1,moveZ:1},120], [{dash:true,moveX:1},10], [{flight:true,ascend:true},1], [{charge:true},60], [{jump:true},30], [{flight:true,flyPitch:.8,moveZ:1},1]]){
+  const e={pos:{x:0,y:0,z:0},vel:{x:0,y:0,z:0},yaw:0,onGround:true,health:100,ki:80,maxKi:100,kiCostScale:1,runSpeed:8,flying:false,stun:0};
+  for(let i=0;i<scenario[1];i++)stepMovement(e,scenario[0],1/60,flat);
+  movementCases.push({intents:scenario[0],frames:scenario[1],expected:e});
+ }
+ const damageCases=[];
+ for(const [race,level] of [['Human',1],['Saiyan',1],['Saiyan',500]])for(const blocked of [false,true]){
+  const slot=newSlot(defaultLook(race),1000);slot.level=level;
+  const log=[];const game=createGame(0,slot,{emit:(event,value)=>{if(event==='damage')log.push(value.amount);}});
+  const p=game.player;p.pos={x:0,y:game.zone.heightAt(0,0),z:0};p.yaw=0;
+  for(const e of game.combat.enemies){e.pos={x:80,y:0,z:80};e.home={...e.pos};}
+  const e=game.combat.enemies[0];e.pos={...p.pos,z:p.pos.z+1.8};e.home={...e.pos};e.health=e.maxHealth=1e6;e.stun=100;e.blocking=blocked;
+  game.combat.update(1/60,{melee:true});damageCases.push({race,level,blocked,damage:log[0],ki:e.ki});
+ }
+ return {format_version:1,damage:damageCases,movement:movementCases,zones,saves,progression:progressionCases,xp:Array.from({length:2000},(_,i)=>progression.xpToNext(i+1))};
 }
 async function sourceHashes(){
  const out={};for(const folder of ['web/src/data','web/src/game'])for(const name of (await fs.readdir(path.join(root,folder))).sort())if(name.endsWith('.js')){const rel=folder+'/'+name;out[rel]=digest(await fs.readFile(path.join(root,rel)));}

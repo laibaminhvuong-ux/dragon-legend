@@ -11,14 +11,14 @@ try{
  const manifest=await exportGodotData(temp),tables=collectTables();
  assert.equal(Object.keys(tables.zones).length,23);assert.equal(tables.stats.MAX_LEVEL,2000);assert.equal(tables.quests.filter(q=>q.main).length,41);
  for(const id of ['s_namek_dragon','s_super_dragon','s_cereal_dragon','t_ui_avatar'])assert.ok(tables.quests.some(q=>q.id===id));
- assert.equal(tables.characters.goku.name,'Gokan');assert.equal(tables.schema.version,6);assert.ok(tables.forms.UITrue);assert.ok(tables.form_looks.SSJ4);
+ assert.equal(tables.characters.goku.name,'Gokan');assert.equal(tables.schema.version,6);assert.equal(tables.narrative.talk_range,4.5);assert.ok(tables.narrative.talk_replies.shenron);assert.ok(tables.forms.UITrue);assert.ok(tables.form_looks.SSJ4);
  ok('all loaded story, dragon, form, appearance and renamed content exported');
  for(const [file,meta] of Object.entries(manifest.files)){const raw=await fs.readFile(path.join(temp,file));assert.equal(raw.byteLength,meta.bytes);assert.equal(createHash('sha256').update(raw).digest('hex'),meta.sha256);JSON.parse(raw);}
  assert.ok(Object.keys(manifest.sources).length>20);ok('manifest hashes every generated table and records source hashes');
  const parity=JSON.parse(await fs.readFile(path.join(temp,'parity.json'),'utf8'));
  assert.equal(Object.keys(parity.zones).length,23);assert.equal(parity.xp.length,2000);assert.equal(parity.xp[1999],0);
  for(const zone of Object.values(parity.zones)){assert.ok(zone.samples.length>=20);assert.ok(zone.samples.every(s=>Number.isFinite(s.height)));assert.equal(typeof zone.props.trees.count,'number');assert.ok(zone.placements.length>0);}
- assert.ok(parity.progression.length>500);assert.deepEqual(parity.saves.map(s=>s.version),[1,2,3,4,5,6]);
+ assert.equal(parity.damage.length,6);assert.ok(parity.damage.every(c=>Number.isFinite(c.damage)));assert.equal(parity.movement.length,6);assert.ok(parity.progression.length>500);assert.deepEqual(parity.saves.map(s=>s.version),[1,2,3,4,5,6]);
  for(const s of parity.saves){assert.deepEqual(JSON.parse(Buffer.from(s.code.slice(4),'base64').toString('utf8')),s.input);assert.equal(s.expected.version,6);assert.equal(s.expected.slots[0].quests.s_dragon_radar.collected.length,3);}
  ok('parity fixtures include all worlds, prop placement, 2000 XP levels and six legacy save codes');
  const before=await fs.readFile(path.join(temp,'manifest.json'),'utf8');await exportGodotData(temp);assert.equal(await fs.readFile(path.join(temp,'manifest.json'),'utf8'),before);
