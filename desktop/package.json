@@ -56,6 +56,35 @@
       "provider": "github",
       "owner": "laibaminhvuong-ux",
       "repo": "dragon-legend"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        }
+      ],
+      "icon": "site/icons/icon-512.png",
+      "category": "public.app-category.games",
+      "identity": "-",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "artifactName": "Dragon-Legend-mac.${ext}"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "site/icons/icon-512.png",
+      "category": "Game",
+      "artifactName": "Dragon-Legend-linux.${ext}"
     }
   }
 }

@@ -755,3 +755,7 @@ Released (Dragon Orb radar): `story.radar()` returns uncollected orbs of active 
 
 User request: flying must not reuse the walk cycle. Files: `web/src/character/cage/fighter3d.js` (the gait is off while `airborne`), `web/src/character/cage_model.js` (new hover and fast-flight poses), `web/src/main.js` (passes vertical speed `vy` to `model.update`).
 Released (flight animation): the fighter's walk cycle is off while `airborne` (set by `cage_model` when flying or off the ground). Flight blends a hover pose (upright, knee drawn up, loose arms, bob and sway) with a full-speed pose (horizontal body, leading fist, trailing legs, head up) by speed, and tilts for climbing or diving (`anim.vy`, now passed by `main.js`). core, movement, visuals, avatar and kaioken checks pass, as do the movement, character and smoke browser checks.
+
+## Claude: claiming (publishing: every-platform builds and one download link)
+
+User request: publish the game as an app with one link that suits every platform. Files: `desktop/package.json` (Mac dmg and Linux AppImage targets), new `mobile/` (Capacitor Android shell), new `.github/workflows/release.yml` (builds Windows/Mac/Linux/Android on release), new `docs/` (GitHub Pages download page that picks the right file for the visitor's device).
