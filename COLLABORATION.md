@@ -1103,3 +1103,6 @@ The user couldn't enter King Kae's planet: the portal fired and travel saved `zo
 
 ## Claude: Shift is now a toggle (user request, 2026-11-03)
 Tapping Shift switches between walking/slow flight and running/fast flight (`PlaySession.fast_mode`; `GameInput.take()` uses a press once). A toast confirms the mode; the HUD action line shows "Shift Run ON/off". The rules are unchanged (intent `sprint`). Test `test_play::test_shift_toggles_running_and_fast_flight`; suite 194 passed.
+
+## Claude: charge while flying (user request, 2026-11-03)
+`movement.gd`: charging works on the ground or while flying (not mid-jump or while dashing). In flight it holds you in place (no climb/steer while charging) and refills Ki as on the ground. Tests: `test_walk_run::test_charging_while_flying_hovers_in_place_and_refills_ki`; `test_movement` now expects charging in the air. Suite 195 passed.

@@ -40,7 +40,7 @@ func test_flight_pitch_hover_descent_and_no_ki_drain() -> void:
 	g.player.ki = 0.0
 	tick(g,{"charge":true})
 	eq(g.player.flying,true,"empty ki doesn't end flight")
-	eq(g.player.charging,false,"no charging in the air")
+	eq(g.player.charging,true,"you can charge in the air too (user request 2026-11-03)")
 	tick(g,{"flight":true})
 	eq(g.player.flying,false)
 	tick(g,{},10)

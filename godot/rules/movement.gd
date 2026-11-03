@@ -30,7 +30,8 @@ func step(entity: Dictionary,it: Dictionary,dt: float,zone: RefCounted) -> void:
 	if entity.flying and not can_move:
 		entity.flying = false
 		entity.vel.y = minf(0,entity.vel.y)
-	entity.charging = can_move and it.get("charge",false) and not entity.flying and entity.onGround and entity.dashRemaining==0
+	# charge on the ground or while flying (user request 2026-11-03: hover in place to power up), not mid-jump or dashing
+	entity.charging = can_move and it.get("charge",false) and (entity.flying or entity.onGround) and entity.dashRemaining==0
 	if entity.charging:
 		RuleKi.add_ki(entity,m.chargeRate*(entity.maxKi/100.0)*dt)
 	if can_move and it.get("dash",false) and not entity.charging and entity.dashCooldown==0 and RuleKi.try_spend_ki(entity,m.dashCost*ki_scale):
@@ -51,7 +52,8 @@ func step(entity: Dictionary,it: Dictionary,dt: float,zone: RefCounted) -> void:
 		entity.yaw = turn_towards(entity.yaw,atan2(wish.x,wish.y),m.turnSpeed*dt)
 	if entity.flying:
 		var steer: float = clampf(float(it.get("fly_pitch",0)),-1,1) if can_move and not entity.charging else 0.0
-		entity.vel.y = clampf((float(it.get("ascend",false))-float(it.get("descend",false)))*m.flightAscend+steer*m.flightSpeed*0.85,-m.flightSpeed,m.flightSpeed)
+		var climb: float = 0.0 if entity.charging else (float(it.get("ascend",false))-float(it.get("descend",false)))*m.flightAscend
+		entity.vel.y = clampf(climb+steer*m.flightSpeed*0.85,-m.flightSpeed,m.flightSpeed)
 	else:
 		if entity.onGround and it.get("jump",false) and can_move and not entity.charging:
 			entity.vel.y = m.jumpSpeed

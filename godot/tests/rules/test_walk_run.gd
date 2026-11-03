@@ -27,3 +27,17 @@ func test_without_the_key_the_old_full_speed_stays() -> void:
 	var g := fresh()
 	tick(g, {"move_z": 1}, 60)
 	near(_speed(g), float(g.player.runSpeed), 0.05)
+
+func test_charging_while_flying_hovers_in_place_and_refills_ki() -> void:
+	# User request 2026-11-03: charge while flying.
+	var g := fresh()
+	tick(g, {"flight": true})
+	tick(g, {"ascend": true}, 30)
+	g.player.ki = 10.0
+	var at: Vector3 = g.player.pos
+	tick(g, {"charge": true, "move_z": 1, "ascend": true, "sprint": true}, 90)
+	ok(g.player.flying and g.player.charging, "still flying, charging")
+	ok(g.player.ki > 10.0, "Ki refills while charging in the air")
+	ok(g.player.pos.distance_to(at) < 1.5, "hovers in place while charging (moved %.2f m)" % g.player.pos.distance_to(at))
+	tick(g, {"move_z": 1, "sprint": true}, 30)
+	ok(not g.player.charging and g.player.pos.distance_to(at) > 2.0, "flies on when you let go")

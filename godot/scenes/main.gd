@@ -235,7 +235,7 @@ func _dev_walk(secs: float) -> void:
 		await get_tree().process_frame
 		play.forced = {"ascend": true}
 		await get_tree().create_timer(1.2).timeout
-	play.forced = {"move_x": sin(yaw), "move_z": cos(yaw), "sprint": _args.has("sprint")}
+	play.forced = {"charge": true} if _args.has("charge") else {"move_x": sin(yaw), "move_z": cos(yaw), "sprint": _args.has("sprint")}
 	await get_tree().create_timer(secs).timeout
 	if play != null: play.forced = {}
 
