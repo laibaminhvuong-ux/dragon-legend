@@ -57,7 +57,8 @@ func _build() -> void:
 	body_mesh.material_override = material
 	race = Tables().races.get(str(look.get("race", "Human")), Tables().races.get("Human", {}))
 	var skins: Array = race.get("skins", [0xf1c8a0])
-	skin = Parts.hx(skins[clampi(int(look.get("skin", 0)), 0, skins.size() - 1)])
+	# NPCs may set an exact skin colour (e.g. King Yemmo's red) outside the race palette
+	skin = Parts.hx(look.skinHex) if look.get("skinHex") != null else Parts.hx(skins[clampi(int(look.get("skin", 0)), 0, skins.size() - 1)])
 	var hair_cols: Array = Tables().appearance.get("HAIR_COLORS", [0x141414])
 	hair_color = Parts.hx(hair_cols[clampi(int(look.get("hairColor", 0)), 0, hair_cols.size() - 1)])
 	var tints: Array = Tables().appearance.get("TINTS", [0xe86a1a])
@@ -76,6 +77,7 @@ func _build() -> void:
 	base_scale = Vector3(float(build.width), float(build.height), float(build.depth))
 	body.scale = base_scale
 	Parts.dress(self, parts, str(race.get("id", "")), skin)
+	Parts.costume(self, str(look.get("costume", "")))
 	if cape != null:
 		cape_base = cape.transform
 	hair_base = Hair.base_style(look, race)

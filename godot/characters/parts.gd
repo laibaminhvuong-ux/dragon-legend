@@ -76,6 +76,26 @@ static func dress(f: Fighter, parts: Dictionary, race_id: String, skin: Color) -
 			f.add_skin_piece(f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("majin_antenna", func(g: Geo) -> void:
 				g.tube(_offset([Vector3(0, 0, 0), Vector3(0, 0.12, -0.04), Vector3(0, 0.2, -0.14), Vector3(0, 0.17, -0.24), Vector3(0, 0.08, -0.26)], Vector3(0, 0.13, 0)), 0.035, 0.012, 24)), material(skin, 0.5)), 1.0)
 
+## NPC-only costume pieces on top of the outfit (look.costume). Head pieces are in Hair.HEAD_SPACE
+## (head centre about (0, 0.06, 0), radius about 0.105, +Z is the face).
+static func costume(f: Fighter, id: String) -> void:
+	match id:
+		"yemmo":   # King Yemmo: a thick black beard round the jaw and a tall judge's hat with a gold plate
+			var black := material(Color.hex(0x161212ff), 0.85)
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("yemmo_beard", func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.25, 1.05, 0.95)), Vector3(0, -0.035, 0.035)), 0.1, 12, 18)
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 1.25, 0.8)), Vector3(0, -0.1, 0.06)), 0.075, 10, 16)
+				for s in [1, -1]:
+					g.sphere(Transform3D(Basis.from_scale(Vector3(0.6, 1.3, 0.8)), Vector3(s * 0.095, 0.0, 0.0)), 0.045, 8, 12)
+					g.sphere(Transform3D(Basis.from_scale(Vector3(1.6, 0.55, 0.7)), Vector3(s * 0.035, 0.155, 0.098)), 0.026, 8, 12)), black)
+			var hat := material(Color.hex(0x2c2a52ff), 0.55)
+			var gold := material(Color.hex(0xd8a733ff), 0.3, 0.8)
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("yemmo_hat", func(g: Geo) -> void:
+				g.cylinder(Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 0.92)), Vector3(0, 0.215, -0.005)), 0.112, 0.118, 0.15, 24)
+				g.cylinder(Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 0.92)), Vector3(0, 0.145, -0.005)), 0.122, 0.122, 0.022, 24)), hat)
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("yemmo_hat_plate", func(g: Geo) -> void:
+				g.box(Transform3D(Basis.IDENTITY, Vector3(0, 0.215, 0.104)), Vector3(0.075, 0.09, 0.012))), gold)
+
 static func _offset(pts: Array, o: Vector3) -> PackedVector3Array:
 	var out := PackedVector3Array()
 	for p: Vector3 in pts:

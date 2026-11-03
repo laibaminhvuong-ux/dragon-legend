@@ -89,10 +89,12 @@
     "id": "king_yemma",
     "who": "king_yemma",
     "zone": "snake_way",
-    "x": 0,
-    "z": -368,
+    "x": 21.996432584379754,
+    "z": -438.5,
     "rot": 3.141592653589793,
-    "road": true
+    "road": true,
+    "y": 1.4,
+    "sit": true
   },
   {
     "id": "princess_snake",
@@ -1319,8 +1321,8 @@
     "id": "guide_snake_way",
     "who": "training_guide",
     "zone": "snake_way",
-    "x": 1.5,
-    "z": -377
+    "x": 62.992281874019874,
+    "z": -486
   },
   {
     "id": "guide_king_kai",

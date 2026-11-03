@@ -6,6 +6,8 @@ const Tables = preload("res://rules/tables.gd")
 func test_all_world_heights_normals_surfaces_match_js() -> void:
 	var worlds: Dictionary = Tables.table("parity").zones
 	for id: String in worlds:
+		if _godot_only(id):
+			continue
 		var zone := Zone.new(id)
 		var fixture: Dictionary = worlds[id]
 		eq(zone.seed,int(fixture.seed),id)
@@ -25,6 +27,8 @@ func test_all_world_heights_normals_surfaces_match_js() -> void:
 
 func test_seeded_props_and_collision_queries_match_js() -> void:
 	for id: String in Tables.table("parity").zones:
+		if _godot_only(id):
+			continue
 		var zone := Zone.new(id)
 		var fixture: Dictionary = Tables.table("parity").zones[id]
 		var props: RefCounted = zone.props()
@@ -45,6 +49,8 @@ func test_seeded_props_and_collision_queries_match_js() -> void:
 
 func test_authored_placements_and_void_road_boundaries() -> void:
 	for id: String in Tables.table("parity").zones:
+		if _godot_only(id):
+			continue
 		var zone := Zone.new(id)
 		for row: Dictionary in Tables.table("parity").zones[id].placements:
 			var point: Vector3 = zone.free_position(row.input)
@@ -66,3 +72,7 @@ func test_rng_is_deterministic_and_noise_can_tile() -> void:
 		ok(value>=0 and value<1)
 	var noise := NoiseRules.new(73,16)
 	near(noise.noise2(-3.25,7.75),noise.noise2(12.75,23.75),1e-15)
+
+## Zones changed by tools/godot_additions.mjs no longer match the classic JS game; test_godot_additions covers them.
+func _godot_only(id: String) -> bool:
+	return id in Tables.table("godot_additions").get("zones", [])

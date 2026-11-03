@@ -8,7 +8,7 @@ extends RefCounted
 const BUILDERS := ["pod", "crater", "crashpod", "farmhouse", "kamehouse", "snakehead", "kingkaihouse", "car",
 	"namekhouse", "gurutower", "friezaship", "capsuleship", "timemachine", "yardrathut", "capsulecorp", "dome",
 	"labdoor", "ruin", "husk", "palace", "htcdoor", "htcroom", "cellarena", "budokai", "babidiship", "zsword",
-	"crystals", "pyramid", "stands", "bunker", "pillar", "zenobox", "hangar", "radartower"]
+	"crystals", "pyramid", "stands", "bunker", "pillar", "zenobox", "hangar", "radartower", "checkin"]
 
 static func has_builder(type: String) -> bool:
 	return type in BUILDERS
@@ -157,6 +157,94 @@ class Builder extends RefCounted:
 		for x in [-1.3, 1.3]:
 			sphere(0.35, mat(0xffcc33, {"emissive": 0x664400}), x, 3.2, -3.2)
 			cone(0.3, 2, horn, x, 4, -5.5).rotation.x = -0.6
+
+	## King Yemmo's Check-In Station (Godot addition): an open lacquered hall with a two-tier roof over the
+	## floor, his giant desk and chair (he sits there as an NPC), and the line of souls waiting at the desk.
+	## Local +z points up Serpent Road; arrivals come in from the south (-z).
+	func _checkin() -> void:
+		var marble := mat(0xc9c0b2, {"rough": 0.35})
+		var lacquer := mat(0xb3262a, {"rough": 0.35})
+		var gold := mat(0xd8a733, {"metal": 0.8, "rough": 0.3})
+		var tiles := mat(0x2f5d52, {"rough": 0.5})
+		var wood := mat(0x5a3020, {"rough": 0.45})
+		var dark_wood := mat(0x3a1e14, {"rough": 0.4})
+		var paper := mat(0xf3eedf, {"rough": 0.8})
+		# floor, steps at the arrival side, a red carpet to the desk
+		cyl(53.5, 53.5, 0.3, marble, 0, -0.13, 0, null, 64)
+		cyl(54.5, 55.0, 0.5, mat(0xb9ad98, {"stone": true}), 0, -0.45, 0, null, 64)
+		box(5, 0.04, 44, mat(0x7a1219, {"rough": 0.95}), 0, 0.04, -27)
+		for side in [-2.7, 2.7]:
+			box(0.35, 0.05, 44, gold, side, 0.045, -27)
+		box(8, 0.05, 1.0, gold, 0, 0.05, -49)
+		# columns in a ring and the two-tier roof
+		for i in 12:
+			var a := (float(i) + 0.5) / 12.0 * TAU
+			var cx := sin(a) * 33.0; var cz := cos(a) * 33.0
+			cyl(1.25, 1.35, 22, lacquer, cx, 11, cz, null, 16)
+			cyl(1.8, 1.8, 1.0, gold, cx, 22.3, cz, null, 16)
+			cyl(1.9, 2.1, 0.8, mat(0x8a7d68, {"stone": true}), cx, 0.4, cz, null, 16)
+		torus(33.0, 0.7, lacquer, 0, 22.6, 0)
+		var roof := cone(47, 9, tiles, 0, 27.6, 0, null, 8); roof.rotation.y = PI / 8
+		cyl(47.5, 47.5, 0.6, gold, 0, 23.2, 0, null, 8).rotation.y = PI / 8
+		var upper := cone(25, 8, tiles, 0, 36, 0, null, 8); upper.rotation.y = PI / 8
+		cyl(17, 17, 4, lacquer, 0, 31, 0, null, 8).rotation.y = PI / 8
+		cyl(25.5, 25.5, 0.5, gold, 0, 32.1, 0, null, 8).rotation.y = PI / 8
+		sphere(1.6, gold, 0, 40.6, 0)
+		cone(0.5, 3, gold, 0, 42.6, 0, null, 12)
+		# the sign over the south entrance
+		box(26, 4, 0.6, lacquer, 0, 18.5, -33.6)
+		box(27, 4.6, 0.3, gold, 0, 18.5, -33.3)
+		var sign := Label3D.new()
+		sign.text = "CHECK-IN STATION"
+		sign.font_size = 160; sign.pixel_size = 0.012; sign.outline_size = 18
+		sign.modulate = Color("#ffe3a0"); sign.outline_modulate = Color("#4a1206")
+		sign.position = Vector3(0, 18.5, -34.0); sign.rotation.y = PI
+		g.add_child(sign)
+		# the giant desk (front faces the arrivals); he sits behind it on a raised dais
+		const TOP := 3.6
+		box(17, 0.7, 6.4, wood, 0, TOP - 0.35, 2.4)
+		box(17.4, 0.22, 6.8, gold, 0, TOP - 0.8, 2.4)
+		box(16.4, TOP - 0.8, 0.7, dark_wood, 0, (TOP - 0.8) / 2.0, -0.5)
+		for x in [-7.9, 7.9]:
+			box(0.9, TOP - 0.8, 6.0, dark_wood, x, (TOP - 0.8) / 2.0, 2.4)
+		torus(0.85, 0.12, gold, 0, 1.05, -0.9).rotation.x = PI / 2
+		sphere(0.68, mat(0xb3262a, {"rough": 0.3, "metal": 0.2}), 0, 1.05, -0.9, null, 20).scale = Vector3(1, 1, 0.3)
+		var plate := Label3D.new()
+		plate.text = "King Yemmo"
+		plate.font_size = 72; plate.pixel_size = 0.01; plate.outline_size = 8
+		plate.modulate = Color("#ffe3a0"); plate.outline_modulate = Color("#2a0a04")
+		plate.position = Vector3(0, 2.3, -0.9); plate.rotation.y = PI
+		g.add_child(plate)
+		# on the desk: the open book of souls, a stamp, papers, an ink pot with a brush
+		var book := box(3.2, 0.25, 2.2, paper, -3.5, TOP + 0.15, 3.0); book.rotation.y = 0.15
+		box(3.4, 0.2, 2.4, mat(0x7a1a1a), -3.5, TOP + 0.02, 3.0).rotation.y = 0.15
+		cyl(0.55, 0.65, 0.5, mat(0x7a1a1a), 4.2, TOP + 0.25, 2.6, null, 16)
+		cyl(0.18, 0.18, 1.1, wood, 4.2, TOP + 1.0, 2.6, null, 10)
+		sphere(0.35, gold, 4.2, TOP + 1.6, 2.6, null, 12)
+		for k in 4:
+			var pp := box(1.5, 0.05, 2.0, paper, 1.0 + k * 0.15, TOP + 0.03 + k * 0.05, 3.6 - k * 0.1); pp.rotation.y = -0.2 + k * 0.12
+		cyl(0.4, 0.45, 0.6, mat(0x111111, {"rough": 0.2}), 6.6, TOP + 0.3, 4.0, null, 14)
+		cyl(0.06, 0.06, 1.6, wood, 6.6, TOP + 1.0, 4.0, null, 8).rotation.z = 0.35
+		# dais and chair (the dais top is the NPC's authored y, 1.4; the seat fits his seated pose at scale 4.2)
+		box(15, 1.4, 10, mat(0x8a7d68, {"stone": true}), 0, 0.7, 10.5)
+		box(15.4, 0.2, 10.4, gold, 0, 1.45, 10.5)
+		box(9, 1.8, 5.5, lacquer, 0, 1.4 + 0.9, 10.2)
+		box(9.4, 0.3, 5.9, gold, 0, 1.4 + 1.85, 10.2)
+		box(9, 10, 1.2, lacquer, 0, 1.4 + 5.0, 13.2)
+		box(9.6, 0.5, 1.6, gold, 0, 1.4 + 10.2, 13.2)
+		for x in [-4.7, 4.7]:
+			box(0.8, 1.6, 5.0, lacquer, x, 1.4 + 2.9, 10.4)
+		# the line of souls: from the east of the hall, curling round to the front of the desk
+		var q := SoulQueue.create(PackedVector3Array([Vector3(44, 0, -24), Vector3(34, 0, -30), Vector3(20, 0, -26),
+			Vector3(12, 0, -16), Vector3(6, 0, -8), Vector3(1.5, 0, -3.2)]))
+		g.add_child(q)
+		# warm light under the roof
+		var lamp := OmniLight3D.new()
+		lamp.position = Vector3(0, 16, -4)
+		lamp.light_color = Color("#ffd9a8")
+		lamp.light_energy = 0.9
+		lamp.omni_range = 48
+		g.add_child(lamp)
 
 	func _kingkaihouse() -> void:
 		dome(4, mat(0xf3eadb), 0, 0, 0)

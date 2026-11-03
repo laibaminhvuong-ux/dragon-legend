@@ -3,6 +3,9 @@ extends Node
 # and runs the fixed-step loop. User args:
 #   -- --smoke            run a few frames, print autoload status, quit (automated launch check)
 #   -- --play=N           skip the menu and play save slot N (creates a default Saiyan if it's empty), like ?dev
+#      --zone=<id>        (with --play) start that slot at the world's arrival point (GPU checks of a world)
+#      --forms=1          (with --play) a level-2000 dev fighter with every race form unlocked
+#      --noui=1 --walk=<s>  hide the play UI / walk forward for s seconds (GPU screenshots)
 #   -- --shot=<png> --frames=<n>   save a screenshot after n frames and quit (GPU checks)
 
 var input: GameInput
@@ -31,11 +34,26 @@ func _ready() -> void:
 		var i := int(_args.play)
 		if not (SaveStore.load_slot(i) is Dictionary):
 			SaveStore.create_slot(i, RuleSchema.new().default_look("Saiyan"))
+		if _args.has("zone") or _args.has("forms"):
+			var dev: Dictionary = SaveStore.load_slot(i)
+			if _args.has("zone"):
+				dev.zone = str(_args.zone)
+				dev.position = null
+			if _args.has("forms"):
+				dev.level = 2000
+				dev.forms = (Data.races.get(str(dev.race), {}).get("forms", []) as Array).duplicate()
+				dev.loadout.testAllPaths = true
+			SaveStore.save_slot(i, dev)
 		start_game(i)
 	else:
 		go_menu()
+	if _args.has("noui") or _args.has("walk"):
+		_dev_shot_setup()
 	match str(_args.get("screen", "")):   # GPU checks of each screen
 		"creator": open_creator(2)
+		"forms":
+			await get_tree().create_timer(2.0).timeout
+			if play != null: play_ui.forms.open()
 		"pause", "menu", "dialogue":
 			await get_tree().create_timer(2.0).timeout
 			if play != null:
@@ -181,6 +199,22 @@ func _end_play() -> void:
 		remove_child(play)
 		play.queue_free()
 		play = null
+
+func _dev_shot_setup() -> void:
+	while play == null or play_ui == null:
+		await get_tree().process_frame
+	if _args.has("noui"):
+		play_ui.visible = false
+	if _args.has("walk"):
+		_dev_walk(float(_args.walk))
+
+func _dev_walk(secs: float) -> void:
+	await get_tree().create_timer(1.0).timeout
+	if play == null: return
+	var yaw: float = play.follow.yaw
+	play.forced = {"move_x": sin(yaw), "move_z": cos(yaw)}
+	await get_tree().create_timer(secs).timeout
+	if play != null: play.forced = {}
 
 func _process(delta: float) -> void:
 	_frames += 1

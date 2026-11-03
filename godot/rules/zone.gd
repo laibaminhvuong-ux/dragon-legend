@@ -99,6 +99,11 @@ static func _distance(x: float, z: float) -> float:
 func raw_height(x: float, z: float) -> float:
 	if _terrain.has("path"):
 		var p: Dictionary = _terrain.path
+		if _terrain.has("plaza"):
+			# Godot addition: a flat round floor on the road's line (King Yemmo's Check-In Station)
+			var pz: Dictionary = _terrain.plaza
+			if _distance(x - path_centre(pz.z) - float(pz.get("x",0)), z - pz.z) <= pz.radius:
+				return float(pz.height)
 		if z < p.from - 6 or z > p.to + 6:
 			return VOID
 		var slope: float = (path_centre(z + 1) - path_centre(z - 1)) / 2

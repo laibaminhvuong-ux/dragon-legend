@@ -303,16 +303,18 @@
   "king_yemma": {
     "name": "King Yemmo",
     "look": {
-      "race": "Majin",
-      "skin": 1,
+      "race": "Human",
+      "skin": 0,
+      "skinHex": 13125180,
       "face": "Fierce",
       "hair": "None",
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "CraneGi",
-      "outfitTint": 2
+      "outfitTint": 2,
+      "costume": "yemmo"
     },
-    "scale": 2.4
+    "scale": 4.2
   },
   "princess_snake": {
     "name": "Princess Serpa",

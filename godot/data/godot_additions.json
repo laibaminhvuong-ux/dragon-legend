@@ -1,0 +1,6 @@
+{
+  "zones": [
+    "snake_way"
+  ],
+  "note": "Zones changed for the Godot game only; JS parity skips them."
+}

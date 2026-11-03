@@ -163,10 +163,10 @@
     "planet": "Other World",
     "saga": "Saiyar Saga",
     "terrain": {
-      "size": 820,
+      "size": 1000,
       "spawn": {
-        "x": 0,
-        "z": -380
+        "x": 84.48116258120555,
+        "z": -492
       },
       "path": {
         "width": 4.2,
@@ -175,7 +175,13 @@
         "from": -390,
         "to": 390
       },
-      "killY": -40
+      "killY": -40,
+      "plaza": {
+        "x": 29.729930222797574,
+        "z": -447,
+        "radius": 54,
+        "height": 0
+      }
     },
     "biome": {
       "sky": {
@@ -203,6 +209,13 @@
     },
     "landmarks": [
       {
+        "type": "checkin",
+        "name": "King Yemmo's Check-In Station",
+        "x": 29.729930222797574,
+        "z": -447,
+        "collide": 5.5
+      },
+      {
         "type": "snakehead",
         "x": 0,
         "z": -386,
@@ -210,8 +223,8 @@
       }
     ],
     "travelPoint": {
-      "x": 0,
-      "z": -372
+      "x": 94.42930101871482,
+      "z": -484
     }
   },
   "king_kai": {

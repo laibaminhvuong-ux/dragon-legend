@@ -227,7 +227,7 @@ func npcs() -> Array:
 				if q.get("main",false) and marker=="!":
 					main = true
 		var c: Dictionary = characters[n.who]
-		var row: Dictionary = {"id":n.id,"name":c.name,"look":c.get("look"),"dragon":c.get("dragon"),"scale":c.get("scale",1),"rot":n.get("rot",0),"boss":n.get("boss",false),"marker":marker,"main":main}
+		var row: Dictionary = {"id":n.id,"name":c.name,"look":c.get("look"),"dragon":c.get("dragon"),"scale":c.get("scale",1),"rot":n.get("rot",0),"boss":n.get("boss",false),"marker":marker,"main":main,"sit":n.get("sit",false)}
 		row.merge(npc_pos(n))
 		out.append(row)
 	var guide: Variant = travel_guide()

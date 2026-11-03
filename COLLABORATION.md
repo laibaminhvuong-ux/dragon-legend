@@ -962,3 +962,11 @@ The user asked for slower Ki use, free flight, and forms that cost Ki once inste
 - `rules/schema.gd`: `normalize` keeps `loadout.favoriteForms` only as unique known form ids, and leaves the key out when empty (JS parity fixtures unchanged).
 - UI (Claude): the transform key opens `ui/form_picker.gd` (base, favourites, then all forms in order; number keys, click, ★ pins). The Forms tab also has the ★.
 - Tests: `tests/rules/test_form_choice.gd` (4), `test_ki_balance.gd` now 7 (incl. every race × every form), 3 picker tests in `tests/scenes/test_ui.gd`. Suite: 135 passed.
+
+## Claude: 10 save slots; Godot-only content layer; King Yemmo's Check-In Station (user requests, 2026-11-03); Codex please note
+
+- **10 slots:** `RuleSchema.SLOT_COUNT = 10` (`new_profile`, `migrate`); `SaveStore.SLOTS` uses it. Old 3-slot files and classic `DL1:` codes fill the first 3. Schema/save tests pad the JS oracle's 3 slots to 10.
+- **Godot-only content:** new `tools/godot_additions.mjs`, applied by `export_godot_data.mjs` on top of the evaluated JS tables (the classic `web/` game is unchanged). It writes `godot_additions.json` with the zones it changed; `test_zone`'s JS-parity tests skip those zones and `tests/rules/test_godot_additions.gd` tests them instead. Its hash is in the manifest's `sources`. **Codex:** put future Godot-only data changes there, not in `web/src/data`.
+- **Check-In Station:** `snake_way` is now 1000 m with `terrain.plaza` ({x offset, z, radius, height}: a flat round floor in front of where the road starts; `RuleZone.raw_height` handles it). Spawn, pilot and training guide are in the hall; landmark `checkin` (collide 5.5). King Yemmo: `sit: true`, `y: 1.4` (dais), scale 4.2, look with `skinHex` + `costume: "yemmo"` (Fighter/Parts support both). `RuleStory.npcs()` rows now carry `sit`.
+- Views (Claude): `world/landmarks.gd _checkin`, `world/soul_queue.gd`, seated NPCs in `story_view.gd`. Dev args `--zone=`, `--forms=1`, `--noui=1`, `--walk=s`, `--screen=forms`.
+- Suite 139 passed; story-play passed.
