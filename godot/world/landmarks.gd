@@ -8,7 +8,7 @@ extends RefCounted
 const BUILDERS := ["pod", "crater", "crashpod", "farmhouse", "kamehouse", "snakehead", "kingkaihouse", "car",
 	"namekhouse", "gurutower", "friezaship", "capsuleship", "timemachine", "yardrathut", "capsulecorp", "dome",
 	"labdoor", "ruin", "husk", "palace", "htcdoor", "htcroom", "cellarena", "budokai", "babidiship", "zsword",
-	"crystals", "pyramid", "stands", "bunker", "pillar", "zenobox", "hangar", "radartower", "checkin", "town"]
+	"crystals", "pyramid", "stands", "bunker", "pillar", "zenobox", "hangar", "radartower", "checkin", "town", "kaiplanet"]
 
 static func has_builder(type: String) -> bool:
 	return type in BUILDERS
@@ -250,6 +250,42 @@ class Builder extends RefCounted:
 	func _town() -> void:
 		g.scale = Vector3.ONE   # towns are laid out in metres
 		WorldTown.build(g, zone, l)
+
+	## King Kae's planet seen from Serpent Road's end (Godot addition): a small round world hanging in the sky with
+	## his house, car and a tree on top and a ring of golden clouds. Fly into it to land there (story portal).
+	func _kaiplanet() -> void:
+		g.position.y = float(l.alt)   # it floats: the road world has nothing under it
+		var r := float(l.radius)
+		var grass := mat(0x5fae3c, {"rough": 0.85})
+		var planet := sphere(r, grass, 0, 0, 0, null, 48)
+		planet.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		# a few lighter patches and a little path so it doesn't read as a flat ball
+		for i in 7:
+			var a := float(i) / 7.0 * TAU
+			var patch := sphere(r * 0.22, mat(0x7cc24e, {"rough": 0.9}), sin(a) * r * 0.62, r * 0.7, cos(a) * r * 0.62, null, 16)
+			patch.scale = Vector3(1.0, 0.25, 1.0)
+		var top := Node3D.new()
+		top.position = Vector3(0, r - 0.4, 0)
+		top.scale = Vector3.ONE * 1.6
+		g.add_child(top)
+		var house := Node3D.new(); top.add_child(house)
+		dome(4, mat(0xf3eadb), 0, 0, 0, house)
+		torus(4, 0.3, mat(0xc83228), 0, 0.1, 0, house)
+		sphere(0.8, mat(0xc83228), 0, 4, 0, house)
+		box(1.4, 2.2, 0.2, mat(0x6a4a2a), 0, 1.1, 3.9, house)
+		var car := Node3D.new(); car.position = Vector3(-7, 0, 5); car.rotation.y = 1.2; top.add_child(car)
+		box(3, 0.7, 1.6, mat(0xc8322a, {"metal": 0.5, "rough": 0.3}), 0, 0.7, 0, car)
+		box(1.6, 0.6, 1.4, mat(0xddeeff, {"opacity": 0.5, "rough": 0.1}), -0.2, 1.3, 0, car)
+		cyl(0.35, 0.5, 6, mat(0x6a4a2a), 6, 3, -5, top, 10)
+		sphere(3.2, mat(0x2f8a3a, {"rough": 0.8}), 6, 7.5, -5, top, 20)
+		# golden clouds round its middle
+		var cloud := mat(0xfff0c0, {"rough": 1.0, "emissive": 0x806030, "glow": 0.4})
+		for i in 18:
+			var a := float(i) / 18.0 * TAU + 0.2
+			var puff := sphere(r * 0.2, cloud, sin(a) * r * 1.12, -r * 0.15 + sin(a * 3.0) * 1.5, cos(a) * r * 1.12, null, 14)
+			puff.scale = Vector3(1.6, 0.6, 1.0)
+			puff.rotation.y = a
+			puff.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 	func _kingkaihouse() -> void:
 		dome(4, mat(0xf3eadb), 0, 0, 0)

@@ -22,6 +22,13 @@ function checkInStation(zones, npcs) {
     {type: 'checkin', name: "King Yemmo's Check-In Station", ...at(0, 0), collide: 5.5},
     ...road.landmarks,
   ];
+  // King Kae's planet hangs in the sky just past the road's end: look up to see it, fly into it to land there.
+  // (Points on a road world follow the road's curve, so x is relative to the road at that z.)
+  // straight ahead of where the road ends (z 390), so it hangs right in front of you when you look up
+  const kaiZ = 520;
+  const kai = {x: curve(390) - curve(kaiZ), z: kaiZ, alt: 110, radius: 34};
+  road.landmarks.push({type: 'kaiplanet', name: "King Kae's Planet", x: kai.x, z: kai.z, alt: kai.alt, radius: kai.radius});
+  road.portals = [{zone: 'king_kai', x: kai.x, z: kai.z, y: kai.alt, r: kai.radius + 14, locked: 'Run to the end of Serpent Road first.'}];
   const king = npcs.find(n => n.id === 'king_yemma');
   Object.assign(king, at(0, 8.5), {y: 1.4, rot: Math.PI, sit: true});   // seated on a raised dais
   const guide = npcs.find(n => n.id === 'guide_snake_way');

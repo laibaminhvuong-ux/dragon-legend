@@ -209,6 +209,14 @@ func _dev_shot_setup() -> void:
 		await get_tree().process_frame
 	if _args.has("noui"):
 		play_ui.visible = false
+	if _args.has("at"):   # dev: --at=<road z> on a road world, or x,z: stand there (and --pitch=<rad> to look up)
+		var c: PackedStringArray = str(_args.at).split(",")
+		var p: Dictionary = play.game.zone.place(float(c[0]) if c.size() > 1 else 0.0, float(c[-1]))
+		play.game.player.pos = Vector3(p.x, play.game.zone.height_at(p.x, p.z) + 0.1, p.z)
+		play.prev_pos = play.game.player.pos
+	if _args.has("pitch"):
+		await get_tree().create_timer(0.5).timeout
+		play.follow.pitch = float(_args.pitch)
 	if _args.has("walk"):
 		_dev_walk(float(_args.walk))
 

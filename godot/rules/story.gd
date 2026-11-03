@@ -571,6 +571,7 @@ func update(dt: float,intents: Dictionary = {}) -> void:
 				state.unlocked.append(area)
 			emit("notify",{"text":"Discovered: "+str(worlds.get(area,{}).get("name",area))})
 			emit("discovered",{"zone":area})
+	_check_portals()
 	if zone.kill_y!=null and player.pos.y<zone.kill_y:
 		player.pos = Vector3(zone.spawn.x,zone.height_at(zone.spawn.x,zone.spawn.z)+0.5,zone.spawn.z)
 		player.vel = Vector3.ZERO
@@ -623,3 +624,21 @@ func update(dt: float,intents: Dictionary = {}) -> void:
 							state.flags.shenron = true
 						advance(q)
 						break
+
+## Places in the sky you fly into to reach another area (King Kae's planet above Serpent Road's end).
+var _portal_used := false
+var _portal_told := 0.0
+func _check_portals() -> void:
+	if _portal_used:
+		return
+	for p: Dictionary in zone.def.get("portals",[]):
+		var at: Dictionary = zone.place(float(p.x),float(p.z))
+		if player.pos.distance_to(Vector3(at.x,float(p.y),at.z))>float(p.r):
+			continue
+		if str(p.zone) in state.unlocked:
+			_portal_used = true
+			emit("notify",{"text":"Landing on %s..." % str(worlds.get(str(p.zone),{}).get("name",p.zone))})
+			emit("travel",{"zone":p.zone})
+		elif game().time-_portal_told>4.0:
+			_portal_told = game().time
+			emit("notify",{"text":str(p.get("locked","You can't land there yet."))})

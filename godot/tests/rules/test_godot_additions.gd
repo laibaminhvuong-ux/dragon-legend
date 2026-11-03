@@ -36,3 +36,36 @@ func test_king_yemmo_sits_behind_his_desk() -> void:
 	ok(float(king.z)>float(station.z),"on the road side of the desk")
 func test_additions_list_names_the_changed_zones() -> void:
 	ok("snake_way" in RuleTables.table("godot_additions").zones)
+
+func _road_game() -> Array:
+	var schema := RuleSchema.new()
+	var slot: Dictionary = schema.new_slot(schema.default_look("Saiyan"),1000)
+	slot.zone = "snake_way"
+	var bus := Recorder.new()
+	var g := RuleGame.new(0,slot,bus)
+	var story := RuleStory.new(g,bus)
+	return [g,story,bus]
+
+func test_king_kae_planet_floats_above_the_end_of_the_road() -> void:
+	var zone := RuleZone.new("snake_way")
+	var planet: Dictionary = zone.landmarks.filter(func(l: Dictionary) -> bool: return l.type=="kaiplanet")[0]
+	var road_end: Dictionary = zone.place(0,390)
+	var up := float(planet.alt)
+	var ahead := Vector2(float(planet.x)-float(road_end.x),float(planet.z)-float(road_end.z)).length()
+	ok(up>40.0 and ahead<140.0,"above and just past the road's end (%.0f up, %.0f ahead)" % [up,ahead])
+	ok(rad_to_deg(atan2(up,ahead))>25.0,"you look up to see it")
+
+func test_flying_into_the_planet_lands_on_it_once_unlocked() -> void:
+	var r := _road_game()
+	var g: RuleGame = r[0]; var story: RuleStory = r[1]; var bus: Recorder = r[2]
+	var portal: Dictionary = story.zone.def.portals[0]
+	var at: Dictionary = story.zone.place(float(portal.x),float(portal.z))
+	g.player.pos = Vector3(at.x,float(portal.y),at.z)
+	story.update(1.0/60)
+	eq(bus.count("travel"),0,"locked before the road quest is done")
+	g.slot.story.unlocked.append("king_kai")
+	story.update(1.0/60)
+	eq(bus.count("travel"),1,"flies you to King Kae's planet")
+	eq(bus.log.filter(func(e: Dictionary) -> bool: return e.event=="travel")[0].value.zone,"king_kai")
+	story.update(1.0/60)
+	eq(bus.count("travel"),1,"only once")

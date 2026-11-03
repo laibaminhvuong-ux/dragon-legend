@@ -220,12 +220,30 @@
         "x": 0,
         "z": -386,
         "name": "Serpent Road gate"
+      },
+      {
+        "type": "kaiplanet",
+        "name": "King Kae's Planet",
+        "x": -113.72207389311869,
+        "z": 520,
+        "alt": 110,
+        "radius": 34
       }
     ],
     "travelPoint": {
       "x": 94.42930101871482,
       "z": -484
-    }
+    },
+    "portals": [
+      {
+        "zone": "king_kai",
+        "x": -113.72207389311869,
+        "z": 520,
+        "y": 110,
+        "r": 48,
+        "locked": "Run to the end of Serpent Road first."
+      }
+    ]
   },
   "king_kai": {
     "name": "King Kae's Planet",
