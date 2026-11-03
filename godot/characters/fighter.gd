@@ -28,6 +28,9 @@ var cape: MeshInstance3D
 var cape_base: Transform3D
 var dome: MeshInstance3D
 var form_id := ""
+var feet: FootPlacement
+var _hair_spring := Vector2.ZERO
+var _cape_spring := Vector2.ZERO
 var anim: AnimController
 var form_aura: Aura
 var charge_aura: Aura
@@ -87,6 +90,9 @@ func _build() -> void:
 		hair = add_piece("DEF-head", Hair.HEAD_SPACE, Hair.mesh(hair_base), hair_material())
 		_set_hair(hair_color, 0.0)
 	anim = AnimController.new(self)
+	feet = FootPlacement.new()
+	feet.name = "FootPlacement"
+	skeleton.add_child(feet)
 
 ## Per-frame update with the JS anim contract (see AnimController); also swings the cape.
 func update(dt: float, a: Dictionary = {}) -> void:
@@ -98,6 +104,9 @@ func update(dt: float, a: Dictionary = {}) -> void:
 	_t += dt
 	_charge_time = minf(2.0,_charge_time+dt) if a.get("charging",false) else 0.0
 	anim.update(dt, a)
+	var grounded: bool = a.get("onGround",true) and not a.get("flying",false) and not a.get("dead",false) and not a.get("dashing",false) and not anim.kicking() and ape==null
+	var foot_weight := 1.0 if float(a.get("speed",0))<0.5 else 0.25
+	feet.weight = lerpf(feet.weight,foot_weight if grounded else 0.0,1.0-exp(-dt*14))
 	if a.get("charging", false) and charge_aura == null:
 		var cl: Dictionary = Tables().appearance.get("KI_CHARGE_LOOK", {}).duplicate()
 		cl["color"] = ki_color()
@@ -125,9 +134,14 @@ func update(dt: float, a: Dictionary = {}) -> void:
 		if not hair.has_meta("motion_base"):
 			hair.set_meta("motion_base",hair.transform)
 		var hair_rest: Transform3D = hair.get_meta("motion_base")
-		hair.transform = hair_rest*Transform3D(Basis.from_euler(Vector3(0,0,sin(_t*22)*minf(1,_charge_time)*0.012)),Vector3.ZERO)
+		var target := sin(_t*22)*minf(1,_charge_time)*0.012
+		_hair_spring = MotionStyle.spring(_hair_spring.x,_hair_spring.y,target,dt,20)
+		if absf(_hair_spring.x)<0.00001 and _charge_time==0: _hair_spring = Vector2.ZERO
+		hair.transform = hair_rest*Transform3D(Basis.from_euler(Vector3(0,0,_hair_spring.x)),Vector3.ZERO)
 	if cape != null:
-		cape.transform = cape_base * Transform3D(Basis.from_euler(Vector3(minf(0.9, float(a.get("speed", 0.0)) * 0.08) + sin(_t * (14.0 if _charge_time>0 else 3.0)) * (0.07 if _charge_time>0 else 0.03), 0, 0)), Vector3.ZERO)
+		var target := minf(0.9,float(a.get("speed",0))*0.08)+sin(_t*(14 if _charge_time>0 else 3))*(0.07 if _charge_time>0 else 0.03)
+		_cape_spring = MotionStyle.spring(_cape_spring.x,_cape_spring.y,target,dt,10)
+		cape.transform = cape_base*Transform3D(Basis.from_euler(Vector3(_cape_spring.x,0,0)),Vector3.ZERO)
 
 static func hair_material() -> ShaderMaterial:
 	if _hair_material == null:
@@ -298,3 +312,6 @@ static func Tables() -> Object:
 		_fallback.load_dir("res://data")
 	return _fallback
 static var _fallback: Node
+
+func set_terrain(terrain: RuleZone) -> void:
+	feet.terrain = terrain

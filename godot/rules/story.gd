@@ -28,6 +28,7 @@ func _init(game: RuleGame,bus: Object = null) -> void:
 	player = game.player
 	game.schema._ensure_story(slot)
 	state = slot.story
+	tracked_id = str(state.flags.get("trackedQuest",""))
 	for q: Dictionary in quests:
 		quest[q.id] = q
 	for n: Dictionary in npc_defs:
@@ -213,6 +214,7 @@ func track_quest(id: String) -> bool:
 	if not is_active(id):
 		return false
 	tracked_id = id
+	state.flags.trackedQuest = id
 	return true
 func npcs() -> Array:
 	var out: Array = []
@@ -390,7 +392,7 @@ func step_target(s: Dictionary) -> Variant:
 		var n: Dictionary = npc.get(s.npc,{})
 		if n.is_empty():
 			return null
-		var out: Dictionary = npc_pos(n).duplicate() if zone.has_region(n.zone) and visible(n) else {"x":n.x,"z":n.z}
+		var out: Dictionary = npc_pos(n).duplicate() if zone.has_region(n.zone) and visible(n) else (zone.place_in(n.zone,n.x,n.z) if zone.has_region(n.zone) else {"x":n.x,"z":n.z})
 		out.zone = n.zone
 		return out
 	if s.type=="defeat":
@@ -434,22 +436,54 @@ func step_target(s: Dictionary) -> Variant:
 				return {"zone":z,"x":at_p.x,"z":at_p.z}
 		return first
 	return null
-func waypoint() -> Variant:
+func navigation() -> Variant:
+	if tracked_id!="" and not is_active(tracked_id):
+		tracked_id = ""
+		state.flags.erase("trackedQuest")
 	var order: Array = active_quests()
 	order.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return (10 if a.id==tracked_id else 1 if a.get("main",false) else 0)>(10 if b.id==tracked_id else 1 if b.get("main",false) else 0))
-	for q: Dictionary in order:
-		var t: Variant = step_target(step_of(q))
-		if t!=null and zone.has_region(str(t.get("zone",""))) and t.has("x"):
-			return {"x":t.x,"y":t.get("y",zone.height_at(t.x,t.z)),"z":t.z,"questId":q.id,"text":step_of(q).text}
+	if not order.is_empty():
+		var q: Dictionary = order[0]
+		var step: Dictionary = step_of(q)
+		var target: Variant = step_target(step)
+		var out := {"questId":q.id,"title":q.title,"text":step.text,"kind":"objective","zone":step.get("zone",slot.zone)}
+		if step.type=="level":
+			out.kind = "training"
+			out.text = "%s · Complete patrols or training to gain XP." % step.text
+			return out
+		if target==null and step.type=="train":
+			if zone.has_region(step.zone):
+				out.merge(zone.region_spawn(step.zone))
+			else: target = {"zone":step.zone}
+		if target!=null:
+			out.zone = target.get("zone",slot.zone)
+			if zone.has_region(str(out.zone)):
+				if target.has("x"):
+					out.merge(target,true)
+				elif zone is RulePlanet:
+					out.merge(zone.region_spawn(str(out.zone)))
+				else: out.merge(zone.spawn)
+			else:
+				var guide: Variant = travel_guide()
+				out.kind = "travel" if guide!=null else "blocked"
+				var destination: String = worlds.get(str(out.zone),{}).get("name",str(out.zone))
+				out.text = "Visit the travel pilot for %s · %s" % [destination,step.text] if guide!=null else "Finish local story tasks to reach %s · %s" % [destination,step.text]
+				if guide!=null: out.merge({"x":guide.x,"y":guide.y,"z":guide.z})
+		if out.has("x"):
+			out.y = out.get("y",zone.height_at(out.x,out.z))
+		return out
 	for q: Dictionary in quests:
 		if q.get("main",false) and can_accept(q):
 			var n: Dictionary = npc[q.giver]
 			if zone.has_region(n.zone) and visible(n):
 				var out: Dictionary = npc_pos(n).duplicate()
-				out.merge({"questId":q.id,"text":"Talk to "+characters[n.who].name})
+				out.merge({"questId":q.id,"title":q.title,"text":"Talk to "+characters[n.who].name,"kind":"offer","zone":n.zone})
 				return out
 			break
 	return null
+func waypoint() -> Variant:
+	var route: Variant = navigation()
+	return route if route!=null and route.has("x") else null
 func progress_text(q: Dictionary) -> String:
 	var st: Dictionary = slot.quests[q.id]
 	var s: Dictionary = step_of(q)
@@ -463,7 +497,7 @@ func tracker() -> Array:
 	var out: Array = []
 	for q: Dictionary in active_quests():
 		var t: Variant = step_target(step_of(q))
-		out.append({"id":q.id,"title":q.title,"saga":q.get("saga"),"main":q.get("main",false),"objective":step_of(q).text,"progress":progress_text(q),"where":worlds.get(t.get("zone"),{}).get("name") if t!=null and t.get("zone")!=null else null})
+		out.append({"id":q.id,"title":q.title,"saga":q.get("saga"),"main":q.get("main",false),"tracked":q.id==tracked_id,"objective":step_of(q).text,"progress":progress_text(q),"where":worlds.get(t.get("zone"),{}).get("name") if t!=null and t.get("zone")!=null else null})
 	return out
 func next_main() -> Variant:
 	for q: Dictionary in quests:

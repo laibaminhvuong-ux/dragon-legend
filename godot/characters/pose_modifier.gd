@@ -18,6 +18,7 @@ var dash_side := 0.0
 var dash_back := 0.0
 var block := 0.0
 var kick := 0.0
+var idle := 0.0
 var style: Dictionary = MotionStyle.for_form("")
 var lean := 0.0
 var brake := 0.0
@@ -96,6 +97,9 @@ func _process_modification() -> void:
 		thigh.R.x -= 1.55 * kk; shin.R.x += 0.15 * kk
 		arm.L.x -= 0.4 * kk; arm.R.x += 0.5 * kk
 	# Whole-body follow-through and recovery on top of authored clips.
+	var breath := sin(t*(1.8 if float(style.get("calm",0))>0.5 else 2.5))*0.009*idle*(1.0-charge)
+	chest.x += breath
+	neck.x -= breath*0.4
 	body.z -= lean
 	body.x -= brake
 	var weight: float = style.get("weight",1.0)
@@ -120,7 +124,7 @@ func _process_modification() -> void:
 		body.y += cast*0.28
 		for side in ["L","R"]:
 			var sx := 1.0 if side=="L" else -1.0
-			arm[side].x -= casting*(1.45+aim_pitch)
+			arm[side].x -= casting*(lerpf(1.45,0.25,release)+aim_pitch)
 			arm[side].z -= sx*casting*0.22
 			fore[side].x -= cast*1.1*(1.0-release)
 		chest.x += release*0.12
@@ -131,7 +135,7 @@ func _process_modification() -> void:
 	elif strike_kind=="ki":
 		arm.R.x -= maxf(0,strike)*(0.8+aim_pitch)
 	elif strike_kind in ["jab","cross","hook"]:
-		var twist := strike*(0.12 if strike_kind=="jab" else 0.28)
+		var twist := strike*(0.12 if strike_kind=="jab" else 0.28)*(1.0+float(style.get("aggression",0))*0.3)
 		chest.y += twist*(-1 if strike_kind=="jab" else 1)
 		body.y -= twist*0.35
 		neck.y -= twist*0.3

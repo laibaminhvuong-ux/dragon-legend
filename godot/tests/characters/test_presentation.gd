@@ -47,7 +47,7 @@ func test_charge_base_colour_beam_pitch_and_form_personality() -> void:
 	tick(f,{"charging":true},1.5)
 	ok(f.charge_aura.scale.x>small)
 	eq(int(f.charge_aura.look.color),0x12abef)
-	tick(f,{},0.1)
+	tick(f,{},1.0)
 	ok(f.hair.transform.is_equal_approx(hair_rest),"secondary motion preserves bone attachment rest transform")
 	f.presentation = {"beamCharge":1.0,"aimPitch":0.7}
 	tick(f,{},0.4)

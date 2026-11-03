@@ -22,3 +22,11 @@ static func strike(age: float,duration: float) -> float:
 	if phase < 0.38:
 		return lerpf(-0.18,1.0,smoothstep(0.16,0.38,phase))
 	return 1.0 - smoothstep(0.38,1.0,phase)
+
+# Exact critically damped scalar spring: stable across frame rates and pauses.
+static func spring(value: float,velocity: float,target: float,dt: float,frequency: float = 12.0) -> Vector2:
+	var omega := maxf(0.01,frequency)
+	var offset := value-target
+	var temp := (velocity+omega*offset)*maxf(0,dt)
+	var decay := exp(-omega*maxf(0,dt))
+	return Vector2(target+(offset+temp)*decay,(velocity-omega*temp)*decay)

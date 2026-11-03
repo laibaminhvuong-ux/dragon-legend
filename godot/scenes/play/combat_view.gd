@@ -149,6 +149,7 @@ func update_view(dt: float) -> void:
 		var vel: Vector3 = e.vel
 		f.position = pos
 		f.rotation.y = float(e.yaw)
+		f.set_terrain(combat.zone)
 		f.presentation = _presentation(e)
 		f.update(dt, {"yaw":e.yaw,"speed": Vector2(vel.x, vel.z).length(), "onGround": e.get("onGround", true), "attackSerial": e.attackSerial,
 			"attackKind": e.attackKind, "hurt": float(e.get("hurtUntil", 0.0)) > combat.clock})
@@ -343,6 +344,7 @@ func _update_player_presentation(dt: float) -> void:
 	if get_parent()==null: return
 	var fighter := get_parent().get_node_or_null("Player") as Fighter
 	if fighter==null: return
+	fighter.set_terrain(combat.zone)
 	fighter.presentation = _presentation(combat.p)
 	var charging: bool = combat.p.charging and combat.p.health>0
 	_charge_age = minf(2,_charge_age+dt) if charging else 0.0

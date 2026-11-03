@@ -96,6 +96,10 @@ func handle_input() -> bool:
 		return true
 	if play.paused:
 		return false
+	# A visible cursor lets players select HUD quests without firing or moving.
+	var selecting := Input.is_key_pressed(KEY_ALT)
+	input.capture = not selecting and not play.is_frozen()
+	if selecting: return true
 	if input.pressed("transform"):
 		forms.open()
 		return true

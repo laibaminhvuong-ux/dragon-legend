@@ -24,6 +24,7 @@ var _actions: Label
 var _progress: Label
 var _death: Label
 var _fps: Label
+var direction: QuestDirection
 var _reticle: Control
 var _stamp := ""
 var _quest_stamp := ""
@@ -75,7 +76,7 @@ func _init(p: PlaySession) -> void:
 	add_child(right)
 	var rv := VBoxContainer.new(); rv.add_theme_constant_override("separation", 6)
 	right.add_child(rv)
-	rv.add_child(UiKit.label("QUESTS", "HeaderMedium"))
+	rv.add_child(UiKit.label("QUESTS · hold Alt to click", "HeaderMedium"))
 	_tracker = VBoxContainer.new()
 	rv.add_child(_tracker)
 	_next = UiKit.label("", "Muted", true)
@@ -95,6 +96,8 @@ func _init(p: PlaySession) -> void:
 	_fps = UiKit.label("", "Muted")
 	_fps.set_anchors_preset(Control.PRESET_BOTTOM_LEFT); _fps.position = Vector2(18, -32)
 	add_child(_fps)
+	direction = QuestDirection.new(p)
+	add_child(direction)
 	_reticle = Reticle.new()
 	add_child(_reticle)
 	Events.notify.connect(toast)
@@ -153,6 +156,7 @@ func update_hud(dt: float) -> void:
 	_fps.visible = bool(Settings.get_value("showFps"))
 	if _fps.visible: _fps.text = "%d fps" % Engine.get_frames_per_second()
 	(_reticle as Reticle).refresh(play)
+	direction.refresh()
 	_timer += dt
 	if _timer < 0.1:
 		return
@@ -194,10 +198,14 @@ func _slow_update() -> void:
 	if rows_key != _quest_stamp:
 		_quest_stamp = rows_key
 		for ch in _tracker.get_children():
+			_tracker.remove_child(ch)
 			ch.queue_free()
 		for row: Dictionary in rows:
 			var box := VBoxContainer.new()
-			box.add_child(UiKit.label(str(row.title)))
+			var id: String = row.id
+			var select := UiKit.button(("◆ " if row.get("tracked",false) else "")+str(row.title),func() -> void: select_quest(id))
+			select.tooltip_text = "Track this quest and show the next direction"
+			box.add_child(select)
 			var obj := UiKit.label("%s%s" % [row.get("objective", ""), (" · " + str(row.progress)) if str(row.get("progress", "")) != "" else ""], "Muted", true)
 			obj.custom_minimum_size.x = 320
 			box.add_child(obj)
@@ -207,12 +215,22 @@ func _slow_update() -> void:
 	var n: Variant = story.next_main()
 	if w is Dictionary:
 		_next.text = "%s · %d m" % [w.get("text", ""), roundi(Vector2(float(w.x) - p.pos.x, float(w.z) - p.pos.z).length())]
+	elif story.navigation()!=null:
+		_next.text = story.navigation().text
 	elif n is Dictionary and n.get("locked", false):
 		_next.text = "Next story: %s · requires Lv. %d. Take a Training Guide patrol to level up." % [n.title, int(n.level)]
 	elif n is Dictionary and n.get("giver") != null:
 		_next.text = "Next story: %s · %s · %s" % [n.title, n.giver, n.get("zone", "")]
 	else:
 		_next.text = "Speak to a Training Guide for repeatable combat quests."
+
+func select_quest(id: String) -> void:
+	if play.story.track_quest(id):
+		play.save_now()
+		_quest_stamp = ""
+		_slow_update()
+		direction.refresh()
+		toast("Quest tracked. Follow the gold objective marker.")
 
 static func _grouped(n: int) -> String:
 	var s := str(absi(n))

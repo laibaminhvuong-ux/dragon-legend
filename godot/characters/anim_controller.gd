@@ -42,9 +42,11 @@ func _init(f: Fighter) -> void:
 		loco.add_blend_point(a, pt[1], -1, pt[0])
 	loco.min_space = 0.0; loco.max_space = 12.0
 	_bt.add_node("loco", loco, Vector2(0, 0))
+	_bt.add_node("stride",AnimationNodeTimeScale.new(),Vector2(150,0))
+	_bt.connect_node("stride",0,"loco")
 	var mode := AnimationNodeTransition.new()
 	mode.xfade_time = 0.22
-	var inputs := {"ground": "loco", "air": "Jump", "fly": "Idle", "talk": "Idle_Talking", "sit": "Sitting_Idle", "dead": "Death01"}
+	var inputs := {"ground": "loco", "air": "Jump", "fly": "Idle", "talk": "Idle_Talking", "sit": "Sitting_Idle", "dead": "Death01", "cast":"Spell_Simple_Idle"}
 	var idx := 0
 	for st: String in inputs:
 		mode.add_input(st)
@@ -55,11 +57,12 @@ func _init(f: Fighter) -> void:
 	_bt.add_node("mode", mode, Vector2(300, 0))
 	idx = 0
 	for st: String in inputs:
-		_bt.connect_node("mode", idx, "loco" if inputs[st] == "loco" else "a_" + st)
+		_bt.connect_node("mode", idx, "stride" if inputs[st] == "loco" else "a_" + st)
 		idx += 1
 	var shot_pick := AnimationNodeTransition.new()
 	shot_pick.xfade_time = 0.0
 	var shots := ["Punch_Jab", "Punch_Cross", "Punch_Enter", "Spell_Simple_Shoot", "Hit_Chest", "Hit_Head"]
+	if player.has_animation("Jump_Land"): shots.append("Jump_Land")
 	for i in shots.size():
 		shot_pick.add_input(shots[i])
 		var a := AnimationNodeAnimation.new(); a.animation = shots[i]
@@ -113,6 +116,8 @@ func update(dt: float, anim: Dictionary) -> void:
 	mod.takeoff = maxf(0.0,mod.takeoff-dt*4.0)
 	if on_ground and not _ground and not flying:
 		mod.landing = clampf(absf(_vy)/14.0,0.18,0.85)
+		if speed<3 and one_shot=="" and _kick_t<0 and player.has_animation("Jump_Land"):
+			_play_shot("Jump_Land")
 	if (not on_ground and _ground) or (flying and state!="fly"):
 		mod.takeoff = 1.0
 	_ground = on_ground
@@ -126,6 +131,7 @@ func update(dt: float, anim: Dictionary) -> void:
 	mod.brake = lerpf(mod.brake,clampf(-acceleration*0.008,0.0,0.23),1.0-exp(-dt*8.0))
 	mod.surge_weight = sin(clampf(_transform/0.65,0,1)*PI) if _transform<0.65 else 0.0
 	mod.style = style
+	mod.idle = 1.0 if speed<0.5 and on_ground and not flying and not anim.get("dead",false) else 0.0
 	mod.dash_side = float(anim.get("dashSide",0))
 	mod.dash_back = float(anim.get("dashBack",0))
 	mod.aim_pitch = lerpf(mod.aim_pitch,clampf(float(anim.get("aimPitch",0)),-0.9,0.9),1.0-exp(-dt*14))
@@ -136,11 +142,16 @@ func update(dt: float, anim: Dictionary) -> void:
 	elif flying: next = "fly"
 	elif not on_ground: next = "air"
 	elif anim.get("sitting", false): next = "sit"
+	elif float(anim.get("beamCharge",0))>0.05 and speed<0.5: next = "cast"
 	elif anim.get("talking", false) and speed < 0.3: next = "talk"
 	if next != state:
 		state = next
 		tree.set("parameters/mode/transition_request", state)
 	tree.set("parameters/loco/blend_position", clampf(speed, 0.0, 12.0))
+	var expected_speed := 1.8 if speed<3 else 5.5 if speed<8 else 10.0
+	tree.set("parameters/stride/scale",clampf(speed/expected_speed,0.65,1.6) if speed>0.5 else 1.0)
+	var air: AnimationNodeAnimation = _bt.get_node("a_air")
+	air.animation = "Jump_Start" if vy>1 and player.has_animation("Jump_Start") else "Jump"
 	# one-shots: a new attack serial starts one; getting hurt interrupts with a hit reaction
 	var serial := int(anim.get("attackSerial", 0))
 	if state != "dead":

@@ -7,7 +7,7 @@ extends Control
 signal opened
 signal closed
 
-const TABS := ["Character", "Accessories", "Stats", "Forms", "Techniques"]
+const TABS := ["Quests", "Character", "Accessories", "Stats", "Forms", "Techniques"]
 const PATHS := {
 	"beast": ["Beast", "Unleash your potential through Gohan and Piccolo training."],
 	"instinct": ["Ultra Instinct", "Sign/Omen -> Perfected Ultra Instinct -> True Ultra Instinct, with Moro-era mastery training."],
@@ -193,6 +193,7 @@ func open_tab(tab: String) -> void:
 		nav.add_child(UiKit.button(t, func() -> void: open_tab(t), t == tab))
 	_box.add_child(nav)
 	match tab:
+		"Quests": _tab_quests()
 		"Character": _tab_character(slot, race)
 		"Accessories": _tab_accessories(slot)
 		"Stats": _tab_stats(slot)
@@ -365,3 +366,16 @@ func _kaioken(slot: Dictionary, tab: String) -> void:
 		_tell(play.game.kaioken.select(int(v))); open_tab(tab))
 	_box.add_child(UiKit.button("Stop Kaiyoken" if k.get("active", false) else "Activate Kaiyoken", func() -> void:
 		_tell(play.game.kaioken.toggle()); open_tab(tab)))
+
+func _tab_quests() -> void:
+	var rows: Array = play.story.tracker()
+	if rows.is_empty():
+		_box.add_child(UiKit.label("No active quests. Speak to someone with a ! marker.","Muted",true))
+	for row: Dictionary in rows:
+		var id: String = row.id
+		_box.add_child(UiKit.label(row.title,"HeaderMedium"))
+		_box.add_child(UiKit.label(str(row.objective),"Muted",true))
+		_box.add_child(UiKit.button("◆ Tracking" if row.get("tracked",false) else "Track and show direction",func() -> void:
+			if play.story.track_quest(id):
+				if save.is_valid(): save.call()
+				close()))
