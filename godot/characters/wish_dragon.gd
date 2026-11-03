@@ -18,7 +18,7 @@ static func _hex(v: Variant) -> Color:
 	return Color.hex((int(v) << 8) | 0xff)
 
 func _build(id: String) -> void:
-	var looks: Dictionary = Fighter.Tables().get("dragon_looks") if Fighter.Tables().get("dragon_looks") is Dictionary and not (Fighter.Tables().get("dragon_looks") as Dictionary).is_empty() else _load_looks()
+	var looks: Dictionary = RuleTables.table("dragon_looks") if RuleTables.table("dragon_looks") is Dictionary else {}
 	var look: Dictionary = looks.get(id, looks.values()[0] if not looks.is_empty() else {"body": 0x2f9d4a, "belly": 0xd9c27a, "horns": 0xe8dcc0, "eyes": 0xff3030, "kind": "classic"})
 	body = Node3D.new(); add_child(body)
 	var skin := StandardMaterial3D.new(); skin.albedo_color = _hex(look.body); skin.roughness = 0.58
@@ -91,10 +91,6 @@ static func _fin(side: float, size: float) -> ArrayMesh:
 		for p: Vector2 in [pts[0], pts[i], pts[i + 1]]:
 			st.add_vertex(Vector3(p.x, p.y, 0))
 	return st.commit()
-
-static func _load_looks() -> Dictionary:
-	var d: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/dragon_looks.json")) if FileAccess.file_exists("res://data/dragon_looks.json") else null
-	return d if d is Dictionary else {}
 
 func update(dt: float, _anim: Dictionary = {}) -> void:
 	time += maxf(0.0, dt)

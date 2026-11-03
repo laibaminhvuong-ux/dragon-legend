@@ -42,6 +42,36 @@ func _ready() -> void:
 				if _args.screen == "pause": set_paused(true)
 				elif _args.screen == "menu": play_ui.rpg.open_tab(str(_args.get("tab", "Stats")))
 				elif _args.screen == "dialogue": Events.emit_named("dialogue", {"speaker": "Gokan", "text": "You came! Let's see how strong you've got.", "kind": "line"})
+		"fight":
+			await get_tree().create_timer(1.5).timeout
+			if play != null and not play.game.combat.enemies.is_empty():
+				var e: Dictionary = play.game.combat.enemies[0]
+				var ep: Vector3 = e.pos
+				play.game.player.pos = Vector3(ep.x + 9.0, play.game.zone.height_at(ep.x + 9.0, ep.z), ep.z)
+				play.prev_pos = play.game.player.pos
+				play.game.slot.level = 50
+				play.forced = {"lock_on": true}
+				await get_tree().create_timer(0.1).timeout
+				play.forced = {"ki_blast": true}
+				await get_tree().create_timer(0.6).timeout
+				play.forced = {"beam": true}
+				await get_tree().create_timer(1.2).timeout
+				play.forced = {"beam": false}
+		"fx":
+			await get_tree().create_timer(1.5).timeout
+			for rep in 20:
+				if play == null: break
+				var pp: Vector3 = play.game.player.pos
+				var fwd := Vector3(sin(play.follow.yaw), 0, cos(play.follow.yaw))
+				var side := Vector3(fwd.z, 0, -fwd.x)
+				Events.emit_named("beam", {"from": pp + Vector3.UP * 1.2 + fwd, "to": pp + Vector3.UP * 1.5 + fwd * 30.0 + side * 6.0, "color": 0x63cfff})
+				if rep == 0:
+					for k in 3:
+						play.game.combat.projectiles.append({"id": 900 + k, "pos": pp + Vector3.UP * 1.3 + fwd * (4.0 + k * 3.0) - side * (2.0 + k),
+							"dir": Vector3.ZERO, "life": 99.0, "damage": 0.0, "owner": {"id": "fx"}, "color": [0xffd24a, 0x63cfff, 0xff5a8a][k]})
+				Events.emit_named("damage", {"id": "e1", "amount": 128 + rep, "pos": pp + fwd * 6.0 + Vector3.UP * 2.0})
+				Events.emit_named("damage", {"id": "player", "amount": 12, "blocked": true, "pos": pp + Vector3.UP * 2.2})
+				await get_tree().create_timer(0.25).timeout
 		"cutscene":
 			await get_tree().create_timer(2.0).timeout
 			if play != null:

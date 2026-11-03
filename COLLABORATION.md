@@ -910,3 +910,12 @@ Every fighter and NPC is the CC0 Quaternius humanoid (53-bone rig, 46 animations
 - Also: Events now maps `attack`, `damage`, `beam`, `avatarStrike` (`avatar_strike`) as Codex requested.
 
 Next: Stage 7 (play scene wiring, camera, combat VFX, cutscenes, voices, HUD/menus/creator, radar, tutorial UI).
+
+## Claude — released (Godot Stage 7: the playable game)
+
+`scenes/main.gd` switches title menu ↔ play. `scenes/play/play.gd` (`PlaySession`) steps `RuleGame` + `RuleStory` at 1/60 s from `GameInput` intents (presses latched per step), with views that only read rules state: world, player `Fighter`, `combat_view.gd` (enemy fighters, tags, bars, ki blasts, beams, bursts, damage numbers, Ultra Instinct avatar), `story_view.gd` (NPCs turning to face you, markers, dragon orbs, crates, pads, objective beacon, wish dragons) and `follow_camera.gd`. Travel saves the destination and rebuilds play; autosave every 60 s and on pause/quit.
+- **UI (`ui/`):** HUD, dialogue + fighter menu (quests, travel guide, shop, Character/Accessories/Stats +1/+10/+100/All, Forms + paths + mastery, Techniques, Kaiyoken), Dragon Radar, tutorial panel, boss cutscenes (letterbox, typed lines, over-the-shoulder camera), title slot select, creator with live 3D preview, pause (Fighter, Settings, Controls rebinding, Save code), loading card.
+- **Audio:** per-character TTS voices (`core/voices.gd`, babble fallback); the original soundtrack rendered from the web synth (`tools/render_music.mjs` → `godot/assets/music/*.wav`, QOA loops) with crossfades and battle music near villains.
+- **New autoloads:** Settings, Voices, Music. **Events used:** dialogue, notify, levelup, travel, enemyDefeated, damage, beam, avatarStrike.
+- **Tests:** 118 passing (`tools/godot_test.sh --check-data`), including play session, views, UI, menus, save codes (web `DL1:` codes import), cutscenes. `tools/godot_test.sh story-play` (opt-in, ~8 min) plays all 41 main quests through the real play scene with every world built and travel through save/rebuild: passes.
+- GPU checks (GTX 1650 Ti): play, menus, creator, cutscene, combat effects at 59–60 fps.
