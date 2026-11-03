@@ -56,6 +56,8 @@ nav .links a:hover { color: var(--text); }
 .player { position: fixed; inset: 0; z-index: 120; background: rgba(5,7,10,.95); display: none; align-items: center; justify-content: center; padding: 24px; }
 .player.on { display: flex; }
 .player video { width: min(1200px, 100%); aspect-ratio: 16/9; background: #000; box-shadow: 0 30px 90px rgba(0,0,0,.6); }
+.video-note { margin-top: 12px; color: var(--muted); font-size: 14px; text-align: center; }
+.video-note a { color: var(--accent2); text-decoration: underline; }
 .player .close { position: absolute; top: 18px; right: 22px; background: none; border: 0; color: var(--text); font-size: 30px; cursor: pointer; }
 .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,13,18,.55) 0%, rgba(10,13,18,.1) 35%, rgba(10,13,18,.75) 72%, var(--bg) 100%), linear-gradient(90deg, rgba(10,13,18,.75), transparent 60%); }
 .hero .wrap { position: relative; z-index: 2; padding-bottom: 12vh; }
@@ -194,8 +196,8 @@ footer a { color: var(--muted); }
     <div style="background-image:url(media/amber.webp)"></div>
   </div>
   <video class="hero-video" id="hero-video" muted loop playsinline preload="auto" poster="media/flight.webp" aria-hidden="true">
-    <source src="media/hero-loop.webm" type="video/webm">
-    <source src="media/hero-loop.mp4" type="video/mp4">
+    <source src="media/hero-loop.mp4?v=2" type="video/mp4">
+    <source src="media/hero-loop.webm?v=2" type="video/webm">
   </video>
   <div class="wrap">
     <div class="kicker">Free 3D action RPG</div>
@@ -279,7 +281,7 @@ footer a { color: var(--muted); }
 <section id="media">
   <div class="wrap">
     <div class="section-head reveal"><div class="kicker">Media</div><h2>Trailer &amp; screenshots</h2><p>All captured in the game.</p></div>
-    <div class="trailer reveal"><video controls preload="none" playsinline poster="media/trailer-poster.webp"><source src="media/trailer.webm" type="video/webm"><source src="media/trailer.mp4" type="video/mp4"></video></div>
+    <div class="trailer reveal"><video controls preload="none" playsinline poster="media/trailer-poster.webp"><source src="media/trailer.mp4?v=2" type="video/mp4"><source src="media/trailer.webm?v=2" type="video/webm"></video></div>
     <div class="gallery reveal" id="gallery">
       <button><img src="media/powerup.webp" alt="Powering up" loading="lazy"></button>
       <button><img src="media/amber.webp" alt="Amber City" loading="lazy"></button>
@@ -360,7 +362,7 @@ footer a { color: var(--muted); }
 </footer>
 
 <div class="lightbox" id="lightbox"><img alt=""></div>
-<div class="player" id="player" role="dialog" aria-label="Trailer"><button class="close" id="player-close" aria-label="Close">✕</button><video id="player-video" controls playsinline preload="none" poster="media/trailer-poster.webp"><source src="media/trailer.webm" type="video/webm"><source src="media/trailer.mp4" type="video/mp4"></video></div>
+<div class="player" id="player" role="dialog" aria-label="Trailer"><button class="close" id="player-close" aria-label="Close">✕</button><video id="player-video" controls playsinline preload="none" poster="media/trailer-poster.webp"><source src="media/trailer.mp4?v=2" type="video/mp4"><source src="media/trailer.webm?v=2" type="video/webm"></video></div>
 
 <script>
 // Downloads always point at the newest release: its file names never change.
@@ -398,7 +400,25 @@ if (!matchMedia("(prefers-reduced-motion: reduce)").matches && !saveData) {
 }
 // trailer player
 const player = document.getElementById("player"), pv = document.getElementById("player-video");
-document.getElementById("watch").addEventListener("click", () => { player.classList.add("on"); pv.currentTime = 0; pv.play().catch(() => {}); });
+// if a browser can't play the trailer, say so and offer the file instead of showing a dead player
+function trailerFallback(v) {
+  if (v.dataset.failed) return;
+  v.dataset.failed = "1";
+  const note = document.createElement("p");
+  note.className = "video-note";
+  note.innerHTML = 'Your browser couldn\'t play the trailer here. <a href="media/trailer.mp4?v=2" target="_blank" rel="noopener">Open the video file</a>, or try Chrome, Edge or Firefox.';
+  v.after(note);
+}
+document.querySelectorAll("video:not(#hero-video)").forEach((v) => {
+  v.addEventListener("error", () => trailerFallback(v), true);
+  const last = v.querySelector("source:last-of-type");
+  if (last) last.addEventListener("error", () => trailerFallback(v));
+});
+document.getElementById("watch").addEventListener("click", () => {
+  player.classList.add("on");
+  pv.currentTime = 0;
+  pv.play().catch((e) => { if (e.name !== "AbortError" && e.name !== "NotAllowedError") trailerFallback(pv); });
+});
 const closePlayer = () => { pv.pause(); player.classList.remove("on"); };
 document.getElementById("player-close").addEventListener("click", closePlayer);
 player.addEventListener("click", (e) => { if (e.target === player) closePlayer(); });
