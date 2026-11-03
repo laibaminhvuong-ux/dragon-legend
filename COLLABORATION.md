@@ -770,3 +770,20 @@ Released (B = base form): new `base` action (B, keyboard only since every gamepa
 
 User request: while flying, the mouse steers up and down too (left and right already follows the camera). Files: `web/src/render/camera.js` (a `pitch` getter), `web/src/game/game.js` (new analog intent `flyPitch`), `web/src/game/movement.js` (flight vertical speed adds `flyPitch`), `web/src/main.js` (computes it from camera pitch and forward input), `tools/check_movement.mjs`.
 Released (mouse-steered flight): new analog intent `flyPitch` (game.js). `movement.js` adds `flyPitch * 0.85 * flightSpeed` to flight vertical speed, capped at flight speed, on top of Space/Ctrl. `main.js` sets it while flying with forward input, from camera pitch minus the default pitch (0.1 dead zone, full at 0.55). `render/camera.js` exposes `pitch`, and `app.followCamera` is the follow camera for tests. Tests: `check_movement` +1 (10). In the real app on the GPU: looking up + W climbed 25.5 m in 1.5 s, level held, looking down dived 18.5 m in 1 s, turning followed the camera. The headless browser smokes currently stall rendering in this environment (movement_smoke fails the same way without this change), so GPU-tested in the installed app instead. Version 0.0.2.
+
+## Claude → Codex: ASSIGNMENT, Godot port (user-approved split, 2026-11-02)
+
+The user is moving Dragon Legend to **Godot 4.7.2** (standard edition, GDScript; editor at `C:\Godot\Godot_v4.7.2-stable_win64.exe`, console build `..._console.exe` for headless runs) with better graphics, and asked that the work be split for speed. The design and contract are in **`docs/superpowers/specs/2026-11-02-godot-port-design.md`**. Read it first. Everything new lives in `godot/`; the current game in `web/` stays untouched and shippable.
+
+**Codex owns the game's "brain": data, rules, tests (no graphics).** In order:
+1. **Stage 2:** `tools/export_godot_data.mjs` (JS data → `godot/data/*.json` after load, i.e. with installed endgame/RPG/hunt content and the game's own names); `rules/zone.gd` (port of game/zones.js + noise.js + placement.js, with `height_at` matching JS sample values exactly); `rules/schema.gd` (new_slot, normalize, v1–v6 migration, **import of current `DL1:` save codes**); `rules/progression.gd`. Plus headless tests and `tools/godot_test.sh`.
+2. **Stage 3:** movement, ki, collision, combat (+ avatar, Kaiyoken), forms, mastery, ported from game/*.js with today's checks ported to GDScript.
+3. **Stage 4:** `rules/story.gd` (quests, travel pilot, radar, Dragon Orb hunts, shop/items), `rules/cutscene_rules.gd`, `rules/tutorial_rules.gd`, with the whole-story bot (check_story) and check_scenes ported.
+
+**Wait for Claude's Stage 1 release note** (project skeleton, autoloads, the `Data` loader and Events bus) before writing code inside `godot/`. The export tool (`tools/export_godot_data.mjs`) and test runner script can start right away. Claim files as usual, release with validation notes. Codex does not edit `godot/{core,world,characters,fx,ui,scenes}`.
+
+**Claude owns the "body":** Stage 1 foundation (next), then worlds (23, new graphics), characters/animation/forms/VFX, wiring rules into scenes, camera, cutscenes and voices, HUD and menus, builds and releases.
+
+## Claude: claiming (Godot Stage 1: foundation)
+
+Files: new `godot/project.godot`, `godot/core/{data,events,save_store,clock}.gd`, `godot/scenes/main.tscn` + `main.gd`, `godot/icon.png`, `.gitignore` (Godot cache dirs).
