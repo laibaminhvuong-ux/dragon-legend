@@ -15,3 +15,4 @@ Every asset here is CC0 (public domain): free for any use, no attribution requir
 | rock_moss_set_01 | model | https://polyhaven.com/a/rock_moss_set_01 | CC0 |
 | shrub_03 | model | https://polyhaven.com/a/shrub_03 | CC0 |
 | dead_tree_trunk | model | https://polyhaven.com/a/dead_tree_trunk | CC0 |
+| Universal Animation Library (Standard), Quaternius | humanoid rig, mannequin, 46 animations | https://quaternius.com/packs/universalanimationlibrary.html (mirror: github.com/J-Ponzo/gltf-universal-animation-library) | CC0 |
