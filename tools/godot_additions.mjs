@@ -14,6 +14,7 @@ function checkInStation(zones, npcs) {
   // The station sits straight in front of where the road starts (z -396), so the road leaves the floor.
   const CZ = -447, DX = curve(-398) - curve(CZ), CX = curve(CZ) + DX;
   const at = (x, z) => ({x: CX + x - curve(CZ + z), z: CZ + z});
+  road.biome = {...road.biome, rocks: 0, stones: 0};          // no pebbles on the hall's marble floor
   road.terrain.size = 1000;                                   // room south of the road for the station
   road.terrain.plaza = {x: DX, z: CZ, radius: 54, height: 0}; // flat round floor in front of the road
   road.terrain.spawn = at(0, -45);                            // arrive at the hall's south steps, facing the king

@@ -43,7 +43,7 @@
     "web/src/game/story.js": "78427bc84e7997290d5ceac4847db659337db401cecff65a637d790071901a3e",
     "web/src/game/tutorial.js": "6396d9262a04df0b6f54f8319469de787dac94cf95d849ccf0f0144c366c66b3",
     "web/src/game/zones.js": "c38525cfada5f1496007b9e0555d13926ef1ec944abbc238832901109696e0e4",
-    "tools/godot_additions.mjs": "f718014150aec85fb1ed85096737cc9d9dbdaa45c63d66c2e24a13d9d5c83abc",
+    "tools/godot_additions.mjs": "78700879cec5ca1f5260304bdafd5b34730a0129fd271c0ffcc7d26b36a90dd3",
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
   "files": {
@@ -144,8 +144,8 @@
       "entries": 5
     },
     "zones.json": {
-      "sha256": "d6cf60f48e1b8bcb842ab52ff6d63ca603b584592cb4ee366e15865639bb29a0",
-      "bytes": 57936,
+      "sha256": "2c5f6589d3f03d1e9b37af98857e310cbc8e29f32317d54461069a8fc5d9c979",
+      "bytes": 57955,
       "kind": "object",
       "entries": 41
     },

@@ -205,7 +205,8 @@
       "rocks": 0,
       "bushes": 0,
       "grass": 0,
-      "clouds": false
+      "clouds": false,
+      "stones": 0
     },
     "landmarks": [
       {
