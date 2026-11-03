@@ -214,6 +214,10 @@ func _dev_shot_setup() -> void:
 		await get_tree().process_frame
 	if _args.has("noui"):
 		play_ui.visible = false
+	if _args.has("form"):   # dev: --form=<id> transforms the dev fighter (with --forms=1) for screenshots
+		await get_tree().create_timer(0.8).timeout
+		play.game.player.ki = play.game.player.maxKi
+		play.game.select_form(str(_args.form))
 	if _args.has("at"):   # dev: --at=<road z> on a road world, or x,z: stand there (and --pitch=<rad> to look up)
 		var c: PackedStringArray = str(_args.at).split(",")
 		var p: Dictionary = play.game.zone.place(float(c[0]) if c.size() > 1 else 0.0, float(c[-1]))
@@ -268,7 +272,11 @@ func _process(delta: float) -> void:
 		print("smoke ok: Data errors=%d, slots=%d, actions=%s" % [Data.errors.size(), SaveStore.list_slots().size(), InputMap.has_action("flight")])
 		get_tree().quit(0)
 	if _args.has("shot") and _frames >= int(_args.get("frames", "120")):
-		get_viewport().get_texture().get_image().save_png(str(_args.shot))
+		var img := get_viewport().get_texture().get_image()
+		var out := str(_args.shot)
+		if out.ends_with(".webp"): img.save_webp(out, true, 0.86)   # website images
+		elif out.ends_with(".jpg"): img.save_jpg(out, 0.88)
+		else: img.save_png(out)
 		print("shot fps %d" % Engine.get_frames_per_second())
 		get_tree().quit(0)
 

@@ -1106,3 +1106,6 @@ Tapping Shift switches between walking/slow flight and running/fast flight (`Pla
 
 ## Claude: charge while flying (user request, 2026-11-03)
 `movement.gd`: charging works on the ground or while flying (not mid-jump or while dashing). In flight it holds you in place (no climb/steer while charging) and refills Ki as on the ground. Tests: `test_walk_run::test_charging_while_flying_hovers_in_place_and_refills_ki`; `test_movement` now expects charging in the air. Suite 195 passed.
+
+## Claude: Ultra Instinct auto-dodge (user request, 2026-11-03); Codex please note
+`combat.gd`: in an Ultra Instinct form (`instinct_benefits` kind "form") the player dodges every hit automatically for `UI_DODGES` = 20 hits, then `UI_COOLDOWN` = 30 s without dodges, then refills (state on the player: `uiDodges`, `uiRecharge`; no Ki cost). The UI Sign technique keeps its chance-based dodge. `snapshot()` exposes `instinctDodges`/`instinctRecharge`; the HUD shows "Dodges N" or "Instinct rest Ns" in UI forms. Tests `tests/rules/test_ui_dodge.gd` (2). Suite 197 passed.

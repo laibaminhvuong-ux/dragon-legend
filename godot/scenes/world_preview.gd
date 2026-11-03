@@ -57,5 +57,7 @@ func _ready() -> void:
 	if args.shot != "":
 		await get_tree().create_timer(4.0).timeout
 		print("fps %d build %.1f" % [Engine.get_frames_per_second(), build_s])
-		get_viewport().get_texture().get_image().save_png(args.shot)
+		var img := get_viewport().get_texture().get_image()
+		if String(args.shot).ends_with(".webp"): img.save_webp(args.shot, true, 0.86)
+		else: img.save_png(args.shot)
 		get_tree().quit()

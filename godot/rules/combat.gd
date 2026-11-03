@@ -31,6 +31,9 @@ var respawn_at: float = 0
 var last_damage: float = -100
 var avatar: Dictionary = {"remaining":0.0,"readyAt":0.0,"nextStrike":0.0,"damage":0.0,"pulse":0}
 var technique: String
+## Ultra Instinct forms dodge every hit automatically this many times, then rest this long (user request 2026-11-03).
+const UI_DODGES := 20
+const UI_COOLDOWN := 30.0
 const UTILITIES := ["Regeneration","SolarFlare","Afterimage","UltraInstinctSign","EnergyField","CandyBeam","InstantTransmission","Kaioken"]
 func _init(owner_game: RefCounted,bus: Object = null) -> void:
 	_game = weakref(owner_game)
@@ -100,7 +103,20 @@ func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = fa
 		return
 	if target==p:
 		var instinct: Dictionary = forms.instinct_benefits(p,clock)
-		if clock>=p.get("dodgeReady",0) and p.ki>=instinct.cost and randf()<instinct.chance:
+		if instinct.kind=="form":   # Ultra Instinct forms: UI_DODGES sure dodges, then UI_COOLDOWN seconds without
+			if int(p.get("uiDodges",UI_DODGES))<=0 and clock>=float(p.get("uiRecharge",0)):
+				p.uiDodges = UI_DODGES
+				notify("Ultra Instinct is ready again: %d dodges." % UI_DODGES)
+			var left: int = int(p.get("uiDodges",UI_DODGES))
+			if left>0:
+				p.uiDodges = left-1
+				if p.uiDodges==0:
+					p.uiRecharge = clock+UI_COOLDOWN
+					notify("Ultra Instinct dodge! Instinct exhausted: back in %d s." % int(UI_COOLDOWN))
+				else:
+					notify("Ultra Instinct dodge! (%d left)" % p.uiDodges)
+				return
+		elif clock>=p.get("dodgeReady",0) and p.ki>=instinct.cost and randf()<instinct.chance:
 			RuleKi.try_spend_ki(p,instinct.cost)
 			p.dodgeReady = clock+instinct.cooldown
 			notify("Ultra Instinct dodge!" if instinct.kind=="form" else "Instinct focus: dodged.")
@@ -268,7 +284,7 @@ func avatar_state() -> Dictionary:
 func snapshot() -> Dictionary:
 	var e: Dictionary = locked()
 	var target: Variant = null if e.is_empty() else {"id":e.id,"name":e.name,"level":e.level,"health":e.health,"maxHealth":e.maxHealth,"boss":e.boss}
-	return {"kaioken":game.kaioken.snapshot(),"avatar":avatar_info(),"instinctFocus":maxf(0,p.get("uiTechniqueUntil",0)-clock),"technique":technique,"techniqueName":move_def(technique).get("name"),
+	return {"kaioken":game.kaioken.snapshot(),"avatar":avatar_info(),"instinctFocus":maxf(0,p.get("uiTechniqueUntil",0)-clock),"instinctDodges":int(p.get("uiDodges",UI_DODGES)),"instinctRecharge":maxf(0,float(p.get("uiRecharge",0))-clock),"technique":technique,"techniqueName":move_def(technique).get("name"),
 		"beamCharge":minf(1,beam_time/c.beamCharge),"meleeCd":melee_cd,"blastCd":blast_cd,"beamCd":beam_cd,"target":target,"respawn":maxf(0,respawn_at-clock) if respawn_at>0 else 0}
 static func segment_distance(point: Vector3,start: Vector3,end: Vector3) -> float:
 	var delta: Vector3 = end-start

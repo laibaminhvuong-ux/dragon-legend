@@ -184,6 +184,8 @@ func _slow_update() -> void:
 	if float(c.get("beamCharge", 0.0)) > 0.0: bits.append("charging %d%%" % roundi(float(c.beamCharge) * 100.0))
 	if float(c.get("beamCd", 0.0)) > 0.0: bits.append("%s cooldown %.1fs" % [c.get("techniqueName", ""), float(c.beamCd)])
 	if float(c.get("instinctFocus", 0.0)) > 0.0: bits.append("UI focus %.1fs" % float(c.instinctFocus))
+	if str(play.game.player.form).begins_with("UI"):
+		bits.append("Instinct rest %ds" % ceili(float(c.get("instinctRecharge", 0.0))) if int(c.get("instinctDodges", 1)) <= 0 else "Dodges %d" % int(c.get("instinctDodges", 20)))
 	var av: Dictionary = c.get("avatar", {})
 	if av.get("active", false): bits.append("Avatar %.1fs" % float(av.get("remaining", 0.0)))
 	elif float(av.get("cooldown", 0.0)) > 0.0: bits.append("Avatar cooldown %.1fs" % float(av.cooldown))
