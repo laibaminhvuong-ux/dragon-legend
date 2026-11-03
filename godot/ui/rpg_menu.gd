@@ -334,7 +334,13 @@ func _tab_forms(slot: Dictionary, race: Dictionary) -> void:
 		var active: bool = str(play.game.player.form) == id
 		var b := UiKit.button("Active" if active else "Transform", func() -> void: _tell(play.game.select_form(id)); open_tab("Forms"), not active)
 		b.disabled = not owned or not play.game.forms.form_available(slot, id)
-		v.add_child(b)
+		var fav: bool = id in (slot.loadout.get("favoriteForms", []) as Array)
+		var star := UiKit.button("★ Favourite" if fav else "☆ Pin as favourite", func() -> void: _tell(play.game.toggle_favorite_form(id)); open_tab("Forms"))
+		star.disabled = b.disabled and not fav
+		var brow := HBoxContainer.new()
+		brow.add_child(b)
+		brow.add_child(star)
+		v.add_child(brow)
 		if not owned:
 			v.add_child(UiKit.label("Mastery evolution" if form.get("mastery") is Dictionary else "Complete its unlock quest", "Muted"))
 	if RuleForms.has_form_path(slot, "instinct"):

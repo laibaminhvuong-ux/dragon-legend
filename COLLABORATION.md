@@ -955,3 +955,10 @@ The user asked for slower Ki use, free flight, and forms that cost Ki once inste
 - `ui/rpg_menu.gd` (Claude): the Forms list shows "N base ki to transform" instead of "ki/s".
 - Tests: new `tests/rules/test_ki_balance.gd` (5 tests). Updated `test_movement` (dash cost × ease, flight doesn't end at 0 Ki), `test_kaioken` (refills Ki before each transform), and `test_gameplay_parity` (flight traces now only require Ki ≥ the JS oracle, since the classic game still drains). Suite: 126 passed.
 - The classic `web/` game is unchanged. `forms.json kiDrain` still feeds the transform cost, so retuning a form's cost means changing its `kiDrain`.
+
+## Claude: form picker, favourites, no Ki refill in forms (user request, 2026-11-03); Codex please note
+
+- `rules/game.gd`: `form_order()` (usable forms in the race's `forms` order; the transform key cycles in it), `favorite_forms()`, `toggle_favorite_form(id)` (saved in `slot.loadout.favoriteForms`). Ki refills by itself only in base form; in a form only charging refills it (flight stays free everywhere).
+- `rules/schema.gd`: `normalize` keeps `loadout.favoriteForms` only as unique known form ids, and leaves the key out when empty (JS parity fixtures unchanged).
+- UI (Claude): the transform key opens `ui/form_picker.gd` (base, favourites, then all forms in order; number keys, click, ★ pins). The Forms tab also has the ★.
+- Tests: `tests/rules/test_form_choice.gd` (4), `test_ki_balance.gd` now 7 (incl. every race × every form), 3 picker tests in `tests/scenes/test_ui.gd`. Suite: 135 passed.

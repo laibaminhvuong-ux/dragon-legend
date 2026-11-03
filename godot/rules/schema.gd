@@ -155,6 +155,15 @@ func normalize(input: Dictionary) -> Dictionary:
 		a.accessory = loadout.accessory
 	if loadout.get("formPath") not in ["beast","instinct","ego"]:
 		loadout.formPath = null
+	var favs: Array = []
+	var form_table: Dictionary = RuleTables.table("forms")
+	for id: Variant in (loadout.get("favoriteForms") if loadout.get("favoriteForms") is Array else []):
+		if id is String and form_table.has(id) and id not in favs:
+			favs.append(id)
+	if favs.is_empty():
+		loadout.erase("favoriteForms")
+	else:
+		loadout.favoriteForms = favs
 	if not s.get("formMastery") is Dictionary:
 		s.formMastery = {}
 	for key: String in s.formMastery:

@@ -46,6 +46,29 @@ func transform_cost(id: String) -> float:
 		return 0.0
 	var f: Dictionary = forms.forms[id]
 	return f.kiDrain*TRANSFORM_COST_SECONDS*player.kiCostScale*(0.7 if "GodKi" in slot.moves else 1.0)*(0.8 if slot.story.items.get("instinctMastery",0) and f.get("path")=="instinct" else 1.0)
+## Usable forms in the race's own order (unlock order is random-looking), then any others.
+func form_order() -> Array:
+	var usable: Array = forms.usable_forms(slot)
+	var race_list: Array = progression.races.get(slot.race,{}).get("forms",[])
+	var out: Array = race_list.filter(func(id: String) -> bool:return id in usable)
+	for id: String in usable:
+		if id not in out:
+			out.append(id)
+	return out
+## Favourite forms the player pinned, in form order (only forms they can use right now).
+func favorite_forms() -> Array:
+	var favs: Array = slot.loadout.get("favoriteForms",[])
+	return form_order().filter(func(id: String) -> bool:return id in favs)
+func toggle_favorite_form(id: String) -> Variant:
+	if not forms.forms.has(id) or id not in forms.usable_forms(slot):
+		return "Unlock this form first."
+	var favs: Array = slot.loadout.get("favoriteForms",[]).duplicate()
+	if id in favs:
+		favs.erase(id)
+	else:
+		favs.append(id)
+	slot.loadout.favoriteForms = favs
+	return null
 func refresh_derived(fill_up: bool = false) -> void:
 	var d: Dictionary = progression.derive(slot,player.form)
 	var hp_fraction: float = player.health/player.maxHealth if player.maxHealth>0 else 1.0
@@ -120,7 +143,7 @@ func update(dt: float,intents: Dictionary = {}) -> void:
 		movement.step(player,intents,dt,zone)
 	RuleCollision.resolve(player,zone,previous)
 	if intents.get("transform",false) and player.health>0 and player.stun<=0:
-		var unlocked: Array = forms.usable_forms(slot)
+		var unlocked: Array = form_order()
 		var i: int = (unlocked.find(player.form)+1) % (unlocked.size()+1)
 		var next: String = unlocked[i] if i<unlocked.size() else ""
 		if next!="" and not RuleKi.try_spend_ki(player,transform_cost(next)):
@@ -139,7 +162,8 @@ func update(dt: float,intents: Dictionary = {}) -> void:
 	combat.update(dt,intents)
 	if player.form!="" and (player.charging or player.vel.length()>0.5):
 		add_form_mastery(mastery.tuning.perSecond*dt)
-	if not player.dashing and not player.charging and player.health>0:
+	# Ki refills by itself only in base form (user tuning 2026-11-03); in a form only charging refills it.
+	if not player.dashing and not player.charging and player.form=="" and player.health>0:
 		RuleKi.regen_ki(player,dt)
 	player.stun = maxf(0,player.stun-dt)
 func hud() -> Dictionary:

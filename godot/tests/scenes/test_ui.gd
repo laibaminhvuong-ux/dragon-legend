@@ -85,3 +85,62 @@ func test_cutscene_plays_and_unfreezes() -> void:
 	u.cutscene.play({"lines": []}, u.play.actor)
 	ok(not u.cutscene.active, "an empty scene does nothing")
 	_done(u)
+
+func _unlock_forms(u: PlayUi) -> void:
+	var g := u.play.game
+	g.slot.level = 2000
+	g.slot.quests.m02_raditz = {"status": "done"}
+	g.slot.forms = ["SSJ3", "SSJ", "SSJ2"]
+	g.refresh_derived(true)
+
+func _picker_buttons(u: PlayUi) -> Array:
+	return u.forms._list.find_children("*", "Button", true, false)
+
+func test_transform_key_opens_the_form_picker_in_order() -> void:
+	var u := _setup()
+	_unlock_forms(u)
+	u.input.press("transform")
+	ok(u.handle_input(), "the key is used by the picker, not sent to the rules")
+	ok(u.forms.is_open and u.play.is_frozen(), "picker open, game paused")
+	eq(u.forms.rows(), ["", "SSJ", "SSJ2", "SSJ3"], "base, then the race's order")
+	u.forms.pick("SSJ2")
+	ok(not u.forms.is_open and not u.play.is_frozen(), "closes after a pick")
+	eq(str(u.play.game.player.form), "SSJ2")
+	ok(u.play.game.player.ki < u.play.game.player.maxKi, "transforming cost ki")
+	_done(u)
+
+func test_favourites_go_first_and_number_keys_pick() -> void:
+	var u := _setup()
+	_unlock_forms(u)
+	u.forms.open()
+	u.forms.toggle_favorite("SSJ3")
+	eq(u.forms.rows(), ["", "SSJ3", "SSJ", "SSJ2"], "favourite pinned on top")
+	eq(u.play.game.slot.loadout.favoriteForms, ["SSJ3"], "saved in the slot")
+	eq(_picker_buttons(u).size(), 7, "a pick button per row, a star on every form")
+	u.forms.pick_number(1)
+	eq(str(u.play.game.player.form), "SSJ3", "key 1 is the first favourite")
+	u.forms.open()
+	u.forms.pick_number(0)
+	eq(str(u.play.game.player.form), "", "key 0 is base form")
+	_done(u)
+
+func test_picker_closes_without_change_and_says_when_nothing_is_unlocked() -> void:
+	var u := _setup()
+	u.input.press("transform")
+	u.handle_input()
+	ok(not u.forms.is_open, "no forms: no picker")
+	u.input.end_tick()
+	_unlock_forms(u)
+	u.forms.open()
+	u.input.press("pause")
+	ok(u.handle_input())
+	ok(not u.forms.is_open and not u.play.is_frozen(), "Esc closes")
+	eq(str(u.play.game.player.form), "")
+	u.input.end_tick()
+	u.play.game.player.ki = 0.0
+	u.forms.open()
+	u.forms.pick("SSJ3")
+	eq(str(u.play.game.player.form), "", "not enough ki: no change")
+	ok(u.forms.is_open, "stays open so you can pick another")
+	u.forms.close()
+	_done(u)
