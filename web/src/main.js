@@ -265,7 +265,7 @@ app.scenes.register("play", {
     play.model.setKiColor(kiColor(app.game.slot.appearance));
     play.model.object3d.position.set(pos.x, pos.y, pos.z);
     play.model.object3d.rotation.y = p.yaw;
-    play.model.update(animDt, { speed: Math.hypot(p.vel.x, p.vel.z), onGround: p.onGround, flying: p.flying, charging: p.charging, kaioken:p.kaioken, dashing: p.dashing, blocking: p.blocking, attackSerial: p.attackSerial, attackKind: p.attackKind });
+    play.model.update(animDt, { speed: Math.hypot(p.vel.x, p.vel.z), vy: p.vel.y, onGround: p.onGround, flying: p.flying, charging: p.charging, kaioken:p.kaioken, dashing: p.dashing, blocking: p.blocking, attackSerial: p.attackSerial, attackKind: p.attackKind });
     if (play.lastForm !== p.form) {
       play.lastForm = p.form;
       play.model.setForm(p.form); // hair, eyes, skin, size and aura as in the story (data/form_looks.js)

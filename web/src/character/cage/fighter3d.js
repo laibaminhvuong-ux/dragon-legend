@@ -1783,7 +1783,8 @@ export class Fighter3D {
     this.lastPos.copy(pos);
     const sp = dt > 0 ? moved / dt : 0;
     this.speed += (sp - this.speed) * Math.min(1, dt * 8);
-    const gaitOk = (this.base === "stance" || this.base === "relaxed" || this.base === "ref" || this.base === "dejected") && !this.queue;
+    // no footsteps in the air (flying, jumping): the owner sets `airborne`
+    const gaitOk = (this.base === "stance" || this.base === "relaxed" || this.base === "ref" || this.base === "dejected") && !this.queue && !this.airborne;
     this.gait = (this.gait || 0) + ((gaitOk && this.speed > 0.15 ? 1 : 0) - (this.gait || 0)) * Math.min(1, dt * 6);
     if (this.gait > 0.01 && gaitOk) {
       if (this.base === "stance") {

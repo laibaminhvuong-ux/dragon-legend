@@ -750,3 +750,8 @@ Dragon Orb hunts, aim dot, charging aura, Ki colour (palette/hex/chart) and stac
 
 User request: a Dragon Orb tracker. Files: `web/src/game/story.js` (new `radar()`), new `web/src/ui/radar.js`, `web/src/core/input.js` (new `radar` action, V / Pad15), `web/src/main.js`, `web/style.css`, `tools/check_scenes.mjs`.
 Released (Dragon Orb radar): `story.radar()` returns uncollected orbs of active orb hunts, here and elsewhere. `ui/radar.js` is a round green scope that turns with the camera, shows blinking blips with rim arrows beyond 160 m, and reads out the nearest distance and counts in other worlds. It appears whenever a hunt is active; V / Pad15 toggles it. `check_scenes` has +1 check (7). Note for Codex: starting a world from the creator now takes ~19 s on SwiftShader, versus ~11 s before 11fdb34 (probably new aura/dragon setup). `check_ui`'s Create click gets 90 s. Real-GPU timing will follow.
+
+## Claude: claiming (flight animation)
+
+User request: flying must not reuse the walk cycle. Files: `web/src/character/cage/fighter3d.js` (the gait is off while `airborne`), `web/src/character/cage_model.js` (new hover and fast-flight poses), `web/src/main.js` (passes vertical speed `vy` to `model.update`).
+Released (flight animation): the fighter's walk cycle is off while `airborne` (set by `cage_model` when flying or off the ground). Flight blends a hover pose (upright, knee drawn up, loose arms, bob and sway) with a full-speed pose (horizontal body, leading fist, trailing legs, head up) by speed, and tilts for climbing or diving (`anim.vy`, now passed by `main.js`). core, movement, visuals, avatar and kaioken checks pass, as do the movement, character and smoke browser checks.

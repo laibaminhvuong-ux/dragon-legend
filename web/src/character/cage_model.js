@@ -407,7 +407,7 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
     f.setBrows?.(true);
     root.scale.copy(baseScale);
   }
-  const pose = { fly: 0, charge: 0, dash: 0, block: 0 };
+  const pose = { fly: 0, flyFast: 0, climb: 0, charge: 0, dash: 0, block: 0 };
   return {
     object3d: root,
     attach,
@@ -438,18 +438,42 @@ export function createCharacterModel(look, { castShadow = true, female = look.fe
       // ease in/out of the special poses
       const ease = (k, on) => (pose[k] += ((on ? 1 : 0) - pose[k]) * Math.min(1, dt * 8));
       ease("fly", anim.flying); ease("charge", anim.charging); ease("dash", anim.dashing); ease("block", anim.blocking);
+      // how fast and which way we fly: blends hover -> full-speed flight, and tilts for climbing/diving
+      const flySpeed = Math.hypot(anim.speed || 0, (anim.vy || 0) * 0.6);
+      pose.flyFast += (Math.min(1, Math.max(0, (flySpeed - 2) / 8)) - pose.flyFast) * Math.min(1, dt * 3);
+      pose.climb += (Math.max(-1, Math.min(1, (anim.vy || 0) / 10)) - pose.climb) * Math.min(1, dt * 3);
+      f.airborne = !!anim.flying || anim.onGround === false; // no walking legs in the air
       f.update(dt);
       ape?.update(dt,anim);
       const j = J;
-      // flying: legs trail, one knee bent, arms relaxed back; leaning into the direction of travel
+      // flying, two poses blended by speed:
+      //  hover (slow or still): upright, one knee drawn up, arms loose and a little out, a gentle bob and sway
+      //  full speed: body nearly horizontal, one fist punched ahead, the other arm swept back, legs trailing
+      //  straight, head up to look where it's going; climbing tilts the body up, diving tips it down
       if (pose.fly > 0.01) {
-        const k = pose.fly, lean = Math.min(1, (anim.speed || 0) / 12);
-        j.hipL.rotation.x += (0.15 + 0.2 * lean) * k; j.knL.rotation.x += 0.25 * k;
-        j.hipR.rotation.x += (0.35 + 0.2 * lean) * k; j.knR.rotation.x += 0.9 * k;
-        j.shL.rotation.x += 0.3 * k * lean; j.shR.rotation.x += 0.3 * k * lean;
-        j.hips.rotation.x += lean * 0.9 * k;
-        j.neck.rotation.x -= lean * 0.6 * k;
-        j.hips.position.y += Math.sin(t * 2) * 0.02 * k;
+        const k = pose.fly, fast = pose.flyFast, hov = 1 - fast, climb = pose.climb;
+        const bob = Math.sin(t * 2.2), sway = Math.sin(t * 1.3);
+        // body
+        const pitch = fast * (1.3 - 0.75 * Math.max(0, climb)) + Math.max(0, -climb) * 0.5 * hov;
+        j.hips.rotation.x += (pitch - Math.max(0, climb) * 0.25 * hov) * k;
+        j.hips.rotation.z += sway * 0.04 * hov * k;
+        j.hips.position.y += bob * 0.035 * hov * k;
+        j.chest.rotation.x -= 0.18 * fast * k;
+        j.neck.rotation.x -= (0.95 * fast + 0.1 * hov) * k;
+        // legs: hover = right knee up, left leg hanging; fast = both trailing straight, feet together
+        j.hipR.rotation.x += (-0.75 * hov + 0.08 * fast) * k; j.knR.rotation.x += (1.25 * hov + 0.12 * fast) * k;
+        j.hipL.rotation.x += (0.12 * hov + 0.16 * fast + bob * 0.04 * hov) * k; j.knL.rotation.x += (0.4 * hov + 0.08 * fast) * k;
+        j.hipL.rotation.z += 0.06 * hov * k; j.hipR.rotation.z -= 0.04 * hov * k;
+        // arms: hover = loose, a little out from the body, elbows soft; fast = right fist ahead, left swept back
+        for (const s of ["L", "R"]) {
+          const sx = s === "L" ? 1 : -1;
+          const loose = hov * (1 - Math.max(0, climb)); // a raised arm isn't hanging loose
+          j["sh" + s].rotation.z += sx * (0.28 + bob * 0.03) * loose * k;
+          j["el" + s].rotation.x -= 0.35 * loose * k;
+        }
+        const up = Math.max(0, climb), arm = Math.max(fast, up); // rising also raises the leading fist, towards the sky
+        j.shR.rotation.x += (-2.75 - 0.5 * up) * arm * k; j.elR.rotation.x += 0.15 * arm * k;
+        j.shL.rotation.x += 0.45 * arm * k; j.shL.rotation.z += 0.12 * arm * k; j.elL.rotation.x -= 0.15 * arm * k;
       }
       // powering up: crouched, fists clenched at the sides, chest out, head back a little
       if (pose.charge > 0.01) {
