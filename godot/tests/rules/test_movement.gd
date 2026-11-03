@@ -12,11 +12,12 @@ func test_diagonal_speed_and_no_runtime_state_in_saves() -> void:
 func test_dash_cost_direction_cooldown_and_stun_cancel() -> void:
 	var g := fresh()
 	var start: Vector3 = g.player.pos
+	var cost: float = g.movement.tuning.dashCost*RuleGame.KI_COST_EASE
 	tick(g,{"dash":true,"move_x":1})
-	near(g.player.ki,g.player.maxKi-g.movement.tuning.dashCost)
+	near(g.player.ki,g.player.maxKi-cost)
 	ok(g.player.dashing)
 	tick(g,{"dash":true,"move_x":1},9)
-	near(g.player.ki,g.player.maxKi-g.movement.tuning.dashCost)
+	near(g.player.ki,g.player.maxKi-cost)
 	ok(g.player.pos.x-start.x>4)
 	tick(g,{},3)
 	eq(g.player.dashing,false)
@@ -24,7 +25,7 @@ func test_dash_cost_direction_cooldown_and_stun_cancel() -> void:
 	tick(g,{"dash":true,"charge":true,"melee":true})
 	eq(g.player.dashing,false)
 	eq(g.player.charging,false)
-func test_flight_pitch_hover_descent_and_ki_exhaustion() -> void:
+func test_flight_pitch_hover_descent_and_no_ki_drain() -> void:
 	var g := fresh()
 	g.player.ki = 100
 	tick(g,{"flight":true,"ascend":true})
@@ -38,8 +39,11 @@ func test_flight_pitch_hover_descent_and_ki_exhaustion() -> void:
 	ok(g.player.pos.y<high)
 	g.player.ki = 0.0
 	tick(g,{"charge":true})
+	eq(g.player.flying,true,"empty ki doesn't end flight")
+	eq(g.player.charging,false,"no charging in the air")
+	tick(g,{"flight":true})
 	eq(g.player.flying,false)
-	eq(g.player.charging,false)
+	tick(g,{},10)
 	ok(g.player.vel.y<0)
 func test_charge_caps_pool_and_suppresses_movement_and_attack() -> void:
 	var g := fresh()

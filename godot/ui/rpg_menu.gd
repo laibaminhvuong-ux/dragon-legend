@@ -317,7 +317,7 @@ func _tab_forms(slot: Dictionary, race: Dictionary) -> void:
 		var owned: bool = (slot.get("forms", []) as Array).has(id)
 		var v := _card()
 		v.add_child(UiKit.label(str(form.name), "HeaderMedium"))
-		v.add_child(UiKit.label("Lv. %d · %s× stats · %s base ki/s" % [int(form.unlockLevel), str(form.multiplier), str(form.kiDrain)], "Muted"))
+		v.add_child(UiKit.label("Lv. %d · %s× stats · %d base ki to transform" % [int(form.unlockLevel), str(form.multiplier), roundi(float(form.kiDrain)*RuleGame.TRANSFORM_COST_SECONDS*RuleGame.KI_COST_EASE)], "Muted"))
 		if form.get("mastery") is Dictionary:
 			var fm: Dictionary = form.mastery
 			v.add_child(UiKit.label("Requires %s Mastery Lv. %d: %d / %d points%s" % [Data.forms.get(str(fm.from), {}).get("name", fm.from), int(fm.required) / 10,

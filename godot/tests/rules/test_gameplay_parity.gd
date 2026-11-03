@@ -15,7 +15,12 @@ func test_movement_traces_match_javascript_oracle() -> void:
 			movement.step(e,it,1.0/60,Flat.new())
 		for key: String in ["pos","vel"]:
 			ok(e[key].distance_to(RuleRuntime.vector(c.expected[key]))<0.0002,"JS movement "+key)
-		for key: String in ["ki","yaw","dashRemaining","dashCooldown"]:
+		# Flight no longer drains Ki (user tuning 2026-11-03), so flight traces only keep at least the JS Ki.
+		if c.intents.has("flight") or bool(c.expected.flying):
+			ok(float(e.ki)>=float(c.expected.ki)-0.00001,"ki without flight drain")
+		else:
+			near(e.ki,c.expected.ki,0.00001,"ki")
+		for key: String in ["yaw","dashRemaining","dashCooldown"]:
 			near(e.get(key,0),c.expected.get(key,0),0.00001,key)
 		for key: String in ["flying","charging","dashing","blocking","onGround"]:
 			eq(e[key],c.expected[key],key)

@@ -37,11 +37,21 @@ func _init(index: int = 0,saved: Dictionary = {},bus: Object = null) -> void:
 	combat = RuleCombat.new(self,events)
 func emit(event: String,payload: Dictionary = {}) -> void:
 	RuleRuntime.emit(events,event,payload)
+## User tuning (2026-11-03): every Ki cost is this much of the classic game's, and a form costs
+## TRANSFORM_COST_SECONDS of its old per-second drain once when you transform (no drain while in it).
+const KI_COST_EASE := 0.75
+const TRANSFORM_COST_SECONDS := 5.0
+func transform_cost(id: String) -> float:
+	if id=="" or not forms.forms.has(id):
+		return 0.0
+	var f: Dictionary = forms.forms[id]
+	return f.kiDrain*TRANSFORM_COST_SECONDS*player.kiCostScale*(0.7 if "GodKi" in slot.moves else 1.0)*(0.8 if slot.story.items.get("instinctMastery",0) and f.get("path")=="instinct" else 1.0)
 func refresh_derived(fill_up: bool = false) -> void:
 	var d: Dictionary = progression.derive(slot,player.form)
 	var hp_fraction: float = player.health/player.maxHealth if player.maxHealth>0 else 1.0
 	for key: String in ["maxHealth","maxKi","kiCostScale","runSpeed","strength","kiPower","powerLevel"]:
 		player[key] = d[key]
+	player.kiCostScale *= KI_COST_EASE
 	player.health = d.maxHealth if fill_up else RuleRuntime.js_round(d.maxHealth*hp_fraction)
 	player.ki = d.maxKi if fill_up else minf(player.ki,d.maxKi)
 	emit("stats",hud())
@@ -59,7 +69,7 @@ func select_form(id: String) -> Variant:
 		return "You cannot transform right now."
 	if id!="" and id not in forms.usable_forms(slot):
 		return "Unlock this form, its level and its chosen path first."
-	if id!="" and player.ki<forms.forms[id].kiDrain*player.kiCostScale:
+	if id!="" and id!=player.form and not RuleKi.try_spend_ki(player,transform_cost(id)):
 		return "Charge more ki first."
 	player.form = id
 	if id!="UltraEgo":
@@ -113,7 +123,7 @@ func update(dt: float,intents: Dictionary = {}) -> void:
 		var unlocked: Array = forms.usable_forms(slot)
 		var i: int = (unlocked.find(player.form)+1) % (unlocked.size()+1)
 		var next: String = unlocked[i] if i<unlocked.size() else ""
-		if next!="" and player.ki<forms.forms[next].kiDrain*player.kiCostScale:
+		if next!="" and not RuleKi.try_spend_ki(player,transform_cost(next)):
 			emit("notify",{"text":"Charge more ki before transforming."})
 		else:
 			player.form = next
@@ -129,7 +139,7 @@ func update(dt: float,intents: Dictionary = {}) -> void:
 	combat.update(dt,intents)
 	if player.form!="" and (player.charging or player.vel.length()>0.5):
 		add_form_mastery(mastery.tuning.perSecond*dt)
-	if not player.flying and not player.dashing and not player.charging and player.form=="" and player.health>0:
+	if not player.dashing and not player.charging and player.health>0:
 		RuleKi.regen_ki(player,dt)
 	player.stun = maxf(0,player.stun-dt)
 func hud() -> Dictionary:

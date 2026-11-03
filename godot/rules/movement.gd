@@ -19,11 +19,11 @@ func step(entity: Dictionary,it: Dictionary,dt: float,zone: RefCounted) -> void:
 	if not can_move:
 		entity.dashRemaining = 0.0
 	if can_move and it.get("flight",false):
-		entity.flying = not entity.flying and entity.ki>0
+		entity.flying = not entity.flying
 		entity.vel.y = 0.0
 		if entity.flying:
 			entity.onGround = false
-	if entity.flying and (not can_move or not RuleKi.try_spend_ki(entity,m.flightDrain*ki_scale*dt)):
+	if entity.flying and not can_move:
 		entity.flying = false
 		entity.vel.y = minf(0,entity.vel.y)
 	entity.charging = can_move and it.get("charge",false) and not entity.flying and entity.onGround and entity.dashRemaining==0

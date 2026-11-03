@@ -321,13 +321,6 @@ func update(dt: float,it: Dictionary) -> void:
 	else:
 		beam_held = false
 		beam_time = 0
-	if p.form!="":
-		var f: Dictionary = forms.forms[p.form]
-		var drain: float = f.kiDrain*p.kiCostScale*(0.7 if "GodKi" in game.slot.moves else 1)*(0.8 if game.slot.story.items.get("instinctMastery",0) and f.get("path")=="instinct" else 1)*dt
-		if not RuleKi.try_spend_ki(p,drain):
-			p.form = ""
-			game.refresh_derived()
-			notify("Transformation ended: ki exhausted.")
 	if avatar.remaining>0:
 		if not forms.can_manifest_avatar(game.slot,p):
 			avatar.remaining = 0.0

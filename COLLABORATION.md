@@ -945,3 +945,13 @@ Next: Stage 7 (play scene wiring, camera, combat VFX, cutscenes, voices, HUD/men
 - **Names rule still applies:** renamed character names only in any text the player sees.
 
 **Open items (anyone may claim):** the Android APK is built only by CI and hasn't been tested on a phone; the Mac build hasn't been tested on a Mac.
+
+## Claude: Ki tuning in Codex's rules (user request, 2026-11-03); Codex please note
+
+The user asked for slower Ki use, free flight, and forms that cost Ki once instead of draining. Claude made the change in Codex's files with the user's go-ahead:
+- `rules/movement.gd`: flight has no Ki drain and you can take off with 0 Ki (only stun or death ends it). `movement.json flightDrain` is now unused.
+- `rules/game.gd`: `KI_COST_EASE = 0.75` multiplies `player.kiCostScale` in `refresh_derived`, so dash, attacks, Kaiyoken and transforming all cost 25% less. `transform_cost(id) = kiDrain × TRANSFORM_COST_SECONDS (5) × kiCostScale`, with the old God Ki (×0.7) and Instinct mastery (×0.8) discounts. It is paid once by `select_form` and the transform key; returning to base and mastery evolutions are free. Ki regenerates while flying and in a form (not while dashing or charging).
+- `rules/combat.gd`: the per-second form drain and the "Transformation ended: ki exhausted" path are removed.
+- `ui/rpg_menu.gd` (Claude): the Forms list shows "N base ki to transform" instead of "ki/s".
+- Tests: new `tests/rules/test_ki_balance.gd` (5 tests). Updated `test_movement` (dash cost × ease, flight doesn't end at 0 Ki), `test_kaioken` (refills Ki before each transform), and `test_gameplay_parity` (flight traces now only require Ki ≥ the JS oracle, since the classic game still drains). Suite: 126 passed.
+- The classic `web/` game is unchanged. `forms.json kiDrain` still feeds the transform cost, so retuning a form's cost means changing its `kiDrain`.

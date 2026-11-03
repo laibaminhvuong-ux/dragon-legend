@@ -9,6 +9,7 @@ func test_stacks_on_every_saiyan_form_and_never_replaces_equipped_beam() -> void
 			if id in ["Kaioken","Kaioken10"]:
 				continue
 			g.kaioken.cooldown = 0
+			g.player.ki = g.player.maxKi
 			eq(g.select_form(id),null,id)
 			eq(g.kaioken.toggle(),null,id)
 			near(g.kaioken.multiplier(),2)
