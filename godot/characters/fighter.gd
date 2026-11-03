@@ -33,6 +33,8 @@ var form_aura: Aura
 var charge_aura: Aura
 var kaioken_aura: Aura
 var ape: GreatApe
+var presentation: Dictionary = {}
+var _charge_time := 0.0
 var _t := 0.0
 var _attachments: Dictionary = {}   # bone -> BoneAttachment3D
 var _skin_pieces: Array = []        # [MeshInstance3D, shade]
@@ -90,7 +92,11 @@ func _build() -> void:
 func update(dt: float, a: Dictionary = {}) -> void:
 	if dt <= 0.0:
 		return
+	a = a.duplicate()
+	a.merge(presentation,true)
+	a.yaw = rotation.y
 	_t += dt
+	_charge_time = minf(2.0,_charge_time+dt) if a.get("charging",false) else 0.0
 	anim.update(dt, a)
 	if a.get("charging", false) and charge_aura == null:
 		var cl: Dictionary = Tables().appearance.get("KI_CHARGE_LOOK", {}).duplicate()
@@ -100,7 +106,9 @@ func update(dt: float, a: Dictionary = {}) -> void:
 		body.add_child(charge_aura)
 	if charge_aura != null:
 		charge_aura.visible = a.get("charging", false)
-		if charge_aura.visible: charge_aura.update(dt)
+		if charge_aura.visible:
+			charge_aura.scale = Vector3.ONE*(0.72+0.28*smoothstep(0,1.5,_charge_time))
+			charge_aura.update(dt)
 	var kk: bool = bool(a.get("kaioken", false))
 	if kk and kaioken_aura == null:
 		kaioken_aura = Aura.create(Tables().kaioken.get("aura", {}))
@@ -113,8 +121,13 @@ func update(dt: float, a: Dictionary = {}) -> void:
 		form_aura.update(dt)
 	if ape != null:
 		ape.update(dt, a)
+	if hair != null:
+		if not hair.has_meta("motion_base"):
+			hair.set_meta("motion_base",hair.transform)
+		var hair_rest: Transform3D = hair.get_meta("motion_base")
+		hair.transform = hair_rest*Transform3D(Basis.from_euler(Vector3(0,0,sin(_t*22)*minf(1,_charge_time)*0.012)),Vector3.ZERO)
 	if cape != null:
-		cape.transform = cape_base * Transform3D(Basis.from_euler(Vector3(minf(0.9, float(a.get("speed", 0.0)) * 0.08) + sin(_t * 3.0) * 0.03, 0, 0)), Vector3.ZERO)
+		cape.transform = cape_base * Transform3D(Basis.from_euler(Vector3(minf(0.9, float(a.get("speed", 0.0)) * 0.08) + sin(_t * (14.0 if _charge_time>0 else 3.0)) * (0.07 if _charge_time>0 else 0.03), 0, 0)), Vector3.ZERO)
 
 static func hair_material() -> ShaderMaterial:
 	if _hair_material == null:
@@ -184,6 +197,7 @@ func set_form(id: String) -> void:
 		return
 	_clear_form()
 	form_id = id
+	anim.set_form(id)
 	var F: Dictionary = Tables().form_looks.get(id, {})
 	if F.is_empty():
 		return

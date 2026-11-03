@@ -8,7 +8,7 @@ extends RefCounted
 # PoseModifier layers flight, power-up, dash, block and kick poses on top. One-shots always end: a timer
 # returns the controller to its base state even if a new state cuts in.
 
-const ATTACKS := {"jab": "Punch_Jab", "cross": "Punch_Cross", "hook": "Punch_Enter", "ki": "Spell_Simple_Shoot", "beam": "Spell_Simple_Shoot"}
+const ATTACKS := {"jab": "Punch_Jab", "cross": "Punch_Cross", "hook": "Punch_Enter", "ki": "Spell_Simple_Shoot", "beam": "Spell_Simple_Shoot", "ultimate":"Spell_Simple_Shoot", "utility":"Spell_Simple_Shoot", "avatar":"Spell_Simple_Shoot"}
 const KICK_TIME := 0.5
 const UPPER := ["DEF-spine.002", "DEF-spine.003", "DEF-neck", "DEF-head", "DEF-shoulder", "DEF-upper_arm", "DEF-forearm", "DEF-hand", "DEF-f_", "DEF-thumb"]
 
@@ -20,7 +20,17 @@ var one_shot := ""            # the attack/hit animation playing, "" when none
 var one_shot_left := 0.0
 var _serial := 0
 var _hurt := false
+var _reaction_serial := 0
 var _kick_t := -1.0
+var form_id := ""
+var style: Dictionary = MotionStyle.for_form("")
+var _age := 10.0
+var _kind := ""
+var _speed := 0.0
+var _yaw: Variant = null
+var _ground := true
+var _vy := 0.0
+var _transform := 10.0
 var _bt: AnimationNodeBlendTree
 
 func _init(f: Fighter) -> void:
@@ -93,10 +103,34 @@ static func _upper_tracks(sk: Skeleton3D) -> Array:
 func update(dt: float, anim: Dictionary) -> void:
 	if dt <= 0.0:
 		return
-	var flying: bool = anim.get("flying", false)
+	var flying: bool = anim.get("flying", false) and not anim.get("dead",false)
 	var on_ground: bool = anim.get("onGround", true)
-	var speed := float(anim.get("speed", 0.0))
+	var speed := maxf(0.0,float(anim.get("speed", 0.0)))
 	var vy := float(anim.get("vy", 0.0))
+	_age += dt
+	_transform += dt
+	mod.landing = maxf(0.0,mod.landing-dt*3.5)
+	mod.takeoff = maxf(0.0,mod.takeoff-dt*4.0)
+	if on_ground and not _ground and not flying:
+		mod.landing = clampf(absf(_vy)/14.0,0.18,0.85)
+	if (not on_ground and _ground) or (flying and state!="fly"):
+		mod.takeoff = 1.0
+	_ground = on_ground
+	_vy = vy
+	var acceleration := (speed-_speed)/maxf(dt,0.001)
+	_speed = lerpf(_speed,speed,1.0-exp(-dt*12.0))
+	var yaw := float(anim.get("yaw",0.0))
+	var turn: float = wrapf(yaw-float(_yaw),-PI,PI)/maxf(dt,0.001) if _yaw!=null else 0.0
+	_yaw = yaw
+	mod.lean = lerpf(mod.lean,clampf(turn*speed*0.012,-0.25,0.25),1.0-exp(-dt*9.0))
+	mod.brake = lerpf(mod.brake,clampf(-acceleration*0.008,0.0,0.23),1.0-exp(-dt*8.0))
+	mod.surge_weight = sin(clampf(_transform/0.65,0,1)*PI) if _transform<0.65 else 0.0
+	mod.style = style
+	mod.dash_side = float(anim.get("dashSide",0))
+	mod.dash_back = float(anim.get("dashBack",0))
+	mod.aim_pitch = lerpf(mod.aim_pitch,clampf(float(anim.get("aimPitch",0)),-0.9,0.9),1.0-exp(-dt*14))
+	mod.cast = lerpf(mod.cast,clampf(float(anim.get("beamCharge",0)),0,1),1.0-exp(-dt*14))
+	mod.heavy_hit = lerpf(mod.heavy_hit,0.0,1.0-exp(-dt*7))
 	var next := "ground"
 	if anim.get("dead", false): next = "dead"
 	elif flying: next = "fly"
@@ -112,27 +146,45 @@ func update(dt: float, anim: Dictionary) -> void:
 	if state != "dead":
 		if serial != _serial and serial != 0:
 			var kind := str(anim.get("attackKind", "jab"))
+			_age = 0.0
+			_kind = kind
 			if kind.contains("kick"):
 				_kick_t = 0.0
 				_end_shot()
 			else:
 				_play_shot(ATTACKS.get(kind, "Punch_Jab"))
 		var hurt: bool = anim.get("hurt", false)
-		if hurt and not _hurt:
-			_play_shot("Hit_Chest" if randf() < 0.6 else "Hit_Head")
+		var reaction_serial := int(anim.get("reactionSerial",0))
+		if hurt and (not _hurt or reaction_serial!=_reaction_serial):
+			_play_shot("Hit_Head" if absf(float(anim.get("hitSide",0)))>0.5 else "Hit_Chest")
+			mod.heavy_hit = clampf(float(anim.get("hitWeight",0.4)),0.15,1.0)
+			mod.hit_side = clampf(float(anim.get("hitSide",0)),-1,1)
+			_age = 10.0
+			_kick_t = -1.0
+			mod.kick = 0.0
 		_hurt = hurt
+		_reaction_serial = reaction_serial
 	_serial = serial
 	if one_shot != "":
 		one_shot_left -= dt
 		if one_shot_left <= 0.0 or state == "dead":
 			_end_shot()
 	# procedural layers (eased as in the JS model)
-	var e := minf(1.0, dt * 8.0)
+	if state=="dead":
+		_kick_t = -1.0
+		mod.kick = 0.0
+		mod.heavy_hit = 0.0
+		mod.cast = 0.0
+		mod.surge_weight = 0.0
+		_age = 10.0
+	mod.strike = MotionStyle.strike(_age,0.38 if _kind=="jab" else 0.5) if _age<0.5 else 0.0
+	mod.strike_kind = _kind
+	var e := 1.0-exp(-dt*8.0)
 	var w := mod
 	w.fly += ((1.0 if flying else 0.0) - w.fly) * e
-	w.charge += ((1.0 if anim.get("charging", false) else 0.0) - w.charge) * e
-	w.dash += ((1.0 if anim.get("dashing", false) else 0.0) - w.dash) * e
-	w.block += ((1.0 if anim.get("blocking", false) else 0.0) - w.block) * e
+	w.charge += ((1.0 if anim.get("charging", false) and state!="dead" else 0.0) - w.charge) * e
+	w.dash += ((1.0 if anim.get("dashing", false) and state!="dead" else 0.0) - w.dash) * e
+	w.block += ((1.0 if anim.get("blocking", false) and state!="dead" else 0.0) - w.block) * e
 	var fly_speed := Vector2(speed, vy * 0.6).length()
 	w.fast += (clampf((fly_speed - 2.0) / 8.0, 0.0, 1.0) - w.fast) * minf(1.0, dt * 3.0)
 	w.climb += (clampf(vy / 10.0, -1.0, 1.0) - w.climb) * minf(1.0, dt * 3.0)
@@ -163,3 +215,8 @@ func _end_shot() -> void:
 
 func kicking() -> bool:
 	return _kick_t >= 0.0
+
+func set_form(id: String) -> void:
+	form_id = id
+	style = MotionStyle.for_form(id)
+	_transform = 0.0

@@ -14,8 +14,22 @@ var fast := 0.0
 var climb := 0.0
 var charge := 0.0
 var dash := 0.0
+var dash_side := 0.0
+var dash_back := 0.0
 var block := 0.0
 var kick := 0.0
+var style: Dictionary = MotionStyle.for_form("")
+var lean := 0.0
+var brake := 0.0
+var landing := 0.0
+var takeoff := 0.0
+var surge_weight := 0.0
+var cast := 0.0
+var aim_pitch := 0.0
+var strike := 0.0
+var strike_kind := ""
+var heavy_hit := 0.0
+var hit_side := 0.0
 var t := 0.0
 var _ids: Dictionary = {}
 
@@ -81,6 +95,52 @@ func _process_modification() -> void:
 		body.x -= 0.22 * kk
 		thigh.R.x -= 1.55 * kk; shin.R.x += 0.15 * kk
 		arm.L.x -= 0.4 * kk; arm.R.x += 0.5 * kk
+	# Whole-body follow-through and recovery on top of authored clips.
+	body.z -= lean
+	body.x -= brake
+	var weight: float = style.get("weight",1.0)
+	var calm: float = style.get("calm",0.0)
+	chest.x += float(style.get("stance",0))* (1.0-charge)
+	arm.L.z += 0.08*calm; arm.R.z -= 0.08*calm
+	var crouch := landing*weight + takeoff*0.15
+	drop += crouch*0.14
+	for side in ["L","R"]:
+		thigh[side].x -= crouch*0.35
+		shin[side].x += crouch*0.65
+	# A controlled UI rise versus an explosive heavy-form power surge.
+	var surge := surge_weight*(1.0-calm*0.65)
+	chest.x -= surge*0.2
+	for side in ["L","R"]:
+		arm[side].x += surge*0.35
+		fore[side].x -= surge*0.45
+	# Beam wind-up: cupped hands drawn back, then both palms thrust forward.
+	var release := maxf(0.0,strike) if strike_kind in ["beam","ultimate","avatar"] else 0.0
+	var casting := maxf(cast,release)
+	if casting>0.01:
+		body.y += cast*0.28
+		for side in ["L","R"]:
+			var sx := 1.0 if side=="L" else -1.0
+			arm[side].x -= casting*(1.45+aim_pitch)
+			arm[side].z -= sx*casting*0.22
+			fore[side].x -= cast*1.1*(1.0-release)
+		chest.x += release*0.12
+	elif strike_kind=="utility":
+		arm.L.z += maxf(0,strike)*0.65
+		arm.R.z -= maxf(0,strike)*0.65
+		chest.x -= maxf(0,strike)*0.12
+	elif strike_kind=="ki":
+		arm.R.x -= maxf(0,strike)*(0.8+aim_pitch)
+	elif strike_kind in ["jab","cross","hook"]:
+		var twist := strike*(0.12 if strike_kind=="jab" else 0.28)
+		chest.y += twist*(-1 if strike_kind=="jab" else 1)
+		body.y -= twist*0.35
+		neck.y -= twist*0.3
+	body.x -= heavy_hit*0.18
+	chest.z += hit_side*heavy_hit*0.2
+	chest.x -= heavy_hit*0.22
+	if dash>0.01:
+		body.z += (lean-dash_side*0.3)*dash
+		body.x += dash_back*0.7*dash
 	# apply, parents first
 	var hips := _bone("DEF-hips")
 	if drop != 0.0 and hips >= 0:

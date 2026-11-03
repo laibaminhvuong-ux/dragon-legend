@@ -40,12 +40,15 @@ func test_landing_braking_turning_and_death_clear_layers() -> void:
 	f.free()
 func test_charge_base_colour_beam_pitch_and_form_personality() -> void:
 	var f := Fighter.create({"race":"Saiyan","kiColorHex":"#12abef"})
+	var hair_rest: Transform3D = f.hair.transform
 	tick(f,{"charging":true},0.1)
 	ok(f.charge_aura!=null and f.charge_aura.visible)
 	var small: float = f.charge_aura.scale.x
 	tick(f,{"charging":true},1.5)
 	ok(f.charge_aura.scale.x>small)
 	eq(int(f.charge_aura.look.color),0x12abef)
+	tick(f,{},0.1)
+	ok(f.hair.transform.is_equal_approx(hair_rest),"secondary motion preserves bone attachment rest transform")
 	f.presentation = {"beamCharge":1.0,"aimPitch":0.7}
 	tick(f,{},0.4)
 	ok(f.anim.mod.cast>0.95 and f.anim.mod.aim_pitch>0.6)

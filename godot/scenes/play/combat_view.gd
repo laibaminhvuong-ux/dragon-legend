@@ -118,6 +118,7 @@ func _remove(e: Dictionary) -> void:
 		n.queue_free()
 
 func update_view(dt: float) -> void:
+	audio.set_paused(dt<=0)
 	_update_avatar(dt)
 	_update_player_presentation(dt)
 	for id: String in _reactions.keys():

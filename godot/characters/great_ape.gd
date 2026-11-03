@@ -9,6 +9,7 @@ var legs: Array[Node3D] = []
 var _time := 0.0
 var _last_attack := 0
 var _attack_until := 0.0
+var _stride := 0.0
 
 static func create(golden: bool) -> GreatApe:
 	var g := GreatApe.new()
@@ -65,13 +66,22 @@ func update(dt: float, anim: Dictionary) -> void:
 	var serial := int(anim.get("attackSerial", 0))
 	if serial != 0 and serial != _last_attack:
 		_last_attack = serial
-		_attack_until = _time + 0.3
+		_attack_until = _time + 0.55
 	var stride := minf(1.0, float(anim.get("speed", 0.0)) / 8.0)
-	var swing := sin(_time * 9.0) * stride * 0.5
+	_stride = lerpf(_stride,stride,1.0-exp(-dt*5.0))
+	var swing := sin(_time * 6.0) * _stride * 0.5
 	arms[0].rotation.x = -swing; arms[1].rotation.x = swing; legs[0].rotation.x = swing; legs[1].rotation.x = -swing
 	if _attack_until > _time:
-		arms[_last_attack % 2].rotation.x = -1.3 * sin((_attack_until - _time) / 0.3 * PI)
+		arms[_last_attack % 2].rotation.x = -1.3 * MotionStyle.strike(0.55-(_attack_until-_time),0.55)
 	if anim.get("blocking", false):
 		for a in arms: a.rotation.x = -1.2
 	hips.rotation.x = 0.25 if anim.get("dashing", false) else 0.0
-	hips.position.y = 0.78 + absf(sin(_time * 9.0)) * 0.025 * stride
+	hips.position.y = 0.78 + absf(sin(_time * 6.0)) * 0.04 * _stride
+
+	if anim.get("charging",false):
+		hips.rotation.x = -0.1
+		for a in arms: a.rotation.x = 0.25+sin(_time*24)*0.012
+	if anim.get("hurt",false):
+		hips.rotation.x -= 0.18
+	if anim.get("flying",false):
+		hips.rotation.x += 0.75*_stride
