@@ -49,7 +49,7 @@ try {
   });
   assert.ok(frames > 100, "creator preview stayed up");
 
-  await page.locator(".creator-foot .btn.primary").click();
+  await page.locator(".creator-foot .btn.primary").click({ timeout: 90000 }); // starting the world takes a while on software rendering
   await page.waitForFunction(() => globalThis.__dragonlegend.scenes.name === "play" && globalThis.__dragonlegend.game);
   await page.waitForFunction(() => globalThis.__dragonlegend.loop.stats.frames > 20);
 

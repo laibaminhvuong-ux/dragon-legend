@@ -16,6 +16,7 @@ import { OUTFITS, outfitAllowed } from "../data/outfits.js";
 //   story.travelTo(zone)        travel there (must stand next to the guide)
 //   story.tasksHere()           titles of the story tasks still open on this planet
 //   story.pickups()             pickups to grab here: [{ item, x, y, z }]
+//   story.radar()               Dragon Radar: { here: [{ item, x, z }], elsewhere: [{ zone, name, count }] }
 //   story.waypoint()            current objective position here, or null
 //   story.tracker()             quest log: [{ id, title, saga, main, objective, progress }]
 //   story.journal()             { done: [ids], unlocked: [zones], visited: [zones], moves, forms }
@@ -336,6 +337,24 @@ export function createStory(game, events = null) {
     },
 
     pads,
+
+    /** The Dragon Radar: uncollected orbs of every active orb hunt. here: [{ item, x, z }] in this world;
+     *  elsewhere: [{ zone, name, count }] in other worlds. */
+    radar() {
+      const here = [], away = {};
+      for (const q of activeQuests()) {
+        const step = stepOf(q);
+        if (step.type !== "collect" || !/_ball$/.test(step.item)) continue;
+        const got = qs(q.id).collected || [];
+        step.spots.forEach((s, i) => {
+          if (got.includes(i)) return;
+          const z = s.zone ?? step.zone;
+          if (z === zone.id) here.push({ item: step.item, x: s.x, z: s.z });
+          else if (z) away[z] = (away[z] || 0) + 1;
+        });
+      }
+      return { here, elsewhere: Object.entries(away).map(([z, count]) => ({ zone: z, name: ZONES[z]?.name || z, count })) };
+    },
 
     pickups() {
       const out = [];

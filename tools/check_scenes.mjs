@@ -116,4 +116,27 @@ ok("scene lines resolve speaker names; unknown bosses get a generic scene");
   ok("travel guide: hidden while the planet's story tasks remain, then offers the next story world first");
 }
 
+// ---- Dragon Radar
+{
+  const ev = createEvents();
+  const slot = newSlot(defaultLook("Saiyan"));
+  slot.zone = "earth_plains";
+  let game = createGame(0, slot, ev), story = createStory(game, ev);
+  assert.deepEqual(story.radar(), { here: [], elsewhere: [] }, "nothing to track without a hunt");
+  const hunt = QUESTS.find((q) => q.id === "s_dragon_radar");
+  slot.quests[hunt.id] = { status: "active", step: 0, collected: [] };
+  game = createGame(0, slot, ev); story = createStory(game, ev);
+  const r = story.radar();
+  const spots = hunt.steps[0].spots;
+  const hereCount = spots.filter((s) => (s.zone ?? hunt.steps[0].zone) === "earth_plains").length;
+  assert.equal(r.here.length, hereCount, "orbs in this world");
+  assert.equal(r.here.length + r.elsewhere.reduce((n, e) => n + e.count, 0), spots.length, "every orb is accounted for");
+  assert.ok(r.elsewhere.every((e) => e.name && e.count > 0));
+  // collecting one removes it from the radar
+  const first = spots.findIndex((s) => (s.zone ?? hunt.steps[0].zone) === "earth_plains");
+  slot.quests[hunt.id].collected = [first];
+  assert.equal(story.radar().here.length, hereCount - 1, "collected orbs leave the radar");
+  ok(`Dragon Radar: ${r.here.length} orbs here, ${r.elsewhere.length} other worlds listed, collected orbs drop off`);
+}
+
 console.log(`\n${checks} scene/tutorial/travel checks passed`);

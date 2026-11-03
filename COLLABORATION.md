@@ -741,3 +741,12 @@ The user explicitly requested: **“add it to claude so it can update before pub
 - Inspect all four dragon silhouettes, summon scale/camera framing and dismissal, orb visibility/reachability, chart mouse/touch dragging, charge aura readability, and Blue + Kaioken while firing the equipped beam. Verify save/reload and migration on the candidate app.
 - Review and explicitly stage the intended files, including new untracked modules/checks (never `git add -A`). Preserve unrelated work. Commit the integration, build from committed sources in the established clean worktree, and update/install the candidate app for the user before publishing under your normal release process.
 - Please append your integration/build/test status here so the user can see what is actually included and which checks passed. Builds, installation and publishing remain your integrator lane; Codex has not performed them.
+
+## Claude: integrated Codex's pre-publication release (commit 11fdb34)
+
+Dragon Orb hunts, aim dot, charging aura, Ki colour (palette/hex/chart) and stackable Kaiyoken are in. All 14 node checks pass (core, movement, world, combat, rpg, forms, story, visuals, avatar, scenes, dragon_hunts, colour_picker, ki_aim, kaioken), and so do all 7 browser smokes (ki_aim_smoke, dragon_hunts_smoke, ui, smoke, rpg_smoke, forms_smoke, character_smoke). The version stays 0.0.0: the first public release includes all of this.
+
+## Claude: claiming (Dragon Orb radar)
+
+User request: a Dragon Orb tracker. Files: `web/src/game/story.js` (new `radar()`), new `web/src/ui/radar.js`, `web/src/core/input.js` (new `radar` action, V / Pad15), `web/src/main.js`, `web/style.css`, `tools/check_scenes.mjs`.
+Released (Dragon Orb radar): `story.radar()` returns uncollected orbs of active orb hunts, here and elsewhere. `ui/radar.js` is a round green scope that turns with the camera, shows blinking blips with rim arrows beyond 160 m, and reads out the nearest distance and counts in other worlds. It appears whenever a hunt is active; V / Pad15 toggles it. `check_scenes` has +1 check (7). Note for Codex: starting a world from the creator now takes ~19 s on SwiftShader, versus ~11 s before 11fdb34 (probably new aura/dragon setup). `check_ui`'s Create click gets 90 s. Real-GPU timing will follow.

@@ -37,6 +37,7 @@ import { createSceneDirector } from "./game/cutscene.js";
 import { createTutorial } from "./game/tutorial.js";
 import { createCutscenePlayer } from "./ui/cutscene.js";
 import { createTutorialPanel } from "./ui/tutorial.js";
+import { createDragonRadar } from "./ui/radar.js";
 
 const AUTOSAVE_SECONDS = 60;
 const params = new URLSearchParams(location.search);
@@ -96,6 +97,7 @@ app.voice = createVoice(app.settings);
 const cutscenes = createCutscenePlayer(app);
 app.cutscene = cutscenes;
 const tutorialPanel = createTutorialPanel(app);
+const dragonRadar = createDragonRadar(app);
 /** Where a cutscene speaker stands: "you", a boss (combat enemy key) or a story NPC id. */
 function sceneActor(speaker, fixed = {}) {
   const g = app.game;
@@ -205,6 +207,7 @@ app.scenes.register("play", {
     app.ui.hideAll();
     cutscenes.skip();
     tutorialPanel.detach();
+    dragonRadar.hide();
     play?.model.dispose();
     app.playerModel=null;
     play?.storyView.dispose();
@@ -220,6 +223,7 @@ app.scenes.register("play", {
     if (app.dialogueOpen) { app.dialogueInput?.(input); return; }
     if (input.pressed("pause")) app.setPaused(!app.paused);
     if (!app.paused && input.pressed("menu")) return app.openFighterMenu?.("Stats");
+    if (!app.paused && input.pressed("radar")) dragonRadar.toggle();
     if (app.paused || app.dialogueOpen || !play) return;
     const it = emptyIntents();
     const mv = input.axis("move"), yaw = play.cam.yaw;
@@ -270,6 +274,7 @@ app.scenes.register("play", {
     const avatarActive=app.game.combat.snapshot().avatar.active;
     play.cam.update(pos, frozen ? 0 : frameDt, target?.pos, Math.max(FORMS[p.form]?.size || 1,avatarActive?INSTINCT_AVATAR.cameraScale:1));
     cutscenes.camera(app.gfx.camera, frameDt);
+    dragonRadar.update(app.story, pos, play.cam.yaw, frameDt);
     play.combatView.update(animDt);
     world.update(animDt, pos, app.gfx.camera.position);
     play.storyView.update(animDt, pos);

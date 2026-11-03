@@ -20,6 +20,7 @@ export const ACTIONS = [
   { id: "lockOn", label: "Lock on" },
   { id: "interact", label: "Talk / interact" },
   { id: "menu", label: "Fighter menu (stats, forms...)" },
+  { id: "radar", label: "Dragon Radar on/off" },
   { id: "pause", label: "Pause menu" },
 ];
 /** Axes: "move" {x: right+, y: forward+} and "look" (deltas, via takeLook()). */
@@ -41,6 +42,7 @@ export const DEFAULT_BINDINGS = {
   lockOn: ["Tab", "Pad11"],
   interact: ["KeyG", "Pad13"],
   menu: ["KeyM", "Pad8"],
+  radar: ["KeyV", "Pad15"],
   pause: ["Escape", "Pad9"],
 };
 
