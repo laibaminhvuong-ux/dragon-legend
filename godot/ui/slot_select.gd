@@ -69,6 +69,7 @@ func draw() -> void:
 		grid.add_child(_card(slots[i] if i < slots.size() else null, i))
 	var foot := HBoxContainer.new()
 	foot.alignment = BoxContainer.ALIGNMENT_CENTER
+	foot.add_child(UiKit.button("Server",func() -> void: add_child(ServerMenu.new(main)),true))
 	foot.add_child(UiKit.button("Save codes", func() -> void: _codes = not _codes; draw()))
 	foot.add_child(UiKit.button("Settings", func() -> void:
 		var pm := PauseMenu.new(main, true)

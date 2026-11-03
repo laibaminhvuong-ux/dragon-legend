@@ -52,6 +52,11 @@ func _ready() -> void:
 		_dev_shot_setup()
 	match str(_args.get("screen", "")):   # GPU checks of each screen
 		"creator": open_creator(2)
+		"server":   # dev: the co-op Server screen over the title menu
+			await get_tree().create_timer(1.0).timeout
+			if menu != null:
+				var sel := ui.find_children("*", "SlotSelect", true, false)
+				if not sel.is_empty(): sel[0].add_child(ServerMenu.new(self))
 		"forms":
 			await get_tree().create_timer(2.0).timeout
 			if play != null: play_ui.forms.open()

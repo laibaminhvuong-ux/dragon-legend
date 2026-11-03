@@ -4,6 +4,8 @@ var _game: WeakRef
 var game: Variant:
 	get:return _game.get_ref()
 var _story: WeakRef
+var party: WeakRef
+var world_authority := true
 var events: Object
 var p: Dictionary
 var zone: RuleZone
@@ -81,6 +83,11 @@ func sync() -> void:
 		if not enemies.any(func(e: Dictionary) -> bool:return e.key==d.key):
 			spawn(d.merged({"look":d.look if d.get("look") is Dictionary else game.schema.default_look("Saiyan")},true))
 func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = false) -> void:
+	if party!=null and party.get_ref()!=null:
+		var owner: Variant = party.get_ref().game_for_player(str(target.id)) if target.get("kind")=="player" else party.get_ref().game_for_player(str(source.get("id","")))
+		if owner!=null and owner.combat!=self:
+			owner.combat.hit(target,damage,source,finisher)
+			return
 	if target.health<=0 or (target==p and p.get("evadeUntil",0)>clock):
 		return
 	if target==p:
@@ -226,7 +233,7 @@ func fire(id: String,charge: float = 0) -> bool:
 			emit("beam",{"from":ray.origin,"to":end,"color":RuleRuntime.ki_color(game.slot.appearance)})
 		_:
 			serial += 1
-			projectiles.append({"id":serial,"pos":ray.origin,"dir":ray.dir,"life":c.projectileLife,"damage":damage,"owner":p,"color":RuleRuntime.ki_color(game.slot.appearance)})
+			projectiles.append({"id":(p.id+":"+str(serial)) if party!=null else serial,"pos":ray.origin,"dir":ray.dir,"life":c.projectileLife,"damage":damage,"owner":p,"color":RuleRuntime.ki_color(game.slot.appearance)})
 	p.attackSerial += 1
 	p.attackKind = "cross"
 	emit("attack",{"id":p.id,"kind":definition.kind,"pos":p.pos})
@@ -277,7 +284,7 @@ func update(dt: float,it: Dictionary) -> void:
 			p.stun = 0.0
 			p.onGround = true
 			p.invulnerableUntil = clock+c.spawnProtection
-			for e: Dictionary in enemies:
+			for e: Dictionary in enemies if party==null else []:
 				e.pos = e.home
 				e.health = e.maxHealth
 				e.windup = 0.0
@@ -340,6 +347,7 @@ func update(dt: float,it: Dictionary) -> void:
 		p.egoBoost = 0.0
 	if clock-last_damage>c.regenDelay and not game.kaioken.snapshot().active:
 		p.health = minf(p.maxHealth,p.health+p.maxHealth*c.playerRegen*dt)
+	if not world_authority: return
 	for i in range(projectiles.size()-1,-1,-1):
 		var b: Dictionary = projectiles[i]
 		var old: Vector3 = b.pos
@@ -353,22 +361,23 @@ func update(dt: float,it: Dictionary) -> void:
 		if b.life<=0 or b.pos.y<zone.height_at(b.pos.x,b.pos.z):
 			projectiles.remove_at(i)
 	for e: Dictionary in enemies:
+		var victim: Dictionary = party.get_ref().nearest_player(zone.id,e.pos,p) if party!=null and party.get_ref()!=null else p
 		if e.health<=0:
-			if clock>=e.deadUntil and p.pos.distance_to(e.home)>c.respawnSafeRange:
+			if clock>=e.deadUntil and victim.pos.distance_to(e.home)>c.respawnSafeRange:
 				e.health = e.maxHealth
 				e.pos = e.home
 				e.stun = 0.0
 				e.windup = 0.0
 			continue
-		var distance: float = e.pos.distance_to(p.pos)
+		var distance: float = e.pos.distance_to(victim.pos)
 		var home_distance: float = e.pos.distance_to(e.home)
 		e.cooldown = maxf(0,e.cooldown-dt)
 		e.stun = maxf(0,e.stun-dt)
 		if distance>c.aggroRange and not e.get("aggro",false) and home_distance<0.5:
 			e.health = minf(e.maxHealth,e.health+e.maxHealth*dt*c.enemyRegen)
 			continue
-		var returning: bool = distance>c.leashRange or home_distance>c.leashRange or p.pos.y-e.pos.y>5
-		var goal: Vector3 = e.home if returning else p.pos
+		var returning: bool = distance>c.leashRange or home_distance>c.leashRange or victim.pos.y-e.pos.y>5
+		var goal: Vector3 = e.home if returning else victim.pos
 		var delta: Vector3 = goal-e.pos
 		var planar: float = sqrt(delta.x*delta.x+delta.z*delta.z)
 		if planar==0:
@@ -379,10 +388,10 @@ func update(dt: float,it: Dictionary) -> void:
 			e.health = minf(e.maxHealth,e.health+e.maxHealth*dt*c.enemyRegen)
 		if e.windup>0:
 			e.windup -= dt
-			if e.windup<=0 and e.stun<=0 and distance<c.enemyRange+0.5 and not p.get("invulnerableUntil",0)>clock:
+			if e.windup<=0 and e.stun<=0 and distance<c.enemyRange+0.5 and not victim.get("invulnerableUntil",0)>clock:
 				e.attackSerial += 1
 				e.attackKind = "cross"
-				hit(p,(c.enemyDamage+(e.level-1)*c.enemyDamagePerLevel)*(c.bossDamage if e.boss else 1),e)
+				hit(victim,(c.enemyDamage+(e.level-1)*c.enemyDamagePerLevel)*(c.bossDamage if e.boss else 1),e)
 		elif not returning and distance<c.enemyRange and e.cooldown==0 and e.stun==0:
 			e.windup = c.enemyWindup
 			e.cooldown = c.enemyCooldown
