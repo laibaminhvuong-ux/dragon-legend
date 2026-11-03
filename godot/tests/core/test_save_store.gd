@@ -52,5 +52,6 @@ func test_delete() -> void:
 	s.save_slot(0, {"race": "Namekian"})
 	ok(s.delete_slot(0), "delete")
 	eq(s.load_slot(0), null)
-	eq(_store().load_slot(0), null, "deleted on disk too")
-	s.free(); _cleanup()
+	var again := _store()
+	eq(again.load_slot(0), null, "deleted on disk too")
+	again.free(); s.free(); _cleanup()

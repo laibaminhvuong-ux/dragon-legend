@@ -56,6 +56,7 @@ func _init() -> void:
 				print("FAIL %s: %s" % [id, "; ".join(fails)])
 				failed += 1
 	print("%d passed, %d failed" % [passed, failed])
+	OS.remove_logger(errors)
 	quit(1 if failed > 0 else 0)
 
 func _find(dir: String) -> Array[String]:
