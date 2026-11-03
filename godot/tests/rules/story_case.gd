@@ -20,7 +20,13 @@ class Session extends RefCounted:
 		game.player.flying = false
 		game.player.onGround = true
 func go(s: Session,id: String) -> bool:
-	if s.game.zone.id==id:
+	if s.story.here()==id:
+		return true
+	if s.game.zone is RulePlanet and s.game.zone.has_region(id):   # open world: fly across the planet
+		s.at(s.game.zone.region_spawn(id))
+		s.slot.zone = id
+		s.story.update(1.0/60)
+		ok(s.story.here()==id,"arrived in "+id)
 		return true
 	var guide: Variant = s.story.travel_guide()
 	ok(guide!=null,"guide from %s to %s; tasks %s" % [s.game.zone.id,id,s.story.tasks_here()])
@@ -32,6 +38,10 @@ func go(s: Session,id: String) -> bool:
 	if valid:
 		s.enter(id)
 	return valid
+## Where a collect spot (area coordinates) is on the loaded map.
+func spot_at(s: Session,spot: Dictionary,step: Dictionary) -> Dictionary:
+	var z: String = str(spot.get("zone",step.get("zone","")))
+	return s.game.zone.place_in(z,spot.x,spot.z) if s.game.zone is RulePlanet else spot
 func grind(s: Session,level: int) -> void:
 	while s.slot.level<level:
 		s.game.add_xp(s.game.progression.xp_to_next(int(s.slot.level)))
@@ -90,7 +100,7 @@ func run_steps(s: Session,q: Dictionary) -> void:
 			"collect":
 				for spot: Dictionary in step.spots:
 					if not go(s,spot.get("zone",step.get("zone"))): return
-					s.at(spot)
+					s.at(spot_at(s,spot,step))
 					s.story.update(1.0/60)
 			"train":
 				if not go(s,step.zone): return

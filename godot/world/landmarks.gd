@@ -8,7 +8,7 @@ extends RefCounted
 const BUILDERS := ["pod", "crater", "crashpod", "farmhouse", "kamehouse", "snakehead", "kingkaihouse", "car",
 	"namekhouse", "gurutower", "friezaship", "capsuleship", "timemachine", "yardrathut", "capsulecorp", "dome",
 	"labdoor", "ruin", "husk", "palace", "htcdoor", "htcroom", "cellarena", "budokai", "babidiship", "zsword",
-	"crystals", "pyramid", "stands", "bunker", "pillar", "zenobox", "hangar", "radartower", "checkin"]
+	"crystals", "pyramid", "stands", "bunker", "pillar", "zenobox", "hangar", "radartower", "checkin", "town"]
 
 static func has_builder(type: String) -> bool:
 	return type in BUILDERS
@@ -245,6 +245,11 @@ class Builder extends RefCounted:
 		lamp.light_energy = 0.9
 		lamp.omni_range = 48
 		g.add_child(lamp)
+
+	## An open-world town (Godot addition): drawn from its rules layout by WorldTown.
+	func _town() -> void:
+		g.scale = Vector3.ONE   # towns are laid out in metres
+		WorldTown.build(g, zone, l)
 
 	func _kingkaihouse() -> void:
 		dome(4, mat(0xf3eadb), 0, 0, 0)

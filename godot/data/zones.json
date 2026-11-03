@@ -2084,5 +2084,213 @@
       "x": 0,
       "z": -16
     }
+  },
+  "amber_city": {
+    "name": "Amber City",
+    "planet": "Earth",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 480,
+      "hills": {
+        "amp": 2,
+        "scale": 120
+      },
+      "flatSpawn": 210,
+      "spawn": {
+        "x": 0,
+        "z": -157.5
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 34,
+        "azimuth": 205
+      },
+      "trees": "broadleaf",
+      "treeCount": 60,
+      "bushes": 120,
+      "rocks": 30
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Amber City",
+        "x": 0,
+        "z": 0,
+        "style": "city",
+        "radius": 210,
+        "seed": 11,
+        "flatten": 210
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -157.5
+    }
+  },
+  "pepper_village": {
+    "name": "Pepper Village",
+    "planet": "Earth",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 340,
+      "hills": {
+        "amp": 2,
+        "scale": 120
+      },
+      "flatSpawn": 120,
+      "spawn": {
+        "x": 0,
+        "z": -90
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 34,
+        "azimuth": 205
+      },
+      "trees": "broadleaf",
+      "treeCount": 60,
+      "bushes": 120,
+      "rocks": 30
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Pepper Village",
+        "x": 0,
+        "z": 0,
+        "style": "village",
+        "radius": 120,
+        "seed": 23,
+        "flatten": 120
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -90
+    }
+  },
+  "snowpeak_village": {
+    "name": "Snowpeak Village",
+    "planet": "Earth",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 320,
+      "hills": {
+        "amp": 2,
+        "scale": 120
+      },
+      "flatSpawn": 110,
+      "spawn": {
+        "x": 0,
+        "z": -82.5
+      },
+      "ground": "snow"
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 18,
+        "azimuth": 200,
+        "turbidity": 2.2
+      },
+      "snowLine": -50,
+      "fog": [
+        14082798,
+        0.0012
+      ],
+      "trees": "none",
+      "rocks": 30,
+      "bushes": 120,
+      "grass": 0,
+      "tints": {
+        "rock": [
+          0.85,
+          0.92,
+          1.05
+        ]
+      },
+      "treeCount": 30
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Snowpeak Village",
+        "x": 0,
+        "z": 0,
+        "style": "snowvillage",
+        "radius": 110,
+        "seed": 37,
+        "flatten": 110
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -82.5
+    }
+  },
+  "harbor_town": {
+    "name": "Harbor Town",
+    "planet": "Earth",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 400,
+      "hills": {
+        "amp": 1.2,
+        "scale": 60
+      },
+      "flatSpawn": 0,
+      "spawn": {
+        "x": 0,
+        "z": -40
+      },
+      "ocean": {
+        "level": 0
+      },
+      "islands": [
+        {
+          "x": 0,
+          "z": 30,
+          "r": 130,
+          "h": 3
+        }
+      ]
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 48,
+        "azimuth": 160
+      },
+      "trees": "palm",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120,
+      "grass": 0.4,
+      "water": 1937326
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Harbor Town",
+        "x": 0,
+        "z": 0,
+        "style": "harbor",
+        "radius": 120,
+        "seed": 41,
+        "flatten": 120
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -90
+    }
   }
 }

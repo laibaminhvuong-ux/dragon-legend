@@ -68,6 +68,30 @@ func _init(zone_id: String = "earth_plains", data: Object = null) -> void:
 		_tp_base = raw_height(travel_point.x, travel_point.z)
 		travel_point.y = height_at(travel_point.x, travel_point.z)
 
+# ---- planet-map API (open world): a single area is a map with one region, itself (RulePlanet overrides) ----
+func has_region(zone_id: String) -> bool:
+	return zone_id == id
+
+func region_ids() -> Array:
+	return [id]
+
+func region_at(_x: float, _z: float) -> String:
+	return id
+
+func place_in(_zone_id: String, x: float, z: float) -> Dictionary:
+	return place(x, z)
+
+func region_spawn(_zone_id: String) -> Dictionary:
+	return spawn
+
+func region_travel_point(_zone_id: String) -> Variant:
+	return travel_point
+
+## Inside a planet map an area's border mountains are dropped (the countryside continues instead).
+func open_edges() -> void:
+	_terrain = _terrain.duplicate(true)
+	_terrain.erase("edge")
+
 func path_centre(z: float) -> float:
 	var p: Dictionary = _terrain.path
 	return sin(z / p.wave) * p.amp + sin(z / (p.wave * 0.37)) * p.amp * 0.18
@@ -330,6 +354,9 @@ class PropSet extends RefCounted:
 		for l: Dictionary in zone.landmarks:
 			if l.get("collide",0):
 				_add({"x":l.x,"z":l.z,"radius":l.collide*l.scale,"top":zone.height_at(l.x,l.z)+12*l.scale})
+			if l.get("type")=="town":   # every building in an open-world town is solid
+				for c: Dictionary in RuleTown.colliders(l):
+					_add({"x":c.x,"z":c.z,"radius":c.radius,"top":zone.height_at(c.x,c.z)+c.height})
 
 	func _add(c: Dictionary) -> void:
 		var cell := Vector2i(floori(c.x/16.0),floori(c.z/16.0))

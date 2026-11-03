@@ -1,0 +1,133 @@
+{
+  "earth": {
+    "name": "Earth",
+    "size": 3200,
+    "seed": 4242,
+    "start": "earth_plains",
+    "biome": "earth_plains",
+    "props": {
+      "treeCount": 2600,
+      "rocks": 900,
+      "bushes": 3200,
+      "stones": 5000
+    },
+    "base": {
+      "amp": 14,
+      "scale": 260,
+      "northFrom": 600,
+      "northTo": 1300
+    },
+    "sea": {
+      "level": 0,
+      "southFrom": -900,
+      "southTo": -1060,
+      "bays": [
+        {
+          "x": 1350,
+          "z": 1150,
+          "r": 420
+        }
+      ]
+    },
+    "regions": [
+      {
+        "zone": "earth_plains",
+        "x": 0,
+        "z": 0,
+        "radius": 300,
+        "blend": 90
+      },
+      {
+        "zone": "west_city",
+        "x": 1100,
+        "z": 150,
+        "radius": 260,
+        "blend": 90
+      },
+      {
+        "zone": "red_ribbon",
+        "x": 1250,
+        "z": 1050,
+        "radius": 280,
+        "blend": 90
+      },
+      {
+        "zone": "gero_lab",
+        "x": 0,
+        "z": 1150,
+        "radius": 280,
+        "blend": 90
+      },
+      {
+        "zone": "broly_glacier",
+        "x": -1100,
+        "z": 1150,
+        "radius": 300,
+        "blend": 90
+      },
+      {
+        "zone": "gizard_wasteland",
+        "x": -1150,
+        "z": 100,
+        "radius": 300,
+        "blend": 90
+      },
+      {
+        "zone": "babidi_ship",
+        "x": -700,
+        "z": -650,
+        "radius": 260,
+        "blend": 90
+      },
+      {
+        "zone": "cell_games",
+        "x": 300,
+        "z": -900,
+        "radius": 260,
+        "blend": 90
+      },
+      {
+        "zone": "kame_island",
+        "x": 1150,
+        "z": -1250,
+        "radius": 200,
+        "blend": 90
+      },
+      {
+        "zone": "papaya_island",
+        "x": -200,
+        "z": -1300,
+        "radius": 260,
+        "blend": 90
+      },
+      {
+        "zone": "amber_city",
+        "x": 650,
+        "z": -350,
+        "radius": 240,
+        "blend": 90
+      },
+      {
+        "zone": "pepper_village",
+        "x": -450,
+        "z": 450,
+        "radius": 150,
+        "blend": 90
+      },
+      {
+        "zone": "snowpeak_village",
+        "x": -550,
+        "z": 1350,
+        "radius": 140,
+        "blend": 90
+      },
+      {
+        "zone": "harbor_town",
+        "x": 700,
+        "z": -1300,
+        "radius": 160,
+        "blend": 90
+      }
+    ]
+  }
+}

@@ -8,7 +8,9 @@ func test_complete_main_story_and_side_quests_through_real_travel() -> void:
 			play(s,q)
 			main_count += 1
 	eq(main_count,41)
-	eq(s.slot.story.unlocked.size(),RuleTables.table("zones").size())
+	# every story area unlocks through the story; open-world towns unlock when you find them
+	var story_areas: Array = RuleTables.table("zones").keys().filter(func(z: String) -> bool: return RuleTables.table("zones")[z].get("kind","")!="town")
+	eq(s.slot.story.unlocked.size(),story_areas.size())
 	for q: Dictionary in s.story.quests:
 		if not q.get("main",false) and not q.has("path") and not q.id.begins_with("Form_") and (not q.has("races") or "Saiyan" in q.races):
 			play(s,q)
@@ -85,7 +87,7 @@ func test_every_race_form_quests_and_endgame_paths() -> void:
 			var branch := Session.new(race)
 			branch.slot = s.slot.duplicate(true)
 			branch.slot.loadout.formPath = null
-			branch.enter(s.game.zone.id)
+			branch.enter(s.story.here())
 			eq(branch.game.choose_form_path(path),null)
 			for q: Dictionary in branch.story.quests:
 				if q.get("path")==path and not q.get("automatic",false) and (not q.has("races") or race in q.races):

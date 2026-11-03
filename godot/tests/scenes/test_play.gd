@@ -66,10 +66,21 @@ func test_travel_saves_the_destination() -> void:
 	var p := _session()
 	var asked := []
 	p.travel_requested.connect(func(z: String) -> void: asked.append(z))
+	Events.emit_named("travel", {"zone": "namek"})
+	p.step(DT)
+	eq(asked, ["namek"], "main is asked to rebuild on the other planet")
+	eq(SaveStore.load_slot(0).zone, "namek", "the save points at the new world")
+	_end(p)
+
+func test_travel_on_the_same_planet_moves_without_loading() -> void:
+	var p := _session()
+	var asked := []
+	p.travel_requested.connect(func(z: String) -> void: asked.append(z))
 	Events.emit_named("travel", {"zone": "kame_island"})
 	p.step(DT)
-	eq(asked, ["kame_island"], "main is asked to rebuild in the new world")
-	eq(SaveStore.load_slot(0).zone, "kame_island", "the save points at the new world")
+	eq(asked, [], "no rebuild: Kama House is on Earth's map")
+	eq(p.game.current_region(), "kame_island", "the player is at Kama House now")
+	eq(SaveStore.load_slot(0).zone, "kame_island", "and the save says so")
 	_end(p)
 
 func test_autosave() -> void:

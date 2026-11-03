@@ -15,11 +15,14 @@ var mastery := RuleMastery.new()
 var movement := RuleMovement.new()
 var kaioken: RefCounted
 var combat: RefCounted
+## The loaded map for an area: its planet's map (shared by every area on it) or the area itself.
 static func get_zone(id: String) -> RuleZone:
 	var key: String = id if RuleTables.table("zones").has(id) else "earth_plains"
-	if not _zones.has(key):
-		_zones[key] = RuleZone.new(key)
-	return _zones[key]
+	var pid := RulePlanet.planet_of(key)
+	var cache_key: String = "planet:" + pid if pid != "" else key
+	if not _zones.has(cache_key):
+		_zones[cache_key] = RulePlanet.new(pid) if pid != "" else RuleZone.new(key)
+	return _zones[cache_key]
 static func empty_intents() -> Dictionary:
 	return {"move_x":0,"move_z":0,"jump":false,"dash":false,"flight":false,"ascend":false,"descend":false,"fly_pitch":0,"charge":false,"melee":false,"block":false,"ki_blast":false,"beam":false,"transform":false,"kaioken":false,"lock_on":false,"interact":false}
 func _init(index: int = 0,saved: Dictionary = {},bus: Object = null) -> void:
@@ -27,7 +30,18 @@ func _init(index: int = 0,saved: Dictionary = {},bus: Object = null) -> void:
 	slot = saved if not saved.is_empty() else schema.new_slot(schema.default_look())
 	events = bus
 	zone = get_zone(slot.zone)
-	var spawn: Vector3 = RuleRuntime.vector(slot.position) if slot.get("position")!=null else Vector3(zone.spawn.x,zone.height_at(zone.spawn.x,zone.spawn.z),zone.spawn.z)
+	if not zone.has_region(slot.zone):
+		slot.zone = zone.id
+	# positions saved before the open world were local to the area; on a planet map they move to the area's spot once
+	if zone is RulePlanet and slot.get("position")!=null and slot.get("mapSpace")!=zone.id:
+		var p: Dictionary = (zone as RulePlanet).to_planet(slot.zone,slot.position)
+		slot.position = {"x":p.x,"y":p.y,"z":p.z}
+	if zone is RulePlanet:
+		slot.mapSpace = zone.id
+	else:
+		slot.erase("mapSpace")
+	var start: Dictionary = zone.region_spawn(slot.zone)
+	var spawn: Vector3 = RuleRuntime.vector(slot.position) if slot.get("position")!=null else Vector3(start.x,zone.height_at(start.x,start.z),start.z)
 	player = {"id":"player","kind":"player","pos":spawn,"vel":Vector3.ZERO,"yaw":0.0,"onGround":spawn.y<=zone.height_at(spawn.x,spawn.z),"form":"",
 		"health":0.0,"maxHealth":0.0,"ki":0.0,"maxKi":0.0,"kiCostScale":1.0,"runSpeed":0.0,"strength":1.0,"kiPower":1.0,"powerLevel":0,
 		"flying":false,"dashing":false,"charging":false,"blocking":false,"stun":0.0,"lockTarget":null,"kaioken":0,"attackSerial":0,"attackKind":"jab"}
@@ -173,7 +187,7 @@ func hud() -> Dictionary:
 	return {"slot":slot_index,"race":slot.race,"raceName":progression.races.get(slot.race,{}).get("name",slot.race),"form":player.form,"formName":form_name,
 		"level":slot.level,"xp":slot.xp,"xpNext":progression.xp_to_next(int(slot.level)),"statPoints":slot.statPoints,"zeni":slot.zeni,
 		"health":player.health,"maxHealth":player.maxHealth,"ki":floori(player.ki),"maxKi":player.maxKi,"powerLevel":floori(player.powerLevel*(kaioken.multiplier() if kaioken!=null else 1)),
-		"flying":player.flying,"charging":player.charging,"dashing":player.dashing,"blocking":player.blocking,"lockTarget":player.lockTarget,"zone":zone.id,"zoneName":zone.name}
+		"flying":player.flying,"charging":player.charging,"dashing":player.dashing,"blocking":player.blocking,"lockTarget":player.lockTarget,"zone":current_region(),"zoneName":RuleTables.table("zones").get(current_region(),{}).get("name",zone.name),"map":zone.id}
 func add_xp(amount: float) -> int:
 	var gained: int = progression.add_xp(slot,amount)
 	if gained>0:
@@ -191,7 +205,12 @@ func spend_stat_point(stat: String,amount: Variant = 1) -> Variant:
 func add_zeni(amount: float) -> void:
 	slot.zeni = maxf(0,slot.zeni+floor(amount))
 	emit("stats",hud())
+## The area the player is in now (on a planet map: the last area they were in when out in the countryside).
+func current_region() -> String:
+	var here: String = zone.region_at(player.pos.x,player.pos.z)
+	return here if here!="" else str(slot.zone)
 func to_save() -> Dictionary:
 	slot.position = RuleRuntime.position(player.pos)
+	slot.zone = current_region()
 	slot.playedAt = int(Time.get_unix_time_from_system()*1000)
 	return slot

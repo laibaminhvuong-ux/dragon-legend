@@ -18,6 +18,7 @@ var npc: Dictionary = {}
 var positions: Dictionary = {}
 var tracked_id: String = ""
 var guide_pos: Variant = null
+var guide_area := ""
 var combat_available: bool = RuleTables.table("schema").combat_available
 func _init(game: RuleGame,bus: Object = null) -> void:
 	_game = weakref(game)
@@ -31,10 +32,11 @@ func _init(game: RuleGame,bus: Object = null) -> void:
 		quest[q.id] = q
 	for n: Dictionary in npc_defs:
 		npc[n.id] = n
-	if zone.id not in state.visited:
-		state.visited.append(zone.id)
-	if zone.id not in state.unlocked:
-		state.unlocked.append(zone.id)
+	var start_area: String = str(slot.zone) if zone.has_region(str(slot.zone)) else zone.id
+	if start_area not in state.visited:
+		state.visited.append(start_area)
+	if start_area not in state.unlocked:
+		state.unlocked.append(start_area)
 	for q: Dictionary in active_quests():
 		check_instant(q)
 	game.combat.set_story(self)
@@ -51,20 +53,23 @@ func is_done(id: String) -> bool:
 func is_active(id: String) -> bool:
 	return slot.quests.get(id,{}).get("status")=="active"
 func visible(n: Dictionary) -> bool:
-	if n.zone!=zone.id or (n.has("after") and not is_done(n.after)) or (n.has("before") and is_done(n.before)) or (n.has("flagged") and not state.flags.get(n.flagged,false)):
+	if not zone.has_region(n.zone) or (n.has("after") and not is_done(n.after)) or (n.has("before") and is_done(n.before)) or (n.has("flagged") and not state.flags.get(n.flagged,false)):
 		return false
 	if n.has("afterStep") and not is_done(n.afterStep[0]) and not (is_active(n.afterStep[0]) and slot.quests[n.afterStep[0]].step>=n.afterStep[1]):
 		return false
 	return true
 func npc_pos(n: Dictionary) -> Dictionary:
 	if not positions.has(n.id):
-		var p: Dictionary = zone.place(n.x,n.z)
+		var p: Dictionary = zone.place_in(n.zone,n.x,n.z)
 		if n.has("y"):
 			p.y = n.y
 		positions[n.id] = RuleRuntime.position(zone.free_position(p))
 	return positions[n.id]
 func at(step: Dictionary) -> Dictionary:
-	return zone.place(step.get("x",0),step.get("z",0)) if step.get("zone")==zone.id else {"x":step.get("x",0),"z":step.get("z",0)}
+	return zone.place_in(step.zone,step.get("x",0),step.get("z",0)) if zone.has_region(str(step.get("zone",""))) else {"x":step.get("x",0),"z":step.get("z",0)}
+## The area the player stands in: the loaded area, or on a planet map the area around them.
+func here() -> String:
+	return game().current_region() if zone is RulePlanet else zone.id
 func can_accept(q: Dictionary) -> bool:
 	if q.get("legacy",false) or q.get("automatic",false) or is_active(q.id) or (is_done(q.id) and not q.get("repeat",false)) or slot.level<q.get("level",1):
 		return false
@@ -99,7 +104,7 @@ func check_instant(q: Dictionary) -> void:
 	if s.type=="travel" and s.zone not in state.unlocked:
 		state.unlocked.append(s.zone)
 		emit("notify",{"text":"New world: "+worlds[s.zone].name})
-	if (s.type=="level" and slot.level>=s.level) or (s.type=="travel" and zone.id==s.zone):
+	if (s.type=="level" and slot.level>=s.level) or (s.type=="travel" and here()==s.zone):
 		advance(q)
 func accept(q: Dictionary) -> void:
 	var completions: int = int(slot.quests.get(q.id,{}).get("completions",0))
@@ -155,14 +160,14 @@ func quest_place(q: Dictionary) -> Variant:
 func story_quests() -> Array:
 	return quests.filter(func(q: Dictionary) -> bool: return q.get("main",false) and not q.get("legacy",false) and not q.get("automatic",false) and (is_active(q.id) or can_accept(q)))
 func tasks_here() -> Array:
-	return story_quests().filter(func(q: Dictionary) -> bool: return quest_place(q)==zone.id).map(func(q: Dictionary) -> String: return q.title)
+	return story_quests().filter(func(q: Dictionary) -> bool: return quest_place(q)==here()).map(func(q: Dictionary) -> String: return q.title)
 func travel_options() -> Array:
 	if not tasks_here().is_empty():
 		return []
 	var next: Array = []
 	for q: Dictionary in story_quests():
 		var z: Variant = quest_place(q)
-		if z!=null and z!=zone.id and z not in next:
+		if z!=null and z!=here() and z not in next:
 			next.append(z)
 	for q: Dictionary in quests:
 		if not q.get("main",false) or q.get("legacy",false) or q.get("automatic",false) or is_done(q.id) or is_active(q.id):
@@ -177,7 +182,7 @@ func travel_options() -> Array:
 		if not after_done:
 			continue
 		var z: Variant = npc.get(q.giver,{}).get("zone")
-		if z!=null and z!=zone.id and z not in next:
+		if z!=null and z!=here() and z not in next:
 			next.append(z)
 		break
 	var out: Array = []
@@ -186,15 +191,17 @@ func travel_options() -> Array:
 		if z not in order:
 			order.append(z)
 	for z: String in order:
-		if z==zone.id or z=="test" or not worlds.has(z):
+		if z==here() or z==zone.id or z=="test" or not worlds.has(z):
 			continue
 		out.append({"zone":z,"story":z in next,"name":worlds[z].name,"planet":worlds[z].planet})
 	return out
 func travel_guide() -> Variant:
 	if travel_options().is_empty():
 		return null
-	if guide_pos==null:
-		var tp: Dictionary = zone.travel_point if zone.travel_point!=null else zone.spawn
+	if guide_pos==null or guide_area!=here():
+		guide_area = here()
+		var tp_v: Variant = zone.region_travel_point(guide_area)
+		var tp: Dictionary = tp_v if tp_v!=null else zone.region_spawn(guide_area)
 		var p: Dictionary = zone.place(0,tp.z+4) if zone.def.terrain.has("path") else {"x":tp.x+2.5,"z":tp.z+2.5}
 		guide_pos = RuleRuntime.position(zone.free_position(p))
 	var n: Dictionary = {"id":"travel_guide_"+zone.id,"name":RuleRuntime.rename_text("Capsule Corp Pilot"),"look":{"race":"Human","skin":0,"face":"Calm","hair":"Short","hairColor":2,"build":"Average","outfit":"CapsuleCorp","outfitTint":4},"scale":1,"rot":0,"boss":false,"marker":"✈","main":true,"guide":true}
@@ -242,6 +249,15 @@ func travel_to(id: String) -> bool:
 		if option.zone==id:
 			if id not in state.unlocked:
 				state.unlocked.append(id)
+			if zone.has_region(id) and zone is RulePlanet:   # same planet: fly there, no loading
+				var sp: Dictionary = zone.region_spawn(id)
+				player.pos = Vector3(sp.x,zone.height_at(sp.x,sp.z)+0.2,sp.z)
+				player.vel = Vector3.ZERO
+				slot.zone = id
+				guide_pos = null
+				emit("notify",{"text":"Flew to %s." % option.name})
+				emit("teleport",{"zone":id})
+				return true
 			emit("notify",{"text":"Travelling to %s..." % option.name})
 			emit("travel",{"zone":id})
 			return true
@@ -313,11 +329,11 @@ func abandon_quest(id: String) -> bool:
 	emit("notify",{"text":"Quest abandoned. Speak to its giver to start again."})
 	return true
 func enemy_defeated(enemy: String,defeated_zone: String = "") -> void:
-	if defeated_zone!="" and defeated_zone!=zone.id:
+	if defeated_zone!="" and defeated_zone!=zone.id and not zone.has_region(defeated_zone):
 		return
 	for q: Dictionary in active_quests():
 		var s: Dictionary = step_of(q)
-		if s.type=="defeat" and s.enemy==enemy and s.zone==zone.id:
+		if s.type=="defeat" and s.enemy==enemy and zone.has_region(s.zone):
 			var st: Dictionary = slot.quests[q.id]
 			st.count += 1
 			emit("questProgress",{"id":q.id,"objective":s.text})
@@ -327,7 +343,7 @@ func encounters() -> Array:
 	var out: Array = []
 	for q: Dictionary in active_quests():
 		var s: Dictionary = step_of(q)
-		if s.type!="defeat" or s.zone!=zone.id or s.enemy.begins_with("patrol_"):
+		if s.type!="defeat" or not zone.has_region(s.zone) or s.enemy.begins_with("patrol_"):
 			continue
 		var n: Dictionary = npc.get(s.enemy,{})
 		var c: Dictionary = characters[n.who] if not n.is_empty() else {}
@@ -347,8 +363,9 @@ func radar() -> Dictionary:
 				continue
 			var p: Dictionary = s.spots[i]
 			var z: String = p.get("zone",s.get("zone",""))
-			if z==zone.id:
-				here.append({"item":s.item,"x":p.x,"z":p.z})
+			if zone.has_region(z):
+				var at_p: Dictionary = zone.place_in(z,p.x,p.z) if zone is RulePlanet else {"x":p.x,"z":p.z}
+				here.append({"item":s.item,"x":at_p.x,"z":at_p.z})
 			elif z!="":
 				away[z] = away.get(z,0)+1
 	var elsewhere: Array = []
@@ -363,33 +380,34 @@ func pickups() -> Array:
 			continue
 		for i: int in s.spots.size():
 			var p: Dictionary = s.spots[i]
-			if i in slot.quests[q.id].get("collected",[]) or p.get("zone",s.get("zone"))!=zone.id:
+			if i in slot.quests[q.id].get("collected",[]) or not zone.has_region(str(p.get("zone",s.get("zone")))):
 				continue
-			out.append({"item":s.item,"questId":q.id,"index":i,"x":p.x,"y":zone.height_at(p.x,p.z)+0.6,"z":p.z})
+			var at_p: Dictionary = zone.place_in(str(p.get("zone",s.get("zone"))),p.x,p.z) if zone is RulePlanet else {"x":p.x,"z":p.z}
+			out.append({"item":s.item,"questId":q.id,"index":i,"x":at_p.x,"y":zone.height_at(at_p.x,at_p.z)+0.6,"z":at_p.z})
 	return out
 func step_target(s: Dictionary) -> Variant:
 	if s.type=="talk":
 		var n: Dictionary = npc.get(s.npc,{})
 		if n.is_empty():
 			return null
-		var out: Dictionary = npc_pos(n).duplicate() if n.zone==zone.id and visible(n) else {"x":n.x,"z":n.z}
+		var out: Dictionary = npc_pos(n).duplicate() if zone.has_region(n.zone) and visible(n) else {"x":n.x,"z":n.z}
 		out.zone = n.zone
 		return out
 	if s.type=="defeat":
 		var best: Variant = null
 		var best_dist: float = INF
 		for e: Dictionary in game().combat.enemies:
-			if e.key==s.enemy and e.health>0 and s.zone==zone.id:
+			if e.key==s.enemy and e.health>0 and zone.has_region(s.zone):
 				var d: float = player.pos.distance_squared_to(e.pos)
 				if d<best_dist:
 					best = e
 					best_dist = d
 		if best!=null:
 			var out: Dictionary = RuleRuntime.position(best.pos)
-			out.zone = zone.id
+			out.zone = s.zone
 			return out
 		var n: Dictionary = npc.get(s.enemy,{})
-		var out: Dictionary = npc_pos(n).duplicate() if not n.is_empty() and n.zone==zone.id and visible(n) else at(s)
+		var out: Dictionary = npc_pos(n).duplicate() if not n.is_empty() and zone.has_region(n.zone) and visible(n) else at(s)
 		out.zone = s.get("zone")
 		return out
 	if s.type=="reach" or (s.type=="train" and s.has("x")):
@@ -411,8 +429,9 @@ func step_target(s: Dictionary) -> Variant:
 			var z: Variant = p.get("zone",s.get("zone"))
 			if first==null:
 				first = {"zone":z}
-			if z==zone.id:
-				return {"zone":z,"x":p.x,"z":p.z}
+			if zone.has_region(str(z)):
+				var at_p: Dictionary = zone.place_in(str(z),p.x,p.z) if zone is RulePlanet else {"x":p.x,"z":p.z}
+				return {"zone":z,"x":at_p.x,"z":at_p.z}
 		return first
 	return null
 func waypoint() -> Variant:
@@ -420,12 +439,12 @@ func waypoint() -> Variant:
 	order.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return (10 if a.id==tracked_id else 1 if a.get("main",false) else 0)>(10 if b.id==tracked_id else 1 if b.get("main",false) else 0))
 	for q: Dictionary in order:
 		var t: Variant = step_target(step_of(q))
-		if t!=null and t.get("zone")==zone.id and t.has("x"):
+		if t!=null and zone.has_region(str(t.get("zone",""))) and t.has("x"):
 			return {"x":t.x,"y":t.get("y",zone.height_at(t.x,t.z)),"z":t.z,"questId":q.id,"text":step_of(q).text}
 	for q: Dictionary in quests:
 		if q.get("main",false) and can_accept(q):
 			var n: Dictionary = npc[q.giver]
-			if n.zone==zone.id and visible(n):
+			if zone.has_region(n.zone) and visible(n):
 				var out: Dictionary = npc_pos(n).duplicate()
 				out.merge({"questId":q.id,"text":"Talk to "+characters[n.who].name})
 				return out
@@ -510,6 +529,14 @@ func interact(choose: bool = false) -> Variant:
 func update(dt: float,intents: Dictionary = {}) -> void:
 	if player.health<=0 or not is_finite(dt) or dt<=0:
 		return
+	if zone is RulePlanet:   # entering an area on the planet map for the first time discovers it
+		var area: String = game().current_region()
+		if area!="" and area not in state.visited:
+			state.visited.append(area)
+			if area not in state.unlocked:
+				state.unlocked.append(area)
+			emit("notify",{"text":"Discovered: "+str(worlds.get(area,{}).get("name",area))})
+			emit("discovered",{"zone":area})
 	if zone.kill_y!=null and player.pos.y<zone.kill_y:
 		player.pos = Vector3(zone.spawn.x,zone.height_at(zone.spawn.x,zone.spawn.z)+0.5,zone.spawn.z)
 		player.vel = Vector3.ZERO
@@ -520,11 +547,11 @@ func update(dt: float,intents: Dictionary = {}) -> void:
 	for q: Dictionary in active_quests():
 		var st: Dictionary = slot.quests[q.id]
 		var s: Dictionary = step_of(q)
-		if s.type=="reach" and s.zone==zone.id and distance(at(s))<s.r:
+		if s.type=="reach" and zone.has_region(s.zone) and distance(at(s))<s.r:
 			advance(q)
-		elif (s.type=="travel" and s.zone==zone.id) or (s.type=="level" and slot.level>=s.level):
+		elif (s.type=="travel" and here()==s.zone) or (s.type=="level" and slot.level>=s.level):
 			advance(q)
-		elif s.type=="train" and s.zone==zone.id:
+		elif s.type=="train" and zone.has_region(s.zone):
 			if s.has("requiredForms") and player.form not in s.requiredForms:
 				continue
 			if s.has("x") and distance(at(s))>s.r:
@@ -549,9 +576,10 @@ func update(dt: float,intents: Dictionary = {}) -> void:
 				st.collected = []
 			for i: int in s.spots.size():
 				var p: Dictionary = s.spots[i]
-				if i in st.collected or p.get("zone",s.get("zone"))!=zone.id:
+				if i in st.collected or not zone.has_region(str(p.get("zone",s.get("zone")))):
 					continue
-				if distance(p)<PICKUP_RANGE and absf(zone.height_at(p.x,p.z)-player.pos.y)<3.5:
+				var at_p: Dictionary = zone.place_in(str(p.get("zone",s.get("zone"))),p.x,p.z) if zone is RulePlanet else p
+				if distance(at_p)<PICKUP_RANGE and absf(zone.height_at(at_p.x,at_p.z)-player.pos.y)<3.5:
 					st.collected.append(i)
 					emit("notify",{"text":"Found %s (%d / %d)" % [narrative.item_names.get(s.item,s.item),st.collected.size(),s.spots.size()]})
 					if st.collected.size()>=s.spots.size():

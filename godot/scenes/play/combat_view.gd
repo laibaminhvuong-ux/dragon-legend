@@ -16,6 +16,14 @@ var avatar: Node3D
 var _energy_mat: ShaderMaterial
 var _bar_mat: ShaderMaterial
 var _ball_mesh: SphereMesh
+var flourish_root: Node3D
+var audio: CombatAudio
+var _attack_poses: Dictionary = {}
+var _reactions: Dictionary = {}
+var _charge_age := 0.0
+var _last_form := ""
+var _last_dash := false
+var _reaction_serial := 0
 var _bar_mesh: QuadMesh
 
 func _init(c: RuleCombat, cam: Camera3D) -> void:
@@ -26,12 +34,15 @@ func _init(c: RuleCombat, cam: Camera3D) -> void:
 	_bar_mat = ShaderMaterial.new(); _bar_mat.shader = BAR
 	_ball_mesh = SphereMesh.new(); _ball_mesh.radius = 0.17; _ball_mesh.height = 0.34; _ball_mesh.radial_segments = 16; _ball_mesh.rings = 8
 	_bar_mesh = QuadMesh.new(); _bar_mesh.size = Vector2(1.35, 0.12)
+	flourish_root = Node3D.new(); flourish_root.name = "Flourishes"; add_child(flourish_root)
+	audio = CombatAudio.new(); audio.name = "CombatAudio"; add_child(audio)
+	Events.attack.connect(_on_attack)
 	Events.damage.connect(_on_damage)
 	Events.beam.connect(_on_beam)
 	Events.avatar_strike.connect(_on_avatar_strike)
 
 func _exit_tree() -> void:
-	for sig: Signal in [Events.damage, Events.beam, Events.avatar_strike]:
+	for sig: Signal in [Events.attack, Events.damage, Events.beam, Events.avatar_strike]:
 		for c in sig.get_connections():
 			if c.callable.get_object() == self:
 				sig.disconnect(c.callable)
@@ -55,6 +66,15 @@ static func _hex(v: Variant, fallback := 0x63cfff) -> Color:
 func _on_damage(d: Dictionary) -> void:
 	var pos: Vector3 = RuleRuntime.vector(d.get("pos", Vector3.ZERO))
 	var player_hit := str(d.get("id", "")) == "player"
+	var entity := _entity(str(d.get("id","")))
+	var weight := clampf(float(d.get("amount",0))/maxf(1,float(entity.get("maxHealth",100)))*5,0.2,1.0)
+	var incoming: Vector3 = pos-combat.p.pos if not player_hit else combat.p.pos-_nearest_enemy_position()
+	var yaw := float(entity.get("yaw",0))
+	_reaction_serial += 1
+	_reactions[str(d.get("id",""))] = {"serial":_reaction_serial,"left":0.35,"hitWeight":weight,"hitSide":clampf(incoming.x*cos(yaw)-incoming.z*sin(yaw),-1,1)}
+	_push_player_presentation()
+	_flourish("impact",pos,Color("9cdcff") if d.get("blocked",false) else Color("ffbc62"),incoming)
+	audio.play_cue("guard" if d.get("blocked",false) else "hit",pos,weight)
 	var l := _label(("GUARD " if d.get("blocked", false) else "") + str(d.get("amount", "")), Color("#ff8279") if player_hit else Color("#ffe294"), 42)
 	l.position = pos + Vector3(randf_range(-0.3, 0.3), 0.2, 0)
 	add_child(l)
@@ -67,6 +87,8 @@ func _on_beam(b: Dictionary) -> void:
 	var from: Vector3 = RuleRuntime.vector(b.from)
 	var to: Vector3 = RuleRuntime.vector(b.to)
 	var color := _hex(b.get("color"))
+	audio.play_cue("beam",from,1.4)
+	_flourish("surge",from,color)
 	var dir := to - from
 	var length := dir.length()
 	if length < 0.01:
@@ -97,6 +119,10 @@ func _remove(e: Dictionary) -> void:
 
 func update_view(dt: float) -> void:
 	_update_avatar(dt)
+	_update_player_presentation(dt)
+	for id: String in _reactions.keys():
+		_reactions[id].left -= dt
+		if _reactions[id].left<=0: _reactions.erase(id)
 	var seen := {}
 	for e: Dictionary in combat.enemies:
 		var id := str(e.id)
@@ -122,7 +148,8 @@ func update_view(dt: float) -> void:
 		var vel: Vector3 = e.vel
 		f.position = pos
 		f.rotation.y = float(e.yaw)
-		f.update(dt, {"speed": Vector2(vel.x, vel.z).length(), "onGround": e.get("onGround", true), "attackSerial": e.attackSerial,
+		f.presentation = _presentation(e)
+		f.update(dt, {"yaw":e.yaw,"speed": Vector2(vel.x, vel.z).length(), "onGround": e.get("onGround", true), "attackSerial": e.attackSerial,
 			"attackKind": e.attackKind, "hurt": float(e.get("hurtUntil", 0.0)) > combat.clock})
 		var height := 2.2 * float(e.get("scale", 1.0))
 		(v.tag as Label3D).position = pos + Vector3(0, height + 0.3, 0)
@@ -253,3 +280,83 @@ func _build_avatar(A: Dictionary) -> Node3D:
 	var ring := TorusMesh.new(); ring.inner_radius = 0.975; ring.outer_radius = 1.025; ring.rings = 32; ring.ring_segments = 5
 	_av_impact = make.call(root, core_col, Vector3(0, 0.025, float(A.get("range", 6.0)) / float(A.get("scale", 3.0)) * 0.55), Vector3.ONE * 0.05, ring)
 	return root
+
+# Presentation signals carry no gameplay commands and never mutate entities.
+func _entity(id: String) -> Dictionary:
+	if id=="player": return combat.p
+	for e: Dictionary in combat.enemies:
+		if e.id==id: return e
+	return {}
+func _nearest_enemy_position() -> Vector3:
+	var nearest: Vector3 = combat.p.pos-Vector3(sin(combat.p.yaw),0,cos(combat.p.yaw))
+	var best := INF
+	for e: Dictionary in combat.enemies:
+		var d: float = e.pos.distance_squared_to(combat.p.pos)
+		if e.health>0 and d<best:
+			best = d; nearest = e.pos
+	return nearest
+func _on_attack(d: Dictionary) -> void:
+	var e := _entity(str(d.get("id","")))
+	if e.is_empty(): return
+	var kind := str(d.get("kind","jab"))
+	if kind=="melee": kind = str(e.attackKind)
+	if kind=="projectile": kind = "ki"
+	_attack_poses[str(e.id)] = {"serial":e.attackSerial,"kind":kind}
+	_push_player_presentation()
+	var pos: Vector3 = e.pos+Vector3.UP*1.1
+	if kind in ["jab","cross","hook","leg kick"]:
+		var fx := _flourish("arc",pos,Color("d9efff"))
+		fx.rotation.y = e.yaw
+		audio.play_cue("whoosh",pos)
+func _presentation(e: Dictionary) -> Dictionary:
+	var a := {}
+	var vel: Vector3 = e.get("vel",Vector3.ZERO)
+	var yaw := float(e.get("yaw",0))
+	a.dashSide = clampf((vel.x*cos(yaw)-vel.z*sin(yaw))/maxf(1,Vector2(vel.x,vel.z).length()),-1,1)
+	a.dashBack = minf(0,(vel.x*sin(yaw)+vel.z*cos(yaw))/maxf(1,Vector2(vel.x,vel.z).length()))
+	var id := str(e.id)
+	if _attack_poses.has(id):
+		if _attack_poses[id].serial==e.attackSerial:
+			a.attackKind = _attack_poses[id].kind
+		else: _attack_poses.erase(id)
+	if _reactions.has(id):
+		a.reactionSerial = _reactions[id].serial
+		a.hitWeight = _reactions[id].hitWeight
+		a.hitSide = _reactions[id].hitSide
+	if id=="player":
+		var ray := combat.aim_state()
+		var dir: Vector3 = ray.dir
+		a.aimPitch = asin(clampf(dir.y,-1,1))
+		a.beamCharge = combat.snapshot().beamCharge
+		a.dead = e.health<=0
+	return a
+func _flourish(kind: String,pos: Vector3,color: Color,direction := Vector3.FORWARD) -> CombatFlourish:
+	while flourish_root.get_child_count()>=24:
+		var old := flourish_root.get_child(0)
+		flourish_root.remove_child(old); old.queue_free()
+	var f := CombatFlourish.create(kind,color,direction)
+	flourish_root.add_child(f)
+	f.position = pos
+	return f
+func _update_player_presentation(dt: float) -> void:
+	if get_parent()==null: return
+	var fighter := get_parent().get_node_or_null("Player") as Fighter
+	if fighter==null: return
+	fighter.presentation = _presentation(combat.p)
+	var charging: bool = combat.p.charging and combat.p.health>0
+	_charge_age = minf(2,_charge_age+dt) if charging else 0.0
+	audio.update_player(combat.p,combat.p.pos,_charge_age/2)
+	var color := _hex(RuleRuntime.ki_color(combat.game.slot.appearance))
+	if str(combat.p.form)!=_last_form:
+		_last_form = str(combat.p.form)
+		if _last_form!="":
+			_flourish("surge",combat.p.pos+Vector3.UP*0.1,color)
+			audio.play_cue("surge",combat.p.pos,MotionStyle.for_form(_last_form).weight)
+	if combat.p.dashing and not _last_dash:
+		_flourish("surge",combat.p.pos+Vector3.UP*0.6,color)
+	_last_dash = combat.p.dashing
+
+func _push_player_presentation() -> void:
+	if get_parent()==null: return
+	var fighter := get_parent().get_node_or_null("Player") as Fighter
+	if fighter!=null: fighter.presentation = _presentation(combat.p)

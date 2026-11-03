@@ -49,8 +49,8 @@ func start(index: int, gi: GameInput, q := "medium") -> bool:
 	scenes = RuleCutsceneRules.new(game.slot)
 	Events.travel.connect(_on_travel)
 	Events.enemy_defeated.connect(_on_enemy_defeated)
-	Music.play(str(game.zone.id))
-	world = WorldView.build(str(game.zone.id), quality)
+	Music.play(game.current_region())
+	world = WorldView.build_zone(game.zone, quality)
 	add_child(world)
 	camera = Camera3D.new()
 	camera.name = "Camera"
@@ -197,6 +197,14 @@ func save_now() -> void:
 
 ## Saves with the destination world and asks main to rebuild play there.
 func travel(zone_id: String) -> void:
+	if game.zone is RulePlanet and game.zone.has_region(zone_id):   # same planet map: fly there, no loading
+		var sp: Dictionary = game.zone.region_spawn(zone_id)
+		game.player.pos = Vector3(sp.x, game.zone.height_at(sp.x, sp.z) + 0.2, sp.z)
+		game.player.vel = Vector3.ZERO
+		prev_pos = game.player.pos
+		game.slot.zone = zone_id
+		save_now()
+		return
 	var slot := game.to_save()
 	slot["zone"] = zone_id
 	slot["position"] = null
@@ -243,7 +251,7 @@ func render(frame_dt: float, alpha: float) -> void:
 		for n: Dictionary in story.npcs():
 			if n.get("boss", false) and Vector2(float(n.x) - pos.x, float(n.z) - pos.z).length() < 45.0:
 				villain = true
-		Music.play("battle" if villain else str(game.zone.id))
+		Music.play("battle" if villain else game.current_region())
 	if combat_view != null:
 		combat_view.call("update_view", anim_dt)
 	if story_view != null:

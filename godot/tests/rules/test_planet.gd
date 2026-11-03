@@ -1,0 +1,78 @@
+extends TestCase
+# Open world: Earth is one map; its areas keep their own ground at their spot (spec 2026-11-03-open-world-design).
+static var _earth: RulePlanet
+
+func _planet() -> RulePlanet:
+	if _earth == null:
+		_earth = RulePlanet.open("earth_plains") as RulePlanet
+	return _earth
+
+func test_areas_open_on_their_planet() -> void:
+	ok(RulePlanet.open("west_city") is RulePlanet, "West Capital is on Earth's map")
+	eq(RulePlanet.planet_of("west_city"), "earth")
+	ok(not (RulePlanet.open("namek") is RulePlanet), "Nameck is still its own area")
+	eq(RulePlanet.planet_of("lookout"), "", "the Lookout stays separate (in the sky)")
+	var e := _planet()
+	eq(e.id, "earth")
+	ok(e.has_region("cell_games") and e.has_region("amber_city"))
+	ok(not e.has_region("namek"))
+
+func test_each_area_keeps_its_own_ground_at_its_spot() -> void:
+	var e := _planet()
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 5
+	for rid: String in e.region_ids():
+		var r: Dictionary = e.regions[rid]
+		var z: RuleZone = r.zone
+		eq(e.region_at(r.x, r.z), rid, rid + " centre")
+		for i in 6:
+			var a := rng.randf() * TAU
+			var d := rng.randf() * float(r.radius) * 0.9
+			var lx := cos(a) * d
+			var lz := sin(a) * d
+			near(e.height_at(r.x + lx, r.z + lz), z.height_at(lx, lz), 0.001, "%s at %.0f,%.0f" % [rid, lx, lz])
+
+func test_spawn_and_authored_points_land_on_the_map() -> void:
+	var e := _planet()
+	var s: Dictionary = e.region_spawn("west_city")
+	var r: Dictionary = e.regions.west_city
+	near(float(s.x), float(r.zone.spawn.x) + float(r.x), 0.0001)
+	var p := e.place_in("west_city", 10, 20)
+	near(float(p.x), float(r.x) + 10.0, 0.0001)
+	near(float(p.z), float(r.z) + 20.0, 0.0001)
+	near(float(e.spawn.x), float(e.regions.earth_plains.zone.spawn.x), 0.0001, "starts in the plains")
+	eq(e.region_at(e.spawn.x, e.spawn.z), "earth_plains")
+
+func test_you_can_cross_between_neighbours_without_falling_out() -> void:
+	var e := _planet()
+	var pairs := [["earth_plains", "west_city"], ["earth_plains", "pepper_village"], ["earth_plains", "amber_city"],
+		["earth_plains", "gero_lab"], ["gizard_wasteland", "broly_glacier"], ["amber_city", "cell_games"], ["cell_games", "harbor_town"], ["harbor_town", "kame_island"]]
+	for pr: Array in pairs:
+		var a: Dictionary = e.regions[pr[0]]
+		var b: Dictionary = e.regions[pr[1]]
+		for i in 41:
+			var t := i / 40.0
+			var x: float = lerpf(a.x, b.x, t)
+			var z: float = lerpf(a.z, b.z, t)
+			var h := e.height_at(x, z)
+			ok(h > -20.0 and h < 400.0, "%s→%s at %.0f,%.0f: %.1f" % [pr[0], pr[1], x, z, h])
+
+func test_countryside_has_sea_in_the_south_and_ground_types() -> void:
+	var e := _planet()
+	eq(e.region_at(-900, -1500), "")
+	eq(e.surface_at(-900, -1500), "water", "southern sea")
+	ok(e.height_at(-300, 250) > 0.0, "land between the plains and the village")
+	ok(e.surface_at(-300, 250) in ["grass", "dirt", "rock"])
+
+func test_areas_do_not_crowd_each_other() -> void:
+	var e := _planet()
+	var ids: Array = e.region_ids()
+	for i in ids.size():
+		for j in range(i + 1, ids.size()):
+			var a: Dictionary = e.regions[ids[i]]
+			var b: Dictionary = e.regions[ids[j]]
+			var d := Vector2(float(a.x) - float(b.x), float(a.z) - float(b.z)).length()
+			ok(d >= float(a.radius) + float(b.radius) + maxf(float(a.blend), float(b.blend)), "%s and %s are %.0f m apart" % [ids[i], ids[j], d])
+	for rid: String in ids:
+		var r: Dictionary = e.regions[rid]
+		ok(absf(float(r.x)) + float(r.radius) <= e.size / 2.0 and absf(float(r.z)) + float(r.radius) <= e.size / 2.0, rid + " inside the map")

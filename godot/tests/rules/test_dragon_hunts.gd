@@ -31,14 +31,14 @@ func test_collected_orbs_persist_and_radar_excludes_them() -> void:
 	var spot: Dictionary = step.spots[0]
 	s.enter(spot.get("zone",step.get("zone")))
 	var radar_before: int = s.story.radar().here.size()
-	s.at(spot)
+	s.at(spot_at(s,spot,step))
 	s.story.update(1.0/60)
 	eq(s.story.radar().here.size(),radar_before-1)
 	var saved: Dictionary = RuleSchema.new().normalize(s.game.to_save().duplicate(true))
 	s.slot = saved
 	s.enter(saved.zone)
 	eq(s.slot.quests[q.id].collected.size(),1)
-	s.at(spot)
+	s.at(spot_at(s,spot,step))
 	s.story.update(1.0/60)
 	eq(s.slot.quests[q.id].collected.size(),1)
 	ok(not s.story.radar().elsewhere.is_empty())
