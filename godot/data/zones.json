@@ -2292,5 +2292,980 @@
       "x": 18,
       "z": -90
     }
+  },
+  "nameck_east": {
+    "name": "Elder Grove Village",
+    "planet": "Nameck",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 300,
+      "hills": {
+        "amp": 1.5,
+        "scale": 60
+      },
+      "flatSpawn": 0,
+      "spawn": {
+        "x": 0,
+        "z": -60
+      },
+      "ocean": {
+        "level": 0
+      },
+      "islands": [
+        {
+          "x": 0,
+          "z": 0,
+          "r": 120,
+          "h": 4
+        }
+      ]
+    },
+    "biome": {
+      "sky": {
+        "type": "gradient",
+        "top": 5817498,
+        "horizon": 12579030,
+        "bottom": 3116920,
+        "elevation": 48,
+        "azimuth": 200,
+        "sunColor": 16187376
+      },
+      "fog": [
+        11462348,
+        0.0009
+      ],
+      "tints": {
+        "grass": [
+          0.55,
+          1.05,
+          1.25
+        ],
+        "rock": [
+          0.85,
+          1,
+          0.95
+        ],
+        "sand": [
+          0.9,
+          1,
+          0.95
+        ]
+      },
+      "trees": "ajisa",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120,
+      "water": 2795419
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Elder Grove Village",
+        "x": 0,
+        "z": 0,
+        "style": "domevillage",
+        "radius": 110,
+        "seed": 61,
+        "flatten": 110
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -82.5
+    }
+  },
+  "nameck_south": {
+    "name": "Ajisa Shore Village",
+    "planet": "Nameck",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 300,
+      "hills": {
+        "amp": 1.5,
+        "scale": 60
+      },
+      "flatSpawn": 0,
+      "spawn": {
+        "x": 0,
+        "z": -60
+      },
+      "ocean": {
+        "level": 0
+      },
+      "islands": [
+        {
+          "x": 0,
+          "z": 0,
+          "r": 120,
+          "h": 4
+        }
+      ]
+    },
+    "biome": {
+      "sky": {
+        "type": "gradient",
+        "top": 5817498,
+        "horizon": 12579030,
+        "bottom": 3116920,
+        "elevation": 48,
+        "azimuth": 200,
+        "sunColor": 16187376
+      },
+      "fog": [
+        11462348,
+        0.0009
+      ],
+      "tints": {
+        "grass": [
+          0.55,
+          1.05,
+          1.25
+        ],
+        "rock": [
+          0.85,
+          1,
+          0.95
+        ],
+        "sand": [
+          0.9,
+          1,
+          0.95
+        ]
+      },
+      "trees": "ajisa",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120,
+      "water": 2795419
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Ajisa Shore Village",
+        "x": 0,
+        "z": 0,
+        "style": "domevillage",
+        "radius": 110,
+        "seed": 67,
+        "flatten": 110
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -82.5
+    }
+  },
+  "nameck_west": {
+    "name": "Westwind Village",
+    "planet": "Nameck",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 300,
+      "hills": {
+        "amp": 1.5,
+        "scale": 60
+      },
+      "flatSpawn": 0,
+      "spawn": {
+        "x": 0,
+        "z": -60
+      },
+      "ocean": {
+        "level": 0
+      },
+      "islands": [
+        {
+          "x": 0,
+          "z": 0,
+          "r": 120,
+          "h": 4
+        }
+      ]
+    },
+    "biome": {
+      "sky": {
+        "type": "gradient",
+        "top": 5817498,
+        "horizon": 12579030,
+        "bottom": 3116920,
+        "elevation": 48,
+        "azimuth": 200,
+        "sunColor": 16187376
+      },
+      "fog": [
+        11462348,
+        0.0009
+      ],
+      "tints": {
+        "grass": [
+          0.55,
+          1.05,
+          1.25
+        ],
+        "rock": [
+          0.85,
+          1,
+          0.95
+        ],
+        "sand": [
+          0.9,
+          1,
+          0.95
+        ]
+      },
+      "trees": "ajisa",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120,
+      "water": 2795419
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Westwind Village",
+        "x": 0,
+        "z": 0,
+        "style": "domevillage",
+        "radius": 110,
+        "seed": 71,
+        "flatten": 110
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -82.5
+    }
+  },
+  "new_nameck_east": {
+    "name": "Sunrise Village",
+    "planet": "New Nameck",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 300,
+      "hills": {
+        "amp": 1.5,
+        "scale": 60
+      },
+      "flatSpawn": 0,
+      "spawn": {
+        "x": 0,
+        "z": -60
+      },
+      "ocean": {
+        "level": 0
+      },
+      "islands": [
+        {
+          "x": 0,
+          "z": 0,
+          "r": 120,
+          "h": 4
+        }
+      ]
+    },
+    "biome": {
+      "sky": {
+        "type": "gradient",
+        "top": 5817498,
+        "horizon": 12579030,
+        "bottom": 3116920,
+        "elevation": 48,
+        "azimuth": 200,
+        "sunColor": 16187376
+      },
+      "fog": [
+        11462348,
+        0.0009
+      ],
+      "tints": {
+        "grass": [
+          0.55,
+          1.05,
+          1.25
+        ],
+        "rock": [
+          0.85,
+          1,
+          0.95
+        ],
+        "sand": [
+          0.9,
+          1,
+          0.95
+        ]
+      },
+      "trees": "ajisa",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120,
+      "water": 2795419
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Sunrise Village",
+        "x": 0,
+        "z": 0,
+        "style": "domevillage",
+        "radius": 110,
+        "seed": 73,
+        "flatten": 110
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -82.5
+    }
+  },
+  "new_nameck_south": {
+    "name": "Twin Pools Village",
+    "planet": "New Nameck",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 300,
+      "hills": {
+        "amp": 1.5,
+        "scale": 60
+      },
+      "flatSpawn": 0,
+      "spawn": {
+        "x": 0,
+        "z": -60
+      },
+      "ocean": {
+        "level": 0
+      },
+      "islands": [
+        {
+          "x": 0,
+          "z": 0,
+          "r": 120,
+          "h": 4
+        }
+      ]
+    },
+    "biome": {
+      "sky": {
+        "type": "gradient",
+        "top": 5817498,
+        "horizon": 12579030,
+        "bottom": 3116920,
+        "elevation": 48,
+        "azimuth": 200,
+        "sunColor": 16187376
+      },
+      "fog": [
+        11462348,
+        0.0009
+      ],
+      "tints": {
+        "grass": [
+          0.55,
+          1.05,
+          1.25
+        ],
+        "rock": [
+          0.85,
+          1,
+          0.95
+        ],
+        "sand": [
+          0.9,
+          1,
+          0.95
+        ]
+      },
+      "trees": "ajisa",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120,
+      "water": 2795419
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Twin Pools Village",
+        "x": 0,
+        "z": 0,
+        "style": "domevillage",
+        "radius": 110,
+        "seed": 79,
+        "flatten": 110
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -82.5
+    }
+  },
+  "new_nameck_west": {
+    "name": "New Elder Village",
+    "planet": "New Nameck",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 300,
+      "hills": {
+        "amp": 1.5,
+        "scale": 60
+      },
+      "flatSpawn": 0,
+      "spawn": {
+        "x": 0,
+        "z": -60
+      },
+      "ocean": {
+        "level": 0
+      },
+      "islands": [
+        {
+          "x": 0,
+          "z": 0,
+          "r": 120,
+          "h": 4
+        }
+      ]
+    },
+    "biome": {
+      "sky": {
+        "type": "gradient",
+        "top": 5817498,
+        "horizon": 12579030,
+        "bottom": 3116920,
+        "elevation": 48,
+        "azimuth": 200,
+        "sunColor": 16187376
+      },
+      "fog": [
+        11462348,
+        0.0009
+      ],
+      "tints": {
+        "grass": [
+          0.55,
+          1.05,
+          1.25
+        ],
+        "rock": [
+          0.85,
+          1,
+          0.95
+        ],
+        "sand": [
+          0.9,
+          1,
+          0.95
+        ]
+      },
+      "trees": "ajisa",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120,
+      "water": 2795419
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "New Elder Village",
+        "x": 0,
+        "z": 0,
+        "style": "domevillage",
+        "radius": 110,
+        "seed": 83,
+        "flatten": 110
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -82.5
+    }
+  },
+  "yardran_east": {
+    "name": "Crystal Hollow",
+    "planet": "Yardran",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 300,
+      "hills": {
+        "amp": 2,
+        "scale": 120
+      },
+      "flatSpawn": 100,
+      "spawn": {
+        "x": 0,
+        "z": -75
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "gradient",
+        "top": 9074390,
+        "horizon": 15976678,
+        "bottom": 6970022,
+        "elevation": 30,
+        "azimuth": 200,
+        "sunColor": 16770806
+      },
+      "fog": [
+        15320804,
+        0.001
+      ],
+      "tints": {
+        "grass": [
+          1.05,
+          0.8,
+          1.2
+        ],
+        "rock": [
+          0.9,
+          0.85,
+          1.1
+        ]
+      },
+      "trees": "crystal",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120,
+      "water": 7098288
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Crystal Hollow",
+        "x": 0,
+        "z": 0,
+        "style": "domevillage",
+        "radius": 100,
+        "seed": 89,
+        "flatten": 100
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -75
+    }
+  },
+  "yardran_west": {
+    "name": "Spirit Step Village",
+    "planet": "Yardran",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 300,
+      "hills": {
+        "amp": 2,
+        "scale": 120
+      },
+      "flatSpawn": 100,
+      "spawn": {
+        "x": 0,
+        "z": -75
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "gradient",
+        "top": 9074390,
+        "horizon": 15976678,
+        "bottom": 6970022,
+        "elevation": 30,
+        "azimuth": 200,
+        "sunColor": 16770806
+      },
+      "fog": [
+        15320804,
+        0.001
+      ],
+      "tints": {
+        "grass": [
+          1.05,
+          0.8,
+          1.2
+        ],
+        "rock": [
+          0.9,
+          0.85,
+          1.1
+        ]
+      },
+      "trees": "crystal",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120,
+      "water": 7098288
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Spirit Step Village",
+        "x": 0,
+        "z": 0,
+        "style": "domevillage",
+        "radius": 100,
+        "seed": 97,
+        "flatten": 100
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -75
+    }
+  },
+  "grain_farms": {
+    "name": "Harvest Farms",
+    "planet": "Grain",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 320,
+      "hills": {
+        "amp": 2,
+        "scale": 120
+      },
+      "flatSpawn": 110,
+      "spawn": {
+        "x": 0,
+        "z": -82.5
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 40,
+        "azimuth": 230
+      },
+      "tints": {
+        "dirt": [
+          1.12,
+          0.95,
+          0.8
+        ],
+        "rock": [
+          1.1,
+          0.92,
+          0.78
+        ]
+      },
+      "trees": "dead",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120,
+      "grass": 0.12
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Harvest Farms",
+        "x": 0,
+        "z": 0,
+        "style": "village",
+        "radius": 110,
+        "seed": 101,
+        "flatten": 110
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -82.5
+    }
+  },
+  "grain_market": {
+    "name": "Grain Market",
+    "planet": "Grain",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 340,
+      "hills": {
+        "amp": 2,
+        "scale": 120
+      },
+      "flatSpawn": 120,
+      "spawn": {
+        "x": 0,
+        "z": -90
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 40,
+        "azimuth": 230
+      },
+      "tints": {
+        "dirt": [
+          1.12,
+          0.95,
+          0.8
+        ],
+        "rock": [
+          1.1,
+          0.92,
+          0.78
+        ]
+      },
+      "trees": "dead",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120,
+      "grass": 0.12
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Grain Market",
+        "x": 0,
+        "z": 0,
+        "style": "domevillage",
+        "radius": 120,
+        "seed": 103,
+        "flatten": 120
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -90
+    }
+  },
+  "beeros_gardens": {
+    "name": "Temple Gardens",
+    "planet": "Beeros's Planet",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 300,
+      "hills": {
+        "amp": 2,
+        "scale": 120
+      },
+      "flatSpawn": 100,
+      "spawn": {
+        "x": 0,
+        "z": -75
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "gradient",
+        "top": 5061258,
+        "horizon": 15120614,
+        "bottom": 3811942,
+        "elevation": 36,
+        "azimuth": 200,
+        "sunColor": 16773344
+      },
+      "fog": [
+        14267103,
+        0.0009
+      ],
+      "tints": {
+        "grass": [
+          0.85,
+          1.05,
+          1
+        ],
+        "rock": [
+          0.95,
+          0.85,
+          1.05
+        ]
+      },
+      "trees": "broadleaf",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120,
+      "water": 3895216
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Temple Gardens",
+        "x": 0,
+        "z": 0,
+        "style": "garden",
+        "radius": 100,
+        "seed": 107,
+        "flatten": 100
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -75
+    }
+  },
+  "future_ruins": {
+    "name": "Ruined District",
+    "planet": "Earth (Tronks' timeline)",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 520,
+      "hills": {
+        "amp": 2,
+        "scale": 120
+      },
+      "flatSpawn": 200,
+      "spawn": {
+        "x": 0,
+        "z": -150
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "gradient",
+        "top": 7106680,
+        "horizon": 12104874,
+        "bottom": 5591628,
+        "elevation": 22,
+        "azimuth": 200,
+        "sunColor": 14209216
+      },
+      "fog": [
+        11052186,
+        0.0016
+      ],
+      "trees": "dead",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120,
+      "grass": 0.15
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Ruined District",
+        "x": 0,
+        "z": 0,
+        "style": "ruins",
+        "radius": 200,
+        "seed": 109,
+        "flatten": 200
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -150
+    }
+  },
+  "kae_shrine": {
+    "name": "Elder Kae's Shrine",
+    "planet": "Sacred World",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 240,
+      "hills": {
+        "amp": 2,
+        "scale": 120
+      },
+      "flatSpawn": 80,
+      "spawn": {
+        "x": 0,
+        "z": -60
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 46,
+        "azimuth": 200,
+        "turbidity": 1.5,
+        "rayleigh": 2.2
+      },
+      "tints": {
+        "grass": [
+          0.95,
+          1.08,
+          0.9
+        ]
+      },
+      "trees": "broadleaf",
+      "treeCount": 60,
+      "rocks": 30,
+      "bushes": 120
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Elder Kae's Shrine",
+        "x": 0,
+        "z": 0,
+        "style": "garden",
+        "radius": 80,
+        "seed": 113,
+        "flatten": 80
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -60
+    }
+  },
+  "nameless_outpost": {
+    "name": "Abandoned Outpost",
+    "planet": "Universe 6 border",
+    "saga": "Open world",
+    "kind": "town",
+    "terrain": {
+      "size": 240,
+      "hills": {
+        "amp": 2,
+        "scale": 120
+      },
+      "flatSpawn": 90,
+      "spawn": {
+        "x": 0,
+        "z": -67.5
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "gradient",
+        "top": 14260826,
+        "horizon": 16178358,
+        "bottom": 9071178,
+        "elevation": 30,
+        "azimuth": 200,
+        "sunColor": 16773328
+      },
+      "fog": [
+        15783088,
+        0.0011
+      ],
+      "tints": {
+        "dirt": [
+          1,
+          0.95,
+          0.9
+        ]
+      },
+      "trees": "none",
+      "rocks": 30,
+      "bushes": 120,
+      "grass": 0,
+      "treeCount": 60
+    },
+    "landmarks": [
+      {
+        "type": "town",
+        "name": "Abandoned Outpost",
+        "x": 0,
+        "z": 0,
+        "style": "ruins",
+        "radius": 90,
+        "seed": 127,
+        "flatten": 90
+      }
+    ],
+    "travelPoint": {
+      "x": 18,
+      "z": -67.5
+    }
   }
 }

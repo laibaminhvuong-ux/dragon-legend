@@ -19,6 +19,9 @@ static func layout(l: Dictionary) -> Dictionary:
 	match str(l.get("style", "village")):
 		"city": _city(out, r, radius)
 		"harbor": _harbor(out, r, radius)
+		"domevillage": _domes(out, r, radius)
+		"ruins": _ruins(out, r, radius)
+		"garden": _garden(out, r, radius)
 		_: _village(out, r, radius, str(l.get("style", "village")))
 	_cache[key] = out
 	return out
@@ -136,3 +139,57 @@ static func _harbor(out: Dictionary, r: NoiseRules.Random32, radius: float) -> v
 		var x := -50.0 + i * 50.0
 		out.extras.append({"kind": "pier", "x": x, "z": cz - 118.0, "len": 34.0})
 		out.extras.append({"kind": "boat", "x": x + 6.0, "z": cz - 140.0, "rot": r.next_float() * 0.6})
+
+## Round white houses round a green, with paths (Nameck, Yardran, Grain markets).
+static func _domes(out: Dictionary, r: NoiseRules.Random32, radius: float) -> void:
+	out.roads.append({"x1": 0.0, "z1": -radius, "x2": 0.0, "z2": radius * 0.7, "w": 5.0})
+	out.extras.append({"kind": "plaza", "x": 0.0, "z": 0.0, "r": 14.0})
+	var palette := [0xf4f1e6, 0xeef4ea, 0xf2ecdc]
+	for attempt in 400:
+		if out.buildings.size() >= 14:
+			break
+		var a: float = r.next_float() * TAU
+		var d: float = 22.0 + r.next_float() * radius * 0.7
+		var x: float = cos(a) * d
+		var z: float = sin(a) * d
+		var w: float = 8.0 + r.next_float() * 5.0
+		if _on_road(out, x, z, w * 0.5 + 2.0) or not _free(out, x, z, w, 6.0):
+			continue
+		out.buildings.append({"kind": "dome", "x": x, "z": z, "w": w, "d": w, "h": 6.0 + r.next_float() * 2.0, "rot": r.next_float() * TAU,
+			"color": palette[floori(r.next_float() * palette.size())]})
+
+## A wrecked city district: broken towers and blocks, rubble, no roads left.
+static func _ruins(out: Dictionary, r: NoiseRules.Random32, radius: float) -> void:
+	out.roads.append({"x1": 0.0, "z1": -radius, "x2": 0.0, "z2": radius, "w": 10.0})
+	for attempt in 600:
+		if out.buildings.size() >= 26:
+			break
+		var a: float = r.next_float() * TAU
+		var d: float = 18.0 + r.next_float() * radius * 0.85
+		var x: float = cos(a) * d
+		var z: float = sin(a) * d
+		var w: float = 9.0 + r.next_float() * 8.0
+		if _on_road(out, x, z, w * 0.5 + 2.0) or not _free(out, x, z, w, 5.0):
+			continue
+		out.buildings.append({"kind": "ruin", "x": x, "z": z, "w": w, "d": w * (0.7 + r.next_float() * 0.3), "h": 6.0 + r.next_float() * 22.0,
+			"rot": r.next_float() * TAU, "color": [0x8a8680, 0x9a948a, 0x76726c][floori(r.next_float() * 3)]})
+	for i in 30:
+		out.extras.append({"kind": "rubble", "x": (r.next_float() * 2.0 - 1.0) * radius * 0.8, "z": (r.next_float() * 2.0 - 1.0) * radius * 0.8, "s": 0.6 + r.next_float() * 1.6})
+
+## Stone shrines among neat fields and trees (Beeros's temple gardens, the Kae's shrine).
+static func _garden(out: Dictionary, r: NoiseRules.Random32, radius: float) -> void:
+	out.roads.append({"x1": 0.0, "z1": -radius, "x2": 0.0, "z2": radius * 0.35 - 12.0, "w": 5.0})   # the path ends at the main shrine
+	out.buildings.append({"kind": "shrine", "x": 0.0, "z": radius * 0.35, "w": 14.0, "d": 14.0, "h": 12.0, "rot": 0.0, "color": 0xd8c9a0})
+	for attempt in 300:
+		if out.buildings.size() >= 7:
+			break
+		var a: float = r.next_float() * TAU
+		var d: float = 24.0 + r.next_float() * radius * 0.6
+		var x: float = cos(a) * d
+		var z: float = sin(a) * d
+		if _on_road(out, x, z, 6.0) or not _free(out, x, z, 7.0, 8.0):
+			continue
+		out.buildings.append({"kind": "shrine", "x": x, "z": z, "w": 7.0, "d": 7.0, "h": 6.0, "rot": r.next_float() * TAU, "color": 0xcfc0a0})
+	for i in 4:
+		var a: float = r.next_float() * TAU
+		out.extras.append({"kind": "field", "x": cos(a) * radius * 0.6, "z": sin(a) * radius * 0.6, "w": 16.0, "d": 10.0, "rot": r.next_float() * PI})

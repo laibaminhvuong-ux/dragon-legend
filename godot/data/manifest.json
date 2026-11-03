@@ -43,7 +43,7 @@
     "web/src/game/story.js": "78427bc84e7997290d5ceac4847db659337db401cecff65a637d790071901a3e",
     "web/src/game/tutorial.js": "6396d9262a04df0b6f54f8319469de787dac94cf95d849ccf0f0144c366c66b3",
     "web/src/game/zones.js": "c38525cfada5f1496007b9e0555d13926ef1ec944abbc238832901109696e0e4",
-    "tools/godot_additions.mjs": "4b5d11b05e0603e0e42cd28008a1177edd25392ae938c27c0822c4e04115d6b1",
+    "tools/godot_additions.mjs": "2efca4be2bc4490e0b4dd568e25d78a513afbf3e4602c31bc0f380a46f22a544",
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
   "files": {
@@ -144,16 +144,16 @@
       "entries": 5
     },
     "zones.json": {
-      "sha256": "cb92cffe10c82c7bf6348df4ab179427f0794ce9d1e37fd29efb9baa62d34393",
-      "bytes": 40349,
+      "sha256": "b400f9fb5efe4ebf415080b424e624a95fff0cee1e369909f448bac9d529eede",
+      "bytes": 57547,
       "kind": "object",
-      "entries": 27
+      "entries": 41
     },
     "zone_order.json": {
-      "sha256": "b08b93e445b24e8df9b56f5d41abb8fc1569c908ed30f7786623af137c7871be",
-      "bytes": 452,
+      "sha256": "85c7fc8d248020b3b662086813e8845aa9c44a877daf798f6d7dfc7542357e33",
+      "bytes": 715,
       "kind": "array",
-      "entries": 27
+      "entries": 41
     },
     "stats.json": {
       "sha256": "554a12822f1e9f5b697ddeb0452d54af4998de54cdd8a46faa09da8b1b9fd13f",
@@ -264,10 +264,10 @@
       "entries": 4
     },
     "planets.json": {
-      "sha256": "8b4a1bb3019ab14997bfdd1959999e85254f19744609b0df52c23bcb8988ca44",
-      "bytes": 2388,
+      "sha256": "4a52e7eba0ee16f3a8b1d3e2e6134ee666be9cef065de2fc2b287456ad005ca9",
+      "bytes": 8143,
       "kind": "object",
-      "entries": 1
+      "entries": 9
     },
     "godot_additions.json": {
       "sha256": "d732c3d1a22fe49f86401690f636cbce495ab68670e9aa535498a12fa7f36115",

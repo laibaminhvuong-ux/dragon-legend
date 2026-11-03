@@ -45,7 +45,8 @@ func _init(planet_id: String, start: String = "", data: Object = null) -> void:
 	mesas = []
 	ground = "grass"
 	kill_y = null
-	water = {"x": 0, "z": 0, "radius": size * 4, "level": float(_sea.get("level", 0)), "ocean": true}
+	# a shared sea for Earth-like and ocean worlds; all-land worlds only have their areas' lakes
+	water = {"x": 0, "z": 0, "radius": size * 4, "level": float(_sea.get("level", 0)), "ocean": true} if (_sea.has("southFrom") or not _sea.get("bays", []).is_empty() or p.base.get("islands", false)) else null
 	_hills = null
 	_flat_spawn = 0
 	for r: Dictionary in p.regions:
@@ -154,23 +155,30 @@ func _weight(r: Dictionary, x: float, z: float) -> float:
 	return NoiseRules.smooth_step(r.radius + r.blend, r.radius, d)
 
 # ------------------------------------------------------------------------------------------------- ground
+## The countryside between areas. Kinds: land with an optional southern sea and bays (Earth), all-land worlds walled
+## by mountains (sea {} empty), and ocean worlds of scattered islands (base.islands).
 func base_height(x: float, z: float) -> float:
 	var h: float = float(_base.get("lift", 0)) + 2.0 + (_noise[0].fbm(x / float(_base.get("scale", 260)), z / float(_base.get("scale", 260)), 5) * 0.5 + 0.5) * float(_base.get("amp", 14))
 	h += _noise[1].fbm(x / 60, z / 60, 3) * 1.6
-	# mountains along the map's land edges and in the north
 	var half := size / 2.0
-	var e := maxf(absf(x), z) / half
-	if e > 0.8:
-		var r1: float = _noise[3].ridged(x / 520, z / 520, 4)
-		h += NoiseRules.smooth_step(0.8, 1.05, e) * (25 + r1 * r1 * 260)
-	var north: float = NoiseRules.smooth_step(float(_base.get("northFrom", 600)), float(_base.get("northTo", 1300)), z)
-	if north > 0:
-		h += north * (_noise[3].ridged(x / 380, z / 380, 4) * 70)
-	# the sea: south of the coast line, and round the listed bays
-	var sea: float = NoiseRules.smooth_step(float(_sea.get("southFrom", -900)), float(_sea.get("southTo", -1060)), z + _noise[6].fbm(x / 300, z / 300, 3) * 60)
-	for b: Dictionary in _sea.get("bays", []):
-		var d: float = RuleZone._distance(x - float(b.x), z - float(b.z)) + _noise[6].fbm(x / 140, z / 140, 3) * float(b.r) * 0.2
-		sea = maxf(sea, NoiseRules.smooth_step(float(b.r), float(b.r) * 0.75, d))
+	var south_sea: bool = _sea.has("southFrom")
+	if not _base.get("islands", false):   # mountains along the map's land edges (not where a sea is)
+		var e := maxf(absf(x), z if south_sea else absf(z)) / half
+		if e > 0.8:
+			var r1: float = _noise[3].ridged(x / 520, z / 520, 4)
+			h += NoiseRules.smooth_step(0.8, 1.05, e) * (25 + r1 * r1 * 260)
+	if _base.has("northFrom"):
+		var north: float = NoiseRules.smooth_step(float(_base.northFrom), float(_base.get("northTo", 1300)), z)
+		if north > 0:
+			h += north * (_noise[3].ridged(x / 380, z / 380, 4) * 70)
+	var sea := 0.0
+	if _base.get("islands", false):   # an ocean world: islands where the noise rises, sea everywhere else
+		sea = NoiseRules.smooth_step(0.05, -0.12, _noise[2].fbm(x / 230, z / 230, 4))
+	if south_sea:
+		sea = maxf(sea, NoiseRules.smooth_step(float(_sea.southFrom), float(_sea.get("southTo", float(_sea.southFrom) - 160)), z + _noise[6].fbm(x / 300, z / 300, 3) * 60))
+	for bay: Dictionary in _sea.get("bays", []):
+		var d: float = RuleZone._distance(x - float(bay.x), z - float(bay.z)) + _noise[6].fbm(x / 140, z / 140, 3) * float(bay.r) * 0.2
+		sea = maxf(sea, NoiseRules.smooth_step(float(bay.r), float(bay.r) * 0.75, d))
 	return NoiseRules.mix_value(h, -14.0, sea)
 
 func raw_height(x: float, z: float) -> float:
@@ -215,9 +223,9 @@ func surface_at(x: float, z: float) -> String:
 		if s != "void":
 			return s
 	var h: float = height_at(x, z)
-	if h < float(water.level) - 0.02:
+	if water != null and h < float(water.level) - 0.02:
 		return "water"
-	if h < float(water.level) + 0.7:
+	if water != null and h < float(water.level) + 0.7:
 		return "sand"
 	var n: Dictionary = normal_data(x, z)
 	if h > 120.0 + _noise[1].fbm(x / 40, z / 40, 2) * 20 and n.y > 0.6:

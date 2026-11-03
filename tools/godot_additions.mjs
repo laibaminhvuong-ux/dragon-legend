@@ -31,9 +31,9 @@ function checkInStation(zones, npcs) {
 
 // User request 2026-11-03: open world, one map per planet (docs/superpowers/specs/2026-11-03-open-world-design.md).
 // New towns are ordinary areas (zones) so NPCs, shops and quests attach to them like anywhere else.
-function town(zones, id, name, style, {size = 480, radius = 200, terrain = {}, biomeFrom = 'earth_plains', biome = {}, seed = 1} = {}) {
+function town(zones, id, name, style, {size = 480, radius = 200, terrain = {}, biomeFrom = 'earth_plains', biome = {}, seed = 1, planet = 'Earth'} = {}) {
   zones[id] = {
-    name, planet: 'Earth', saga: 'Open world', kind: 'town',
+    name, planet, saga: 'Open world', kind: 'town',
     terrain: {size, hills: {amp: 2, scale: 120}, flatSpawn: radius, spawn: {x: 0, z: -radius * 0.75}, ...terrain},
     biome: {...structuredClone(zones[biomeFrom].biome), treeCount: 60, bushes: 120, rocks: 30, ...biome},
     landmarks: [{type: 'town', name, x: 0, z: 0, style, radius, seed, flatten: radius}],
@@ -52,8 +52,49 @@ function openWorld(zones, zoneOrder) {
       terrain: {ocean: {level: 0}, islands: [{x: 0, z: 30, r: 130, h: 3}], hills: {amp: 1.2, scale: 60}, flatSpawn: 0, spawn: {x: 0, z: -40}},
       biomeFrom: 'kame_island'}),
   ];
-  for (const t of towns) if (!zoneOrder.includes(t)) zoneOrder.push(t);
+  // the other planets: bigger maps with new places (spec "Other planets")
+  const island = {terrain: {ocean: {level: 0}, islands: [{x: 0, z: 0, r: 120, h: 4}], hills: {amp: 1.5, scale: 60}, flatSpawn: 0, spawn: {x: 0, z: -60}}};
+  const more = [];
+  const add = (planetFrom, id, name, style, opts) => {
+    more.push(town(zones, id, name, style, {planet: zones[planetFrom].planet, biomeFrom: planetFrom, ...opts}));
+    return id;
+  };
   const R = (zone, x, z, radius, blend = 90) => ({zone, x, z, radius, blend});
+  const planet = (start, size, seed, base, sea, regions, props) =>
+    ({name: zones[start].planet, size, seed, start, biome: start, props, base, sea, regions});
+  const others = {
+    nameck: planet('namek', 2000, 501, {amp: 6, scale: 200, lift: 0, islands: true}, {level: 0}, [R('namek', 0, 0, 340),
+      R(add('namek', 'nameck_east', 'Elder Grove Village', 'domevillage', {size: 300, radius: 110, seed: 61, ...island}), 700, 250, 130),
+      R(add('namek', 'nameck_south', 'Ajisa Shore Village', 'domevillage', {size: 300, radius: 110, seed: 67, ...island}), -150, -720, 130),
+      R(add('namek', 'nameck_west', 'Westwind Village', 'domevillage', {size: 300, radius: 110, seed: 71, ...island}), -720, 200, 130)],
+      {treeCount: 700, rocks: 300, bushes: 700, stones: 1500}),
+    new_nameck: planet('new_namek', 2000, 502, {amp: 6, scale: 200, lift: 0, islands: true}, {level: 0}, [R('new_namek', 0, 0, 340),
+      R(add('new_namek', 'new_nameck_east', 'Sunrise Village', 'domevillage', {size: 300, radius: 110, seed: 73, ...island}), 700, 250, 130),
+      R(add('new_namek', 'new_nameck_south', 'Twin Pools Village', 'domevillage', {size: 300, radius: 110, seed: 79, ...island}), -150, -720, 130),
+      R(add('new_namek', 'new_nameck_west', 'New Elder Village', 'domevillage', {size: 300, radius: 110, seed: 83, ...island}), -720, 200, 130)],
+      {treeCount: 700, rocks: 300, bushes: 700, stones: 1500}),
+    yardran: planet('yardrat', 1800, 503, {amp: 12, scale: 220, lift: 20}, {}, [R('yardrat', 0, 0, 250),
+      R(add('yardrat', 'yardran_east', 'Crystal Hollow', 'domevillage', {size: 300, radius: 100, seed: 89}), 560, 320, 120),
+      R(add('yardrat', 'yardran_west', 'Spirit Step Village', 'domevillage', {size: 300, radius: 100, seed: 97}), -520, -360, 120)],
+      {treeCount: 1200, rocks: 500, bushes: 1400, stones: 2500}),
+    grain: planet('planet_cereal', 1800, 504, {amp: 10, scale: 220, lift: 20}, {}, [R('planet_cereal', 0, 0, 310),
+      R(add('planet_cereal', 'grain_farms', 'Harvest Farms', 'village', {size: 320, radius: 110, seed: 101}), 600, -330, 130),
+      R(add('planet_cereal', 'grain_market', 'Grain Market', 'domevillage', {size: 340, radius: 120, seed: 103}), -560, 360, 140)],
+      {treeCount: 1200, rocks: 500, bushes: 1400, stones: 2500}),
+    beeros: planet('beerus_planet', 1600, 505, {amp: 10, scale: 200, lift: 20}, {}, [R('beerus_planet', 0, 0, 290),
+      R(add('beerus_planet', 'beeros_gardens', 'Temple Gardens', 'garden', {size: 300, radius: 100, seed: 107}), 540, 360, 120)],
+      {treeCount: 1000, rocks: 400, bushes: 1100, stones: 2000}),
+    future_earth: planet('future_earth', 2000, 506, {amp: 10, scale: 240, lift: 20}, {}, [R('future_earth', 0, 0, 270),
+      R(add('future_earth', 'future_ruins', 'Ruined District', 'ruins', {size: 520, radius: 200, seed: 109}), 680, -220, 230)],
+      {treeCount: 400, rocks: 900, bushes: 600, stones: 3500}),
+    kae_world: planet('kai_world', 1400, 507, {amp: 10, scale: 200, lift: 20}, {}, [R('kai_world', 0, 0, 270),
+      R(add('kai_world', 'kae_shrine', "Elder Kae's Shrine", 'garden', {size: 240, radius: 80, seed: 113}), 470, 280, 90)],
+      {treeCount: 900, rocks: 400, bushes: 1000, stones: 1500}),
+    nameless: planet('nameless_planet', 1400, 508, {amp: 10, scale: 200, lift: 20}, {}, [R('nameless_planet', 0, 0, 250),
+      R(add('nameless_planet', 'nameless_outpost', 'Abandoned Outpost', 'ruins', {size: 240, radius: 90, seed: 127}), 470, -300, 100)],
+      {treeCount: 400, rocks: 600, bushes: 500, stones: 2000}),
+  };
+  for (const t of [...towns, ...more]) if (!zoneOrder.includes(t)) zoneOrder.push(t);
   const planets = {
     earth: {
       name: 'Earth', size: 3200, seed: 4242, start: 'earth_plains', biome: 'earth_plains',
@@ -70,7 +111,8 @@ function openWorld(zones, zoneOrder) {
       ],
     },
   };
-  return {planets, changed: towns};
+  Object.assign(planets, others);
+  return {planets, changed: [...towns, ...more]};
 }
 
 export function applyGodotAdditions(tables) {

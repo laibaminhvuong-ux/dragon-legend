@@ -44,8 +44,14 @@ func at(pos: Variant) -> void:
 	p.game.player.onGround = true
 
 func go(id: String) -> bool:
-	if str(p.game.zone.id) == id:
+	if p.story.here() == id:
 		return true
+	if p.game.zone is RulePlanet and p.game.zone.has_region(id):   # open world: fly across the planet
+		at(p.game.zone.region_spawn(id))
+		_frames(2)
+		ok(p.story.here() == id, "flew to " + id)
+		travels += 1
+		return p.story.here() == id
 	var guide: Variant = p.story.travel_guide()
 	ok(guide != null, "a pilot in %s to reach %s" % [p.game.zone.id, id])
 	if guide == null:
@@ -62,7 +68,7 @@ func go(id: String) -> bool:
 	_close()
 	_open()
 	travels += 1
-	return str(p.game.zone.id) == id
+	return p.story.here() == id
 
 func grind(level: int) -> void:
 	while int(p.game.slot.level) < level:
@@ -116,8 +122,9 @@ func play_quest(q: Dictionary) -> void:
 					p.story.enemy_defeated(step.enemy, step.zone)
 			"collect":
 				for spot: Dictionary in step.spots:
-					if not go(spot.get("zone", step.get("zone"))): return
-					at(spot)
+					var sz: String = str(spot.get("zone", step.get("zone")))
+					if not go(sz): return
+					at(p.game.zone.place_in(sz, spot.x, spot.z) if p.game.zone is RulePlanet else spot)
 					p.story.update(DT)
 			"train":
 				if not go(step.zone): return
@@ -149,8 +156,10 @@ func test_whole_main_story_through_the_play_scene() -> void:
 			play_quest(q)
 			mains += 1
 	eq(mains, 41, "every main quest played")
-	eq((p.game.slot.story.unlocked as Array).size(), (RuleTables.table("zones") as Dictionary).size(), "every world unlocked")
-	ok(worlds.size() >= 20, "%d worlds built and played in (%d travels)" % [worlds.size(), travels])
+	# every story area unlocks (open-world towns unlock when found); planets are one map each, so fewer builds
+	var story_areas: Array = (RuleTables.table("zones") as Dictionary).keys().filter(func(z: String) -> bool: return RuleTables.table("zones")[z].get("kind", "") != "town")
+	eq((p.game.slot.story.unlocked as Array).size(), story_areas.size(), "every story area unlocked")
+	ok(worlds.size() >= 10, "%d maps built and played in (%d travels)" % [worlds.size(), travels])
 	p.save_now()
 	var saved: Dictionary = SaveStore.load_slot(0)
 	eq(int(saved.level), int(p.game.slot.level), "progress saved")

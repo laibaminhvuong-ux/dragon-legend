@@ -42,6 +42,8 @@ static func build(g: Node3D, zone: RefCounted, l: Dictionary) -> void:
 			"cabin": _cabin(n, b)
 			"windmill": _windmill(n, b)
 			"lighthouse": _lighthouse(n, b)
+			"ruin": _ruin(n, b)
+			"shrine": _shrine(n, b)
 			_: _house(n, b)
 	# one mesh per material for the whole town (thousands of pieces -> a few draw calls), faded out far away
 	var holder := Node3D.new()
@@ -167,6 +169,23 @@ static func _lighthouse(n: Node3D, b: Dictionary) -> void:
 	var cap := CylinderMesh.new(); cap.top_radius = 0.0; cap.bottom_radius = 1.9; cap.height = 1.6; cap.radial_segments = 12
 	_put(n, cap, _mat(0x2a2a2a), Vector3(0, h + 3.0, 0))
 
+static func _ruin(n: Node3D, b: Dictionary) -> void:
+	var w := float(b.w); var d := float(b.d); var h := float(b.h)
+	var wall := _mat(int(b.color), {"rough": 0.95})
+	_box(n, Vector3(w, h * 0.55, d), wall, Vector3(0, h * 0.275, 0))
+	_box(n, Vector3(w * 0.55, h * 0.45, d * 0.6), wall, Vector3(-w * 0.2, h * 0.55 + h * 0.2, d * 0.15))   # broken upper floors
+	var dark := _mat(0x2a2826, {"rough": 1.0})
+	for row in int(h * 0.55 / 3.5):
+		_box(n, Vector3(w * 0.8, 1.2, 0.2), dark, Vector3(0, 1.8 + row * 3.5, d * 0.5 + 0.05))
+
+static func _shrine(n: Node3D, b: Dictionary) -> void:
+	var w := float(b.w); var h := float(b.h)
+	var stone := _mat(int(b.color), {"rough": 0.8})
+	_box(n, Vector3(w, h * 0.25, w), stone, Vector3(0, h * 0.125, 0))
+	var top := CylinderMesh.new(); top.top_radius = 0.0; top.bottom_radius = w * 0.62; top.height = h * 0.75; top.radial_segments = 4
+	var mi := _put(n, top, stone, Vector3(0, h * 0.25 + h * 0.375, 0)); mi.rotation.y = PI / 4
+	_cyl(n, w * 0.08, w * 0.08, 1.0, _mat(0x8f5ad8, {"emissive": 0x6a30c0, "glow": 1.4}), Vector3(0, h + 0.5, 0), 8)
+
 # --- roads and extras -----------------------------------------------------------------------------------
 static func _road(g: Node3D, zone: RefCounted, l: Dictionary, base_y: float, rd: Dictionary, m: Material) -> void:
 	var a := Vector2(rd.x1, rd.z1); var b := Vector2(rd.x2, rd.z2)
@@ -206,6 +225,9 @@ static func _extra(g: Node3D, zone: RefCounted, l: Dictionary, base_y: float, e:
 			var light := OmniLight3D.new(); light.light_color = Color("#ffb060"); light.light_energy = 1.5; light.omni_range = 18
 			light.position = Vector3(e.x, y + 2.5, e.z)
 			g.add_child(light)
+		"rubble":
+			var rb := _box(g, Vector3.ONE * float(e.s), _mat(0x7a766e, {"rough": 1.0}), Vector3(e.x, y + float(e.s) * 0.3, e.z))
+			rb.rotation = Vector3(float(e.s), float(e.x), float(e.z) * 0.1)
 		"pier":
 			var wood := _mat(0x8a6a44, {"rough": 0.9})
 			var len := float(e.len)

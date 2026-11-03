@@ -130,5 +130,333 @@
         "blend": 90
       }
     ]
+  },
+  "nameck": {
+    "name": "Nameck",
+    "size": 2000,
+    "seed": 501,
+    "start": "namek",
+    "biome": "namek",
+    "props": {
+      "treeCount": 700,
+      "rocks": 300,
+      "bushes": 700,
+      "stones": 1500
+    },
+    "base": {
+      "amp": 6,
+      "scale": 200,
+      "lift": 0,
+      "islands": true
+    },
+    "sea": {
+      "level": 0
+    },
+    "regions": [
+      {
+        "zone": "namek",
+        "x": 0,
+        "z": 0,
+        "radius": 340,
+        "blend": 90
+      },
+      {
+        "zone": "nameck_east",
+        "x": 700,
+        "z": 250,
+        "radius": 130,
+        "blend": 90
+      },
+      {
+        "zone": "nameck_south",
+        "x": -150,
+        "z": -720,
+        "radius": 130,
+        "blend": 90
+      },
+      {
+        "zone": "nameck_west",
+        "x": -720,
+        "z": 200,
+        "radius": 130,
+        "blend": 90
+      }
+    ]
+  },
+  "new_nameck": {
+    "name": "New Nameck",
+    "size": 2000,
+    "seed": 502,
+    "start": "new_namek",
+    "biome": "new_namek",
+    "props": {
+      "treeCount": 700,
+      "rocks": 300,
+      "bushes": 700,
+      "stones": 1500
+    },
+    "base": {
+      "amp": 6,
+      "scale": 200,
+      "lift": 0,
+      "islands": true
+    },
+    "sea": {
+      "level": 0
+    },
+    "regions": [
+      {
+        "zone": "new_namek",
+        "x": 0,
+        "z": 0,
+        "radius": 340,
+        "blend": 90
+      },
+      {
+        "zone": "new_nameck_east",
+        "x": 700,
+        "z": 250,
+        "radius": 130,
+        "blend": 90
+      },
+      {
+        "zone": "new_nameck_south",
+        "x": -150,
+        "z": -720,
+        "radius": 130,
+        "blend": 90
+      },
+      {
+        "zone": "new_nameck_west",
+        "x": -720,
+        "z": 200,
+        "radius": 130,
+        "blend": 90
+      }
+    ]
+  },
+  "yardran": {
+    "name": "Yardran",
+    "size": 1800,
+    "seed": 503,
+    "start": "yardrat",
+    "biome": "yardrat",
+    "props": {
+      "treeCount": 1200,
+      "rocks": 500,
+      "bushes": 1400,
+      "stones": 2500
+    },
+    "base": {
+      "amp": 12,
+      "scale": 220,
+      "lift": 20
+    },
+    "sea": {},
+    "regions": [
+      {
+        "zone": "yardrat",
+        "x": 0,
+        "z": 0,
+        "radius": 250,
+        "blend": 90
+      },
+      {
+        "zone": "yardran_east",
+        "x": 560,
+        "z": 320,
+        "radius": 120,
+        "blend": 90
+      },
+      {
+        "zone": "yardran_west",
+        "x": -520,
+        "z": -360,
+        "radius": 120,
+        "blend": 90
+      }
+    ]
+  },
+  "grain": {
+    "name": "Grain",
+    "size": 1800,
+    "seed": 504,
+    "start": "planet_cereal",
+    "biome": "planet_cereal",
+    "props": {
+      "treeCount": 1200,
+      "rocks": 500,
+      "bushes": 1400,
+      "stones": 2500
+    },
+    "base": {
+      "amp": 10,
+      "scale": 220,
+      "lift": 20
+    },
+    "sea": {},
+    "regions": [
+      {
+        "zone": "planet_cereal",
+        "x": 0,
+        "z": 0,
+        "radius": 310,
+        "blend": 90
+      },
+      {
+        "zone": "grain_farms",
+        "x": 600,
+        "z": -330,
+        "radius": 130,
+        "blend": 90
+      },
+      {
+        "zone": "grain_market",
+        "x": -560,
+        "z": 360,
+        "radius": 140,
+        "blend": 90
+      }
+    ]
+  },
+  "beeros": {
+    "name": "Beeros's Planet",
+    "size": 1600,
+    "seed": 505,
+    "start": "beerus_planet",
+    "biome": "beerus_planet",
+    "props": {
+      "treeCount": 1000,
+      "rocks": 400,
+      "bushes": 1100,
+      "stones": 2000
+    },
+    "base": {
+      "amp": 10,
+      "scale": 200,
+      "lift": 20
+    },
+    "sea": {},
+    "regions": [
+      {
+        "zone": "beerus_planet",
+        "x": 0,
+        "z": 0,
+        "radius": 290,
+        "blend": 90
+      },
+      {
+        "zone": "beeros_gardens",
+        "x": 540,
+        "z": 360,
+        "radius": 120,
+        "blend": 90
+      }
+    ]
+  },
+  "future_earth": {
+    "name": "Earth (Tronks' timeline)",
+    "size": 2000,
+    "seed": 506,
+    "start": "future_earth",
+    "biome": "future_earth",
+    "props": {
+      "treeCount": 400,
+      "rocks": 900,
+      "bushes": 600,
+      "stones": 3500
+    },
+    "base": {
+      "amp": 10,
+      "scale": 240,
+      "lift": 20
+    },
+    "sea": {},
+    "regions": [
+      {
+        "zone": "future_earth",
+        "x": 0,
+        "z": 0,
+        "radius": 270,
+        "blend": 90
+      },
+      {
+        "zone": "future_ruins",
+        "x": 680,
+        "z": -220,
+        "radius": 230,
+        "blend": 90
+      }
+    ]
+  },
+  "kae_world": {
+    "name": "Sacred World",
+    "size": 1400,
+    "seed": 507,
+    "start": "kai_world",
+    "biome": "kai_world",
+    "props": {
+      "treeCount": 900,
+      "rocks": 400,
+      "bushes": 1000,
+      "stones": 1500
+    },
+    "base": {
+      "amp": 10,
+      "scale": 200,
+      "lift": 20
+    },
+    "sea": {},
+    "regions": [
+      {
+        "zone": "kai_world",
+        "x": 0,
+        "z": 0,
+        "radius": 270,
+        "blend": 90
+      },
+      {
+        "zone": "kae_shrine",
+        "x": 470,
+        "z": 280,
+        "radius": 90,
+        "blend": 90
+      }
+    ]
+  },
+  "nameless": {
+    "name": "Universe 6 border",
+    "size": 1400,
+    "seed": 508,
+    "start": "nameless_planet",
+    "biome": "nameless_planet",
+    "props": {
+      "treeCount": 400,
+      "rocks": 600,
+      "bushes": 500,
+      "stones": 2000
+    },
+    "base": {
+      "amp": 10,
+      "scale": 200,
+      "lift": 20
+    },
+    "sea": {},
+    "regions": [
+      {
+        "zone": "nameless_planet",
+        "x": 0,
+        "z": 0,
+        "radius": 250,
+        "blend": 90
+      },
+      {
+        "zone": "nameless_outpost",
+        "x": 470,
+        "z": -300,
+        "radius": 100,
+        "blend": 90
+      }
+    ]
   }
 }

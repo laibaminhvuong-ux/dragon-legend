@@ -10,12 +10,13 @@ func _planet() -> RulePlanet:
 func test_areas_open_on_their_planet() -> void:
 	ok(RulePlanet.open("west_city") is RulePlanet, "West Capital is on Earth's map")
 	eq(RulePlanet.planet_of("west_city"), "earth")
-	ok(not (RulePlanet.open("namek") is RulePlanet), "Nameck is still its own area")
+	eq(RulePlanet.planet_of("namek"), "nameck", "Nameck has its own planet map")
+	ok(not (RulePlanet.open("snake_way") is RulePlanet), "Serpent Road is still its own area")
 	eq(RulePlanet.planet_of("lookout"), "", "the Lookout stays separate (in the sky)")
 	var e := _planet()
 	eq(e.id, "earth")
 	ok(e.has_region("cell_games") and e.has_region("amber_city"))
-	ok(not e.has_region("namek"))
+	ok(not e.has_region("namek"), "Nameck is not on Earth")
 
 func test_each_area_keeps_its_own_ground_at_its_spot() -> void:
 	var e := _planet()
@@ -94,3 +95,27 @@ func test_land_areas_never_flood_and_keep_their_lakes() -> void:
 	ok(lakes.size() >= 1, "the plains lake is kept")
 	var plains: Dictionary = e.regions.earth_plains
 	near(float(lakes.filter(func(l: Dictionary) -> bool: return absf(float(l.x) - float(plains.x) - float(plains.zone.water.x)) < 0.01)[0].level), float(plains.zone.water.level) + float(plains.lift), 0.0001)
+
+func test_every_planet_map_is_sound() -> void:
+	var planets: Dictionary = RuleTables.table("planets")
+	eq(planets.size(), 9, "Earth and eight more planet maps")
+	for pid: String in planets:
+		var e := RulePlanet.new(pid)
+		var ids: Array = e.region_ids()
+		for i in ids.size():
+			var a: Dictionary = e.regions[ids[i]]
+			ok(absf(float(a.x)) + float(a.radius) <= e.size / 2.0 and absf(float(a.z)) + float(a.radius) <= e.size / 2.0, "%s/%s inside the map" % [pid, ids[i]])
+			eq(e.region_at(a.x, a.z), ids[i], "%s/%s centre" % [pid, ids[i]])
+			near(e.height_at(a.x, a.z), (a.zone as RuleZone).height_at(0, 0) + float(a.lift), 0.001, "%s/%s keeps its ground" % [pid, ids[i]])
+			var sp := e.region_spawn(ids[i])
+			ok(e.height_at(sp.x, sp.z) > -20.0, "%s/%s spawn on the ground" % [pid, ids[i]])
+			for j in range(i + 1, ids.size()):
+				var b: Dictionary = e.regions[ids[j]]
+				var d := Vector2(float(a.x) - float(b.x), float(a.z) - float(b.z)).length()
+				ok(d >= float(a.radius) + float(b.radius) + maxf(float(a.blend), float(b.blend)), "%s: %s and %s are %.0f m apart" % [pid, ids[i], ids[j], d])
+		var start: Dictionary = e.regions[e.start_region]
+		for rid: String in ids:   # you can always get from the start area to every other one (walking, or flying low over sea)
+			var r: Dictionary = e.regions[rid]
+			for k in 21:
+				var t := k / 20.0
+				ok(e.height_at(lerpf(start.x, r.x, t), lerpf(start.z, r.z, t)) > -20.0, "%s: path to %s" % [pid, rid])

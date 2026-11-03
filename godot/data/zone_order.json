@@ -25,5 +25,19 @@
   "amber_city",
   "pepper_village",
   "snowpeak_village",
-  "harbor_town"
+  "harbor_town",
+  "nameck_east",
+  "nameck_south",
+  "nameck_west",
+  "new_nameck_east",
+  "new_nameck_south",
+  "new_nameck_west",
+  "yardran_east",
+  "yardran_west",
+  "grain_farms",
+  "grain_market",
+  "beeros_gardens",
+  "future_ruins",
+  "kae_shrine",
+  "nameless_outpost"
 ]

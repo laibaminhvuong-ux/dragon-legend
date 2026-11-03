@@ -1,7 +1,8 @@
 extends TestCase
 # Open-world towns: the same layout every time, nothing built on the roads or where you arrive, solid buildings,
 # and every style draws.
-const TOWNS := ["amber_city", "pepper_village", "snowpeak_village", "harbor_town"]
+var TOWNS: Array:
+	get: return (RuleTables.table("zones") as Dictionary).keys().filter(func(z: String) -> bool: return RuleTables.table("zones")[z].get("kind", "") == "town")
 
 func _town(zone: RuleZone) -> Dictionary:
 	return zone.landmarks.filter(func(l: Dictionary) -> bool: return l.type == "town")[0]
@@ -13,7 +14,7 @@ func test_layouts_are_stable_and_leave_roads_and_arrival_clear() -> void:
 		var a: Dictionary = RuleTown.layout(l)
 		RuleTown._cache.clear()
 		eq(RuleTown.layout(l), a, id + " same layout from its seed")
-		ok(a.buildings.size() >= 8, "%s has %d buildings" % [id, a.buildings.size()])
+		ok(a.buildings.size() >= (5 if l.get("style") == "garden" else 8), "%s has %d buildings" % [id, a.buildings.size()])
 		for b: Dictionary in a.buildings:
 			if str(b.kind) in ["lighthouse", "windmill"]:
 				continue
