@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="62%">
+      <stop offset="0" stop-color="#2b1912"/><stop offset="0.55" stop-color="#16100f"/><stop offset="1" stop-color="#0b0d12"/>
+    </radialGradient>
+    <linearGradient id="scale" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffd25a"/><stop offset="0.5" stop-color="#ff8a2a"/><stop offset="1" stop-color="#e2431a"/>
+    </linearGradient>
+    <linearGradient id="flame" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ff5a1f"/><stop offset="0.5" stop-color="#ffc23d"/><stop offset="1" stop-color="#fff6d8"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="55%" r="45%">
+      <stop offset="0" stop-color="#ffb43a" stop-opacity=".5"/><stop offset="1" stop-color="#ff5a1f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="256" cy="256" r="248" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="238" fill="none" stroke="#ff8a2a" stroke-opacity=".4" stroke-width="3"/>
+  <circle cx="256" cy="268" r="150" fill="url(#glow)"/>
+
+  <!-- curved fins along the outer edge of the coil -->
+  <g fill="#ffc23d">
+    <path d="M 96 214 Q 62 196 54 172 Q 76 192 106 196 Z"/>
+    <path d="M 80 280 Q 46 278 30 262 Q 56 270 82 262 Z"/>
+    <path d="M 92 344 Q 62 360 40 356 Q 66 346 86 330 Z"/>
+    <path d="M 132 396 Q 112 424 90 434 Q 106 414 116 386 Z"/>
+    <path d="M 196 432 Q 186 464 168 478 Q 176 456 180 428 Z"/>
+    <path d="M 270 446 Q 278 478 270 498 Q 264 474 254 446 Z"/>
+    <path d="M 340 428 Q 362 452 366 474 Q 352 454 328 440 Z"/>
+    <path d="M 396 380 Q 428 394 444 412 Q 420 402 388 396 Z"/>
+    <path d="M 428 312 Q 462 314 478 330 Q 452 322 426 328 Z"/>
+  </g>
+
+  <!-- body: one smooth coil, then a tail that tapers into the flame -->
+  <path d="M 420 179 C 402 150 380 135 353 126 L 345 141 C 366 152 380 170 383 195 Z" fill="url(#scale)"/>
+  <g fill="none">
+    <path d="M 158 150 C 80 206 70 330 148 398 C 220 462 330 462 392 392 C 428 352 440 300 432 256 C 426 222 416 202 401 186"
+          stroke="url(#scale)" stroke-width="40" stroke-linecap="butt"/>
+    <path d="M 158 150 C 80 206 70 330 148 398 C 220 462 330 462 392 392 C 428 352 440 300 432 256 C 426 222 416 202 401 186"
+          stroke="#a8300f" stroke-opacity=".35" stroke-dasharray="3 9" stroke-width="36"/>
+    <path d="M 168 158 C 96 212 88 326 156 388 C 226 448 328 446 384 384 C 416 348 426 300 420 258 C 416 230 408 212 396 198"
+          stroke="#fff0b8" stroke-opacity=".5" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <!-- the tail ends in a small flame -->
+  <path d="M 352 136 C 336 126 330 110 336 92 C 342 106 350 106 354 100 C 352 112 364 116 366 128 C 362 136 358 138 352 136 Z" fill="url(#flame)"/>
+
+  <!-- head: profile facing right, looking down at the flame -->
+  <g transform="translate(150 150) rotate(-18)">
+    <!-- horns sweep back -->
+    <path d="M 34 -30 Q 4 -72 -40 -84 Q -6 -62 18 -24 Z" fill="#ffe39a"/>
+    <path d="M 56 -34 Q 40 -86 4 -112 Q 36 -80 42 -30 Z" fill="#ffd25a"/>
+    <!-- mane behind the head -->
+    <path d="M -8 -14 L -38 -30 L -20 -6 L -46 -4 L -18 8 L -40 22 L -6 20 Z" fill="#e2431a"/>
+    <!-- skull and snout -->
+    <path d="M -10 -18 Q 24 -42 66 -38 L 112 -28 Q 130 -24 136 -12 L 124 -6 L 132 2 Q 118 10 96 8 L 74 20 Q 40 32 -4 24 Q -18 4 -10 -18 Z"
+          fill="url(#scale)" stroke="#6e1a0a" stroke-width="3" stroke-linejoin="round"/>
+    <!-- jaw line, nostril, teeth -->
+    <path d="M 130 -6 Q 104 -2 82 6" fill="none" stroke="#6e1a0a" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="124" cy="-18" r="3" fill="#6e1a0a"/>
+    <path d="M 112 -4 L 116 4 L 120 -4 Z M 100 -2 L 104 6 L 108 -2 Z" fill="#fff6d8"/>
+    <!-- glowing eye -->
+    <path d="M 58 -24 Q 70 -32 82 -24 Q 70 -18 58 -24 Z" fill="#fff6d8"/>
+    <path d="M 69 -29 L 71 -19" stroke="#6e1a0a" stroke-width="2.5"/>
+    <path d="M 52 -30 Q 70 -42 90 -30" fill="none" stroke="#6e1a0a" stroke-width="4" stroke-linecap="round"/>
+    <!-- whisker -->
+    <path d="M 126 -10 Q 160 -26 186 -6 Q 196 2 190 14" fill="none" stroke="#ffe39a" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- the ki flame inside the coil -->
+  <path d="M 256 168 C 236 214 196 240 204 300 C 210 346 236 368 256 372 C 288 366 312 340 310 298
+           C 308 262 286 246 290 210 C 272 226 268 244 268 262 C 258 236 262 200 256 168 Z" fill="url(#flame)"/>
+  <path d="M 256 250 C 244 278 232 296 238 324 C 242 344 252 352 258 352 C 272 348 282 332 278 312 C 276 296 266 288 268 268 C 262 278 260 286 260 296 C 254 282 256 266 256 250 Z" fill="#fffaf0" opacity=".85"/>
+</svg>
