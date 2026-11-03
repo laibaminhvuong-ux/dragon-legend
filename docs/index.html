@@ -46,7 +46,7 @@
   <div class="others">Other devices:<br>
     <a href="#" data-p="windows">Windows</a><a href="#" data-p="mac">Mac</a><a href="#" data-p="linux">Linux</a><a href="#" data-p="android">Android</a>
   </div>
-  <footer>Free download · Updates install themselves on Windows · <a href="https://github.com/laibaminhvuong-ux/dragon-legend/releases/latest">All files</a></footer>
+  <footer>Free download · Updates download by themselves on every platform · <a href="https://github.com/laibaminhvuong-ux/dragon-legend/releases/latest">All files</a></footer>
 </main>
 <script>
 // One link for every device: detect the platform, start the matching app download (always the newest
@@ -54,8 +54,8 @@
 const BASE = "https://github.com/laibaminhvuong-ux/dragon-legend/releases/latest/download/";
 const P = {
   windows: { name: "Windows", file: "Dragon-Legend-Setup.exe", note: "Run the installer. If Windows SmartScreen appears, choose <b>More info → Run anyway</b>. The game updates itself after that." },
-  mac:     { name: "Mac", file: "Dragon-Legend-mac.dmg", note: "Open the .dmg and drag Dragon Legend to Applications. The first time, <b>right-click the app → Open</b> (it isn't from the App Store)." },
-  linux:   { name: "Linux", file: "Dragon-Legend-linux.AppImage", note: "Make it runnable (<b>chmod +x Dragon-Legend-linux.AppImage</b>) and open it." },
+  mac:     { name: "Mac", file: "Dragon-Legend-mac.zip", note: "Open the .zip and drag Dragon Legend to Applications. The first time, <b>right-click the app → Open</b> (it isn't from the App Store)." },
+  linux:   { name: "Linux", file: "Dragon-Legend-linux.x86_64", note: "Make it runnable (<b>chmod +x Dragon-Legend-linux.x86_64</b>) and open it." },
   android: { name: "Android", file: "Dragon-Legend-android.apk", note: "Open the downloaded file to install. Android may ask you to <b>allow installs from this browser</b> first." },
 };
 function detect() {

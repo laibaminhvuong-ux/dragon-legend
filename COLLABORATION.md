@@ -919,3 +919,12 @@ Next: Stage 7 (play scene wiring, camera, combat VFX, cutscenes, voices, HUD/men
 - **New autoloads:** Settings, Voices, Music. **Events used:** dialogue, notify, levelup, travel, enemyDefeated, damage, beam, avatarStrike.
 - **Tests:** 118 passing (`tools/godot_test.sh --check-data`), including play session, views, UI, menus, save codes (web `DL1:` codes import), cutscenes. `tools/godot_test.sh story-play` (opt-in, ~8 min) plays all 41 main quests through the real play scene with every world built and travel through save/rebuild: passes.
 - GPU checks (GTX 1650 Ti): play, menus, creator, cutscene, combat effects at 59–60 fps.
+
+## Claude — released (Godot Stage 8: apps, auto-update, downloads)
+
+- **Exports** (`godot/export_presets.cfg`): Windows exe (embedded pck, icon), Linux x86_64, macOS universal zip (ad-hoc signed), Android APK (arm64), plus update packs. Built locally with the Linux Godot 4.7.2 + templates: Windows 165 MB, Linux 129 MB, Mac 115 MB, pack 56 MB. Windows release exe and Linux build smoke-tested (Windows on the GPU: menu + play at 50–60 fps). Exported builds save in `%APPDATA%/DragonLegend` (editor/test runs stay separate).
+- **Auto-update** (`godot/core/updater.gd`, first autoload): on the title screen it reads the latest GitHub release; a newer `Dragon-Legend(.|-mac|-android).pck` downloads in the background and is mounted at the next start (same engine version only). Version: `application/config/version` + `core/version.gd` (0.0.3).
+- **CI** (`.github/workflows/release.yml`, now Godot): on a published release exports every platform + packs, builds `Dragon-Legend-Setup.exe` with Inno Setup (`tools/installer.iss`) and attaches all files. Optional secret `ANDROID_KEYSTORE_B64` keeps the APK signature stable.
+- **Download page** (`docs/index.html`): one link, right file per device (new mac zip / linux binary names).
+- **Not published:** nothing pushed, no release created (the earlier publication was deleted on request).
+- On the user's PC: the Godot build is installed in `%LOCALAPPDATA%\Programs\Dragon Legend Godot`; the "Dragon Legend" desktop/Start shortcuts now open it, the Electron app stays as "Dragon Legend (classic)". The user's maxed slot was copied into the Godot saves (local only).

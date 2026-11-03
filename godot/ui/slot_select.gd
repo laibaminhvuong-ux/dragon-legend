@@ -7,6 +7,10 @@ var main: Node
 var _confirming := -1
 var _codes := false
 var _root: VBoxContainer
+var _upd_text: Label
+var _restart: Button
+var _upd_msg := ""
+var _upd_ready := false
 
 func _init(m: Node) -> void:
 	main = m
@@ -26,6 +30,19 @@ func _init(m: Node) -> void:
 	_root.add_theme_constant_override("separation", 18)
 	center.add_child(_root)
 	draw()
+	Updater.status.connect(_on_update)
+	Updater.check()
+
+func _exit_tree() -> void:
+	if Updater.status.is_connected(_on_update):
+		Updater.status.disconnect(_on_update)
+
+func _on_update(t: String, ready: bool) -> void:
+	_upd_msg = t
+	_upd_ready = ready
+	if is_instance_valid(_upd_text):
+		_upd_text.text = t
+		_restart.visible = ready
 
 func draw() -> void:
 	for c in _root.get_children():
@@ -55,9 +72,17 @@ func draw() -> void:
 		pm.name = "Settings"
 		add_child(pm)))
 	foot.add_child(UiKit.button("Quit", func() -> void: main.get_tree().quit()))
-	var ver := UiKit.label("   v" + GameVersion.VERSION, "Muted")
+	var ver := UiKit.label("   v" + GameVersion.current(), "Muted")
 	foot.add_child(ver)
 	_root.add_child(foot)
+	var upd := HBoxContainer.new()
+	upd.alignment = BoxContainer.ALIGNMENT_CENTER
+	_upd_text = UiKit.label(_upd_msg, "Muted")
+	upd.add_child(_upd_text)
+	_restart = UiKit.button("Restart now", func() -> void: Updater.restart(), true)
+	_restart.visible = _upd_ready
+	upd.add_child(_restart)
+	_root.add_child(upd)
 	var hint := UiKit.label("WASD move · mouse look · Space jump · Esc pause", "Muted")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_root.add_child(hint)

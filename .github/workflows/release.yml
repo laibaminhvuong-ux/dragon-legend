@@ -1,8 +1,10 @@
-# Builds the app for every platform when a release is published (or on demand for a tag) and attaches the
-# files to that release: Windows installer + portable zip (+ latest.yml for auto-update), Mac (universal dmg),
-# Linux AppImage and an Android APK. File names never change, so
-# https://github.com/laibaminhvuong-ux/dragon-legend/releases/latest/download/<file> is always the newest,
-# and the download page in docs/ links there.
+# Builds the Godot game for every platform when a release is published (or on demand for a tag) and attaches the
+# files to that release. File names never change, so
+# https://github.com/laibaminhvuong-ux/dragon-legend/releases/latest/download/<file> is always the newest and the
+# download page in docs/ links there:
+#   Dragon-Legend-Setup.exe (Windows installer), Dragon-Legend-windows.zip, Dragon-Legend-mac.zip (universal),
+#   Dragon-Legend-linux.x86_64, Dragon-Legend-android.apk, and the update packs Dragon-Legend.pck (Windows/Linux),
+#   Dragon-Legend-mac.pck and Dragon-Legend-android.pck that installed games download by themselves (godot/core/updater.gd).
 name: Build downloads
 on:
   release:
@@ -10,90 +12,93 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag to attach the downloads to, e.g. v0.0.1 (built from the selected branch)"
+        description: "Release tag to attach the downloads to, e.g. v0.0.3 (built from the selected branch)"
         required: true
 permissions:
   contents: write
 env:
   TAG: ${{ github.event.release.tag_name || inputs.tag }}
   GH_TOKEN: ${{ github.token }}
+  GODOT: "4.7.2"
 
 jobs:
-  desktop:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.release.tag_name || github.sha }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Build the game
-        shell: bash
-        run: |
-          npm install -g esbuild@0.24.0
-          # Windows installs the command as esbuild.cmd, which Python only finds by its full name
-          if [ "$RUNNER_OS" = "Windows" ]; then ESB=esbuild.cmd; else ESB=esbuild; fi
-          ESBUILD=$ESB python tools/build_site.py
-          rm -rf desktop/site && cp -r dist/site desktop/site
-      - name: Build the app
-        shell: bash
-        working-directory: desktop
-        run: |
-          npm install --no-audit --no-fund
-          case "$RUNNER_OS" in
-            macOS) npx electron-builder --mac --publish never ;;
-            Linux) npx electron-builder --linux --publish never ;;
-            Windows) npx electron-builder --win --x64 --publish never ;;
-          esac
-      - name: Attach to the release
-        shell: bash
-        run: |
-          files=$(ls desktop/release/Dragon-Legend-* desktop/release/latest*.yml 2>/dev/null | grep -E '\.(exe|zip|dmg|AppImage|yml|blockmap)$')
-          gh release upload "$TAG" $files --clobber
-
-  android:
+  export:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.release.tag_name || github.sha }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-      - name: Build the game
+      - uses: android-actions/setup-android@v3
+      - name: Godot and export templates
         run: |
-          npm install -g esbuild@0.24.0
-          ESBUILD=esbuild python tools/build_site.py
-      - name: Build the APK
-        working-directory: mobile
+          cd "$RUNNER_TEMP"
+          curl -sSLo godot.zip "https://github.com/godotengine/godot-builds/releases/download/${GODOT}-stable/Godot_v${GODOT}-stable_linux.x86_64.zip"
+          curl -sSLo templates.tpz "https://github.com/godotengine/godot-builds/releases/download/${GODOT}-stable/Godot_v${GODOT}-stable_export_templates.tpz"
+          unzip -q godot.zip && mv Godot_v${GODOT}-stable_linux.x86_64 /usr/local/bin/godot
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT}.stable
+          unzip -q -j templates.tpz -d ~/.local/share/godot/export_templates/${GODOT}.stable
+      - name: Version from the tag
         run: |
-          rm -rf www && cp -r ../dist/site www
-          npm install --no-audit --no-fund
-          npx cap add android
-          npx cap sync android
-          # launcher icon: the game's emblem instead of Capacitor's default
-          rm -rf android/app/src/main/res/mipmap-anydpi-v26
-          for d in android/app/src/main/res/mipmap-*; do for n in ic_launcher ic_launcher_round ic_launcher_foreground; do cp ../web/icons/icon-192.png "$d/$n.png"; done; done
-          # landscape, full screen
-          sed -i 's|<activity|<activity android:screenOrientation="sensorLandscape"|' android/app/src/main/AndroidManifest.xml
-          cd android
-          sed -i "s/versionName \".*\"/versionName \"${TAG#v}\"/" app/build.gradle
-          ./gradlew assembleDebug --no-daemon
-          cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/Dragon-Legend-android.apk"
+          V="${TAG#v}"
+          sed -i "s/^config\/version=.*/config\/version=\"$V\"/" godot/project.godot
+          sed -i "s/^const VERSION := .*/const VERSION := \"$V\"/" godot/core/version.gd
+          sed -i "s/^version\/name=.*/version\/name=\"$V\"/; s/^application\/short_version=.*/application\/short_version=\"$V\"/; s/^application\/version=.*/application\/version=\"$V\"/" godot/export_presets.cfg
+          sed -i "s/^version\/code=.*/version\/code=${GITHUB_RUN_NUMBER}/" godot/export_presets.cfg
+      - name: Android signing key
+        run: |
+          # Use the same key every release (secret ANDROID_KEYSTORE_B64 = base64 of a keystore with alias "dragonlegend"),
+          # so a new APK installs over the old one. Without it a fresh key is made (in-game .pck updates still work).
+          if [ -n "${{ secrets.ANDROID_KEYSTORE_B64 }}" ]; then
+            echo "${{ secrets.ANDROID_KEYSTORE_B64 }}" | base64 -d > "$RUNNER_TEMP/release.keystore"
+          else
+            keytool -genkeypair -v -keystore "$RUNNER_TEMP/release.keystore" -alias dragonlegend -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD || 'dragonlegend' }}" -keypass "${{ secrets.ANDROID_KEYSTORE_PASSWORD || 'dragonlegend' }}" -dname "CN=Dragon Legend"
+          fi
+          echo "GODOT_ANDROID_KEYSTORE_RELEASE_PATH=$RUNNER_TEMP/release.keystore" >> "$GITHUB_ENV"
+          echo "GODOT_ANDROID_KEYSTORE_RELEASE_USER=dragonlegend" >> "$GITHUB_ENV"
+          echo "GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD || 'dragonlegend' }}" >> "$GITHUB_ENV"
+          mkdir -p ~/.config/godot
+          printf '[gd_resource type="EditorSettings" format=3]\n[resource]\nexport/android/android_sdk_path = "%s"\nexport/android/java_sdk_path = "%s"\n' "$ANDROID_SDK_ROOT" "$JAVA_HOME" > ~/.config/godot/editor_settings-4.7.tres
+      - name: Export every platform
+        run: |
+          mkdir -p build/windows build/linux build/mac build/android build/patch out
+          godot --headless --path godot --import || true
+          godot --headless --path godot --export-release "Windows Desktop"
+          godot --headless --path godot --export-release "Linux"
+          godot --headless --path godot --export-release "macOS"
+          godot --headless --path godot --export-release "Android"
+          godot --headless --path godot --export-pack "Patch PCK" ../build/patch/Dragon-Legend.pck
+          godot --headless --path godot --export-pack "Android" ../build/patch/Dragon-Legend-android.pck
+          godot --headless --path godot --export-pack "macOS" ../build/patch/Dragon-Legend-mac.pck
+          (cd build/windows && zip -q ../../out/Dragon-Legend-windows.zip "Dragon Legend.exe")
+          cp build/linux/dragon-legend.x86_64 out/Dragon-Legend-linux.x86_64
+          cp build/mac/Dragon-Legend-mac.zip build/android/Dragon-Legend-android.apk build/patch/*.pck out/
+          ls -la out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-exe
+          path: build/windows/Dragon Legend.exe
       - name: Attach to the release
-        run: gh release upload "$TAG" "Dragon-Legend-android.apk" --clobber
+        run: gh release upload "$TAG" out/* --clobber
+
+  installer:
+    needs: export
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.sha }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-exe
+          path: build/windows
+      - name: Build the installer
+        shell: bash
+        run: |
+          choco install innosetup -y --no-progress
+          "/c/Program Files (x86)/Inno Setup 6/ISCC.exe" "//DVERSION=${TAG#v}" tools/installer.iss
+          gh release upload "$TAG" build/installer/Dragon-Legend-Setup.exe --clobber
