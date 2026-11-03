@@ -222,7 +222,7 @@ class Builder extends RefCounted:
 		var white := mat(0xf6f3ea, {"rough": 0.35}); var yellow := mat(0xf2c94c, {"rough": 0.45}); var glass := mat(0x8fbfdf, {"rough": 0.08, "metal": 0.2})
 		dome(16, white, 0, 0, 0).scale = Vector3(1, 0.72, 1)
 		torus(16, 0.6, yellow, 0, 0.6, 0)
-		portholes(13.6, 5.2, 16, 1.0, glass)
+		portholes(14.6, 5.2, 16, 1.0, glass)  # on the dome's surface at that height (dome flattened to 0.72)
 		cyl(5, 5, 14, white, 15, 7, -6, null, 32)
 		dome(5, white, 15, 14, -6)
 		torus(5.1, 0.35, yellow, 15, 9, -6)

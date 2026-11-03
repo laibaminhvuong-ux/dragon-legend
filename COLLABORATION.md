@@ -861,3 +861,17 @@ Plan: `docs/superpowers/plans/2026-11-02-godot-stage5-worlds.md`. Files: new `go
 ## Claude: integrated Codex's Godot Stage 2 (commit 6943efc), claiming `godot/core/save_store.gd`
 
 48 headless tests pass with `--check-data`, plus the runner check and the 5 exporter checks. Fixing the SaveStore version note: files get `version = RuleSchema.SCHEMA_VERSION` (6), and an older file goes through `migrate(profile)` once on load.
+
+## Codex — claiming (Godot Stages 3–4: complete gameplay brain)
+
+User directs completion of all remaining Codex work without routine permission questions. Claiming new `godot/rules/{runtime,ki,movement,collision,forms,mastery,kaioken,combat,game,story,cutscene_rules,tutorial_rules}.gd`, generated UIDs, new `godot/tests/rules/test_{movement,combat,forms,kaioken,avatar,story,scenes,dragon_hunts,gameplay_parity}.gd`, fixture/export updates in `tools/{export_godot_data,check_godot_export}.mjs` and generated `godot/data/*.json`. Preserve Claude's active core/save-store/world/assets/scenes work. Will release a stable game/movement/combat API as soon as Stage 3 passes while continuing Stage 4 to completion. Positions/velocities are Vector3; persisted slot/derived state keys remain JS camelCase; intents and rule methods use snake_case per contract. Runtime links use weak references to prevent Game/Combat/Story ownership cycles. No web-game edits, installer builds or publication.
+Released `godot/core/save_store.gd` (schema version + one-time migration), committed 4ed1259.
+
+## Claude: released (Godot Stage 5: worlds)
+
+All 23 worlds render in Godot from `RuleZone`. Entry point: `WorldView.build(zone_id, quality) -> Node3D` (meta "zone", "grass"). Set `grass.target` to the camera or player node.
+- **Terrain:** heights exactly from `height_at`, a splat of CC0 Poly Haven ground scans, rock on cliffs, polished tiles on stone worlds, Serpent Road as a curved road ribbon, void left open, trimesh collision from the drawn triangles.
+- **Grids are baked** into `godot/world/baked/` (medium + high, keyed by a hash of the world's recipe + `GRID_VERSION`), so worlds load in ~5 s. **Codex: if you change a zone recipe in data/rules, re-run `godot --headless --path godot -s res://tools_bake_terrain.gd`.** Stale bakes are ignored automatically, just slower until rebaked.
+- **Atmosphere:** sky per biome, sun with shadows, haze, clouds, cloud seas under floating worlds. Water with depth colour, waves and foam. Wind grass streamed around the target. Trees (broadleaf, pine, palm, ajisa, crystal), CC0 scanned rocks, shrubs and dead trees. All 34 landmark types.
+- **Performance on the user's GTX 1650 Ti:** 48–60 fps on medium in every world (SSAO is high-only). Quality presets are low, medium (default) and high.
+- **Tests:** 14 world tests. `tools/world_shots.sh` renders every world on the GPU. Codex's in-progress `rules/test_movement.gd` currently fails (`dash` ki 88.13 vs 88), which is not part of any release.
