@@ -81,6 +81,32 @@ func _change(i: int, value: Variant) -> bool:
 	_slots[i] = before
 	return false
 
+## The whole profile ({version, slots}) for a save code.
+func export_profile() -> Dictionary:
+	_ensure_loaded()
+	return {"version": _version(), "slots": _slots.duplicate(true)}
+
+func export_code() -> String:
+	var sc := _get_schema()
+	return sc.export_code(export_profile()) if sc != null else ""
+
+## Replaces all three slots from a save code. Returns {ok, error}.
+func import_code(code: String) -> Dictionary:
+	var sc := _get_schema()
+	if sc == null:
+		return {"ok": false, "error": "Save codes are unavailable"}
+	var r: Dictionary = sc.import_code(code)
+	if not r.get("ok", false):
+		return r
+	var slots: Array = r.profile.get("slots", [])
+	var before := _slots.duplicate(true)
+	for i in SLOTS:
+		_slots[i] = slots[i] if i < slots.size() and slots[i] is Dictionary else null
+	if not _write():
+		_slots = before
+		return {"ok": false, "error": "Couldn't write the save file"}
+	return {"ok": true}
+
 func _valid(i: int) -> bool:
 	return i >= 0 and i < SLOTS
 

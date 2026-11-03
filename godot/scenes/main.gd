@@ -34,9 +34,18 @@ func _ready() -> void:
 		start_game(i)
 	else:
 		go_menu()
+	match str(_args.get("screen", "")):   # GPU checks of each screen
+		"creator": open_creator(2)
+		"pause", "menu", "dialogue":
+			await get_tree().create_timer(2.0).timeout
+			if play != null:
+				if _args.screen == "pause": set_paused(true)
+				elif _args.screen == "menu": play_ui.rpg.open_tab(str(_args.get("tab", "Stats")))
+				else: Events.emit_named("dialogue", {"speaker": "Gokan", "text": "You came! Let's see how strong you've got.", "kind": "line"})
 
 func go_menu() -> void:
 	_end_play()
+	_clear_ui()
 	input.capture = false
 	if menu == null:
 		menu = Node3D.new()
@@ -52,13 +61,46 @@ func go_menu() -> void:
 		var screen: Control = ss.new(self)
 		ui.add_child(screen)
 
+func open_creator(i: int) -> void:
+	for c in ui.get_children():
+		c.queue_free()
+	ui.add_child(Creator.new(self, i))
+
+func _clear_ui() -> void:
+	for c in ui.get_children():
+		ui.remove_child(c)
+		c.queue_free()
+
+## A full-screen card while a world builds (port of the JS travel card).
+func loading_card(zone_id: String) -> void:
+	var z: Dictionary = Data.zones.get(zone_id, {})
+	var card := ColorRect.new()
+	card.name = "Loading"
+	card.color = Color(0.02, 0.03, 0.06)
+	card.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var v := VBoxContainer.new()
+	v.set_anchors_preset(Control.PRESET_CENTER)
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	var t := UiKit.label(str(z.get("name", zone_id)), "HeaderLarge"); t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	t.theme = UiKit.theme()
+	var s := UiKit.label("%s · %s" % [z.get("planet", ""), z.get("saga", "")], "Muted"); s.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	s.theme = UiKit.theme()
+	v.add_child(t); v.add_child(s)
+	card.add_child(v)
+	ui.add_child(card)
+
 func start_game(i: int) -> void:
 	_end_play()
 	if menu != null:
 		menu.queue_free()
 		menu = null
-	for c in ui.get_children():
-		c.queue_free()
+	_clear_ui()
+	var slot: Variant = SaveStore.load_slot(i)
+	if slot is Dictionary:
+		loading_card(str(slot.get("zone", "earth_plains")))
+		await get_tree().process_frame
+		await get_tree().process_frame
+	_clear_ui()
 	play = PlaySession.new()
 	play.name = "Play"
 	add_child(play)

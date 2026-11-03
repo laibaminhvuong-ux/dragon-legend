@@ -16,6 +16,8 @@ const SCHEMA := {
 	"showFps": {"default": false, "type": "bool"},
 	"voices": {"default": true, "type": "bool"},
 	"fullscreen": {"default": false, "type": "bool"},
+	# overrides on top of Controls' defaults: { action: [ "key:<physical keycode>" | "mouse:<button>" ] }
+	"bindings": {"default": {}, "type": "dict"},
 }
 var path := PATH
 var _values: Dictionary = {}
@@ -39,6 +41,8 @@ static func sanitize(key: String, value: Variant) -> Variant:
 		return value if (s.options as Array).has(value) else s.default
 	if s.get("type", "") == "bool":
 		return value if value is bool else s.default
+	if s.get("type", "") == "dict":
+		return (value as Dictionary).duplicate(true) if value is Dictionary else {}
 	if value is float or value is int:
 		return clampf(float(value), float(s.min), float(s.max))
 	return s.default
@@ -59,7 +63,7 @@ func set_value(key: String, value: Variant) -> Variant:
 
 func reset() -> void:
 	for k: String in SCHEMA:
-		_values[k] = SCHEMA[k].default
+		_values[k] = SCHEMA[k].default.duplicate(true) if SCHEMA[k].default is Dictionary else SCHEMA[k].default
 		changed.emit(k, _values[k])
 	_save()
 

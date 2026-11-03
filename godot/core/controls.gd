@@ -20,6 +20,41 @@ const PAD_AXES := {"charge": JOY_AXIS_TRIGGER_LEFT, "beam": JOY_AXIS_TRIGGER_RIG
 
 func _ready() -> void:
 	register()
+	apply_overrides(Settings.get_value("bindings"))
+	Settings.changed.connect(func(k: String, v: Variant) -> void:
+		if k == "bindings":
+			register()
+			apply_overrides(v))
+
+## Rebinds actions from the settings: each listed action's keyboard/mouse events are replaced (gamepad kept).
+func apply_overrides(b: Variant) -> void:
+	if not (b is Dictionary):
+		return
+	for action: String in b:
+		if not InputMap.has_action(action):
+			continue
+		for e in InputMap.action_get_events(action):
+			if e is InputEventKey or e is InputEventMouseButton:
+				InputMap.action_erase_event(action, e)
+		for code: String in b[action]:
+			var e := event_for(code)
+			if e != null:
+				InputMap.action_add_event(action, e)
+
+static func event_for(code: String) -> InputEvent:
+	if code.begins_with("key:"):
+		var k := InputEventKey.new(); k.physical_keycode = int(code.substr(4)); return k
+	if code.begins_with("mouse:"):
+		var m := InputEventMouseButton.new(); m.button_index = int(code.substr(6)); return m
+	return null
+
+static func code_for(e: InputEvent) -> String:
+	if e is InputEventKey:
+		var k := (e as InputEventKey).physical_keycode
+		return "key:%d" % (k if k != 0 else (e as InputEventKey).keycode)
+	if e is InputEventMouseButton:
+		return "mouse:%d" % (e as InputEventMouseButton).button_index
+	return ""
 
 ## Adds every action (idempotent: existing actions are reset to the defaults).
 func register() -> void:

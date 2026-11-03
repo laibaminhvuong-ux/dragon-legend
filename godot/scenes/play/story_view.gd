@@ -115,7 +115,7 @@ func _sync_npcs() -> void:
 
 func _sync_pickups() -> void:
 	var seen := {}
-	var looks: Dictionary = Fighter.Tables().get("orb_looks") if Fighter.Tables().get("orb_looks") is Dictionary else {}
+	var looks: Dictionary = RuleTables.table("orb_looks") if RuleTables.table("orb_looks") is Dictionary else {}
 	for p: Dictionary in story.pickups():
 		var key := "%s:%s" % [p.questId, p.index]
 		seen[key] = true

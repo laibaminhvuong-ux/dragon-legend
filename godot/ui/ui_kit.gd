@@ -11,6 +11,11 @@ const TEXT := Color("#f2f4f8")
 const MUTED := Color("#a8b3c7")
 static var _theme: Theme
 
+## Loads the data tables if the Data autoload hasn't yet (headless tools/tests start before it).
+static func ensure_data() -> void:
+	if Data.races.is_empty():
+		Data.load_dir("res://data")
+
 static func theme() -> Theme:
 	if _theme != null:
 		return _theme
