@@ -233,10 +233,9 @@ func _dev_walk(secs: float) -> void:
 	await get_tree().create_timer(1.0).timeout
 	if play == null: return
 	var yaw: float = play.follow.yaw
-	if _args.has("fly"):   # take off first (dev: --fly=1): one press of flight, then climb a little
-		play.forced = {"flight": true}
-		await get_tree().process_frame
-		await get_tree().process_frame
+	if _args.has("fly"):   # take off first (dev: --fly=1), then climb a little (set directly: a forced press
+		play.game.player.flying = true   # would toggle twice when a frame runs two steps, e.g. while recording)
+		play.game.player.onGround = false
 		play.forced = {"ascend": true}
 		await get_tree().create_timer(1.2).timeout
 	play.forced = {"charge": true} if _args.has("charge") else {"move_x": sin(yaw), "move_z": cos(yaw), "sprint": _args.has("sprint")}
