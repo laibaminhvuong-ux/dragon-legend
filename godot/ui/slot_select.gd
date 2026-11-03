@@ -47,7 +47,7 @@ func _on_update(t: String, ready: bool) -> void:
 func draw() -> void:
 	for c in _root.get_children():
 		_root.remove_child(c); c.queue_free()
-	var title := UiKit.label("Dragon Legend", "HeaderLarge")
+	var title := UiKit.label("The Dragon Legend", "HeaderLarge")
 	title.add_theme_font_size_override("font_size", 64)
 	title.add_theme_color_override("font_color", UiKit.ACCENT)
 	title.add_theme_constant_override("outline_size", 10)

@@ -5,16 +5,16 @@
 #endif
 [Setup]
 AppId={{6E3C1D52-9A0F-4B7E-9C51-3D7A1E0F2B64}
-AppName=Dragon Legend
+AppName=The Dragon Legend
 AppVersion={#VERSION}
 AppPublisher=laibaminhvuong
-DefaultDirName={localappdata}\Programs\Dragon Legend Godot
-DefaultGroupName=Dragon Legend
+DefaultDirName={localappdata}\Programs\The Dragon Legend
+DefaultGroupName=The Dragon Legend
 PrivilegesRequired=lowest
 OutputDir=..\build\installer
 OutputBaseFilename=Dragon-Legend-Setup
 SetupIconFile=..\godot\icon.ico
-UninstallDisplayIcon={app}\Dragon Legend.exe
+UninstallDisplayIcon={app}\The Dragon Legend.exe
 Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
@@ -22,11 +22,11 @@ DisableProgramGroupPage=yes
 CloseApplications=yes
 
 [Files]
-Source: "..\build\windows\Dragon Legend.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\build\windows\The Dragon Legend.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{autoprograms}\Dragon Legend"; Filename: "{app}\Dragon Legend.exe"
-Name: "{autodesktop}\Dragon Legend"; Filename: "{app}\Dragon Legend.exe"
+Name: "{autoprograms}\The Dragon Legend"; Filename: "{app}\The Dragon Legend.exe"
+Name: "{autodesktop}\The Dragon Legend"; Filename: "{app}\The Dragon Legend.exe"
 
 [Run]
-Filename: "{app}\Dragon Legend.exe"; Description: "Play Dragon Legend"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\The Dragon Legend.exe"; Description: "Play The Dragon Legend"; Flags: nowait postinstall skipifsilent

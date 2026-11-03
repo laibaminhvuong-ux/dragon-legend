@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dragon Legend</title>
-<meta name="description" content="Dragon Legend: a 3D action RPG. Download the app for Windows, Mac, Linux or Android.">
-<meta property="og:title" content="Dragon Legend">
+<title>The Dragon Legend</title>
+<meta name="description" content="The Dragon Legend: a 3D action RPG. Download the app for Windows, Mac, Linux or Android.">
+<meta property="og:title" content="The Dragon Legend">
 <meta property="og:description" content="A 3D action RPG. One link, the right app for your device.">
 <meta property="og:image" content="icon.png">
 <link rel="icon" href="icon.png">
@@ -36,7 +36,7 @@
 <body>
 <main>
   <img class="logo" src="icon.png" alt="">
-  <h1>Dragon Legend</h1>
+  <h1>The Dragon Legend</h1>
   <p class="tag">A 3D action RPG. Train, transform, fly, and fight through the legend.</p>
   <div class="card">
     <p class="status" id="status">Finding the right download for your device…</p>
@@ -54,7 +54,7 @@
 const BASE = "https://github.com/laibaminhvuong-ux/dragon-legend/releases/latest/download/";
 const P = {
   windows: { name: "Windows", file: "Dragon-Legend-Setup.exe", note: "Run the installer. If Windows SmartScreen appears, choose <b>More info → Run anyway</b>. The game updates itself after that." },
-  mac:     { name: "Mac", file: "Dragon-Legend-mac.zip", note: "Open the .zip and drag Dragon Legend to Applications. The first time, <b>right-click the app → Open</b> (it isn't from the App Store)." },
+  mac:     { name: "Mac", file: "Dragon-Legend-mac.zip", note: "Open the .zip and drag The Dragon Legend to Applications. The first time, <b>right-click the app → Open</b> (it isn't from the App Store)." },
   linux:   { name: "Linux", file: "Dragon-Legend-linux.x86_64", note: "Make it runnable (<b>chmod +x Dragon-Legend-linux.x86_64</b>) and open it." },
   android: { name: "Android", file: "Dragon-Legend-android.apk", note: "Open the downloaded file to install. Android may ask you to <b>allow installs from this browser</b> first." },
 };
@@ -73,7 +73,7 @@ function choose(p, auto) {
     status.innerHTML = 'Detected: <b>iPhone / iPad</b>';
     go.textContent = "Not on iPhone or iPad yet";
     go.removeAttribute("href");
-    note.innerHTML = '<span class="ios">Dragon Legend is available for Windows, Mac, Linux and Android. Open this link on one of those to play.</span>';
+    note.innerHTML = '<span class="ios">The Dragon Legend is available for Windows, Mac, Linux and Android. Open this link on one of those to play.</span>';
     return;
   }
   const d = P[p];

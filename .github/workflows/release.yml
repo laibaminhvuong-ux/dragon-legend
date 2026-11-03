@@ -74,14 +74,14 @@ jobs:
           godot --headless --path godot --export-pack "Patch PCK" ../build/patch/Dragon-Legend.pck
           godot --headless --path godot --export-pack "Android" ../build/patch/Dragon-Legend-android.pck
           godot --headless --path godot --export-pack "macOS" ../build/patch/Dragon-Legend-mac.pck
-          (cd build/windows && zip -q ../../out/Dragon-Legend-windows.zip "Dragon Legend.exe")
+          (cd build/windows && zip -q ../../out/Dragon-Legend-windows.zip "The Dragon Legend.exe")
           cp build/linux/dragon-legend.x86_64 out/Dragon-Legend-linux.x86_64
           cp build/mac/Dragon-Legend-mac.zip build/android/Dragon-Legend-android.apk build/patch/*.pck out/
           ls -la out
       - uses: actions/upload-artifact@v4
         with:
           name: windows-exe
-          path: build/windows/Dragon Legend.exe
+          path: build/windows/The Dragon Legend.exe
       - name: Attach to the release
         run: gh release upload "$TAG" out/* --clobber
 

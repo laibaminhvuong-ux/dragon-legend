@@ -1,8 +1,8 @@
-; Dragon Legend: Godot version (see docs/superpowers/specs/2026-11-02-godot-port-design.md)
+; The Dragon Legend: Godot version (see docs/superpowers/specs/2026-11-02-godot-port-design.md)
 config_version=5
 
 [application]
-config/name="Dragon Legend"
+config/name="The Dragon Legend"
 config/version="0.0.3"
 ; exported builds keep saves in %APPDATA%/DragonLegend (editor and test runs keep theirs apart)
 config/use_custom_user_dir.template=true
