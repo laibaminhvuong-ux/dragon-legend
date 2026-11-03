@@ -41,7 +41,16 @@ func _ready() -> void:
 			if play != null:
 				if _args.screen == "pause": set_paused(true)
 				elif _args.screen == "menu": play_ui.rpg.open_tab(str(_args.get("tab", "Stats")))
-				else: Events.emit_named("dialogue", {"speaker": "Gokan", "text": "You came! Let's see how strong you've got.", "kind": "line"})
+				elif _args.screen == "dialogue": Events.emit_named("dialogue", {"speaker": "Gokan", "text": "You came! Let's see how strong you've got.", "kind": "line"})
+		"cutscene":
+			await get_tree().create_timer(2.0).timeout
+			if play != null:
+				for e: Dictionary in play.game.combat.enemies:
+					var ep: Vector3 = e.pos
+					play.game.player.pos = Vector3(ep.x + 5.0, play.game.zone.height_at(ep.x + 5.0, ep.z), ep.z)
+					play.prev_pos = play.game.player.pos
+					play_ui.play_scene({"kind": "before", "enemy": e.key, "lines": play.scenes.scene_lines(str(e.key), "before", e.get("name"))})
+					break
 
 func go_menu() -> void:
 	_end_play()
@@ -56,6 +65,7 @@ func go_menu() -> void:
 		menu.add_child(cam)
 		add_child(menu)
 		cam.make_current()
+	Music.play("menu")
 	var ss: GDScript = load("res://ui/slot_select.gd") if ResourceLoader.exists("res://ui/slot_select.gd") else null
 	if ss != null:
 		var screen: Control = ss.new(self)

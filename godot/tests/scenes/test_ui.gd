@@ -66,3 +66,22 @@ func test_menu_commands_reach_the_rules() -> void:
 	plus10.pressed.emit()
 	eq(int(u.play.game.slot.statPoints), 2, "10 points spent")
 	_done(u)
+
+func test_cutscene_plays_and_unfreezes() -> void:
+	var u := _setup()
+	var sc := {"kind": "before", "enemy": "nobody", "lines": [{"speaker": "you", "name": "You", "text": "Here I come."}, {"speaker": "nobody", "name": "Rival", "text": "Finally."}]}
+	u.play_scene(sc)
+	ok(u.cutscene.active and u.play.is_frozen(), "scene on, game frozen")
+	u.cutscene.drive_camera(u.play.camera, 0.05)   # unknown actor: camera untouched, no crash
+	u.cutscene.next()   # finish typing
+	u.cutscene.next()   # line 2
+	eq(u.cutscene.i, 1, "second line")
+	u.cutscene.next(); u.cutscene.next()
+	ok(not u.cutscene.active and not u.play.is_frozen(), "ended, game resumes")
+	u.play_scene(sc)
+	u.input.press("pause")
+	u.handle_input()
+	ok(not u.cutscene.active, "pause skips the scene")
+	u.cutscene.play({"lines": []}, u.play.actor)
+	ok(not u.cutscene.active, "an empty scene does nothing")
+	_done(u)

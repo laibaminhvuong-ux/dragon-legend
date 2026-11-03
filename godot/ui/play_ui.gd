@@ -9,6 +9,7 @@ var hud: Hud
 var rpg: RpgMenu
 var radar: DragonRadar
 var tutorial: TutorialPanel
+var cutscene: CutscenePlayer
 
 func _init(p: PlaySession, gi: GameInput) -> void:
 	play = p
@@ -28,6 +29,9 @@ func _init(p: PlaySession, gi: GameInput) -> void:
 	rpg = RpgMenu.new(p)
 	rpg.save = p.save_now
 	add_child(rpg)
+	cutscene = CutscenePlayer.new()
+	add_child(cutscene)
+	p.cutscene_requested.connect(play_scene)
 	hud.open_menu = func(tab: String) -> void: rpg.open_tab(tab)
 	rpg.opened.connect(func() -> void:
 		play.freeze("dialogue", true)
@@ -37,8 +41,23 @@ func _init(p: PlaySession, gi: GameInput) -> void:
 		input.capture = not play.paused)
 	p.tutorial_step_done.connect(tutorial.flash)
 
+func play_scene(sc: Dictionary) -> void:
+	if cutscene.active:
+		return
+	rpg.close()
+	play.face_for_scene(sc)
+	play.freeze("cutscene", true)
+	hud.visible = false
+	cutscene.play(sc, play.actor, func() -> void:
+		play.freeze("cutscene", false)
+		hud.visible = true
+		play.save_now())
+
 ## Keys handled by the UI; returns true when the step's input was used by a menu.
 func handle_input() -> bool:
+	if cutscene.active:
+		cutscene.handle_input(input)
+		return true
 	if rpg.is_open:
 		if input.pressed("pause") or input.pressed("menu") or (input.last_device == "gamepad" and input.pressed("dash")):
 			rpg.close()
@@ -58,6 +77,7 @@ func handle_input() -> bool:
 	return false
 
 func refresh(dt: float) -> void:
+	cutscene.drive_camera(play.camera, dt)
 	hud.update_hud(dt)
 	radar.refresh(play.story, play.game.player.pos, play.follow.yaw, dt, play.is_frozen())
-	tutorial.refresh(dt, rpg.is_open or play.paused)
+	tutorial.refresh(dt, rpg.is_open or play.paused or cutscene.active)

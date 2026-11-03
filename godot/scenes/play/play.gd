@@ -7,6 +7,7 @@ extends Node3D
 signal travel_requested(zone_id: String)
 signal quit_requested
 signal tutorial_step_done
+signal cutscene_requested(scene: Dictionary)
 
 const AUTOSAVE_SECONDS := 60.0
 var slot_index := 0
@@ -27,6 +28,7 @@ var prev_pos := Vector3.ZERO
 var save_timer := 0.0
 var pending_travel := ""
 var quality := "medium"
+var _music_check := 0.0
 var forced: Dictionary = {}       # intents merged over the input's (tests, touch controls)
 var _look_key := ""
 var _last_form := "?"
@@ -46,6 +48,8 @@ func start(index: int, gi: GameInput, q := "medium") -> bool:
 	tutorial = RuleTutorialRules.new(game.slot)
 	scenes = RuleCutsceneRules.new(game.slot)
 	Events.travel.connect(_on_travel)
+	Events.enemy_defeated.connect(_on_enemy_defeated)
+	Music.play(str(game.zone.id))
 	world = WorldView.build(str(game.zone.id), quality)
 	add_child(world)
 	camera = Camera3D.new()
@@ -142,9 +146,48 @@ func step(dt: float) -> void:
 		save_timer = 0.0
 		save_now()
 
-## Hook for cutscene/tutorial wiring (Task 6).
+## Boss "before" scenes start the first time the player comes near a story boss.
 func _after_step(_it: Dictionary) -> void:
-	pass
+	var sc: Variant = scenes.before_for(story.encounters(), game.player.pos)
+	if sc is Dictionary:
+		cutscene_requested.emit(sc)
+
+func _on_enemy_defeated(d: Dictionary) -> void:
+	var enemy := str(d.get("enemy", ""))
+	var name_v: Variant = null
+	for e: Dictionary in game.combat.enemies:
+		if str(e.get("key", "")) == enemy:
+			name_v = e.get("name")
+	var sc: Variant = scenes.after_for(enemy, name_v)
+	if sc is Dictionary:
+		cutscene_requested.emit(sc)
+
+## Where a cutscene speaker stands: "you", a boss (combat enemy key) or a story NPC id. {} when unknown.
+func actor(speaker: String) -> Dictionary:
+	if game == null:
+		return {}
+	if speaker == "you":
+		return {"pos": game.player.pos, "scale": float(Data.forms.get(str(game.player.form), {}).get("size", 1.0)) if str(game.player.form) != "" else 1.0}
+	for e: Dictionary in game.combat.enemies:
+		if str(e.get("key", "")) == speaker:
+			return {"pos": e.pos, "scale": float(e.get("scale", 1.0))}
+	for n: Dictionary in story.npcs():
+		if str(n.id) == speaker:
+			return {"pos": Vector3(float(n.x), float(n.y), float(n.z)), "scale": float(n.get("scale", 1.0))}
+	return {}
+
+## Face the boss and stop, as the JS game did when a scene starts.
+func face_for_scene(sc: Dictionary) -> void:
+	var p: Dictionary = game.player
+	p.vel = Vector3.ZERO
+	var boss := actor(str(sc.get("enemy", "")))
+	if boss.is_empty():
+		return
+	var bp: Vector3 = boss.pos
+	p.yaw = atan2(bp.x - p.pos.x, bp.z - p.pos.z)
+	for e: Dictionary in game.combat.enemies:
+		if str(e.get("key", "")) == str(sc.get("enemy", "")):
+			e.yaw = atan2(p.pos.x - bp.x, p.pos.z - bp.z)
 
 func save_now() -> void:
 	if game != null:
@@ -191,6 +234,14 @@ func render(frame_dt: float, alpha: float) -> void:
 	if bool(game.combat.avatar_state().get("active", false)):
 		scale = maxf(scale, float(Data.avatar.get("cameraScale", 1.0)))
 	follow.update(pos, 0.0 if frozen else frame_dt, target, scale)
+	_music_check += frame_dt
+	if _music_check > 1.0:
+		_music_check = 0.0
+		var villain := false
+		for n: Dictionary in story.npcs():
+			if n.get("boss", false) and Vector2(float(n.x) - pos.x, float(n.z) - pos.z).length() < 45.0:
+				villain = true
+		Music.play("battle" if villain else str(game.zone.id))
 	if combat_view != null:
 		combat_view.call("update_view", anim_dt)
 	if story_view != null:
@@ -199,6 +250,8 @@ func render(frame_dt: float, alpha: float) -> void:
 func shutdown() -> void:
 	if Events.travel.is_connected(_on_travel):
 		Events.travel.disconnect(_on_travel)
+	if Events.enemy_defeated.is_connected(_on_enemy_defeated):
+		Events.enemy_defeated.disconnect(_on_enemy_defeated)
 	if player != null:
 		player.dispose()
 		player = null
