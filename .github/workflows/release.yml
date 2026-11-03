@@ -39,7 +39,9 @@ jobs:
         shell: bash
         run: |
           npm install -g esbuild@0.24.0
-          ESBUILD=esbuild python tools/build_site.py
+          # Windows installs the command as esbuild.cmd, which Python only finds by its full name
+          if [ "$RUNNER_OS" = "Windows" ]; then ESB=esbuild.cmd; else ESB=esbuild; fi
+          ESBUILD=$ESB python tools/build_site.py
           rm -rf desktop/site && cp -r dist/site desktop/site
       - name: Build the app
         shell: bash
