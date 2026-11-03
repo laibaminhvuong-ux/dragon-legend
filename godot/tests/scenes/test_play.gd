@@ -79,3 +79,25 @@ func test_autosave() -> void:
 	p.step(DT)
 	eq(int(SaveStore.load_slot(0).zeni), int(p.game.slot.zeni), "autosaved after 60 s")
 	_end(p)
+
+func test_views_follow_the_rules() -> void:
+	var p := _session()
+	p.render(DT, 1.0)
+	var cv: Node = p.combat_view
+	var sv: Node = p.story_view
+	eq(cv.views.size(), p.game.combat.enemies.size(), "a view per enemy")
+	ok(sv.npcs.size() > 0, "NPCs drawn (%d)" % sv.npcs.size())
+	var before: int = cv.effects.size()
+	Events.emit_named("damage", {"id": "e1", "amount": 42, "pos": Vector3(0, 1, 0)})
+	Events.emit_named("beam", {"from": Vector3(0, 1, 0), "to": Vector3(0, 1, 20), "color": 0x63cfff})
+	eq(cv.effects.size(), before + 2, "damage number and beam shown")
+	p.game.combat.projectiles.append({"id": 999, "pos": Vector3(1, 2, 3), "color": 0xff0000})
+	cv.update_view(DT)
+	ok(cv.balls.has("999"), "ki blast drawn")
+	p.game.combat.projectiles.clear()
+	cv.update_view(DT)
+	ok(not cv.balls.has("999"), "and removed when it ends")
+	for i in 120:
+		cv.update_view(DT)
+	eq(cv.effects.size(), before, "effects expire")
+	_end(p)
