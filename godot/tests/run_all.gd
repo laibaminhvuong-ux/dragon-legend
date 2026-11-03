@@ -2,12 +2,26 @@ extends SceneTree
 # Headless test runner: godot --headless --path godot -s res://tests/run_all.gd -- [filter]
 # Runs every res://tests/**/test_*.gd; a filter keeps tests whose "file::method" contains it.
 # Prints "ok ..." / "FAIL ...: msg" lines and "N passed, M failed"; exits 1 if anything failed.
+# A test that hits an engine/script error (null access, bad call...) fails even though GDScript doesn't throw:
+# a Logger counts errors while each test runs.
+
+class ErrorCounter extends Logger:
+	var count := 0
+	var first := ""
+	func _log_error(function: String, file: String, line: int, code: String, rationale: String, _editor_notify: bool, error_type: int, _script_backtraces: Array[ScriptBacktrace]) -> void:
+		if error_type == ERROR_TYPE_WARNING:
+			return  # warnings are allowed (e.g. Data reporting a broken file)
+		count += 1
+		if first == "":
+			first = "%s (%s:%d in %s)" % [rationale if rationale != "" else code, file.get_file(), line, function]
 
 func _init() -> void:
 	var args := OS.get_cmdline_user_args()
 	var filter := args[0] if args.size() > 0 else ""
 	var passed := 0
 	var failed := 0
+	var errors := ErrorCounter.new()
+	OS.add_logger(errors)
 	for path in _find("res://tests"):
 		var script: GDScript = load(path)
 		if script == null:
@@ -27,9 +41,14 @@ func _init() -> void:
 					continue
 			elif filter != "" and not id.contains(filter):
 				continue
+			errors.count = 0
+			errors.first = ""
 			var t: Object = script.new()
 			t.call(name)
-			var fails: Array = t.get("failures")
+			var fails: Array = t.get("failures") if t != null else []
+			if errors.count > 0:
+				fails = fails.duplicate()
+				fails.append("%d engine error(s), first: %s" % [errors.count, errors.first])
 			if fails.is_empty():
 				print("ok %s" % id)
 				passed += 1

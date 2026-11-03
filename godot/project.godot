@@ -16,3 +16,7 @@ window/size/viewport_height=900
 
 [rendering]
 renderer/rendering_method="forward_plus"
+
+[autoload]
+
+Data="*res://core/data.gd"
