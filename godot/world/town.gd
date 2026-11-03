@@ -43,6 +43,15 @@ static func build(g: Node3D, zone: RefCounted, l: Dictionary) -> void:
 			"windmill": _windmill(n, b)
 			"lighthouse": _lighthouse(n, b)
 			_: _house(n, b)
+	# one mesh per material for the whole town (thousands of pieces -> a few draw calls), faded out far away
+	var holder := Node3D.new()
+	holder.name = "TownMeshes"
+	for c in g.get_children():
+		if not (c is Light3D):
+			g.remove_child(c)
+			holder.add_child(c)
+	g.add_child(holder)
+	MeshMerge.merge(holder, 2600.0)
 
 ## Ground height under a town-local point (towns are flattened, but the edges follow the land).
 static func _ground(zone: RefCounted, l: Dictionary, x: float, z: float) -> float:

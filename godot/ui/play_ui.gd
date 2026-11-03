@@ -8,6 +8,7 @@ var input: GameInput
 var hud: Hud
 var rpg: RpgMenu
 var forms: FormPicker
+var map: WorldMap
 var radar: DragonRadar
 var tutorial: TutorialPanel
 var cutscene: CutscenePlayer
@@ -38,6 +39,14 @@ func _init(p: PlaySession, gi: GameInput) -> void:
 	forms.closed.connect(func() -> void:
 		play.freeze("forms", false)
 		input.capture = not play.paused)
+	map = WorldMap.new(p)
+	add_child(map)
+	map.opened.connect(func() -> void:
+		play.freeze("map", true)
+		input.capture = false)
+	map.closed.connect(func() -> void:
+		play.freeze("map", false)
+		input.capture = not play.paused)
 	cutscene = CutscenePlayer.new()
 	add_child(cutscene)
 	p.cutscene_requested.connect(play_scene)
@@ -55,6 +64,7 @@ func play_scene(sc: Dictionary) -> void:
 		return
 	rpg.close()
 	forms.close()
+	map.close()
 	play.face_for_scene(sc)
 	play.freeze("cutscene", true)
 	hud.visible = false
@@ -74,6 +84,10 @@ func handle_input() -> bool:
 		elif input.pressed("interact") or (input.last_device == "gamepad" and input.pressed("jump")):
 			rpg.activate()
 		return true
+	if map.is_open:
+		if input.pressed("pause") or input.pressed("map") or input.pressed("menu") or (input.last_device == "gamepad" and input.pressed("dash")):
+			map.close()
+		return true
 	if forms.is_open:
 		if input.pressed("pause") or input.pressed("menu") or input.pressed("transform") or (input.last_device == "gamepad" and input.pressed("dash")):
 			forms.close()
@@ -84,6 +98,9 @@ func handle_input() -> bool:
 		return false
 	if input.pressed("transform"):
 		forms.open()
+		return true
+	if input.pressed("map"):
+		map.open()
 		return true
 	if input.pressed("menu"):
 		rpg.open_tab("Stats")

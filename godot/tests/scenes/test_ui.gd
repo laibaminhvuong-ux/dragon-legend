@@ -144,3 +144,19 @@ func test_picker_closes_without_change_and_says_when_nothing_is_unlocked() -> vo
 	ok(u.forms.is_open, "stays open so you can pick another")
 	u.forms.close()
 	_done(u)
+
+func test_world_map_opens_shows_the_map_and_closes() -> void:
+	var u := _setup()
+	u.input.press("map")
+	ok(u.handle_input(), "N opens the map")
+	ok(u.map.is_open and u.play.is_frozen(), "map open, game paused")
+	var tex: Texture2D = u.map._image.texture
+	ok(tex != null and tex.get_width() == WorldMap.SIZE, "map picture drawn")
+	var img := tex.get_image()
+	var c := img.get_pixel(WorldMap.SIZE / 2, WorldMap.SIZE - 4)
+	ok(c.b > c.g and c.b > c.r, "the southern sea is blue: %s" % c)
+	u.input.end_tick()
+	u.input.press("map")
+	u.handle_input()
+	ok(not u.map.is_open and not u.play.is_frozen(), "N closes it")
+	_done(u)

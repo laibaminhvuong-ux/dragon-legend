@@ -49,11 +49,11 @@ area (`zone` id), and the planet map places that area's local coordinates at the
 | babidi_ship (south-west wastes) | -700, -650 | 260 |
 | cell_games | 300, -900 | 260 |
 | kame_island (south-east sea) | 1150, -1250 | 200 |
-| papaya_island (south sea) | -150, -1350 | 260 |
+| papaya_island (south sea) | -200, -1300 | 260 |
 | **Amber City** (new) | 650, -350 | 240 |
 | **Pepper Village** (new) | -450, 450 | 150 |
-| **Snowpeak Village** (new) | -650, 1350 | 140 |
-| **Harbor Town** (new) | 750, -1050 | 160 |
+| **Snowpeak Village** (new) | -550, 1350 | 140 |
+| **Harbor Town** (new) | 700, -1300 | 160 |
 
 Sea level 0 (every ocean recipe already uses 0). The ground falls away to the sea south of z ≈ -950,
 around the island regions, and along the north-east coast at Red Ribbon.

@@ -62,7 +62,7 @@ func npc_pos(n: Dictionary) -> Dictionary:
 	if not positions.has(n.id):
 		var p: Dictionary = zone.place_in(n.zone,n.x,n.z)
 		if n.has("y"):
-			p.y = n.y
+			p.y = float(n.y)+zone.lift_of(n.zone)
 		positions[n.id] = RuleRuntime.position(zone.free_position(p))
 	return positions[n.id]
 func at(step: Dictionary) -> Dictionary:

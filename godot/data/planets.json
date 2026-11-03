@@ -15,7 +15,8 @@
       "amp": 14,
       "scale": 260,
       "northFrom": 600,
-      "northTo": 1300
+      "northTo": 1300,
+      "lift": 20
     },
     "sea": {
       "level": 0,

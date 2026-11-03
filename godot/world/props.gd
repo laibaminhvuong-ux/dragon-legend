@@ -36,21 +36,42 @@ static func _trees(root: Node3D, trees: Array, kind: String, far: float) -> void
 	for t: Dictionary in trees:
 		by_variant[int(t.get("variant", 0)) % 3].append(t)
 	for v in 3:
-		if by_variant[v].is_empty():
-			continue
-		var mm := MultiMesh.new()
-		mm.transform_format = MultiMesh.TRANSFORM_3D
-		mm.mesh = variants[v]
-		mm.instance_count = by_variant[v].size()
-		for i in by_variant[v].size():
-			var t: Dictionary = by_variant[v][i]
-			var b := Basis(Vector3.UP, float(t.get("rot", 0.0))).scaled(Vector3.ONE * float(t.get("scale", 1.0)))
-			mm.set_instance_transform(i, Transform3D(b, Vector3(t.x, t.y, t.z)))
-		var mmi := MultiMeshInstance3D.new()
-		mmi.name = "Trees_%s_%d" % [kind, v]
-		mmi.multimesh = mm
-		mmi.visibility_range_end = far
-		root.add_child(mmi)
+		var tiles := _tiles(by_variant[v], TILE)
+		for key: Vector2i in tiles:
+			var tile: Array = tiles[key]
+			var xfs: Array[Transform3D] = []
+			for t: Dictionary in tile:
+				var b := Basis(Vector3.UP, float(t.get("rot", 0.0))).scaled(Vector3.ONE * float(t.get("scale", 1.0)))
+				xfs.append(Transform3D(b, Vector3(t.x, t.y, t.z)))
+			root.add_child(_multi("Trees_%s_%d_%d_%d" % [kind, v, key.x, key.y], variants[v], xfs, far, true))
+
+## Props in square tiles (so tiles out of range are not drawn at all): Vector2i -> Array of items.
+const TILE := 256.0
+static func _tiles(items: Array, size: float) -> Dictionary:
+	var out := {}
+	for it: Dictionary in items:
+		var key := Vector2i(floori(float(it.x) / size), floori(float(it.z) / size))
+		if not out.has(key):
+			out[key] = []
+		out[key].append(it)
+	return out
+
+static func _multi(node_name: String, mesh: Mesh, xfs: Array[Transform3D], far: float, shadows: bool) -> MultiMeshInstance3D:
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.mesh = mesh
+	mm.instance_count = xfs.size()
+	for i in xfs.size():
+		mm.set_instance_transform(i, xfs[i])
+	var mmi := MultiMeshInstance3D.new()
+	mmi.name = node_name
+	mmi.multimesh = mm
+	mmi.visibility_range_end = far
+	mmi.visibility_range_end_margin = 40.0
+	mmi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
+	if not shadows:
+		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return mmi
 
 ## A low-poly tree: bark then foliage surfaces (crystals: foliage only).
 static func tree_mesh(kind: String, variant: int) -> ArrayMesh:
@@ -204,7 +225,7 @@ static func _rock_meshes() -> Array:
 		all.append_array(_model_meshes(id))
 	return all
 
-## One MeshInstance3D per prop (so automatic LODs apply), sized from the prop's scale.
+## Rocks and bushes from scanned models, one MultiMesh per model per tile, sized from the prop's scale.
 static func _scanned(root: Node3D, items: Array, meshes: Array, far: float, tilt: bool, size := 2.0) -> void:
 	if items.is_empty():
 		return
@@ -213,32 +234,33 @@ static func _scanned(root: Node3D, items: Array, meshes: Array, far: float, tilt
 	var group := Node3D.new()
 	group.name = "Scanned"
 	root.add_child(group)
-	for it: Dictionary in items:
-		var m: Dictionary = meshes[int(it.get("variant", 0)) % meshes.size()]
-		var mi := MeshInstance3D.new()
-		mi.mesh = m.mesh
-		var s := float(it.get("scale", 1.0)) * size / maxf(float(m.size), 0.01)
-		var b := Basis.from_euler(Vector3(float(it.get("rx", 0.0)) * 0.2 if tilt else 0.0, float(it.get("ry", it.get("rot", 0.0))), float(it.get("rz", 0.0)) * 0.2 if tilt else 0.0))
-		mi.transform = Transform3D(b.scaled(Vector3.ONE * s), Vector3(it.x, float(it.y) - float(m.bottom) * s * 0.85, it.z))
-		mi.visibility_range_end = far
-		group.add_child(mi)
+	var tiles := _tiles(items, TILE)
+	for key: Vector2i in tiles:
+		var per_mesh: Array = []
+		for i in meshes.size():
+			per_mesh.append([] as Array[Transform3D])
+		for it: Dictionary in tiles[key]:
+			var vi := int(it.get("variant", 0)) % meshes.size()
+			var m: Dictionary = meshes[vi]
+			var s := float(it.get("scale", 1.0)) * size / maxf(float(m.size), 0.01)
+			var b := Basis.from_euler(Vector3(float(it.get("rx", 0.0)) * 0.2 if tilt else 0.0, float(it.get("ry", it.get("rot", 0.0))), float(it.get("rz", 0.0)) * 0.2 if tilt else 0.0))
+			(per_mesh[vi] as Array[Transform3D]).append(Transform3D(b.scaled(Vector3.ONE * s), Vector3(it.x, float(it.y) - float(m.bottom) * s * 0.85, it.z)))
+		for vi in meshes.size():
+			var xfs: Array[Transform3D] = per_mesh[vi]
+			if not xfs.is_empty():
+				group.add_child(_multi("Scan_%d_%d_%d" % [vi, key.x, key.y], meshes[vi].mesh, xfs, far, tilt))
 
 static func _stones(root: Node3D, stones: Array) -> void:
 	if stones.is_empty():
 		return
-	var mm := MultiMesh.new()
-	mm.transform_format = MultiMesh.TRANSFORM_3D
-	mm.mesh = _fallback_rock()
-	mm.instance_count = stones.size()
-	for i in stones.size():
-		var s: Dictionary = stones[i]
-		var b := Basis.from_euler(Vector3(s.get("rx", 0.0), s.get("ry", 0.0), s.get("rz", 0.0))).scaled(Vector3.ONE * float(s.get("scale", 0.15)))
-		mm.set_instance_transform(i, Transform3D(b, Vector3(s.x, s.y, s.z)))
-	var mmi := MultiMeshInstance3D.new()
-	mmi.name = "Stones"
-	mmi.multimesh = mm
-	mmi.visibility_range_end = 160.0
-	root.add_child(mmi)
+	var mesh := _fallback_rock()
+	var tiles := _tiles(stones, 128.0)
+	for key: Vector2i in tiles:
+		var xfs: Array[Transform3D] = []
+		for s: Dictionary in tiles[key]:
+			var b := Basis.from_euler(Vector3(s.get("rx", 0.0), s.get("ry", 0.0), s.get("rz", 0.0))).scaled(Vector3.ONE * float(s.get("scale", 0.15)))
+			xfs.append(Transform3D(b, Vector3(s.x, s.y, s.z)))
+		root.add_child(_multi("Stones_%d_%d" % [key.x, key.y], mesh, xfs, 160.0, false))
 
 static func _fallback_rock() -> ArrayMesh:
 	var st := SurfaceTool.new()

@@ -8,7 +8,10 @@ const SHADER := preload("res://world/shaders/water.gdshader")
 static func build(zone: RefCounted) -> Node3D:
 	if zone.water == null:
 		return null
-	var w: Dictionary = zone.water
+	return build_body(zone, zone.water)
+
+## One body of water ({x, z, radius, level, ocean}); planet maps add their areas' lakes with this.
+static func build_body(zone: RefCounted, w: Dictionary) -> Node3D:
 	var mi := MeshInstance3D.new()
 	mi.name = "Water"
 	var disc := CylinderMesh.new()

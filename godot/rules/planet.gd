@@ -51,10 +51,16 @@ func _init(planet_id: String, start: String = "", data: Object = null) -> void:
 	for r: Dictionary in p.regions:
 		var z := RuleZone.new(str(r.zone), data)
 		z.open_edges()
-		regions[str(r.zone)] = {"zone": z, "x": float(r.x), "z": float(r.z), "radius": float(r.radius), "blend": float(r.get("blend", 90))}
+		# land areas sit `lift` m up so their low ground stays above the shared sea; island areas keep sea level 0
+		var lift: float = 0.0 if z.def.terrain.has("ocean") else float(p.base.get("lift", 0))
+		regions[str(r.zone)] = {"zone": z, "x": float(r.x), "z": float(r.z), "radius": float(r.radius), "blend": float(r.get("blend", 90)), "lift": lift}
 	biome = (regions[str(p.biome)].zone as RuleZone).biome.duplicate(true) if regions.has(str(p.get("biome", ""))) else biome
 	biome.merge(p.get("props", {}), true)
 	def = {"name": name, "planet": name, "saga": "", "biome": biome, "terrain": {"size": size, "planet": planet_id, "regions": p.regions, "base": _base, "sea": _sea}, "landmarks": []}
+	var recipes := {}
+	for rid: String in regions:
+		recipes[rid] = (regions[rid].zone as RuleZone).def
+	def.terrain.recipes = "%08x" % (hash(JSON.stringify(recipes, "", true)) & 0xffffffff)   # terrain caches follow area changes
 	_terrain = def.terrain
 	var s: Dictionary = regions[first].zone.spawn
 	spawn = to_planet(first, s)
@@ -91,6 +97,25 @@ func to_planet(zone_id: String, local: Dictionary) -> Dictionary:
 	var out: Dictionary = local.duplicate()
 	out.x = float(local.x) + r.x
 	out.z = float(local.z) + r.z
+	if out.get("y") != null and (out.y is float or out.y is int):
+		out.y = float(out.y) + float(r.lift)
+	return out
+
+func lift_of(zone_id: String) -> float:
+	return float(regions[zone_id].lift) if regions.has(zone_id) else 0.0
+
+## The areas' own lakes, at their spot and lifted with their ground.
+func lakes() -> Array:
+	var out: Array = []
+	for rid: String in regions:
+		var r: Dictionary = regions[rid]
+		var w: Variant = (r.zone as RuleZone).water
+		if w is Dictionary and not w.get("ocean", false):
+			var lake: Dictionary = w.duplicate()
+			lake.x = float(w.x) + float(r.x)
+			lake.z = float(w.z) + float(r.z)
+			lake.level = float(w.level) + float(r.lift)
+			out.append(lake)
 	return out
 
 ## Where an authored point of an area (NPC, quest step, pickup) is on the planet.
@@ -130,7 +155,7 @@ func _weight(r: Dictionary, x: float, z: float) -> float:
 
 # ------------------------------------------------------------------------------------------------- ground
 func base_height(x: float, z: float) -> float:
-	var h: float = 6.0 + (_noise[0].fbm(x / float(_base.get("scale", 260)), z / float(_base.get("scale", 260)), 5) * 0.5 + 0.5) * float(_base.get("amp", 14))
+	var h: float = float(_base.get("lift", 0)) + 2.0 + (_noise[0].fbm(x / float(_base.get("scale", 260)), z / float(_base.get("scale", 260)), 5) * 0.5 + 0.5) * float(_base.get("amp", 14))
 	h += _noise[1].fbm(x / 60, z / 60, 3) * 1.6
 	# mountains along the map's land edges and in the north
 	var half := size / 2.0
@@ -159,7 +184,7 @@ func height_at(x: float, z: float) -> float:
 		var w := _weight(r, x, z)
 		if w <= 0.0:
 			continue
-		acc += w * (r.zone as RuleZone).height_at(x - r.x, z - r.z)
+		acc += w * ((r.zone as RuleZone).height_at(x - r.x, z - r.z) + float(r.lift))
 		total += w
 	if total >= 1.0:
 		return acc / total
@@ -200,3 +225,42 @@ func surface_at(x: float, z: float) -> String:
 	if n.y < 0.78:
 		return "rock"
 	return "dirt" if dirt_at(x, z) > 0.55 else "grass"
+
+# ------------------------------------------------------------------------------------------------- props
+## Bump when prop placement changes: saved props are then ignored.
+const PROPS_VERSION := 1
+const BAKED_PROPS := "res://world/baked"
+static var props_cache_dir := "user://cache/props"
+
+## Trees, rocks, bushes and stones for the whole map. Placing them takes seconds, so the result is saved once
+## (shipped in world/baked, else this PC's cache) and read back after that.
+func props() -> RefCounted:
+	if _props != null:
+		return _props
+	var key := props_key()
+	for path in ["%s/%s.props" % [BAKED_PROPS, key], "%s/%s.props" % [props_cache_dir, key]]:
+		if FileAccess.file_exists(path):
+			var f := FileAccess.open_compressed(path, FileAccess.READ, FileAccess.COMPRESSION_ZSTD)
+			if f != null:
+				var saved: Variant = f.get_var()
+				f.close()
+				if saved is Dictionary and saved.get("key") == key:
+					_props = PropSet.new(self, saved)
+					return _props
+	_props = PropSet.new(self)
+	save_props(_props, "%s/%s.props" % [props_cache_dir, key])
+	return _props
+
+func save_props(p: RefCounted, path: String) -> void:
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(path.get_base_dir()))
+	var f := FileAccess.open_compressed(path, FileAccess.WRITE, FileAccess.COMPRESSION_ZSTD)
+	if f != null:
+		f.store_var({"key": props_key(), "trees": p.trees, "rocks": p.rocks, "bushes": p.bushes, "stones": p.stones})
+		f.close()
+
+## The planet's recipe, every area's recipe and the prop version: any change makes new props.
+func props_key() -> String:
+	var recipes := {}
+	for rid: String in regions:
+		recipes[rid] = (regions[rid].zone as RuleZone).def
+	return "%s_props_%08x" % [id, hash(JSON.stringify(_pdef, "", true) + JSON.stringify(recipes, "", true) + str(PROPS_VERSION)) & 0xffffffff]

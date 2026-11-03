@@ -81,6 +81,10 @@ func region_at(_x: float, _z: float) -> String:
 func place_in(_zone_id: String, x: float, z: float) -> Dictionary:
 	return place(x, z)
 
+## How far an area's ground is raised on its map (planet land areas sit above the shared sea).
+func lift_of(_zone_id: String) -> float:
+	return 0.0
+
 func region_spawn(_zone_id: String) -> Dictionary:
 	return spawn
 
@@ -285,7 +289,12 @@ class PropSet extends RefCounted:
 	static func _lush(zone: RefCounted, surface: String) -> bool:
 		return surface=="grass" or (zone.ground=="sand" and surface=="sand") or (zone.ground=="dirt" and surface=="dirt") or (zone.ground=="stone" and surface=="stone")
 
-	func _init(zone: RefCounted) -> void:
+	## saved: {trees, rocks, bushes, stones} from an earlier run (planet maps cache their props); else generated.
+	func _init(zone: RefCounted, saved: Dictionary = {}) -> void:
+		if not saved.is_empty():
+			trees = saved.trees; rocks = saved.rocks; bushes = saved.bushes; stones = saved.stones
+			_colliders(zone)
+			return
 		var b: Dictionary = zone.biome
 		var r: RefCounted = NoiseRules.Random32.new(4242 if zone.id=="earth_plains" else zone.seed*7+1)
 		var half: float = zone.size/2-12
@@ -346,6 +355,9 @@ class PropSet extends RefCounted:
 			if surface in ["water","void","white"] or (surface=="grass" and r.next_float()>0.3):
 				continue
 			stones.append({"x":p.x,"y":zone.height_at(p.x,p.z)-0.03,"z":p.z,"scale":0.08+r.next_float()*0.25,"rx":r.next_float()*6.3,"ry":r.next_float()*6.3,"rz":r.next_float()*6.3,"variant":floori(r.next_float()*5)})
+		_colliders(zone)
+
+	func _colliders(zone: RefCounted) -> void:
 		for t: Dictionary in trees:
 			_add({"x":t.x,"z":t.z,"radius":0.35*t.scale,"top":t.y+14*t.scale})
 		for rock: Dictionary in rocks:

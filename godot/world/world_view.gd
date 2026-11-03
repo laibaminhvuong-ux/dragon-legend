@@ -32,4 +32,7 @@ static func build_zone(zone: RuleZone, quality := "high") -> Node3D:
 	var water: Node3D = load("res://world/water.gd").build(zone)
 	if water != null:
 		root.add_child(water)
+	if zone is RulePlanet:
+		for lake: Dictionary in (zone as RulePlanet).lakes():
+			root.add_child(WorldWater.build_body(zone, lake))
 	return root

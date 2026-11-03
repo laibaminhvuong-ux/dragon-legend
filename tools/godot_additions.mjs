@@ -58,7 +58,7 @@ function openWorld(zones, zoneOrder) {
     earth: {
       name: 'Earth', size: 3200, seed: 4242, start: 'earth_plains', biome: 'earth_plains',
       props: {treeCount: 2600, rocks: 900, bushes: 3200, stones: 5000},
-      base: {amp: 14, scale: 260, northFrom: 600, northTo: 1300},
+      base: {amp: 14, scale: 260, northFrom: 600, northTo: 1300, lift: 20},
       sea: {level: 0, southFrom: -900, southTo: -1060, bays: [{x: 1350, z: 1150, r: 420}]},
       regions: [
         R('earth_plains', 0, 0, 300), R('west_city', 1100, 150, 260), R('red_ribbon', 1250, 1050, 280),

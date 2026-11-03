@@ -54,6 +54,9 @@ func _ready() -> void:
 		"forms":
 			await get_tree().create_timer(2.0).timeout
 			if play != null: play_ui.forms.open()
+		"map":
+			await get_tree().create_timer(2.0).timeout
+			if play != null: play_ui.map.open()
 		"pause", "menu", "dialogue":
 			await get_tree().create_timer(2.0).timeout
 			if play != null:

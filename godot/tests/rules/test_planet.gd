@@ -30,7 +30,9 @@ func test_each_area_keeps_its_own_ground_at_its_spot() -> void:
 			var d := rng.randf() * float(r.radius) * 0.9
 			var lx := cos(a) * d
 			var lz := sin(a) * d
-			near(e.height_at(r.x + lx, r.z + lz), z.height_at(lx, lz), 0.001, "%s at %.0f,%.0f" % [rid, lx, lz])
+			near(e.height_at(r.x + lx, r.z + lz), z.height_at(lx, lz) + float(r.lift), 0.001, "%s at %.0f,%.0f" % [rid, lx, lz])
+		if not z.def.terrain.has("ocean"):
+			ok(e.height_at(r.x, r.z) > 0.5, rid + " centre above the sea")
 
 func test_spawn_and_authored_points_land_on_the_map() -> void:
 	var e := _planet()
@@ -76,3 +78,19 @@ func test_areas_do_not_crowd_each_other() -> void:
 	for rid: String in ids:
 		var r: Dictionary = e.regions[rid]
 		ok(absf(float(r.x)) + float(r.radius) <= e.size / 2.0 and absf(float(r.z)) + float(r.radius) <= e.size / 2.0, rid + " inside the map")
+
+func test_land_areas_never_flood_and_keep_their_lakes() -> void:
+	var e := _planet()
+	for rid: String in ["earth_plains", "amber_city", "pepper_village", "west_city", "gero_lab", "cell_games"]:
+		var r: Dictionary = e.regions[rid]
+		for i in 40:
+			var a := float(i) / 40.0 * TAU
+			for d in [0.0, 0.4, 0.8]:
+				var x: float = float(r.x) + cos(a) * float(r.radius) * d
+				var z: float = float(r.z) + sin(a) * float(r.radius) * d
+				var s := e.surface_at(x, z)
+				ok(s != "water" or (r.zone as RuleZone).water != null, "%s flooded at %.0f,%.0f" % [rid, x, z])
+	var lakes := e.lakes()
+	ok(lakes.size() >= 1, "the plains lake is kept")
+	var plains: Dictionary = e.regions.earth_plains
+	near(float(lakes.filter(func(l: Dictionary) -> bool: return absf(float(l.x) - float(plains.x) - float(plains.zone.water.x)) < 0.01)[0].level), float(plains.zone.water.level) + float(plains.lift), 0.0001)

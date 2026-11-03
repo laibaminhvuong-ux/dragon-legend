@@ -16,12 +16,14 @@ var _chunks: Dictionary = {}  # Vector2i -> MultiMeshInstance3D
 var _mesh: ArrayMesh
 var _material: ShaderMaterial
 var _timer := 0.0
+var _towns: Array = []   # town landmarks: no grass in a city, nor on village roads
 
 static func create(terrain: Node3D, zone: RefCounted, quality := "high") -> WorldGrass:
 	var g := WorldGrass.new()
 	g.name = "Grass"
 	var p: Dictionary = PRESET.get(quality, PRESET.high)
 	g._grid = terrain.get_meta("grid")
+	g._towns = zone.landmarks.filter(func(l: Dictionary) -> bool: return l.get("type") == "town")
 	g._density = float(p.density) * float(zone.biome.get("grass", 1.0))
 	g._radius = p.radius
 	g._mesh = _clump_mesh()
@@ -80,10 +82,14 @@ func _build_chunk(k: Vector2i) -> MultiMeshInstance3D:
 	var xforms: Array[Transform3D] = []
 	var colours: Array[Color] = []
 	var half: float = _grid.half
+	var towns: Array = _towns.filter(func(l: Dictionary) -> bool:
+		return Vector2((k.x + 0.5) * CHUNK - float(l.x), (k.y + 0.5) * CHUNK - float(l.z)).length() < float(l.radius) + CHUNK)
 	for t in tries:
 		var x := (k.x + rng.randf()) * CHUNK
 		var z := (k.y + rng.randf()) * CHUNK
 		if absf(x) > half - 1.0 or absf(z) > half - 1.0:
+			continue
+		if not towns.is_empty() and _paved(towns, x, z):
 			continue
 		var s := WorldTerrain.sample(_grid, x, z)
 		var green: float = s.grass * (1.0 - s.snow)
@@ -137,3 +143,16 @@ static func _clump_mesh() -> ArrayMesh:
 				st.set_uv(uvs[idx])
 				st.add_vertex(quad[idx])
 	return st.commit()
+
+static func _paved(towns: Array, x: float, z: float) -> bool:
+	for l: Dictionary in towns:
+		var lx := x - float(l.x)
+		var lz := z - float(l.z)
+		var d := Vector2(lx, lz).length()
+		if d > float(l.radius):
+			continue
+		if str(l.get("style", "")) == "city":
+			return true
+		if RuleTown._on_road(RuleTown.layout(l), lx, lz, 0.6):
+			return true
+	return false

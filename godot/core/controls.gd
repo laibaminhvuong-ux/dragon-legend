@@ -6,7 +6,7 @@ const KEYS := {
 	"move_forward": [KEY_W, KEY_UP], "move_back": [KEY_S, KEY_DOWN], "move_left": [KEY_A, KEY_LEFT], "move_right": [KEY_D, KEY_RIGHT],
 	"jump": [KEY_SPACE], "dash": [KEY_Q], "flight": [KEY_F], "ascend": [KEY_SPACE], "descend": [KEY_CTRL],
 	"charge": [KEY_C], "ki_blast": [KEY_E], "beam": [KEY_R], "transform": [KEY_T], "lock_on": [KEY_TAB],
-	"interact": [KEY_G], "menu": [KEY_M], "radar": [KEY_V], "base": [KEY_B], "kaioken": [KEY_K], "pause": [KEY_ESCAPE],
+	"interact": [KEY_G], "menu": [KEY_M], "radar": [KEY_V], "base": [KEY_B], "kaioken": [KEY_K], "pause": [KEY_ESCAPE], "map": [KEY_N],
 }
 const MOUSE := {"melee": MOUSE_BUTTON_LEFT, "block": MOUSE_BUTTON_RIGHT}
 # Gamepad: the JS standard-mapping buttons (Pad0..Pad15) in Godot's numbering; the triggers are axes.

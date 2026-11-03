@@ -30,6 +30,10 @@ func test_every_style_draws() -> void:
 	for id: String in TOWNS:
 		var zone := RuleZone.new(id)
 		var root := WorldLandmarks.build(zone)
-		var meshes := root.find_children("*", "MeshInstance3D", true, false).size()
-		ok(meshes > 40, "%s drew %d meshes" % [id, meshes])
+		var meshes := root.find_children("*", "MeshInstance3D", true, false)
+		ok(meshes.size() >= 4 and meshes.size() < 60, "%s merged into %d meshes" % [id, meshes.size()])
+		var verts := 0
+		for m in meshes:
+			verts += (m as MeshInstance3D).mesh.get_faces().size()
+		ok(verts > 3000, "%s still has its buildings (%d triangle corners)" % [id, verts])
 		root.free()
