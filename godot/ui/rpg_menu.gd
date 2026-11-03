@@ -123,10 +123,16 @@ func show_dialogue(d: Dictionary) -> void:
 		for o: Dictionary in d.get("options", []):
 			var zone := str(o.zone)
 			var text := ("★ %s · next in the story" % o.name) if o.get("story", false) else ("%s · %s" % [o.name, o.get("planet", "")])
-			_box.add_child(UiKit.button(text, func() -> void:
+			var locked: bool = o.get("locked", false)
+			if int(o.get("level", 0)) > 0:
+				text += ("  ·  🔒 needs Lv. %d" if locked else "  ·  Lv. %d") % int(o.level)
+			var b := UiKit.button(text, func() -> void:
 				if play.story.travel_to(zone): close()
-				else:
-					close(); Events.emit_named("notify", {"text": "Stand next to the pilot and try again."}), o.get("story", false)))
+				elif not locked:
+					close(); Events.emit_named("notify", {"text": "Stand next to the pilot and try again."}), o.get("story", false) and not locked)
+			b.disabled = locked
+			b.tooltip_text = "Train to Lv. %d first: patrols and side quests give XP." % int(o.get("level", 0)) if locked else ""
+			_box.add_child(b)
 	if str(d.get("speaker", "")) == "Training Guide":
 		_box.add_child(UiKit.button("Shop", show_shop))
 	_box.add_child(UiKit.button("Not now" if kind in ["choice", "travel"] else "Continue", close))

@@ -64,6 +64,7 @@ func test_flying_into_the_planet_lands_on_it_once_unlocked() -> void:
 	story.update(1.0/60)
 	eq(bus.count("travel"),0,"locked before the road quest is done")
 	g.slot.story.unlocked.append("king_kai")
+	g.slot.level = story.travel_level("king_kai")   # landing there also needs its level
 	story.update(1.0/60)
 	eq(bus.count("travel"),1,"flies you to King Kae's planet")
 	eq(bus.log.filter(func(e: Dictionary) -> bool: return e.event=="travel")[0].value.zone,"king_kai")

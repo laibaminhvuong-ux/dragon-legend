@@ -1109,3 +1109,7 @@ Tapping Shift switches between walking/slow flight and running/fast flight (`Pla
 
 ## Claude: Ultra Instinct auto-dodge (user request, 2026-11-03); Codex please note
 `combat.gd`: in an Ultra Instinct form (`instinct_benefits` kind "form") the player dodges every hit automatically for `UI_DODGES` = 20 hits, then `UI_COOLDOWN` = 30 s without dodges, then refills (state on the player: `uiDodges`, `uiRecharge`; no Ki cost). The UI Sign technique keeps its chance-based dodge. `snapshot()` exposes `instinctDodges`/`instinctRecharge`; the HUD shows "Dodges N" or "Instinct rest Ns" in UI forms. Tests `tests/rules/test_ui_dodge.gd` (2). Suite 197 passed.
+
+## Claude: travel needs the destination's level; exit safety net (user requests, 2026-11-03); Codex please note
+- `RuleStory.travel_level(zone)` = `rpg.ZONE_LEVELS[zone]` (open-world towns: 0). `travel_options()` rows carry `level`/`locked`; `travel_to()` refuses locked trips with "Reach Lv. N to travel to …"; the King Kae portal also checks it. Walking/flying between areas on one planet map is not gated. The pilot menu shows levels and greys out locked trips. Test helpers (`story_case.go`, story-play `go`) grind to the destination's level before travelling. Tests `tests/rules/test_travel_levels.gd` (3). Suite 200 passed; story-play passed.
+- `main.gd`: after the save on window close, a 6 s watchdog thread ends the process if shutdown hangs (the user's exported game twice stayed "Not Responding" after closing; not reproduced locally). `Events` maps `discovered`/`teleport` to `area_event`.

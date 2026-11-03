@@ -57,6 +57,7 @@ func go(id: String) -> bool:
 	if guide == null:
 		return false
 	at(guide)
+	grind(p.story.travel_level(id))   # travelling needs the destination's level
 	var asked := []
 	p.travel_requested.connect(func(z: String) -> void: asked.append(z))
 	if not p.story.travel_to(id):

@@ -194,7 +194,8 @@ func travel_options() -> Array:
 	for z: String in order:
 		if z==here() or z==zone.id or z=="test" or not worlds.has(z):
 			continue
-		out.append({"zone":z,"story":z in next,"name":worlds[z].name,"planet":worlds[z].planet})
+		var need: int = travel_level(z)
+		out.append({"zone":z,"story":z in next,"name":worlds[z].name,"planet":worlds[z].planet,"level":need,"locked":int(slot.level)<need})
 	return out
 func travel_guide() -> Variant:
 	if travel_options().is_empty():
@@ -248,6 +249,9 @@ func travel_to(id: String) -> bool:
 	if guide==null or player.health<=0 or distance(guide)>TALK_RANGE*1.1:
 		return false
 	for option: Dictionary in travel_options():
+		if option.zone==id and option.get("locked",false):
+			emit("notify",{"text":"Reach Lv. %d to travel to %s. Train with patrols and side quests first." % [int(option.level),option.name]})
+			return false
 		if option.zone==id:
 			if id not in state.unlocked:
 				state.unlocked.append(id)
@@ -666,10 +670,19 @@ func _check_portals() -> void:
 		var at: Dictionary = zone.place(float(p.x),float(p.z))
 		if player.pos.distance_to(Vector3(at.x,float(p.y),at.z))>float(p.r):
 			continue
-		if str(p.zone) in state.unlocked:
+		if str(p.zone) in state.unlocked and int(slot.level)<travel_level(str(p.zone)):
+			if game().time-_portal_told>4.0:
+				_portal_told = game().time
+				emit("notify",{"text":"Reach Lv. %d to land on %s." % [travel_level(str(p.zone)),str(worlds.get(str(p.zone),{}).get("name",p.zone))]})
+		elif str(p.zone) in state.unlocked:
 			_portal_used = true
 			emit("notify",{"text":"Landing on %s..." % str(worlds.get(str(p.zone),{}).get("name",p.zone))})
 			emit("travel",{"zone":p.zone})
 		elif game().time-_portal_told>4.0:
 			_portal_told = game().time
 			emit("notify",{"text":str(p.get("locked","You can't land there yet."))})
+
+## The level you need to travel to an area (user request 2026-11-03): the area's own level (rpg ZONE_LEVELS);
+## open-world towns have none. Walking or flying between areas on the same planet map is never gated.
+func travel_level(zone_id: String) -> int:
+	return int(RuleTables.table("rpg").get("ZONE_LEVELS",{}).get(zone_id,0))

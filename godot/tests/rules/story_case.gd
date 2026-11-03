@@ -33,6 +33,7 @@ func go(s: Session,id: String) -> bool:
 	if guide==null:
 		return false
 	s.at(guide)
+	grind(s,s.story.travel_level(id))   # travelling needs the destination's level
 	var valid: bool = s.story.travel_to(id)
 	ok(valid,"travel offered: "+id)
 	if valid:
