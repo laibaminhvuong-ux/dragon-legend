@@ -209,7 +209,15 @@ func add_zeni(amount: float) -> void:
 func current_region() -> String:
 	var here: String = zone.region_at(player.pos.x,player.pos.z)
 	return here if here!="" else str(slot.zone)
+## Set when the player sets off for another world: every later save of this session (the play scene saves again
+## while closing) keeps that destination and its arrival point instead of the spot the player left.
+var leaving_to := ""
 func to_save() -> Dictionary:
+	if leaving_to!="":
+		slot.zone = leaving_to
+		slot.position = null
+		slot.playedAt = int(Time.get_unix_time_from_system()*1000)
+		return slot
 	slot.position = RuleRuntime.position(player.pos)
 	slot.zone = current_region()
 	slot.playedAt = int(Time.get_unix_time_from_system()*1000)

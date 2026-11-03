@@ -120,3 +120,15 @@ func test_travel_survives_the_save_on_exit() -> void:
 	p.save_now()   # main saves again while tearing the session down
 	eq(str(SaveStore.load_slot(0).zone), "kame_island", "still saved in the destination")
 	_end(p)
+
+func test_travel_to_another_world_survives_the_save_on_close() -> void:
+	# Regression (user report 2026-11-03: couldn't enter King Kae's planet): main saves the old session again while
+	# tearing it down after travel; that save must keep the destination, not the spot the player left.
+	var p := _session()
+	Events.emit_named("travel", {"zone": "namek"})
+	p.step(DT)
+	p.save_now()
+	var saved: Dictionary = SaveStore.load_slot(0)
+	eq(str(saved.zone), "namek", "still saved in the destination")
+	eq(saved.get("position"), null, "arrives at the destination's spawn")
+	_end(p)

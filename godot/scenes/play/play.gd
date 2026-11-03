@@ -207,9 +207,8 @@ func travel(zone_id: String) -> void:
 		game.slot.zone = zone_id
 		save_now()
 		return
+	game.leaving_to = zone_id
 	var slot := game.to_save()
-	slot["zone"] = zone_id
-	slot["position"] = null
 	SaveStore.save_slot(slot_index, slot)
 	travel_requested.emit(zone_id)
 

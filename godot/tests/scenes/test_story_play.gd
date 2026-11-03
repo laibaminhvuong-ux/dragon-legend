@@ -63,6 +63,7 @@ func go(id: String) -> bool:
 		ok(false, "travel offered: " + id)
 		return false
 	p.step(DT)   # the travel event is handled inside the step: save, then ask main to rebuild
+	p.save_now()   # main saves the old session again while tearing it down
 	eq(asked, [id], "rebuild requested for " + id)
 	eq(str(SaveStore.load_slot(0).zone), id, "saved in " + id)
 	_close()
