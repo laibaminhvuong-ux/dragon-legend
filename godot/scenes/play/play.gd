@@ -6,6 +6,7 @@ extends Node3D
 
 signal travel_requested(zone_id: String)
 signal quit_requested
+signal tutorial_step_done
 
 const AUTOSAVE_SECONDS := 60.0
 var slot_index := 0
@@ -128,6 +129,7 @@ func step(dt: float) -> void:
 	game.update(dt, it)
 	story.update(dt, it)
 	if tutorial.update(dt, it, game.player) != null:
+		tutorial_step_done.emit()
 		save_now()
 	_after_step(it)
 	if pending_travel != "":

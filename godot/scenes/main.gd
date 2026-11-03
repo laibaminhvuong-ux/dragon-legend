@@ -8,6 +8,7 @@ extends Node
 var input: GameInput
 var ui: CanvasLayer
 var play: PlaySession
+var play_ui: PlayUi
 var menu: Node3D
 var _frames := 0
 var _args := {}
@@ -68,9 +69,30 @@ func start_game(i: int) -> void:
 		return
 	play.travel_requested.connect(func(_z: String) -> void: start_game.call_deferred(i))
 	play.quit_requested.connect(go_menu)
+	play_ui = PlayUi.new(play, input)
+	ui.add_child(play_ui)
 	input.capture = true
 
+func set_paused(p: bool) -> void:
+	if play == null or play.paused == p:
+		return
+	play.paused = p
+	input.capture = not p
+	if p:
+		play.save_now()
+	var pm: GDScript = load("res://ui/pause_menu.gd") if ResourceLoader.exists("res://ui/pause_menu.gd") else null
+	if pm != null:
+		if p:
+			var m: Control = pm.new(self)
+			m.name = "Pause"
+			ui.add_child(m)
+		elif ui.has_node("Pause"):
+			ui.get_node("Pause").queue_free()
+
 func _end_play() -> void:
+	if play_ui != null:
+		play_ui.queue_free()
+		play_ui = null
 	if play != null:
 		play.save_now()
 		play.shutdown()
@@ -82,16 +104,17 @@ func _process(delta: float) -> void:
 	_frames += 1
 	var steps := Clock.advance(delta)
 	if play != null:
-		if input.pressed("pause"):
-			play.paused = not play.paused
-			input.capture = not play.paused
-			if play.paused: play.save_now()
+		var used := play_ui.handle_input() if play_ui != null else false
+		if not used and input.pressed("pause"):
+			set_paused(not play.paused)
+		if used: input.end_tick()
 		for k in steps:
 			play.step(Clock.STEP)
 			input.end_tick()
 			if play == null: break
 		if play != null:
 			play.render(delta, Clock.alpha)
+			if play_ui != null: play_ui.refresh(delta)
 	elif menu != null:
 		_menu_t += delta
 		var cam: Camera3D = menu.get_node("Camera")
