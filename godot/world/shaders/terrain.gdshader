@@ -67,15 +67,23 @@ void fragment() {
 	float sum = w.r + w.g + w.b + w.a + snow + 1e-4;
 	vec3 albedo; vec3 nrm = vec3(0.5, 0.5, 1.0); float rough = 0.9;
 	if (has_textures) {
-		vec3 g = mix(tex2(grass_albedo, uv, macro).rgb, tex2(forest_albedo, uv * 1.3, macro).rgb, forest) * grass_tint.rgb;
-		vec3 d = tex2(dirt_albedo, uv, macro).rgb * dirt_tint.rgb;
-		vec3 r = triplanar(rock_albedo, wpos * tile * 0.6, wnorm).rgb * rock_tint.rgb;
-		vec3 s = tex2(sand_albedo, uv, macro).rgb * sand_tint.rgb;
-		vec3 sn = tex2(snow_albedo, uv, macro).rgb * (snow_color.rgb / vec3(0.92, 0.94, 0.97));
-		albedo = (g * w.r + d * w.g + r * w.b + s * w.a + sn * snow) / sum;
-		vec3 ng = mix(tex2(grass_normal, uv, macro).rgb, tex2(forest_normal, uv * 1.3, macro).rgb, forest);
-		nrm = (ng * w.r + tex2(dirt_normal, uv, macro).rgb * w.g + triplanar(rock_normal, wpos * tile * 0.6, wnorm).rgb * w.b
-			+ tex2(sand_normal, uv, macro).rgb * w.a + tex2(snow_normal, uv, macro).rgb * snow) / sum;
+		// only sample the layers present at this pixel (weights are mostly 0 or 1, so this branches coherently)
+		const float EPS = 0.004;
+		albedo = vec3(0.0); nrm = vec3(0.0);
+		if (w.r > EPS) {
+			vec3 g = tex2(grass_albedo, uv, macro).rgb;
+			vec3 ng = tex2(grass_normal, uv, macro).rgb;
+			if (forest > EPS) {
+				g = mix(g, tex2(forest_albedo, uv * 1.3, macro).rgb, forest);
+				ng = mix(ng, tex2(forest_normal, uv * 1.3, macro).rgb, forest);
+			}
+			albedo += g * grass_tint.rgb * w.r; nrm += ng * w.r;
+		}
+		if (w.g > EPS) { albedo += tex2(dirt_albedo, uv, macro).rgb * dirt_tint.rgb * w.g; nrm += tex2(dirt_normal, uv, macro).rgb * w.g; }
+		if (w.b > EPS) { albedo += triplanar(rock_albedo, wpos * tile * 0.6, wnorm).rgb * rock_tint.rgb * w.b; nrm += triplanar(rock_normal, wpos * tile * 0.6, wnorm).rgb * w.b; }
+		if (w.a > EPS) { albedo += tex2(sand_albedo, uv, macro).rgb * sand_tint.rgb * w.a; nrm += tex2(sand_normal, uv, macro).rgb * w.a; }
+		if (snow > EPS) { albedo += tex2(snow_albedo, uv, macro).rgb * (snow_color.rgb / vec3(0.92, 0.94, 0.97)) * snow; nrm += tex2(snow_normal, uv, macro).rgb * snow; }
+		albedo /= sum; nrm /= sum;
 		rough = (0.95 * w.r + 0.92 * w.g + 0.85 * w.b + 0.9 * w.a + 0.55 * snow) / sum;
 	} else {
 		vec3 g = mix(grass_color.rgb, forest_color.rgb, forest) * grass_tint.rgb;

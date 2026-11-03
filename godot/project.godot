@@ -16,6 +16,9 @@ window/size/viewport_height=900
 
 [rendering]
 renderer/rendering_method="forward_plus"
+environment/ssao/quality=1
+environment/ssao/half_size=true
+environment/ssil/half_size=true
 
 [autoload]
 

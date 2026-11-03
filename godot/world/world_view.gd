@@ -15,6 +15,7 @@ static func build(zone_id: String, quality := "high") -> Node3D:
 	root.add_child(grass)
 	root.set_meta("grass", grass)
 	root.add_child(load("res://world/props.gd").build(zone, quality))
+	root.add_child(load("res://world/landmarks.gd").build(zone))
 	var water: Node3D = load("res://world/water.gd").build(zone)
 	if water != null:
 		root.add_child(water)

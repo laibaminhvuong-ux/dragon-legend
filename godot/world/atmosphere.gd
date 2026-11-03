@@ -47,7 +47,7 @@ static func build(zone: RefCounted, quality := "high") -> Node3D:
 	env.glow_intensity = 0.35
 	env.glow_bloom = 0.04
 	var high := quality == "high"
-	env.ssao_enabled = quality != "low"
+	env.ssao_enabled = high  # the most expensive effect measured on a GTX 1650 Ti (24 -> 39 fps); high only, half-res
 	env.ssao_radius = 1.5
 	env.ssao_intensity = 1.6
 	env.ssil_enabled = high

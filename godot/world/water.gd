@@ -21,6 +21,9 @@ static func build(zone: RefCounted) -> Node3D:
 	mi.mesh = disc
 	var m := ShaderMaterial.new()
 	m.shader = SHADER
+	m.set_shader_parameter("wave_a", _noise(3, 0.6, true))
+	m.set_shader_parameter("wave_b", _noise(11, 1.4, true))
+	m.set_shader_parameter("foam_noise", _noise(23, 2.0, false))
 	var col: Variant = zone.biome.get("water")
 	if col != null:
 		m.set_shader_parameter("deep_color", Color.hex((int(col) << 8) | 0xff))
@@ -28,3 +31,20 @@ static func build(zone: RefCounted) -> Node3D:
 	mi.position = Vector3(float(w.get("x", 0)), float(w.level), float(w.get("z", 0)))
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	return mi
+
+## A smooth, seamless noise texture (simplex), optionally as a normal map.
+static func _noise(seed: int, freq: float, normal: bool) -> NoiseTexture2D:
+	var fn := FastNoiseLite.new()
+	fn.seed = seed
+	fn.noise_type = FastNoiseLite.TYPE_SIMPLEX_SMOOTH
+	fn.frequency = freq / 100.0
+	fn.fractal_octaves = 4
+	var t := NoiseTexture2D.new()
+	t.width = 512
+	t.height = 512
+	t.seamless = true
+	t.noise = fn
+	t.as_normal_map = normal
+	t.bump_strength = 6.0
+	t.generate_mipmaps = true
+	return t
