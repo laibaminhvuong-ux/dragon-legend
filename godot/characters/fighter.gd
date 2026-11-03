@@ -29,6 +29,10 @@ var cape_base: Transform3D
 var dome: MeshInstance3D
 var form_id := ""
 var anim: AnimController
+var form_aura: Aura
+var charge_aura: Aura
+var kaioken_aura: Aura
+var ape: GreatApe
 var _t := 0.0
 var _attachments: Dictionary = {}   # bone -> BoneAttachment3D
 var _skin_pieces: Array = []        # [MeshInstance3D, shade]
@@ -86,6 +90,27 @@ func update(dt: float, a: Dictionary = {}) -> void:
 		return
 	_t += dt
 	anim.update(dt, a)
+	if a.get("charging", false) and charge_aura == null:
+		var cl: Dictionary = Tables().appearance.get("KI_CHARGE_LOOK", {}).duplicate()
+		cl["color"] = ki_color()
+		charge_aura = Aura.create(cl)
+		charge_aura.name = "ChargeAura"
+		body.add_child(charge_aura)
+	if charge_aura != null:
+		charge_aura.visible = a.get("charging", false)
+		if charge_aura.visible: charge_aura.update(dt)
+	var kk: bool = bool(a.get("kaioken", false))
+	if kk and kaioken_aura == null:
+		kaioken_aura = Aura.create(Tables().kaioken.get("aura", {}))
+		kaioken_aura.name = "KaiokenAura"
+		body.add_child(kaioken_aura)
+	if kaioken_aura != null:
+		kaioken_aura.visible = kk
+		if kk: kaioken_aura.update(dt)
+	if form_aura != null:
+		form_aura.update(dt)
+	if ape != null:
+		ape.update(dt, a)
 	if cape != null:
 		cape.transform = cape_base * Transform3D(Basis.from_euler(Vector3(minf(0.9, float(a.get("speed", 0.0)) * 0.08) + sin(_t * 3.0) * 0.03, 0, 0)), Vector3.ZERO)
 
@@ -143,7 +168,13 @@ func set_hair_color(hex: Variant) -> void:
 		_set_hair(hair_color, 0.0)
 
 func set_ki_color(hex: int) -> void:
-	look["kiColorHex"] = hex
+	look["kiColorHex"] = "#%06x" % hex
+	if charge_aura != null:
+		charge_aura.set_color(hex)
+
+## The fighter's Ki colour (custom hex or palette index, as the rules resolve it).
+func ki_color() -> int:
+	return RuleRuntime.ki_color(look)
 
 ## Shows a transformation as in the story (data form_looks); "" = base form. Unknown forms show the base look.
 func set_form(id: String) -> void:
@@ -180,6 +211,17 @@ func set_form(id: String) -> void:
 	body.scale = sc
 	if id == "SSJ4":
 		_ssj4_fur()
+	if id == "Oozaru" or id == "GoldenOozaru":
+		skeleton.visible = false
+		ape = GreatApe.create(id == "GoldenOozaru")
+		body.add_child(ape)
+		_form_nodes.append(ape)
+	if F.get("aura") is Dictionary:
+		form_aura = Aura.create(F.aura)
+		form_aura.name = "FormAura"
+		body.add_child(form_aura)
+		form_aura.flare()
+		_form_nodes.append(form_aura)
 
 func _ssj4_fur() -> void:
 	var fur := Parts.material(Color.hex(0xa72437ff), 0.95)
@@ -204,6 +246,9 @@ func _clear_form() -> void:
 			_attachments.erase((holder as BoneAttachment3D).bone_name)
 			_drop(holder)
 	_form_nodes.clear()
+	form_aura = null
+	ape = null
+	skeleton.visible = true
 	if hair != null:
 		hair.mesh = Hair.mesh(hair_base)
 		_set_hair(hair_color, 0.0)
@@ -216,6 +261,9 @@ func _clear_form() -> void:
 
 func dispose() -> void:
 	_clear_form()
+	for au in [charge_aura, kaioken_aura]:
+		if au != null: au.dispose()
+	charge_aura = null; kaioken_aura = null
 	_drop(self)
 
 ## Frees a node now (detached first, so it leaves the scene immediately even mid-frame).

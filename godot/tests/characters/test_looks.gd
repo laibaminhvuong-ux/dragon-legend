@@ -92,3 +92,35 @@ func test_fifty_swaps_do_not_leak() -> void:
 
 func _flush(_f: Fighter) -> void:
 	pass  # fighters not in the tree free their form nodes immediately
+
+func test_form_aura_and_great_ape() -> void:
+	var f := Fighter.create({"race": "Saiyan", "hair": "Spiky"})
+	f.set_form("SSJ2")
+	ok(f.form_aura != null and f.form_aura.bolts != null, "SSJ2 aura crackles with lightning")
+	ok(f.form_aura.burst > 0.9, "transforming flares the aura")
+	f.update(0.5, {})
+	ok(f.form_aura.burst < 0.5, "the flare fades")
+	f.set_form("SSJBlue")
+	ok(f.form_aura.motes != null, "Blue has rising glitter")
+	f.set_form("Oozaru")
+	ok(f.ape != null and not f.skeleton.visible, "Great Ape replaces the body")
+	near(f.body.scale.y, 3.2, 1e-5, "and is huge")
+	f.update(1.0 / 60.0, {"speed": 6.0, "attackSerial": 1})
+	f.set_form("")
+	ok(f.ape == null and f.form_aura == null and f.skeleton.visible, "base form: no ape, no aura")
+	f.free()
+
+func test_charge_and_kaioken_auras() -> void:
+	var f := Fighter.create({"race": "Human", "kiColor": 2})
+	f.update(1.0 / 60.0, {"charging": true})
+	ok(f.charge_aura != null and f.charge_aura.visible, "charging shows the Ki aura")
+	eq(f.charge_aura.look.color, f.ki_color(), "in the fighter's Ki colour")
+	f.set_ki_color(0x63cfff)
+	eq(f.ki_color(), 0x63cfff, "custom Ki hex")
+	f.update(1.0 / 60.0, {})
+	ok(not f.charge_aura.visible, "hidden when charging stops")
+	f.update(1.0 / 60.0, {"kaioken": 3})
+	ok(f.kaioken_aura != null and f.kaioken_aura.visible, "Kaiyoken overlay aura")
+	f.update(1.0 / 60.0, {"kaioken": 0})
+	ok(not f.kaioken_aura.visible, "overlay off")
+	f.dispose()
