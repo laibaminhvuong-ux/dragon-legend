@@ -2,90 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Dragon Legend</title>
-<meta name="description" content="The Dragon Legend: a 3D action RPG. Download the app for Windows, Mac, Linux or Android.">
-<meta property="og:title" content="The Dragon Legend">
-<meta property="og:description" content="A 3D action RPG. One link, the right app for your device.">
-<meta property="og:image" content="../icon.png?v=3">
-<link rel="icon" href="../icon.png?v=3">
-<style>
-  :root { --bg:#0b0d12; --panel:#151a24; --line:rgba(255,255,255,.12); --text:#f3f6fb; --dim:#9aa6bb; --accent:#ff9f1c; --accent2:#ffcc33; }
-  * { box-sizing:border-box; }
-  body { margin:0; min-height:100vh; background:radial-gradient(ellipse at top,#22314f 0%,var(--bg) 60%); color:var(--text);
-    font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; display:flex; align-items:center; justify-content:center; padding:24px 16px; }
-  main { width:min(560px,100%); text-align:center; }
-  .logo { width:112px; height:112px; border-radius:24px; box-shadow:0 10px 40px rgba(255,159,28,.35); }
-  h1 { margin:18px 0 4px; font-size:clamp(32px,7vw,46px); letter-spacing:.02em; }
-  .tag { color:var(--dim); margin:0 0 28px; }
-  .card { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:22px; }
-  .status { margin:0 0 14px; font-size:15px; color:var(--dim); }
-  .status b { color:var(--text); }
-  .primary { display:block; width:100%; padding:16px 18px; border-radius:12px; background:linear-gradient(180deg,var(--accent2),var(--accent));
-    color:#1b1203; font-weight:800; font-size:18px; text-decoration:none; }
-  .primary:hover { filter:brightness(1.06); }
-  .note { font-size:13px; color:var(--dim); margin:12px 0 0; text-align:left; }
-  .others { margin-top:22px; font-size:14px; color:var(--dim); }
-  .others a { display:inline-block; margin:6px 6px 0; padding:8px 12px; border:1px solid var(--line); border-radius:10px; color:var(--text); text-decoration:none; }
-  .others a:hover { border-color:var(--accent); }
-  .ios { color:var(--accent2); }
-  footer { margin-top:26px; font-size:12px; color:var(--dim); }
-  footer a { color:var(--dim); }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://thedragonlegend.github.io/game-for-free/download/">
+<meta http-equiv="refresh" content="0; url=https://thedragonlegend.github.io/game-for-free/download/">
+<script>location.replace("https://thedragonlegend.github.io/game-for-free/download/" + location.hash);</script>
+<style>body{background:#0e1117;color:#ece8e1;font:16px system-ui,sans-serif;display:grid;place-items:center;height:100vh;margin:0}a{color:#ffc23d}</style>
 </head>
-<body>
-<main>
-  <img class="logo" src="../icon.png?v=3" alt="">
-  <h1>The Dragon Legend</h1>
-  <p class="tag">A 3D action RPG. Train, transform, fly, and fight through the legend.</p>
-  <div class="card">
-    <p class="status" id="status">Finding the right download for your device…</p>
-    <a class="primary" id="go" href="https://github.com/laibaminhvuong-ux/dragon-legend/releases/latest">Download</a>
-    <p class="note" id="note"></p>
-  </div>
-  <div class="others">Other devices:<br>
-    <a href="#" data-p="windows">Windows</a><a href="#" data-p="mac">Mac</a><a href="#" data-p="linux">Linux</a><a href="#" data-p="android">Android</a>
-  </div>
-  <footer>Free download · Updates download by themselves on every platform · <a href="https://github.com/laibaminhvuong-ux/dragon-legend/releases/latest">All files</a></footer>
-</main>
-<script>
-// One link for every device: detect the platform, start the matching app download (always the newest
-// release: the file names never change), and offer the other platforms below.
-const BASE = "https://github.com/laibaminhvuong-ux/dragon-legend/releases/latest/download/";
-const P = {
-  windows: { name: "Windows", file: "Dragon-Legend-Setup.exe", note: "Run the installer. If Windows SmartScreen appears, choose <b>More info → Run anyway</b>. The game updates itself after that." },
-  mac:     { name: "Mac", file: "Dragon-Legend-mac.zip", note: "Open the .zip and drag The Dragon Legend to Applications. The first time, <b>right-click the app → Open</b> (it isn't from the App Store)." },
-  linux:   { name: "Linux", file: "Dragon-Legend-linux.x86_64", note: "Make it runnable (<b>chmod +x Dragon-Legend-linux.x86_64</b>) and open it." },
-  android: { name: "Android", file: "Dragon-Legend-android.apk", note: "Open the downloaded file to install. Android may ask you to <b>allow installs from this browser</b> first." },
-};
-function detect() {
-  const ua = navigator.userAgent || "", plat = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "";
-  if (/iPhone|iPad|iPod/i.test(ua) || (/Mac/i.test(plat) && navigator.maxTouchPoints > 1)) return "ios";
-  if (/Android/i.test(ua)) return "android";
-  if (/Win/i.test(plat) || /Windows/i.test(ua)) return "windows";
-  if (/Mac/i.test(plat) || /Mac OS X/i.test(ua)) return "mac";
-  if (/Linux|X11|CrOS/i.test(plat + ua)) return "linux";
-  return null;
-}
-const status = document.getElementById("status"), go = document.getElementById("go"), note = document.getElementById("note");
-function choose(p, auto) {
-  if (p === "ios") {
-    status.innerHTML = 'Detected: <b>iPhone / iPad</b>';
-    go.textContent = "Not on iPhone or iPad yet";
-    go.removeAttribute("href");
-    note.innerHTML = '<span class="ios">The Dragon Legend is available for Windows, Mac, Linux and Android. Open this link on one of those to play.</span>';
-    return;
-  }
-  const d = P[p];
-  if (!d) { status.textContent = "Choose your device below."; go.textContent = "See all downloads"; return; }
-  status.innerHTML = `Detected: <b>${d.name}</b>` + (auto ? " · your download is starting" : "");
-  go.textContent = `Download for ${d.name}`;
-  go.href = BASE + d.file;
-  note.innerHTML = d.note;
-  if (auto) setTimeout(() => { location.href = BASE + d.file; }, 900);
-}
-document.querySelectorAll("[data-p]").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); choose(a.dataset.p, false); location.href = BASE + P[a.dataset.p].file; }));
-choose(detect(), true);
-</script>
-</body>
+<body><p>The Dragon Legend has moved to <a href="https://thedragonlegend.github.io/game-for-free/download/">https://thedragonlegend.github.io/game-for-free/download/</a></p></body>
 </html>

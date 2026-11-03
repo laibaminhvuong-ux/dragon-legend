@@ -1,7 +1,7 @@
 # Builds the Godot game for every platform when a release is published (or on demand for a tag) and attaches the
 # files to that release. File names never change, so
 # https://github.com/laibaminhvuong-ux/dragon-legend/releases/latest/download/<file> is always the newest and the
-# download page in docs/ links there:
+# website (website/, published to https://thedragonlegend.github.io/game-for-free/ by tools/publish_site.sh) links there:
 #   Dragon-Legend-Setup.exe (Windows installer), Dragon-Legend-windows.zip, Dragon-Legend-mac.zip (universal),
 #   Dragon-Legend-linux.x86_64, Dragon-Legend-android.apk, and the update packs Dragon-Legend.pck (Windows/Linux),
 #   Dragon-Legend-mac.pck and Dragon-Legend-android.pck that installed games download by themselves (godot/core/updater.gd).

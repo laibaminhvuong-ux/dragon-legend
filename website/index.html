@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Dragon Legend</title>
+<meta name="description" content="The Dragon Legend: a free 3D action RPG. Fly across open worlds, transform, master your Ki and fight together with friends. Download for Windows, Mac, Android and Linux.">
+<meta property="og:title" content="The Dragon Legend">
+<meta property="og:description" content="Fly across open worlds, transform, and fight together. Free for Windows, Mac, Android and Linux.">
+<meta property="og:image" content="media/powerup.webp">
+<link rel="icon" href="icon.png?v=3">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e1117; --panel: #161b24; --panel2: #1d2430; --line: #2a3242;
+  --text: #ece8e1; --muted: #9aa3b3; --accent: #ff5a1f; --accent2: #ffc23d; --deep: #0a0d12;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font: 16px/1.6 Inter, system-ui, sans-serif; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+h1, h2, h3, .display { font-family: Anton, Impact, sans-serif; font-weight: 400; letter-spacing: .02em; text-transform: uppercase; line-height: 1; }
+.wrap { width: min(1200px, 100% - 32px); margin: 0 auto; }
+.kicker { color: var(--accent); font-weight: 800; letter-spacing: .25em; text-transform: uppercase; font-size: 13px; }
+
+/* nav */
+nav { position: fixed; inset: 0 0 auto 0; z-index: 50; transition: background .3s; }
+nav.solid { background: rgba(10, 13, 18, .92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+nav .wrap { display: flex; align-items: center; gap: 28px; height: 68px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: Anton, sans-serif; font-size: 20px; letter-spacing: .04em; }
+.brand img { width: 34px; height: 34px; border-radius: 8px; }
+nav .links { display: flex; gap: 22px; margin-left: auto; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: .08em; }
+nav .links a { color: var(--muted); transition: color .2s; }
+nav .links a:hover { color: var(--text); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 28px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; font-size: 14px; border: 0; cursor: pointer;
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%); transition: transform .15s, filter .15s; }
+.btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+.btn.primary { background: var(--accent); color: #fff; }
+.btn.ghost { background: rgba(255, 255, 255, .08); color: var(--text); }
+.btn.small { padding: 10px 18px; font-size: 12px; }
+.menu-toggle { display: none; margin-left: auto; background: none; border: 0; color: var(--text); font-size: 26px; cursor: pointer; }
+
+/* hero */
+.hero { position: relative; height: 100vh; min-height: 640px; overflow: hidden; display: flex; align-items: flex-end; }
+.slides, .slides div { position: absolute; inset: 0; }
+.slides div { background-size: cover; background-position: center; opacity: 0; transform: scale(1.08); transition: opacity 1.6s ease; }
+.slides div.on { opacity: 1; animation: kenburns 9s linear forwards; }
+@keyframes kenburns { from { transform: scale(1.08) translate(0, 0); } to { transform: scale(1.18) translate(-2%, -1.5%); } }
+.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s; }
+.hero-video.on { opacity: 1; }
+.trailer { margin-bottom: 26px; background: #000; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+.trailer video { display: block; width: 100%; aspect-ratio: 16/9; }
+.player { position: fixed; inset: 0; z-index: 120; background: rgba(5,7,10,.95); display: none; align-items: center; justify-content: center; padding: 24px; }
+.player.on { display: flex; }
+.player video { width: min(1200px, 100%); aspect-ratio: 16/9; background: #000; box-shadow: 0 30px 90px rgba(0,0,0,.6); }
+.video-note { margin-top: 12px; color: var(--muted); font-size: 14px; text-align: center; }
+.video-note a { color: var(--accent2); text-decoration: underline; }
+.player .close { position: absolute; top: 18px; right: 22px; background: none; border: 0; color: var(--text); font-size: 30px; cursor: pointer; }
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,13,18,.55) 0%, rgba(10,13,18,.1) 35%, rgba(10,13,18,.75) 72%, var(--bg) 100%), linear-gradient(90deg, rgba(10,13,18,.75), transparent 60%); }
+.hero .wrap { position: relative; z-index: 2; padding-bottom: 12vh; }
+.hero h1 { font-size: clamp(56px, 10vw, 150px); text-shadow: 0 6px 40px rgba(0,0,0,.5); }
+.hero h1 span { display: block; color: var(--accent); }
+.hero p.lead { max-width: 560px; font-size: clamp(17px, 2vw, 21px); color: #d9d4cb; margin: 18px 0 30px; }
+.hero .cta { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+.hero .meta { margin-top: 18px; color: var(--muted); font-size: 14px; }
+.hero .meta b { color: var(--accent2); }
+.scroll-hint { position: absolute; z-index: 2; left: 50%; bottom: 22px; transform: translateX(-50%); color: var(--muted); font-size: 12px; letter-spacing: .3em; text-transform: uppercase; }
+
+/* sections */
+section { padding: 110px 0; position: relative; }
+.section-head { margin-bottom: 48px; max-width: 760px; }
+.section-head h2 { font-size: clamp(40px, 6vw, 76px); margin: 10px 0 14px; }
+.section-head p { color: var(--muted); font-size: 18px; }
+.slant { background: var(--panel); clip-path: polygon(0 4vw, 100% 0, 100% calc(100% - 4vw), 0 100%); padding: calc(110px + 4vw) 0; }
+
+.pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.pillar { background: var(--panel2); border: 1px solid var(--line); overflow: hidden; transition: transform .25s, border-color .25s; }
+.pillar:hover { transform: translateY(-6px); border-color: var(--accent); }
+.pillar img { aspect-ratio: 16/10; object-fit: cover; width: 100%; }
+.pillar div { padding: 22px 24px 26px; }
+.pillar h3 { font-size: 30px; margin-bottom: 10px; }
+.pillar p { color: var(--muted); }
+
+.worlds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.world { position: relative; aspect-ratio: 4/5; overflow: hidden; cursor: pointer; }
+.world img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s; }
+.world:hover img { transform: scale(1.07); }
+.world::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(10,13,18,.95)); }
+.world div { position: absolute; z-index: 2; left: 22px; right: 22px; bottom: 20px; }
+.world small { color: var(--accent2); font-weight: 800; letter-spacing: .2em; text-transform: uppercase; font-size: 11px; }
+.world h3 { font-size: 34px; margin: 6px 0 6px; }
+.world p { color: #c9c4bb; font-size: 14px; }
+
+.split { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: center; }
+.split.flip { grid-template-columns: 1fr 1.1fr; }
+.split.flip .media { order: 2; }
+.split .media { position: relative; }
+.split .media img { width: 100%; clip-path: polygon(0 0, 100% 0, 100% 88%, 92% 100%, 0 100%); }
+.split .media::before { content: ""; position: absolute; inset: -14px 14px 14px -14px; border: 2px solid var(--accent); z-index: -1; }
+.list { list-style: none; display: grid; gap: 14px; margin-top: 24px; }
+.list li { display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: start; }
+.list li b { display: block; }
+.list li span { color: var(--muted); font-size: 15px; }
+.list .num { font-family: Anton, sans-serif; font-size: 26px; color: var(--accent); line-height: 1.1; }
+.keys { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.keys kbd { background: var(--panel2); border: 1px solid var(--line); border-bottom-width: 3px; padding: 6px 12px; font: 600 13px Inter, sans-serif; }
+
+.gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.gallery button { border: 0; padding: 0; background: none; cursor: zoom-in; overflow: hidden; aspect-ratio: 16/9; }
+.gallery button:nth-child(1), .gallery button:nth-child(6) { grid-column: span 2; grid-row: span 2; }
+.gallery img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s, filter .4s; filter: saturate(.92); }
+.gallery button:hover img { transform: scale(1.05); filter: saturate(1.1); }
+.lightbox { position: fixed; inset: 0; z-index: 100; background: rgba(5,7,10,.94); display: none; align-items: center; justify-content: center; padding: 30px; cursor: zoom-out; }
+.lightbox.on { display: flex; }
+.lightbox img { max-height: 90vh; box-shadow: 0 20px 80px rgba(0,0,0,.6); }
+
+.update { background: var(--panel2); border-left: 4px solid var(--accent); padding: 30px 34px; }
+.update header { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: baseline; margin-bottom: 18px; }
+.update h3 { font-size: 34px; }
+.update time { color: var(--muted); font-size: 14px; }
+.update ul { columns: 2; column-gap: 40px; padding-left: 18px; color: #d4cfc6; }
+.update li { margin-bottom: 8px; break-inside: avoid; }
+
+.downloads { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.dl { background: var(--panel2); border: 1px solid var(--line); padding: 28px 24px; display: flex; flex-direction: column; gap: 12px; transition: border-color .2s, transform .2s; }
+.dl.mine { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 20px 50px rgba(255, 90, 31, .12); }
+.dl .tag { align-self: flex-start; background: var(--accent); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; padding: 3px 8px; visibility: hidden; }
+.dl.mine .tag { visibility: visible; }
+.dl h3 { font-size: 34px; }
+.dl p { color: var(--muted); font-size: 14px; flex: 1; }
+.dl .file { font-size: 12px; color: #6f7888; }
+.ios-note { margin-top: 22px; color: var(--muted); font-size: 14px; }
+
+.faq { display: grid; gap: 10px; max-width: 860px; }
+.faq details { background: var(--panel2); border: 1px solid var(--line); }
+.faq summary { cursor: pointer; padding: 18px 22px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::after { content: "+"; color: var(--accent); font-size: 22px; line-height: 1; }
+.faq details[open] summary::after { content: "–"; }
+.faq details div { padding: 0 22px 20px; color: var(--muted); }
+.faq code { background: var(--deep); padding: 1px 6px; color: var(--accent2); }
+
+.final { text-align: center; padding: 130px 0; background: radial-gradient(ellipse at center, rgba(255,90,31,.18), transparent 60%), url(media/flight.webp) center/cover; position: relative; }
+.final::before { content: ""; position: absolute; inset: 0; background: rgba(10,13,18,.78); }
+.final .wrap { position: relative; }
+.final h2 { font-size: clamp(44px, 7vw, 96px); margin-bottom: 26px; }
+
+footer { border-top: 1px solid var(--line); padding: 40px 0; color: #6f7888; font-size: 13px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 14px 30px; justify-content: space-between; }
+footer a { color: var(--muted); }
+
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s, transform .8s; }
+.reveal.in { opacity: 1; transform: none; }
+
+@media (max-width: 960px) {
+  nav .links { display: none; position: absolute; top: 68px; left: 0; right: 0; flex-direction: column; gap: 0; background: rgba(10,13,18,.97); padding: 8px 16px 16px; }
+  nav .links.open { display: flex; }
+  nav .links a { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  nav .wrap > .btn { display: none; }
+  .menu-toggle { display: block; }
+  .pillars, .worlds { grid-template-columns: 1fr; }
+  .world { aspect-ratio: 16/11; }
+  .split, .split.flip { grid-template-columns: 1fr; gap: 36px; }
+  .split.flip .media { order: 0; }
+  .downloads { grid-template-columns: 1fr 1fr; }
+  .gallery { grid-template-columns: 1fr 1fr; }
+  .gallery button:nth-child(1), .gallery button:nth-child(6) { grid-column: span 2; grid-row: span 1; }
+  .update ul { columns: 1; }
+  section { padding: 80px 0; }
+}
+@media (max-width: 560px) { .downloads { grid-template-columns: 1fr; } .hero .cta .btn { width: 100%; } }
+@media (prefers-reduced-motion: reduce) { .slides div.on { animation: none; } .reveal { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="icon.png?v=3" alt="">The Dragon Legend</a>
+    <button class="menu-toggle" aria-label="Menu" onclick="document.querySelector('nav .links').classList.toggle('open')">☰</button>
+    <div class="links">
+      <a href="#game">Game</a><a href="#worlds">Worlds</a><a href="#powers">Powers</a><a href="#coop">Co-op</a><a href="#media">Media</a><a href="#updates">Updates</a><a href="#faq">FAQ</a>
+    </div>
+    <a class="btn primary small" href="#download">Download</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="slides" id="slides">
+    <div style="background-image:url(media/powerup.webp)"></div>
+    <div style="background-image:url(media/flight.webp)"></div>
+    <div style="background-image:url(media/earth.webp)"></div>
+    <div style="background-image:url(media/station.webp)"></div>
+    <div style="background-image:url(media/amber.webp)"></div>
+  </div>
+  <video class="hero-video" id="hero-video" muted loop playsinline preload="auto" poster="media/flight.webp" aria-hidden="true">
+    <source src="media/hero-loop.mp4?v=2" type="video/mp4">
+    <source src="media/hero-loop.webm?v=2" type="video/webm">
+  </video>
+  <div class="wrap">
+    <div class="kicker">Free 3D action RPG</div>
+    <h1>The Dragon<span>Legend</span></h1>
+    <p class="lead">Fly across whole planets, unlock legendary transformations, master your Ki, and take on the story alone or with up to seven friends.</p>
+    <div class="cta">
+      <a class="btn primary" id="hero-dl" href="#download">Download free</a>
+      <button class="btn ghost" id="watch" type="button">▶ Watch the trailer</button>
+    </div>
+    <div class="meta" id="hero-meta">Version <b>0.0.4</b> · Windows · Mac · Android · Linux</div>
+  </div>
+  <div class="scroll-hint">Scroll</div>
+</header>
+
+<section id="game">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker">The game</div>
+      <h2>Train. Transform. Fight.</h2>
+      <p>Create your fighter, choose your race, and rise from a beginner on the Training Plains to a warrior who can face gods. Every planet is one open world to explore.</p>
+    </div>
+    <div class="pillars">
+      <article class="pillar reveal"><img src="media/flight.webp" alt="A fighter flying low over the plains" loading="lazy"><div><h3>Open worlds</h3><p>Earth is one seamless map with cities, villages, mountains and seas, and every planet is its own world. No loading screens: just fly.</p></div></article>
+      <article class="pillar reveal"><img src="media/powerup.webp" alt="A transformed fighter powering up with a golden aura" loading="lazy"><div><h3>Transformations</h3><p>Unlock form after form, from your first golden aura to the endgame paths. Each form has its own look, stance and power.</p></div></article>
+      <article class="pillar reveal"><img src="media/fight.webp" alt="Ki blasts flying in a fight" loading="lazy"><div><h3>Fast combat</h3><p>Combos, ki blasts, charged beams, dashes and guards. Lock on, power up and finish your rivals in the air or on the ground.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section id="worlds" class="slant">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="kicker">Worlds</div>
+      <h2>Go anywhere</h2>
+      <p>Nine planets and dozens of places, from the busy streets of Amber City to King Yemmo's hall in the Other World.</p>
+    </div>
+    <div class="worlds">
+      <a class="world reveal" href="#media"><img src="media/amber.webp" alt="Amber City streets" loading="lazy"><div><small>Earth</small><h3>Amber City</h3><p>Towers, domes and lamplit streets in the heart of Earth.</p></div></a>
+      <a class="world reveal" href="#media"><img src="media/station.webp" alt="King Yemmo at his desk" loading="lazy"><div><small>Other World</small><h3>Check-In Station</h3><p>Every journey beyond starts at King Yemmo's giant desk.</p></div></a>
+      <a class="world reveal" href="#media"><img src="media/kaiplanet.webp" alt="King Kae's planet in the sky" loading="lazy"><div><small>Other World</small><h3>King Kae's Planet</h3><p>Look up at the end of Serpent Road and fly to the tiny world above.</p></div></a>
+      <a class="world reveal" href="#media"><img src="media/nameck.webp" alt="A dome village on Nameck" loading="lazy"><div><small>Nameck</small><h3>Island Villages</h3><p>White dome homes on a green ocean world.</p></div></a>
+      <a class="world reveal" href="#media"><img src="media/ruins.webp" alt="Ruined city district" loading="lazy"><div><small>Future Earth</small><h3>Ruined District</h3><p>What's left of a city in a darker timeline.</p></div></a>
+      <a class="world reveal" href="#media"><img src="media/gardens.webp" alt="Temple gardens" loading="lazy"><div><small>Beeros's Planet</small><h3>Temple Gardens</h3><p>Stone shrines under a violet sky.</p></div></a>
+    </div>
+  </div>
+</section>
+
+<section id="powers">
+  <div class="wrap split">
+    <div class="media reveal"><img src="media/powerup.webp" alt="Powering up"></div>
+    <div class="reveal">
+      <div class="kicker">Powers</div>
+      <h2 class="display" style="font-size:clamp(40px,5vw,68px);margin:10px 0 14px">Break your limits</h2>
+      <p style="color:var(--muted)">Your Ki fuels everything. Charge it anywhere, even in mid-air, and spend it on blasts, beams and transformations.</p>
+      <ul class="list">
+        <li><div class="num">01</div><div><b>Six races, many forms</b><span>Saiyar, Half-Saiyar, Human, Namekian, Frost Demon and Majin, each with its own path of transformations.</span></div></li>
+        <li><div class="num">02</div><div><b>Choose your endgame</b><span>At the top, pick a path: unleash a beast, master instinct that dodges every attack, or grow stronger with every hit.</span></div></li>
+        <li><div class="num">03</div><div><b>Techniques to learn</b><span>Beams, teleports, healing, solar flares and more, earned from masters across the worlds.</span></div></li>
+      </ul>
+      <div class="keys"><kbd>T</kbd><span style="color:var(--muted);font-size:14px;align-self:center">Transform</span><kbd>C</kbd><span style="color:var(--muted);font-size:14px;align-self:center">Charge</span><kbd>R</kbd><span style="color:var(--muted);font-size:14px;align-self:center">Beam</span><kbd>Shift</kbd><span style="color:var(--muted);font-size:14px;align-self:center">Run / fly fast</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="coop" class="slant">
+  <div class="wrap split flip">
+    <div class="media reveal"><img src="media/map.webp" alt="The world map"></div>
+    <div class="reveal">
+      <div class="kicker">Co-op</div>
+      <h2 class="display" style="font-size:clamp(40px,5vw,68px);margin:10px 0 14px">Fight together</h2>
+      <p style="color:var(--muted)">Open a private room and bring your own fighter, with your level, forms and quests. Up to 8 players.</p>
+      <ul class="list">
+        <li><div class="num">01</div><div><b>Create a room</b><span>Title screen → Server → Create server. You get a six-digit code.</span></div></li>
+        <li><div class="num">02</div><div><b>Friends join</b><span>They choose Join server and enter the code. On the same Wi-Fi it finds you by itself.</span></div></li>
+        <li><div class="num">03</div><div><b>Play anywhere</b><span>Friends in another country connect with a free app like Tailscale. See the FAQ below.</span></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="media">
+  <div class="wrap">
+    <div class="section-head reveal"><div class="kicker">Media</div><h2>Trailer &amp; screenshots</h2><p>All captured in the game.</p></div>
+    <div class="trailer reveal"><video controls preload="none" playsinline poster="media/trailer-poster.webp"><source src="media/trailer.mp4?v=4" type="video/mp4"><source src="media/trailer.webm?v=4" type="video/webm"></video></div>
+    <div class="gallery reveal" id="gallery">
+      <button><img src="media/powerup.webp" alt="Powering up" loading="lazy"></button>
+      <button><img src="media/amber.webp" alt="Amber City" loading="lazy"></button>
+      <button><img src="media/fight.webp" alt="Fighting" loading="lazy"></button>
+      <button><img src="media/kaiplanet.webp" alt="King Kae's planet" loading="lazy"></button>
+      <button><img src="media/nameck.webp" alt="Nameck village" loading="lazy"></button>
+      <button><img src="media/earth.webp" alt="Earth from above" loading="lazy"></button>
+      <button><img src="media/station.webp" alt="Check-In Station" loading="lazy"></button>
+      <button><img src="media/ruins.webp" alt="Ruined District" loading="lazy"></button>
+      <button><img src="media/gardens.webp" alt="Temple Gardens" loading="lazy"></button>
+      <button><img src="media/flight.webp" alt="Flying" loading="lazy"></button>
+      <button><img src="media/map.webp" alt="World map" loading="lazy"></button>
+    </div>
+  </div>
+</section>
+
+<section id="updates" class="slant">
+  <div class="wrap">
+    <div class="section-head reveal"><div class="kicker">Updates</div><h2>Patch notes</h2></div>
+    <article class="update reveal">
+      <header><h3>0.0.4 · The open-world update</h3><time datetime="2026-11-03">November 3, 2026</time></header>
+      <ul>
+        <li><b>Open world:</b> every planet is one seamless map, with 15 new places to discover and a world map (N).</li>
+        <li><b>Other World:</b> King Yemmo's Check-In Station, and King Kae's planet floating above the end of Serpent Road.</li>
+        <li><b>Movement:</b> tap Shift to switch between walking and running or slow and fast flight. Jump while running and charge in mid-air.</li>
+        <li><b>Transformations:</b> a form picker (T); transforming costs Ki once and forms no longer drain it.</li>
+        <li><b>Progression:</b> travelling to the next map needs that area's level, so train up with patrols and side quests between story chapters.</li>
+        <li><b>Ultra Instinct:</b> dodges 20 attacks automatically, then needs 30 seconds to recover.</li>
+        <li><b>Quests:</b> click a quest for a direction arrow; group fights now bring at least 10 enemies.</li>
+        <li><b>Co-op (beta):</b> private rooms for up to 8 players with a six-digit code.</li>
+        <li><b>And more:</b> 10 save slots, new animations and combat sounds, many fixes.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <div class="section-head reveal"><div class="kicker">Download</div><h2>Play free now</h2><p id="dl-detected">Pick your device. The game updates itself after you install it.</p></div>
+    <div class="downloads">
+      <div class="dl reveal" data-p="windows"><span class="tag">Your device</span><h3>Windows</h3><p>Windows 10 or 11, 64-bit. Run the installer; if SmartScreen appears, choose <b>More info → Run anyway</b>.</p><span class="file">Dragon-Legend-Setup.exe</span><a class="btn primary" href="#">Download</a></div>
+      <div class="dl reveal" data-p="mac"><span class="tag">Your device</span><h3>Mac</h3><p>Apple Silicon or Intel. Unzip, drag to Applications, then the first time <b>right-click → Open</b>.</p><span class="file">Dragon-Legend-mac.zip</span><a class="btn primary" href="#">Download</a></div>
+      <div class="dl reveal" data-p="android"><span class="tag">Your device</span><h3>Android</h3><p>Android 8 or newer, 64-bit phone with Vulkan. Open the file and allow installs from your browser.</p><span class="file">Dragon-Legend-android.apk</span><a class="btn primary" href="#">Download</a></div>
+      <div class="dl reveal" data-p="linux"><span class="tag">Your device</span><h3>Linux</h3><p>64-bit with Vulkan drivers. Make the file runnable (<code style="color:var(--accent2)">chmod +x</code>) and open it.</p><span class="file">Dragon-Legend-linux.x86_64</span><a class="btn primary" href="#">Download</a></div>
+    </div>
+    <p class="ios-note" id="ios-note">Not available on iPhone or iPad.</p>
+  </div>
+</section>
+
+<section id="faq" class="slant">
+  <div class="wrap">
+    <div class="section-head reveal"><div class="kicker">FAQ</div><h2>Questions</h2></div>
+    <div class="faq">
+      <details class="reveal"><summary>Is it free?</summary><div>Yes. The whole game is free, with no ads and no purchases.</div></details>
+      <details class="reveal"><summary>What do I need to run it?</summary><div>A 64-bit computer with a graphics card that supports Vulkan (most made since 2016), 4 GB of memory and about 1 GB of space. It runs at 60 fps on a GTX 1650-class laptop. On Android, a recent 64-bit phone.</div></details>
+      <details class="reveal"><summary>Windows says the app isn't recognized. Is it safe?</summary><div>The installer isn't signed with a paid certificate, so Windows SmartScreen warns about it. Choose <b>More info → Run anyway</b>. You can check the source code on GitHub.</div></details>
+      <details class="reveal"><summary>Do I have to download every update?</summary><div>No. After you install it once, the game checks for updates on the title screen and installs them itself.</div></details>
+      <details class="reveal"><summary>How do I play with a friend in another country?</summary><div>The six-digit code finds rooms on the same Wi-Fi. Across the Internet, the easiest way is the free app <b>Tailscale</b>: both of you install it, you create the room, and your friend types your Tailscale address (<code>ws://100.x.x.x:8910</code>) in Host address, plus the code. Router port forwarding (TCP 8910) also works. When Windows asks, allow the game on the network.</div></details>
+      <details class="reveal"><summary>Where are my saves? Can I move my fighter?</summary><div>Saves stay on your device, with 10 fighter slots. Use <b>Save codes</b> on the title screen to copy a fighter to another device.</div></details>
+      <details class="reveal"><summary>Is it on iPhone or iPad?</summary><div>Not yet. iPhone games can only be installed through the App Store.</div></details>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap reveal">
+    <div class="kicker">Your legend starts now</div>
+    <h2>Ready to fly?</h2>
+    <a class="btn primary" id="final-dl" href="#download">Download free</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 The Dragon Legend · A free fan-made game inspired by Dragon Ball. Not affiliated with or endorsed by its creators or owners.</span>
+    <span><a href="https://github.com/laibaminhvuong-ux/dragon-legend">Source on GitHub</a> · <a href="https://github.com/laibaminhvuong-ux/dragon-legend/releases">All releases</a></span>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox"><img alt=""></div>
+<div class="player" id="player" role="dialog" aria-label="Trailer"><button class="close" id="player-close" aria-label="Close">✕</button><video id="player-video" controls playsinline preload="none" poster="media/trailer-poster.webp"><source src="media/trailer.mp4?v=4" type="video/mp4"><source src="media/trailer.webm?v=4" type="video/webm"></video></div>
+
+<script>
+// Downloads always point at the newest release: its file names never change.
+const BASE = "https://github.com/laibaminhvuong-ux/dragon-legend/releases/latest/download/";
+const FILES = { windows: ["Windows", "Dragon-Legend-Setup.exe"], mac: ["Mac", "Dragon-Legend-mac.zip"], android: ["Android", "Dragon-Legend-android.apk"], linux: ["Linux", "Dragon-Legend-linux.x86_64"] };
+function detect() {
+  const ua = navigator.userAgent || "", plat = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "";
+  if (/iPhone|iPad|iPod/i.test(ua) || (/Mac/i.test(plat) && navigator.maxTouchPoints > 1)) return "ios";
+  if (/Android/i.test(ua)) return "android";
+  if (/Win/i.test(plat) || /Windows/i.test(ua)) return "windows";
+  if (/Mac/i.test(plat) || /Mac OS X/i.test(ua)) return "mac";
+  if (/Linux|X11|CrOS/i.test(plat + ua)) return "linux";
+  return null;
+}
+const mine = detect();
+document.querySelectorAll(".dl").forEach((card) => {
+  const p = card.dataset.p;
+  card.querySelector("a").href = BASE + FILES[p][1];
+  if (p === mine) card.classList.add("mine");
+});
+if (FILES[mine]) {
+  const [name, file] = FILES[mine];
+  for (const id of ["hero-dl", "final-dl"]) { const b = document.getElementById(id); b.textContent = "Download for " + name; b.href = BASE + file; }
+  document.getElementById("dl-detected").textContent = "We picked " + name + " for you. The game updates itself after you install it.";
+} else if (mine === "ios") {
+  document.getElementById("hero-meta").innerHTML = "Available on <b>Windows · Mac · Android · Linux</b>. Not on iPhone or iPad.";
+}
+
+// hero: a silent gameplay loop over the slideshow (kept as the fallback: reduced motion, data saver, no autoplay)
+const hv = document.getElementById("hero-video");
+const saveData = navigator.connection && navigator.connection.saveData;
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches && !saveData) {
+  hv.addEventListener("playing", () => hv.classList.add("on"), { once: true });   // only shown once it really plays
+  hv.play().catch(() => {});
+}
+// trailer player
+const player = document.getElementById("player"), pv = document.getElementById("player-video");
+// if a browser can't play the trailer, say so and offer the file instead of showing a dead player
+function trailerFallback(v) {
+  if (v.dataset.failed) return;
+  v.dataset.failed = "1";
+  const note = document.createElement("p");
+  note.className = "video-note";
+  note.innerHTML = 'Your browser couldn\'t play the trailer here. <a href="media/trailer.mp4?v=4" target="_blank" rel="noopener">Open the video file</a>, or try Chrome, Edge or Firefox.';
+  v.after(note);
+}
+document.querySelectorAll("video:not(#hero-video)").forEach((v) => {
+  v.addEventListener("error", () => trailerFallback(v), true);
+  const last = v.querySelector("source:last-of-type");
+  if (last) last.addEventListener("error", () => trailerFallback(v));
+});
+document.getElementById("watch").addEventListener("click", () => {
+  player.classList.add("on");
+  pv.currentTime = 0;
+  pv.play().catch((e) => { if (e.name !== "AbortError" && e.name !== "NotAllowedError") trailerFallback(pv); });
+});
+const closePlayer = () => { pv.pause(); player.classList.remove("on"); };
+document.getElementById("player-close").addEventListener("click", closePlayer);
+player.addEventListener("click", (e) => { if (e.target === player) closePlayer(); });
+addEventListener("keydown", (e) => { if (e.key === "Escape") closePlayer(); });
+
+// hero slideshow
+const slides = [...document.querySelectorAll("#slides div")];
+let s = 0;
+slides[0].classList.add("on");
+setInterval(() => { slides[s].classList.remove("on"); s = (s + 1) % slides.length; slides[s].classList.add("on"); }, 6000);
+
+// nav background once you scroll
+const nav = document.getElementById("nav");
+addEventListener("scroll", () => nav.classList.toggle("solid", scrollY > 40), { passive: true });
+document.querySelectorAll("nav .links a").forEach((a) => a.addEventListener("click", () => document.querySelector("nav .links").classList.remove("open")));
+
+// reveal on scroll
+const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: 0.12 });
+document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+// screenshot lightbox
+const lb = document.getElementById("lightbox");
+document.querySelectorAll("#gallery button").forEach((b) => b.addEventListener("click", () => { lb.querySelector("img").src = b.querySelector("img").src; lb.classList.add("on"); }));
+lb.addEventListener("click", () => lb.classList.remove("on"));
+addEventListener("keydown", (e) => { if (e.key === "Escape") lb.classList.remove("on"); });
+</script>
+</body>
+</html>
