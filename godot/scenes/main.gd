@@ -82,7 +82,7 @@ func _ready() -> void:
 				play.forced = {"ki_blast": true}
 				await get_tree().create_timer(0.6).timeout
 				play.forced = {"beam": true}
-				await get_tree().create_timer(1.2).timeout
+				await get_tree().create_timer(float(_args.get("hold", 1.2))).timeout
 				play.forced = {"beam": false}
 		"fx":
 			await get_tree().create_timer(1.5).timeout
