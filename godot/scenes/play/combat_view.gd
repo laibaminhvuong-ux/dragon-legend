@@ -84,7 +84,7 @@ func _on_damage(d: Dictionary) -> void:
 			if who != "":
 				_hitstops[who] = {"serial": _reaction_serial, "value": hs}
 	_push_player_presentation()
-	var l := _label(("GUARD " if d.get("blocked", false) else "") + str(d.get("amount", "")), Color("#ff8279") if player_hit else Color("#ffe294"), 42)
+	var l := _label(("GUARD " if d.get("blocked", false) else "") + str(roundi(float(d.get("amount", 0)))), Color("#ff8279") if player_hit else Color("#ffe294"), 42)
 	l.position = pos + Vector3(randf_range(-0.3, 0.3), 0.2, 0)
 	add_child(l)
 	effects.append({"node": l, "life": 1.0, "kind": "text"})

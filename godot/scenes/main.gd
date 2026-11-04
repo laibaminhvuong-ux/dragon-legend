@@ -84,6 +84,24 @@ func _ready() -> void:
 				play.forced = {"beam": true}
 				await get_tree().create_timer(float(_args.get("hold", 1.2))).timeout
 				play.forced = {"beam": false}
+		"brawl":   # dev: walk up to the first enemy, lock on and throw a few full combos (style recordings)
+			await get_tree().create_timer(1.5).timeout
+			if play != null and not play.game.combat.enemies.is_empty():
+				var e: Dictionary = play.game.combat.enemies[0]
+				var ep: Vector3 = e.pos
+				play.game.player.pos = Vector3(ep.x + 2.2, play.game.zone.height_at(ep.x + 2.2, ep.z), ep.z)
+				play.prev_pos = play.game.player.pos
+				play.game.slot.level = 50
+				play.forced = {"lock_on": true}
+				await get_tree().create_timer(0.1).timeout
+				play.forced = {}
+				for rep in 3:
+					for hit in 5:
+						play.forced = {"melee": true}
+						await get_tree().create_timer(0.12).timeout
+						play.forced = {"melee": false}
+						await get_tree().create_timer(0.3 if str(_args.get("style", "turtle")) != "speedster" else 0.16).timeout
+					await get_tree().create_timer(0.9).timeout
 		"fx":
 			await get_tree().create_timer(1.5).timeout
 			for rep in 20:
@@ -214,6 +232,8 @@ func _dev_shot_setup() -> void:
 		await get_tree().process_frame
 	if _args.has("noui"):
 		play_ui.visible = false
+	if _args.has("style"):   # dev: --style=<id> picks the fighting style (GPU recordings of the combos)
+		play.game.set_style(str(_args.style))
 	if _args.has("form"):   # dev: --form=<id> transforms the dev fighter (with --forms=1) for screenshots
 		await get_tree().create_timer(0.8).timeout
 		play.game.player.ki = play.game.player.maxKi
