@@ -56,6 +56,6 @@ func test_fighter_builds_for_every_race_outfit_build() -> void:
 			var b: Dictionary = builds[n % builds.size()]
 			var f := Fighter.create({"race": race, "outfit": o, "build": b.id, "skin": n % 3, "outfitTint": n % 5})
 			eq(f.anim.state, "ground", "%s/%s stands" % [race, o])
-			near(f.body.scale.y, float(b.height), 1e-6, "%s build height" % b.id)
+			near(f.body.scale.y, float(b.height) * float(BodySculpt.RACES.get(race, {}).get("height", 1.0)), 1e-6, "%s build height (times the race height)" % b.id)
 			f.free()
 			n += 1

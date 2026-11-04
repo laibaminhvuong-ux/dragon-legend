@@ -42,6 +42,8 @@ var _t := 0.0
 var _attachments: Dictionary = {}   # bone -> BoneAttachment3D
 var _skin_pieces: Array = []        # [MeshInstance3D, shade]
 var _form_nodes: Array[Node] = []
+var sculpt: Dictionary = {}       # BodySculpt profile for this look
+var _head_xform := Transform3D.IDENTITY
 
 static func create(l: Dictionary) -> Fighter:
 	var f := Fighter.new()
@@ -57,6 +59,9 @@ func _build() -> void:
 	anim_player = body.find_children("*", "AnimationPlayer", true, false)[0]
 	body_mesh = body.find_children("*", "MeshInstance3D", true, false)[0]
 	body_mesh.mesh = BodyRegions.dressed_mesh(body_mesh)
+	sculpt = BodySculpt.profile_for(look)
+	body_mesh.mesh = BodySculpt.sculpted(body_mesh.mesh, sculpt)
+	_head_xform = BodySculpt.head_xform(sculpt)
 	material = ShaderMaterial.new()
 	material.shader = OUTFIT_SHADER
 	body_mesh.material_override = material
@@ -79,7 +84,7 @@ func _build() -> void:
 	for b: Dictionary in Tables().appearance.get("BUILDS", []):
 		if b.id == look.get("build", "Average"):
 			build = b
-	base_scale = Vector3(float(build.width), float(build.height), float(build.depth))
+	base_scale = Vector3(float(build.width), float(build.height) * float(sculpt.get("height", 1.0)), float(build.depth))
 	body.scale = base_scale
 	Parts.dress(self, parts, str(race.get("id", "")), skin)
 	Parts.costume(self, str(look.get("costume", "")))
@@ -150,6 +155,38 @@ static func hair_material() -> ShaderMaterial:
 	return _hair_material
 
 # ----------------------------------------------------------------------------------- pieces on bones
+# ----------------------------------------------------------------------------------- sockets
+## Named attach points for skill VFX and sound (Codex's skill catalogue): bone + rest-pose offset (metres, model space).
+const SOCKETS := {
+	"hand_l": ["DEF-hand.L", Vector3(0.80, 1.44, -0.065)], "hand_r": ["DEF-hand.R", Vector3(-0.80, 1.44, -0.065)],
+	"chest": ["DEF-spine.003", Vector3(0, 1.32, 0.12)], "head": ["DEF-head", Vector3(0, 1.68, 0)],
+	"pelvis": ["DEF-hips", Vector3(0, 0.92, 0)], "foot_l": ["DEF-foot.L", Vector3(0.089, 0.05, 0.05)],
+	"foot_r": ["DEF-foot.R", Vector3(-0.089, 0.05, 0.05)], "aura_root": ["", Vector3(0, 0.0, 0)],
+	"cast_origin": ["DEF-spine.003", Vector3(0, 1.3, 0.45)],
+}
+
+## World transform of a named socket (see SOCKETS); it follows the animated skeleton and the body's scale.
+## Unknown names return the fighter's own transform.
+func socket(socket_name: String) -> Transform3D:
+	var def: Array = SOCKETS.get(socket_name, ["", Vector3.ZERO])
+	var bone: String = def[0]
+	var rest_point: Vector3 = def[1]
+	var me := global_transform if is_inside_tree() else transform
+	if bone == "" or skeleton == null:
+		return me * Transform3D(Basis.IDENTITY, rest_point * base_scale)
+	var i := skeleton.find_bone(bone)
+	if i < 0:
+		return me
+	var to_skeleton := Transform3D.IDENTITY   # skeleton space -> fighter space (works outside the tree too)
+	var n: Node = skeleton
+	while n != null and n != self:
+		if n is Node3D:
+			to_skeleton = (n as Node3D).transform * to_skeleton
+		n = n.get_parent()
+	var rest := skeleton.get_bone_global_rest(i)
+	var pose := skeleton.get_bone_global_pose(i)
+	return me * to_skeleton * pose * rest.affine_inverse() * Transform3D(Basis.IDENTITY, rest_point)
+
 func _attachment(bone: String) -> BoneAttachment3D:
 	if not _attachments.has(bone):
 		var a := BoneAttachment3D.new()
@@ -165,6 +202,8 @@ func add_piece(bone: String, frame: Transform3D, mesh: Mesh, mat: Material) -> M
 	mi.mesh = mesh
 	mi.material_override = mat
 	var i := skeleton.find_bone(bone)
+	if bone == "DEF-head":
+		frame = _head_xform * frame
 	mi.transform = skeleton.get_bone_global_rest(i).affine_inverse() * frame
 	_attachment(bone).add_child(mi)
 	return mi

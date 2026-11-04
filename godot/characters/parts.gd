@@ -64,12 +64,24 @@ static func dress(f: Fighter, parts: Dictionary, race_id: String, skin: Color) -
 				for s in [1, -1]:
 					g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.02, 0.06, 0.02), Vector3(s * 0.05, 0.12, 0.0)], Vector3(s * 0.03, 0.135, 0.07)), 0.009, 0.006, 12, 8)
 					g.sphere(Transform3D(Basis.IDENTITY, Vector3(s * 0.08, 0.255, 0.07)), 0.011, 8, 10)), green), 0.9)
+			# long pointed ears sweeping up and back
+			f.add_skin_piece(f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("namek_ears", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.04, 0.018, -0.015), Vector3(s * 0.085, 0.045, -0.04)], Vector3(s * 0.088, 0.03, -0.005)), 0.022, 0.002, 12, 10)), material(skin, 0.55)), 1.0)
 			for s in [1, -1]:
 				f.add_piece("DEF-upper_arm." + ("L" if s > 0 else "R"), Transform3D.IDENTITY, _mesh("namek_patch%d" % s, func(g: Geo) -> void:
 					g.sphere(Transform3D(Basis.from_scale(Vector3(1.6, 0.55, 0.95)), Vector3(s * 0.33, 1.47, -0.062)), 0.05)), material(Color.hex(0xd88a9aff), 0.5))
 		"FrostDemon":
 			f.dome = f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("dome", func(g: Geo) -> void:
 				g.cap(Transform3D(Basis.from_scale(Vector3(1.04, 0.95, 1.12)), Vector3(0, 0.075, -0.01)), 0.108, PI * 0.36, PI * 0.46)), material(Color.hex(0x8a3ab8ff), 0.15, 0.1))
+			# bone-white shoulder domes and a chest plate: the armoured carapace of the race
+			var shell := material(Color.hex(0xe8e4f0ff), 0.25, 0.05)
+			for s in [1, -1]:
+				f.add_piece("DEF-upper_arm." + ("L" if s > 0 else "R"), Transform3D.IDENTITY, _mesh("frost_dome%d" % s, func(g: Geo) -> void:
+					var h := SphereMesh.new(); h.radius = 0.075; h.height = 0.075; h.is_hemisphere = true; h.radial_segments = 24; h.rings = 8
+					g.add_primitive(h, Transform3D(Basis.from_euler(Vector3(0, 0, -s * 0.5)) * Basis.from_scale(Vector3(1.15, 0.9, 1.1)), Vector3(s * 0.2, 1.455, -0.06)))), shell)
+			f.add_piece("DEF-spine.003", Transform3D.IDENTITY, _mesh("frost_chest", func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.5, 0.75, 0.42)), Vector3(0, 1.36, 0.075)), 0.09, 10, 18)), shell)
 			f.add_skin_piece(f.add_piece("DEF-hips", Transform3D.IDENTITY, _mesh("frost_tail", func(g: Geo) -> void:
 				g.tube(_offset([Vector3(0, 0, 0), Vector3(0, -0.3, -0.25), Vector3(0.05, -0.75, -0.35), Vector3(0.25, -0.9, -0.1), Vector3(0.35, -0.92, 0.15)], Vector3(0, 0.88, -0.14)), 0.06, 0.02, 30)), material(skin, 0.45)), 1.0)
 		"Majin":
