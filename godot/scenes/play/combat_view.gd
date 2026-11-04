@@ -297,11 +297,14 @@ func _on_attack(d: Dictionary) -> void:
 	if e.is_empty(): return
 	var kind := str(d.get("kind","jab"))
 	if kind=="melee": kind = str(e.attackKind)
+	if str(d.get("strike","")) != "": kind = str(d.strike)   # host-chosen combo strike (jab/cross/hook/uppercut/knee/...)
 	if kind=="projectile": kind = "ki"
-	_attack_poses[str(e.id)] = {"serial":e.attackSerial,"kind":kind,"pose":str(d.get("pose",""))}
+	var recipe := SkillCatalog.get_skill(str(d.get("move_id","")))
+	_attack_poses[str(e.id)] = {"serial":e.attackSerial,"kind":kind,"pose":str(d.get("pose","")),"finisher":bool(d.get("finisher",false)),
+		"hold_min":float(recipe.get("hold_min",0.0)),"release_window":float(recipe.get("release_window",0.45)),"recovery":float(recipe.get("recovery",0.45))}
 	_push_player_presentation()
 	var pos: Vector3 = e.pos+Vector3.UP*1.1
-	if kind in ["jab","cross","hook","leg kick"]:
+	if kind in ["jab","cross","hook","leg kick","uppercut","palm_strike","knee","spin_kick","axe_kick"]:
 		var fx := _flourish("arc",pos,Color("d9efff"))
 		fx.rotation.y = e.yaw
 		audio.play_cue("whoosh",pos)
@@ -316,6 +319,10 @@ func _presentation(e: Dictionary) -> Dictionary:
 		if _attack_poses[id].serial==e.attackSerial:
 			a.attackKind = _attack_poses[id].kind
 			a.skillReleasePose = _attack_poses[id].get("pose","")
+			a.finisher = _attack_poses[id].get("finisher",false)
+			a.skillHoldMin = _attack_poses[id].get("hold_min",0.0)
+			a.skillReleaseWindow = _attack_poses[id].get("release_window",0.45)
+			a.skillRecovery = _attack_poses[id].get("recovery",0.45)
 		else: _attack_poses.erase(id)
 	var st: Variant = e.get("skillState")
 	if st is Dictionary and str((st as Dictionary).get("phase","")) == "prepare":

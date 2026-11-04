@@ -90,3 +90,27 @@ func test_skill_pose_replaces_the_generic_cast() -> void:
 		f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true, "attackSerial": 7, "attackKind": "beam", "skillReleasePose": "overhead_sphere"})
 	ok(f.anim.mod.skill_release > 0.9, "release pose plays after the cast")
 	f.free()
+
+func test_every_combo_strike_animates() -> void:
+	for strike: String in ["jab", "cross", "hook", "uppercut", "knee", "spin_kick", "axe_kick", "palm_strike"]:
+		var f := Fighter.create({"race": "Saiyan"})
+		f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true})
+		f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true, "attackSerial": 3, "attackKind": strike, "finisher": true})
+		var moved := false
+		for i in 8:
+			f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true, "attackSerial": 3, "attackKind": strike, "finisher": true})
+			moved = moved or f.anim.one_shot != "" or f.anim.mod.kick > 0.05 or f.anim.mod.strike > 0.05
+		ok(moved, "%s plays a strike" % strike)
+		eq(f.anim.mod.strike_kind, strike, "%s reaches the pose layer" % strike)
+		f.free()
+
+func test_quick_tap_keeps_the_gather_for_hold_min() -> void:
+	var f := Fighter.create({"race": "Human"})
+	f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true})
+	f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true, "attackSerial": 4, "attackKind": "beam", "skillReleasePose": "overhead_sphere",
+		"skillHoldMin": 0.5, "skillReleaseWindow": 0.3, "skillRecovery": 0.3})
+	ok(f.anim.mod.skill_hold > 0.9 and f.anim.mod.skill_release < 0.05, "a quick tap still shows the gather first")
+	for i in 20:
+		f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true, "attackSerial": 4, "attackKind": "beam", "skillReleasePose": "overhead_sphere"})
+	ok(f.anim.mod.skill_release > 0.9, "then the release pose")
+	f.free()

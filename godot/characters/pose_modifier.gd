@@ -18,6 +18,8 @@ var dash_side := 0.0
 var dash_back := 0.0
 var block := 0.0
 var kick := 0.0
+var kick_phase := 0.0
+var finisher := 1.0   # combo finisher: strikes land bigger
 var idle := 0.0
 var style: Dictionary = MotionStyle.for_form("")
 var lean := 0.0
@@ -97,10 +99,26 @@ func _process_modification() -> void:
 		arm.L += Vector3(-1.3 * b, 0, -0.35 * b); fore.L.x -= 1.6 * b
 		arm.R += Vector3(-1.3 * b, 0, 0.35 * b); fore.R.x -= 1.6 * b
 	if kick > 0.01:
-		var kk := kick
-		body.x -= 0.22 * kk
-		thigh.R.x -= 1.55 * kk; shin.R.x += 0.15 * kk
-		arm.L.x -= 0.4 * kk; arm.R.x += 0.5 * kk
+		var kk := kick * finisher
+		match strike_kind:
+			"knee":   # grab-and-knee: knee driven up into the chest, both hands pulling down
+				thigh.R.x -= 1.95 * kk; shin.R.x += 2.0 * kk; body.x += 0.12 * kk
+				for side in ["L", "R"]:
+					arm[side].x -= 1.0 * kk; fore[side].x -= 0.7 * kk
+			"spin_kick":   # a full turn on the standing leg, the kicking leg swinging out to the side
+				body.y += kick_phase * TAU * 0.9
+				body.z += 0.35 * kk
+				thigh.R.z -= 1.45 * kk; thigh.R.x -= 0.35 * kk; shin.R.x += 0.1 * kk
+				arm.L.z += 0.6 * kk; arm.R.z -= 0.4 * kk
+			"axe_kick":   # leg swung high overhead, then chopped straight down
+				var down := smoothstep(0.42, 0.75, kick_phase)
+				thigh.R.x -= 2.35 * kk * (1.0 - down * 0.75); shin.R.x += 0.15 * kk
+				body.x -= 0.3 * kk * (1.0 - down) - 0.15 * kk * down
+				arm.L.z += 0.5 * kk; arm.R.z -= 0.5 * kk
+			_:
+				body.x -= 0.22 * kk
+				thigh.R.x -= 1.55 * kk; shin.R.x += 0.15 * kk
+				arm.L.x -= 0.4 * kk; arm.R.x += 0.5 * kk
 	# Whole-body follow-through and recovery on top of authored clips.
 	var breath := sin(t*(1.8 if float(style.get("calm",0))>0.5 else 2.5))*0.009*idle*(1.0-charge)
 	chest.x += breath
@@ -157,8 +175,17 @@ func _process_modification() -> void:
 		chest.x -= maxf(0,strike)*0.12
 	elif strike_kind=="ki":
 		arm.R.x -= maxf(0,strike)*(0.8+aim_pitch)
+	elif strike_kind == "uppercut":   # dip, then drive the right fist up under the chin
+		var u := maxf(0.0, strike) * finisher
+		arm.R.x -= u * 1.7; fore.R.x -= u * 1.3; arm.R.z += u * 0.25
+		chest.x -= u * 0.22; chest.y -= u * 0.2; body.x -= u * 0.1
+	elif strike_kind == "palm_strike":   # both palms shoved straight out
+		var ps := maxf(0.0, strike) * finisher
+		for side in ["L", "R"]:
+			arm[side].x -= ps * 0.5; fore[side].x += ps * 0.3
+		chest.x += ps * 0.12
 	elif strike_kind in ["jab","cross","hook"]:
-		var twist := strike*(0.12 if strike_kind=="jab" else 0.28)*(1.0+float(style.get("aggression",0))*0.3)
+		var twist := strike*finisher*(0.12 if strike_kind=="jab" else 0.28)*(1.0+float(style.get("aggression",0))*0.3)
 		chest.y += twist*(-1 if strike_kind=="jab" else 1)
 		body.y -= twist*0.35
 		neck.y -= twist*0.3

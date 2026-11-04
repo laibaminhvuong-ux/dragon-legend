@@ -206,8 +206,27 @@ func _faces(out: String) -> void:
 	cam.position = Vector3(0, 1.72 - 0.3, 8)
 	await _shot(out + "_faces.png")
 
+## The eight combo strikes caught mid-motion (side-ish view).
+func _strikes(out: String) -> void:
+	var strikes := ["jab", "cross", "hook", "uppercut", "palm_strike", "knee", "spin_kick", "axe_kick"]
+	_row(strikes.map(func(k: String) -> Array: return [k, _look("Saiyan"), 1.0]), 1.3)
+	var i := 0
+	for f: Fighter in stage.find_children("*", "Fighter", true, false):
+		f.rotation.y = 0.9
+		f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true})
+		var frames: int = {"spin_kick": 7, "axe_kick": 6, "knee": 4}.get(strikes[i], 5)
+		for k in frames:
+			f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true, "attackSerial": 9, "attackKind": strikes[i], "finisher": true})
+		i += 1
+	_paint(neutral, Color(0.86, 0.87, 0.9))
+	await _shot(out + "_strikes.png")
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--strikes" in OS.get_cmdline_user_args():
+		await _strikes(out)
+		quit()
+		return
 	if "--faces" in OS.get_cmdline_user_args():
 		await _faces(out)
 		quit()

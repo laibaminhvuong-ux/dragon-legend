@@ -8,7 +8,7 @@ extends RefCounted
 # PoseModifier layers flight, power-up, dash, block and kick poses on top. One-shots always end: a timer
 # returns the controller to its base state even if a new state cuts in.
 
-const ATTACKS := {"jab": "Punch_Jab", "cross": "Punch_Cross", "hook": "Punch_Enter", "ki": "Spell_Simple_Shoot", "beam": "Spell_Simple_Shoot", "ultimate":"Spell_Simple_Shoot", "utility":"Spell_Simple_Shoot", "avatar":"Spell_Simple_Shoot"}
+const ATTACKS := {"jab": "Punch_Jab", "cross": "Punch_Cross", "hook": "Punch_Enter", "uppercut": "Punch_Cross", "palm_strike": "Push", "ki": "Spell_Simple_Shoot", "beam": "Spell_Simple_Shoot", "ultimate":"Spell_Simple_Shoot", "utility":"Spell_Simple_Shoot", "avatar":"Spell_Simple_Shoot"}
 const KICK_TIME := 0.5
 const UPPER := ["DEF-spine.002", "DEF-spine.003", "DEF-neck", "DEF-head", "DEF-shoulder", "DEF-upper_arm", "DEF-forearm", "DEF-hand", "DEF-f_", "DEF-thumb"]
 
@@ -20,6 +20,9 @@ var one_shot := ""            # the attack/hit animation playing, "" when none
 var one_shot_left := 0.0
 var _skill_serial := -1
 var _skill_age := 10.0
+var _held := 0.0
+var _release_window := 0.45
+var _recovery := 0.45
 var _serial := 0
 var _hurt := false
 var _reaction_serial := 0
@@ -63,7 +66,7 @@ func _init(f: Fighter) -> void:
 		idx += 1
 	var shot_pick := AnimationNodeTransition.new()
 	shot_pick.xfade_time = 0.0
-	var shots := ["Punch_Jab", "Punch_Cross", "Punch_Enter", "Spell_Simple_Shoot", "Hit_Chest", "Hit_Head"]
+	var shots := ["Punch_Jab", "Punch_Cross", "Punch_Enter", "Push", "Spell_Simple_Shoot", "Hit_Chest", "Hit_Head"]
 	if player.has_animation("Jump_Land"): shots.append("Jump_Land")
 	for i in shots.size():
 		shot_pick.add_input(shots[i])
@@ -162,8 +165,9 @@ func update(dt: float, anim: Dictionary) -> void:
 			var kind := str(anim.get("attackKind", "jab"))
 			_age = 0.0
 			_kind = kind
-			if kind.contains("kick"):
-				_kick_t = 0.0
+			mod.finisher = 1.25 if anim.get("finisher", false) else 1.0
+			if kind.contains("kick") or kind == "knee":
+				_kick_t = 0.0   # leg strikes are procedural (PoseModifier: front kick, knee, spin kick, axe kick)
 				_end_shot()
 			elif SkillPoses.has_pose(str(anim.get("skillReleasePose", ""))):
 				_end_shot()   # the skill's own release pose (SkillPoses) replaces the generic spell clip
@@ -199,15 +203,27 @@ func update(dt: float, anim: Dictionary) -> void:
 	if hold_pose != "":
 		mod.skill_hold_pose = hold_pose
 	mod.skill_hold = lerpf(mod.skill_hold, clampf(float(anim.get("skillHold", 0.0)), 0.0, 1.0) if hold_pose != "" and state != "dead" else 0.0, 1.0 - exp(-dt * 10.0))
+	# Codex's catalogue timings (visual only): the gather shows for at least hold_min even on a quick tap, the release
+	# pose holds for release_window, then eases out over recovery.
+	if hold_pose != "":
+		_held += dt
 	var release_pose := str(anim.get("skillReleasePose", ""))
 	if release_pose != "" and serial != _skill_serial:
 		_skill_serial = serial
 		mod.skill_release_pose = release_pose
-		_skill_age = 0.0
+		_release_window = float(anim.get("skillReleaseWindow", 0.45))
+		_recovery = maxf(0.1, float(anim.get("skillRecovery", 0.45)))
+		_skill_age = -maxf(0.0, float(anim.get("skillHoldMin", 0.0)) - _held)
+		if _skill_age < 0.0:
+			mod.skill_hold_pose = str(anim.get("skillHoldPoseOf", release_pose))
+	if hold_pose == "" and _skill_age >= 0.0:
+		_held = 0.0
 	_skill_age += dt
+	if _skill_age < 0.0 and state != "dead":
+		mod.skill_hold = 1.0   # still showing the gather of a quick tap
 	var target := 0.0
-	if mod.skill_release_pose != "" and state != "dead":
-		target = clampf(_skill_age / 0.08, 0.0, 1.0) * (1.0 - clampf((_skill_age - 0.45) / 0.45, 0.0, 1.0))
+	if mod.skill_release_pose != "" and state != "dead" and _skill_age >= 0.0:
+		target = clampf(_skill_age / 0.08, 0.0, 1.0) * (1.0 - clampf((_skill_age - _release_window) / _recovery, 0.0, 1.0))
 	mod.skill_release = target
 	mod.strike_kind = _kind
 	var e := 1.0-exp(-dt*8.0)
@@ -225,6 +241,7 @@ func update(dt: float, anim: Dictionary) -> void:
 		_kick_t += dt
 		var p := _kick_t / KICK_TIME
 		w.kick = clampf(p / 0.3, 0.0, 1.0) if p < 0.6 else clampf((1.0 - p) / 0.4, 0.0, 1.0)
+		w.kick_phase = clampf(p, 0.0, 1.0)
 		if p >= 1.0:
 			_kick_t = -1.0; w.kick = 0.0
 	mod.t += dt
