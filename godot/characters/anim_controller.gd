@@ -86,15 +86,9 @@ func _init(f: Fighter) -> void:
 		shot_pick.add_input(shots[i])
 		var a := AnimationNodeAnimation.new(); a.animation = shots[i]
 		_bt.add_node("s_" + shots[i], a, Vector2(300, 200 + 100 * i))
-	for slot: String in ["a", "b"]:
-		shot_pick.add_input("move_" + slot)
-		var m := AnimationNodeAnimation.new(); m.animation = "moves/turtle_combo1"
-		_bt.add_node("m_" + slot, m, Vector2(300, 1000 + (100 if slot == "b" else 0)))
 	_bt.add_node("pick", shot_pick, Vector2(500, 200))
 	for i in shots.size():
 		_bt.connect_node("pick", i, "s_" + shots[i])
-	_bt.connect_node("pick", shots.size(), "m_a")
-	_bt.connect_node("pick", shots.size() + 1, "m_b")
 	var os := AnimationNodeOneShot.new()
 	os.fadein_time = 0.1; os.fadeout_time = 0.22
 	for b: String in _upper_tracks(f.skeleton):
@@ -102,7 +96,20 @@ func _init(f: Fighter) -> void:
 	_bt.add_node("shot", os, Vector2(700, 0))
 	_bt.connect_node("shot", 0, "mode")
 	_bt.connect_node("shot", 1, "pick")
-	_bt.connect_node("output", 0, "shot")
+	# style moves and reactions: a top-level layer that crossfades from whatever is playing into the move, between
+	# two alternating move slots (so a chained strike blends from the previous one), and back out when it ends
+	var act := AnimationNodeTransition.new()
+	act.xfade_time = 0.12
+	act.add_input("base")
+	for slot: String in ["a", "b"]:
+		act.add_input("move_" + slot)
+		var m := AnimationNodeAnimation.new(); m.animation = "moves/turtle_combo1"
+		_bt.add_node("m_" + slot, m, Vector2(700, 300 + (100 if slot == "b" else 0)))
+	_bt.add_node("act", act, Vector2(900, 0))
+	_bt.connect_node("act", 0, "shot")
+	_bt.connect_node("act", 1, "m_a")
+	_bt.connect_node("act", 2, "m_b")
+	_bt.connect_node("output", 0, "act")
 	tree = AnimationTree.new()
 	tree.name = "AnimTree"
 	tree.tree_root = _bt
@@ -293,8 +300,9 @@ func update(dt: float, anim: Dictionary) -> void:
 	if current_move != "":
 		_move_t += adv
 		_lunge = MoveClips.lunge_at(_move_clip, _move_t)
-		if _move_t >= _move_clip.length:
-			current_move = ""
+		if _move_t >= _move_clip.length - 0.12 or state == "dead":
+			current_move = ""   # crossfade back to movement over the clip's last frames
+			tree.set("parameters/act/transition_request", "base")
 	else:
 		_lunge = lerpf(_lunge, 0.0, 1.0 - exp(-dt * 7.0))
 	_f.body.position = Vector3(0, 0, _lunge)
@@ -321,11 +329,8 @@ func _play_move(id: String) -> void:
 	current_move = id
 	_move_clip = clip
 	_move_t = 0.0
-	tree.set("parameters/pick/transition_request", "move_" + _move_slot)
-	if one_shot == "":
-		tree.set("parameters/shot/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
-	one_shot = "moves/" + id
-	one_shot_left = clip.length + 0.05
+	_end_shot()
+	tree.set("parameters/act/transition_request", "move_" + _move_slot)
 
 func _end_shot() -> void:
 	if one_shot != "":

@@ -28,7 +28,8 @@ func test_chain_blends_without_pop() -> void:
 		_idle(f, 1, {"attackSerial": 1 if i < 14 else 2, "attackKind": "jab", "style": "turtle", "comboStep": 1 if i < 14 else 2})
 		seen = seen or f.anim.current_move == "turtle_combo2"
 	ok(seen, "second hit played")
-	ok(float((f.anim._bt.get_node("pick") as AnimationNodeTransition).xfade_time) >= 0.08, "strikes crossfade into each other")
+	ok(float((f.anim._bt.get_node("act") as AnimationNodeTransition).xfade_time) >= 0.08, "strikes crossfade into each other")
+	ok(float((f.anim._bt.get_node("pick") as AnimationNodeTransition).xfade_time) >= 0.08, "old clips crossfade too")
 	var os: AnimationNodeOneShot = f.anim._bt.get_node("shot")
 	ok(os.fadein_time >= 0.08 and os.fadeout_time >= 0.08, "attacks blend in and out of movement")
 	f.free()

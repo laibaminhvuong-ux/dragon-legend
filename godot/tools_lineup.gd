@@ -258,8 +258,62 @@ func _styles(out: String) -> void:
 	_paint(neutral, Color(0.86, 0.87, 0.9))
 	await _shot(out + "_styles.png")
 
+## A real-time recording: the four styles side by side in their guard, then the full 4-hit combo and finisher,
+## chained as fast as a player would press (frames saved as <prefix>_flow_0000.png ... for ffmpeg).
+func _flow(out: String) -> void:
+	stage = Node3D.new()
+	vp.add_child(stage)
+	var fs: Array[Fighter] = []
+	for i in 4:
+		var f := Fighter.create(_look(["Saiyan", "Human", "HalfSaiyan", "Namekian"][i]))
+		f.position = Vector3((i - 1.5) * 1.9, 0, 0)
+		f.rotation.y = 1.2
+		stage.add_child(f)
+		fs.append(f)
+		var label := Label3D.new()
+		label.text = FightStyles.NAMES[FightStyles.IDS[i]]
+		label.font_size = 40; label.pixel_size = 0.004; label.modulate = Color(0.1, 0.1, 0.12)
+		label.position = f.position + Vector3(0, -0.2, 0.9)
+		stage.add_child(label)
+	var floor := MeshInstance3D.new(); var pm := PlaneMesh.new(); pm.size = Vector2(14, 8); floor.mesh = pm; stage.add_child(floor)
+	env.environment.background_color = Color(0.86, 0.87, 0.9)
+	cam.projection = Camera3D.PROJECTION_PERSPECTIVE
+	cam.fov = 40
+	cam.position = Vector3(0, 1.05, 9.0)
+	cam.rotation = Vector3(-0.02, 0, 0)
+	vp.size = Vector2i(1600, 640)
+	# script: 0.8 s guard, then hits every ~0.42 s (step 1-4, finisher), then guard again
+	var schedule := [0.8, 1.2, 1.62, 2.1, 2.62, 3.5]
+	var dt := 1.0 / 30.0
+	var t := 0.0
+	var frame := 0
+	while t < 4.6:
+		var serial := 0
+		for s in schedule.size():
+			if t >= schedule[s]:
+				serial = s + 1
+		for i in 4:
+			var style: String = FightStyles.IDS[i]
+			var a := {"speed": 0.0, "onGround": true, "inCombat": true, "style": style}
+			if serial > 0 and serial <= 5:
+				a.attackSerial = serial
+				a.attackKind = "jab"
+				a.comboStep = serial
+				a.move = "%s_finisher" % style if serial == 5 else ""
+			fs[i].update(dt, a)
+		await process_frame
+		await process_frame
+		vp.get_texture().get_image().save_png("%s_flow_%04d.png" % [out, frame])
+		frame += 1
+		t += dt
+	print("saved %d flow frames" % frame)
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--flow" in OS.get_cmdline_user_args():
+		await _flow(out)
+		quit()
+		return
 	if "--styles" in OS.get_cmdline_user_args():
 		await _styles(out)
 		quit()
