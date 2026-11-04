@@ -28,6 +28,7 @@ static func empty_intents() -> Dictionary:
 func _init(index: int = 0,saved: Dictionary = {},bus: Object = null) -> void:
 	slot_index = index
 	slot = saved if not saved.is_empty() else schema.new_slot(schema.default_look())
+	slot.style = RuleStyles.normalize(slot.get("style"))
 	events = bus
 	zone = get_zone(slot.zone)
 	if not zone.has_region(slot.zone):
@@ -42,7 +43,7 @@ func _init(index: int = 0,saved: Dictionary = {},bus: Object = null) -> void:
 		slot.erase("mapSpace")
 	var start: Dictionary = zone.region_spawn(slot.zone)
 	var spawn: Vector3 = RuleRuntime.vector(slot.position) if slot.get("position")!=null else Vector3(start.x,zone.height_at(start.x,start.z),start.z)
-	player = {"id":"player","kind":"player","pos":spawn,"vel":Vector3.ZERO,"yaw":0.0,"onGround":spawn.y<=zone.height_at(spawn.x,spawn.z),"form":"",
+	player = {"id":"player","kind":"player","style":slot.style,"pos":spawn,"vel":Vector3.ZERO,"yaw":0.0,"onGround":spawn.y<=zone.height_at(spawn.x,spawn.z),"form":"",
 		"health":0.0,"maxHealth":0.0,"ki":0.0,"maxKi":0.0,"kiCostScale":1.0,"runSpeed":0.0,"strength":1.0,"kiPower":1.0,"powerLevel":0,
 		"flying":false,"sprinting":false,"dashing":false,"charging":false,"blocking":false,"stun":0.0,"lockTarget":null,"kaioken":0,"attackSerial":0,"attackKind":"jab"}
 	entities = [player]
@@ -114,6 +115,17 @@ func select_form(id: String) -> Variant:
 	refresh_derived()
 	kaioken.update(0)
 	return null
+## Menu command; the host owns validation and refuses switching while a strike/channel is active.
+func set_style(id: String) -> Variant:
+	if not RuleStyles.valid(id): return "Unknown fighting style."
+	if id==player.style: return null
+	if combat!=null and combat.style_busy(): return "Finish your current strike before changing fighting style."
+	slot.style = id; player.style = id
+	if combat!=null:
+		combat.cancel_skill("style_changed")
+		combat.combo = 0; combat.last_swing = -100.0
+		emit("stats",hud())
+	return null
 func customize_appearance(changes: Dictionary) -> Variant:
 	var next: Dictionary = {"race":slot.race}
 	next.merge(slot.appearance,true)
@@ -184,7 +196,7 @@ func hud() -> Dictionary:
 	var form_name: String = forms.forms.get(player.form,{}).get("name",player.form) if player.form!="" else "Base"
 	if player.kaioken>0:
 		form_name += " + Kaiyoken x%d" % int(player.kaioken)
-	return {"slot":slot_index,"race":slot.race,"raceName":progression.races.get(slot.race,{}).get("name",slot.race),"form":player.form,"formName":form_name,
+	return {"slot":slot_index,"race":slot.race,"style":player.style,"styleName":RuleStyles.get_style(player.style).name,"raceName":progression.races.get(slot.race,{}).get("name",slot.race),"form":player.form,"formName":form_name,
 		"level":slot.level,"xp":slot.xp,"xpNext":progression.xp_to_next(int(slot.level)),"statPoints":slot.statPoints,"zeni":slot.zeni,
 		"health":player.health,"maxHealth":player.maxHealth,"ki":floori(player.ki),"maxKi":player.maxKi,"powerLevel":floori(player.powerLevel*(kaioken.multiplier() if kaioken!=null else 1)),
 		"flying":player.flying,"charging":player.charging,"dashing":player.dashing,"blocking":player.blocking,"lockTarget":player.lockTarget,"zone":current_region(),"zoneName":RuleTables.table("zones").get(current_region(),{}).get("name",zone.name),"map":zone.id}

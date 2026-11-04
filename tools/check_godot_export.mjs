@@ -13,6 +13,14 @@ try{
  for(const id of ['s_namek_dragon','s_super_dragon','s_cereal_dragon','t_ui_avatar'])assert.ok(tables.quests.some(q=>q.id===id));
  assert.equal(tables.characters.goku.name,'Gokan');assert.equal(tables.schema.version,6);assert.equal(tables.narrative.talk_range,4.5);assert.ok(tables.narrative.talk_replies.shenron);assert.ok(tables.forms.UITrue);assert.ok(tables.form_looks.SSJ4);
  ok('all loaded story, dragon, form, appearance and renamed content exported');
+ const exportedSchema=JSON.parse(await fs.readFile(path.join(temp,'schema.json'),'utf8'));
+ assert.equal(exportedSchema.version,7);assert.equal(exportedSchema.slots,10);assert.equal(manifest.schema_version,7);
+ const styles=JSON.parse(await fs.readFile(path.join(temp,'fighting_styles.json'),'utf8'));
+ assert.deepEqual(styles.order,['turtle','brawler','speedster','crane']);
+ for(const profile of Object.values(styles.styles)){assert.equal(profile.combo.length,4);assert.ok(profile.chain_window>0);assert.ok(profile.combo.every(move=>move.id.startsWith(profile.id+'_')));}
+ const exportedCharacters=JSON.parse(await fs.readFile(path.join(temp,'characters.json'),'utf8'));
+ assert.equal(exportedCharacters.nappa.style,'brawler');assert.equal(exportedCharacters.hit.style,'speedster');assert.equal(exportedCharacters.tien.style,'crane');
+ ok('Godot save v7 and four fighting styles exported while classic v6 fixtures remain intact');
  const presentation=JSON.parse(await fs.readFile(path.join(temp,'skill_presentation.json'),'utf8'));
  assert.equal(Object.keys(presentation.skills).length,28);
  for(const id of Object.keys(tables.moves)){const row=presentation.skills[id];assert.ok(row);assert.ok(presentation.sockets.includes(row.socket));assert.ok(row.phases.prepare.audio);assert.ok(row.phases.impact.audio);assert.ok(Number.isFinite(row.hold_min)&&row.hold_min>=0);assert.ok(row.release_window>0);assert.ok(row.recovery>0);assert.equal(row.recovery,row.phases.recovery.duration);}

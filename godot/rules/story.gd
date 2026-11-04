@@ -237,7 +237,7 @@ func npcs() -> Array:
 				if q.get("main",false) and marker=="!":
 					main = true
 		var c: Dictionary = characters[n.who]
-		var row: Dictionary = {"id":n.id,"name":c.name,"look":c.get("look"),"dragon":c.get("dragon"),"scale":c.get("scale",1),"rot":n.get("rot",0),"boss":n.get("boss",false),"marker":marker,"main":main,"sit":n.get("sit",false)}
+		var row: Dictionary = {"id":n.id,"name":c.name,"style":c.get("style","turtle"),"look":c.get("look"),"dragon":c.get("dragon"),"scale":c.get("scale",1),"rot":n.get("rot",0),"boss":n.get("boss",false),"marker":marker,"main":main,"sit":n.get("sit",false)}
 		row.merge(npc_pos(n))
 		out.append(row)
 	var guide: Variant = travel_guide()
@@ -360,7 +360,7 @@ func encounters() -> Array:
 		var c: Dictionary = characters[n.who] if not n.is_empty() else {}
 		var name: String = c.get("name",s.enemy.replace("_"," ")) if not s.enemy.begins_with("patrol_") else "Hostile Trainee"
 		var look: Variant = c.get("look") if not s.enemy.begins_with("patrol_") else game().schema.default_look("Human").merged({"outfitTint":3},true)
-		var row := {"key":s.enemy,"questId":q.id,"step":slot.quests[q.id].step,"name":name,"look":look,"scale":c.get("scale",1),"level":q.get("level",1)}
+		var row := {"key":s.enemy,"style":c.get("style","turtle"),"questId":q.id,"step":slot.quests[q.id].step,"name":name,"look":look,"scale":c.get("scale",1),"level":q.get("level",1)}
 		if count<=1:
 			if s.enemy.begins_with("patrol_"):
 				continue

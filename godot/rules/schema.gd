@@ -2,7 +2,7 @@ class_name RuleSchema
 extends RefCounted
 # Saved dictionaries retain JS camelCase keys. Only rule method names use snake_case.
 const Tables = preload("res://rules/tables.gd")
-const SCHEMA_VERSION := 6
+const SCHEMA_VERSION := 7
 ## Character slots per profile (user request 2026-11-03: 10; the classic game and old codes have 3).
 const SLOT_COUNT := 10
 const CODE_PREFIX := "DL1:"
@@ -98,7 +98,7 @@ func new_slot(look: Dictionary, now: int = -1) -> Dictionary:
 	var allocation: Dictionary = {}
 	for stat: String in stats.STAT_NAMES:
 		allocation[stat] = 0
-	var slot: Dictionary = {"race":race,"appearance":style,"level":1,"xp":0,"statPoints":0,"stats":allocation,"zeni":stats.STARTING_ZENI,
+	var slot: Dictionary = {"race":race,"style":RuleStyles.DEFAULT,"appearance":style,"level":1,"xp":0,"statPoints":0,"stats":allocation,"zeni":stats.STARTING_ZENI,
 		"outfits":[style.get("outfit", "TurtleGi")],"forms":[],"moves":[],"loadout":{"technique":"EnergyWave","formPath":null,"accessory":"None","kaiokenRank":2},
 		"formMastery":{},"quests":{},"story":{},"zone":"earth_plains","position":null,"createdAt":now,"playedAt":now,"playTime":0}
 	_ensure_story(slot)
@@ -131,6 +131,7 @@ func _ensure_story(slot: Dictionary) -> void:
 # Per-slot normalization is intentionally CURRENT-version: only migrate(profile) scales v1-v3 levels.
 func normalize(input: Dictionary) -> Dictionary:
 	var s: Dictionary = input.duplicate(true)
+	s.style = RuleStyles.normalize(s.get("style"))
 	if not s.get("appearance") is Dictionary:
 		s.appearance = default_look(str(s.get("race", "Saiyan")))
 		s.appearance.erase("race")

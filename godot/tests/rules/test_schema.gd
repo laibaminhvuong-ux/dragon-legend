@@ -5,11 +5,14 @@ const Tables = preload("res://rules/tables.gd")
 func _json_value(value: Variant) -> Variant:
 	return JSON.parse_string(JSON.stringify(value))
 
-func test_v1_to_v6_import_and_migration_match_js() -> void:
+func test_v1_to_v6_import_match_js_with_godot_style_migration() -> void:
 	var rules := Schema.new()
 	for row: Dictionary in Tables.table("parity").saves:
 		# The JS oracle has 3 slots; the Godot game has SLOT_COUNT (10), the rest empty.
 		var expected: Dictionary = row.expected.duplicate(true)
+		expected.version = float(Schema.SCHEMA_VERSION)
+		for slot: Variant in expected.slots:
+			if slot is Dictionary: slot.style = "turtle"
 		expected.slots = _pad(expected.slots)
 		eq(_json_value(rules.migrate(row.input)),expected,"migrate version %d" % row.version)
 		var result: Dictionary = rules.import_code(row.code)

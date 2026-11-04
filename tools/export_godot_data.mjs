@@ -118,6 +118,7 @@ export function parityFixtures(){
 }
 async function sourceHashes(){
  const out={};for(const folder of ['web/src/data','web/src/game'])for(const name of (await fs.readdir(path.join(root,folder))).sort())if(name.endsWith('.js')){const rel=folder+'/'+name;out[rel]=digest(await fs.readFile(path.join(root,rel)));}
+ out['tools/fighting_styles.mjs']=digest(await fs.readFile(path.join(root,'tools/fighting_styles.mjs')));
  out['tools/skill_presentation.mjs']=digest(await fs.readFile(path.join(root,'tools/skill_presentation.mjs')));
  out['tools/godot_additions.mjs']=digest(await fs.readFile(path.join(root,'tools/godot_additions.mjs')));
  out['web/src/core/save.js']=digest(await fs.readFile(path.join(root,'web/src/core/save.js')));return out;
@@ -125,7 +126,7 @@ async function sourceHashes(){
 export async function exportGodotData(outDir,{parity=true,check=false}={}){
  const tables=applyGodotAdditions(collectTables());if(parity)tables.parity=parityFixtures();
  const files={};const encoded={};for(const [name,data] of Object.entries(tables)){const text=encode(data),file=name+'.json';encoded[file]=text;files[file]={sha256:digest(text),bytes:Buffer.byteLength(text),kind:Array.isArray(data)?'array':'object',entries:Array.isArray(data)?data.length:Object.keys(data).length};}
- const manifest={format_version:1,schema_version:SCHEMA_VERSION,source:'web/src (evaluated exports; installed content and display names)',sources:await sourceHashes(),files};encoded['manifest.json']=encode(manifest);
+ const manifest={format_version:1,schema_version:tables.schema.version,source:'web/src (evaluated exports; installed content and display names)',sources:await sourceHashes(),files};encoded['manifest.json']=encode(manifest);
  if(check){for(const [file,text] of Object.entries(encoded)){let actual;try{actual=await fs.readFile(path.join(outDir,file),'utf8');}catch{throw new Error(`Missing generated file: ${file}`);}if(actual!==text)throw new Error(`Stale generated file: ${file}`);}}
  else {await fs.mkdir(outDir,{recursive:true});for(const [file,text] of Object.entries(encoded))await fs.writeFile(path.join(outDir,file),text);}
  return manifest;

@@ -1,6 +1,6 @@
 {
-  "version": 6,
+  "version": 7,
   "save_code_prefix": "DL1:",
-  "slots": 3,
+  "slots": 10,
   "combat_available": true
 }

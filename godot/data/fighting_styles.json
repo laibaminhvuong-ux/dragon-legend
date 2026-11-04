@@ -1,0 +1,428 @@
+{
+  "version": 1,
+  "default": "turtle",
+  "order": [
+    "turtle",
+    "brawler",
+    "speedster",
+    "crane"
+  ],
+  "styles": {
+    "turtle": {
+      "id": "turtle",
+      "name": "Turtle School",
+      "stance": "solid_guard",
+      "cadence": [
+        0.32,
+        0.32,
+        0.32,
+        0.32
+      ],
+      "chain_window": 1.1,
+      "reach": 2.8,
+      "damage_scale": 1,
+      "guard_pressure": 1,
+      "knockback_scale": 1,
+      "knockback": 0.28,
+      "stagger": 0.14,
+      "hitstop": 0.05,
+      "combo": [
+        {
+          "id": "turtle_jab",
+          "strike": "jab",
+          "lunge": 0.2,
+          "launch": false,
+          "windup": 0.06,
+          "contact": 0,
+          "follow_through": 0.17600000000000002,
+          "recovery": 0.14400000000000002,
+          "blend": 0.1
+        },
+        {
+          "id": "turtle_cross",
+          "strike": "cross",
+          "lunge": 0.3,
+          "launch": false,
+          "windup": 0.06,
+          "contact": 0,
+          "follow_through": 0.17600000000000002,
+          "recovery": 0.14400000000000002,
+          "blend": 0.1
+        },
+        {
+          "id": "turtle_front_kick",
+          "strike": "knee",
+          "lunge": 0.35,
+          "launch": false,
+          "windup": 0.06,
+          "contact": 0,
+          "follow_through": 0.17600000000000002,
+          "recovery": 0.14400000000000002,
+          "blend": 0.1
+        },
+        {
+          "id": "turtle_straight_punch",
+          "strike": "cross",
+          "lunge": 0.4,
+          "launch": false,
+          "windup": 0.06,
+          "contact": 0,
+          "follow_through": 0.17600000000000002,
+          "recovery": 0.14400000000000002,
+          "blend": 0.1
+        }
+      ],
+      "dash_in": {
+        "id": "turtle_step_in",
+        "strike": "jab",
+        "lunge": 0.55,
+        "launch": false,
+        "windup": 0.06,
+        "contact": 0,
+        "follow_through": 0.17600000000000002,
+        "recovery": 0.14400000000000002,
+        "blend": 0.1
+      },
+      "finisher": {
+        "id": "turtle_double_palm_push",
+        "strike": "palm_strike",
+        "lunge": 0.65,
+        "launch": false,
+        "windup": 0.06,
+        "contact": 0,
+        "follow_through": 0.17600000000000002,
+        "recovery": 0.14400000000000002,
+        "blend": 0.1
+      },
+      "balance": {
+        "cycle_seconds": 1.28,
+        "ideal_cycle_damage": 55.800000000000004,
+        "ideal_dps": 43.59375
+      }
+    },
+    "brawler": {
+      "id": "brawler",
+      "name": "Brawler",
+      "stance": "wide_low_guard",
+      "cadence": [
+        0.46,
+        0.48,
+        0.5,
+        0.48
+      ],
+      "chain_window": 1.35,
+      "reach": 2.65,
+      "damage_scale": 1.5,
+      "guard_pressure": 1.5,
+      "knockback_scale": 1.35,
+      "knockback": 0.6,
+      "stagger": 0.22,
+      "hitstop": 0.075,
+      "combo": [
+        {
+          "id": "brawler_wide_hook",
+          "strike": "hook",
+          "lunge": 0.3,
+          "launch": false,
+          "windup": 0.1,
+          "contact": 0,
+          "follow_through": 0.25300000000000006,
+          "recovery": 0.20700000000000002,
+          "blend": 0.1
+        },
+        {
+          "id": "brawler_hammer_fist",
+          "strike": "palm_strike",
+          "lunge": 0.35,
+          "launch": false,
+          "windup": 0.1,
+          "contact": 0,
+          "follow_through": 0.264,
+          "recovery": 0.216,
+          "blend": 0.1
+        },
+        {
+          "id": "brawler_shoulder_charge",
+          "strike": "palm_strike",
+          "lunge": 0.7,
+          "launch": false,
+          "windup": 0.1,
+          "contact": 0,
+          "follow_through": 0.275,
+          "recovery": 0.225,
+          "blend": 0.1
+        },
+        {
+          "id": "brawler_uppercut",
+          "strike": "uppercut",
+          "lunge": 0.45,
+          "launch": true,
+          "windup": 0.1,
+          "contact": 0,
+          "follow_through": 0.264,
+          "recovery": 0.216,
+          "blend": 0.1
+        }
+      ],
+      "dash_in": {
+        "id": "brawler_charge",
+        "strike": "palm_strike",
+        "lunge": 1,
+        "launch": false,
+        "windup": 0.1,
+        "contact": 0,
+        "follow_through": 0.25300000000000006,
+        "recovery": 0.20700000000000002,
+        "blend": 0.1
+      },
+      "finisher": {
+        "id": "brawler_overhead_slam",
+        "strike": "palm_strike",
+        "lunge": 0.8,
+        "launch": true,
+        "windup": 0.1,
+        "contact": 0,
+        "follow_through": 0.264,
+        "recovery": 0.216,
+        "blend": 0.1
+      },
+      "balance": {
+        "cycle_seconds": 1.92,
+        "ideal_cycle_damage": 83.7,
+        "ideal_dps": 43.59375
+      }
+    },
+    "speedster": {
+      "id": "speedster",
+      "name": "Speedster",
+      "stance": "bouncing_guard",
+      "cadence": [
+        0.22,
+        0.22,
+        0.24,
+        0.24
+      ],
+      "chain_window": 0.72,
+      "reach": 2.5,
+      "damage_scale": 0.7187499999999999,
+      "guard_pressure": 0.7187499999999999,
+      "knockback_scale": 0.7,
+      "knockback": 0.18,
+      "stagger": 0.1,
+      "hitstop": 0.04,
+      "combo": [
+        {
+          "id": "speedster_jab_flurry",
+          "strike": "jab",
+          "lunge": 0.25,
+          "launch": false,
+          "windup": 0.035,
+          "contact": 0,
+          "follow_through": 0.12100000000000001,
+          "recovery": 0.099,
+          "blend": 0.1
+        },
+        {
+          "id": "speedster_side_step_knee",
+          "strike": "knee",
+          "lunge": 0.4,
+          "launch": false,
+          "windup": 0.035,
+          "contact": 0,
+          "follow_through": 0.12100000000000001,
+          "recovery": 0.099,
+          "blend": 0.1
+        },
+        {
+          "id": "speedster_spin_kick",
+          "strike": "spin_kick",
+          "lunge": 0.45,
+          "launch": false,
+          "windup": 0.035,
+          "contact": 0,
+          "follow_through": 0.132,
+          "recovery": 0.108,
+          "blend": 0.1
+        },
+        {
+          "id": "speedster_back_fist",
+          "strike": "cross",
+          "lunge": 0.3,
+          "launch": false,
+          "windup": 0.035,
+          "contact": 0,
+          "follow_through": 0.132,
+          "recovery": 0.108,
+          "blend": 0.1
+        }
+      ],
+      "dash_in": {
+        "id": "speedster_afterimage_blink",
+        "strike": "jab",
+        "lunge": 1.2,
+        "launch": false,
+        "windup": 0.035,
+        "contact": 0,
+        "follow_through": 0.12100000000000001,
+        "recovery": 0.099,
+        "blend": 0.1
+      },
+      "finisher": {
+        "id": "speedster_blur_rush",
+        "strike": "hook",
+        "lunge": 0.9,
+        "launch": false,
+        "windup": 0.035,
+        "contact": 0,
+        "follow_through": 0.132,
+        "recovery": 0.108,
+        "blend": 0.1
+      },
+      "balance": {
+        "cycle_seconds": 0.9199999999999999,
+        "ideal_cycle_damage": 40.106249999999996,
+        "ideal_dps": 43.59375
+      }
+    },
+    "crane": {
+      "id": "crane",
+      "name": "Crane",
+      "stance": "one_leg_guard",
+      "cadence": [
+        0.34,
+        0.36,
+        0.34,
+        0.4
+      ],
+      "chain_window": 1.15,
+      "reach": 3.2,
+      "damage_scale": 1.125,
+      "guard_pressure": 1.125,
+      "knockback_scale": 0.95,
+      "knockback": 0.36,
+      "stagger": 0.18,
+      "hitstop": 0.06,
+      "combo": [
+        {
+          "id": "crane_palm_strike",
+          "strike": "palm_strike",
+          "lunge": 0.25,
+          "launch": false,
+          "windup": 0.06,
+          "contact": 0,
+          "follow_through": 0.18700000000000003,
+          "recovery": 0.15300000000000002,
+          "blend": 0.1
+        },
+        {
+          "id": "crane_high_kick",
+          "strike": "axe_kick",
+          "lunge": 0.3,
+          "launch": false,
+          "windup": 0.06,
+          "contact": 0,
+          "follow_through": 0.198,
+          "recovery": 0.162,
+          "blend": 0.1
+        },
+        {
+          "id": "crane_knife_hand",
+          "strike": "cross",
+          "lunge": 0.35,
+          "launch": false,
+          "windup": 0.06,
+          "contact": 0,
+          "follow_through": 0.18700000000000003,
+          "recovery": 0.15300000000000002,
+          "blend": 0.1
+        },
+        {
+          "id": "crane_crane_kick",
+          "strike": "spin_kick",
+          "lunge": 0.5,
+          "launch": false,
+          "windup": 0.06,
+          "contact": 0,
+          "follow_through": 0.22000000000000003,
+          "recovery": 0.18000000000000002,
+          "blend": 0.1
+        }
+      ],
+      "dash_in": {
+        "id": "crane_gliding_step",
+        "strike": "palm_strike",
+        "lunge": 0.75,
+        "launch": false,
+        "windup": 0.06,
+        "contact": 0,
+        "follow_through": 0.18700000000000003,
+        "recovery": 0.15300000000000002,
+        "blend": 0.1
+      },
+      "finisher": {
+        "id": "crane_one_finger_strike",
+        "strike": "palm_strike",
+        "lunge": 0.4,
+        "launch": false,
+        "windup": 0.06,
+        "contact": 0,
+        "follow_through": 0.22000000000000003,
+        "recovery": 0.18000000000000002,
+        "blend": 0.1
+      },
+      "balance": {
+        "cycle_seconds": 1.44,
+        "ideal_cycle_damage": 62.775000000000006,
+        "ideal_dps": 43.59375
+      }
+    }
+  },
+  "npc_assignments": {
+    "nappa": "brawler",
+    "broly": "brawler",
+    "recoome": "brawler",
+    "dodoria": "brawler",
+    "android_16": "brawler",
+    "android_19": "brawler",
+    "king_cold": "brawler",
+    "fat_buu": "brawler",
+    "super_buu": "brawler",
+    "jiren": "brawler",
+    "toppo": "brawler",
+    "botamo": "brawler",
+    "magetta": "brawler",
+    "cell_max": "brawler",
+    "saganbo": "brawler",
+    "spopovich": "brawler",
+    "hit": "speedster",
+    "burter": "speedster",
+    "jeice": "speedster",
+    "kid_buu": "speedster",
+    "kefla": "speedster",
+    "gamma1": "speedster",
+    "gamma2": "speedster",
+    "merus": "speedster",
+    "whis": "speedster",
+    "vados": "speedster",
+    "frieza": "speedster",
+    "golden_frieza": "speedster",
+    "black_frieza": "speedster",
+    "frost": "speedster",
+    "tien": "crane",
+    "piccolo": "crane",
+    "nail": "crane",
+    "beerus": "crane",
+    "zamasu": "crane",
+    "supreme_kai": "crane",
+    "kibito": "crane",
+    "granolah": "crane",
+    "gas": "crane",
+    "moro": "crane"
+  },
+  "balance": {
+    "reference_damage": 12,
+    "finisher_multiplier": 1.65,
+    "reference_cycle_seconds": 1.28,
+    "notes": "damage_scale = cycle/reference cycle; equal ideal unblocked four-hit DPS. Guard Ki pressure per second is equal. Per-hit integer rounding may differ slightly. Technique/AI cadence and damage remain unchanged."
+  }
+}

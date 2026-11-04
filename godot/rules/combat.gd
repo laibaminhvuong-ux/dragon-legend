@@ -20,6 +20,7 @@ var movement := RuleMovement.new()
 var clock: float = 0
 var serial: int = 0
 var sync_at: float = 0
+var strike_until := 0.0
 var melee_cd: float = 0
 var blast_cd: float = 0
 var beam_cd: float = 0
@@ -80,6 +81,8 @@ static func combo_metadata(id: String,step: int,seed: int) -> Dictionary:
 	var choices: Array = definition.strikes[current-1]
 	var strike: String = choices[posmod(seed,choices.size())]
 	return {"combo_step":current,"combo_length":length,"strike":strike,"finisher":current==length,"socket":"foot_r" if strike in ["spin_kick","axe_kick","knee"] else "hand_l" if strike in ["jab","hook"] else "hand_r"}
+func style_busy() -> bool:
+	return p.health>0 and (beam_held or melee_cd>0.00001 or clock<strike_until)
 func begin_skill(id: String,phase: String = "release",charge: float = 0) -> Dictionary:
 	if skill.get("move_id")!=id or skill.get("phase")!="prepare":
 		cancel_skill("superseded")
@@ -93,8 +96,15 @@ func begin_skill(id: String,phase: String = "release",charge: float = 0) -> Dict
 		if id=="WolfFangFist":
 			wolf_combo = wolf_combo%6+1 if clock-wolf_swing<=c.beamCooldown+c.comboWindow else 1
 			wolf_swing = clock
-		skill.merge(combo_metadata(id,combo if id=="Melee" else wolf_combo,int(skill.seed)),true)
+		skill.merge(RuleStyles.move(p.style,maxi(1,combo),bool(p.get("dashing",false))) if id=="Melee" else combo_metadata(id,wolf_combo,int(skill.seed)),true)
+	var style_tuning := RuleStyles.get_style(p.style)
+	skill.style = p.style
+	if not skill.has("move"): skill.move = id
+	if not skill.has("chain_window"): skill.chain_window = style_tuning.chain_window
+	if not skill.has("lunge"): skill.lunge = 0.0
+	if not skill.has("strike_duration"): skill.strike_duration = float(recipe.get("release_window",.45))+float(recipe.get("recovery",.2))
 	if phase=="release":
+		strike_until = maxf(strike_until,clock+float(skill.strike_duration))
 		skill.released_at = clock
 		skill.hold_elapsed = maxf(0,clock-float(skill.started_at))
 	skill.hold_min = recipe.get("hold_min",0)
@@ -125,7 +135,7 @@ func spawn(definition: Dictionary,index: int = 0) -> Dictionary:
 	var health: float = (c.enemyHealth+(definition.level-1)*c.healthPerLevel)*(c.bossHealth if definition.get("boss",false) else 1)
 	var position: Vector3 = zone.free_position({"x":definition.x,"z":definition.z})
 	var enemy: Dictionary = definition.duplicate(true)
-	enemy.merge({"id":"enemy:%s:%d" % [definition.key,index],"kind":"enemy","pos":position,"home":position,"vel":Vector3.ZERO,"health":health,"maxHealth":health,
+	enemy.merge({"id":"enemy:%s:%d" % [definition.key,index],"kind":"enemy","style":RuleStyles.normalize(definition.get("style",RuleStyles.npc_style(str(definition.key)))),"pos":position,"home":position,"vel":Vector3.ZERO,"health":health,"maxHealth":health,
 		"ki":100.0,"maxKi":100.0,"yaw":PI,"onGround":true,"runSpeed":c.enemySpeed,"strength":1,"stun":0.0,"flying":false,"dashing":false,"charging":false,"blocking":false,
 		"cooldown":0.0,"windup":0.0,"attackSerial":0,"attackKind":"jab","deadUntil":0.0,"hurtUntil":0.0},true)
 	enemies.append(enemy)
@@ -192,9 +202,15 @@ func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = fa
 			return
 	if source==p:
 		game.add_form_mastery(game.mastery.tuning.perHit)
+	var hit_context: Dictionary = context if not context.is_empty() else impact_context if source==p and not impact_context.is_empty() else {"presentation_version":1,"move_id":"Melee","actor_id":source.id,"action_sequence":source.get("attackSerial",0),"seed":int(source.get("attackSerial",0)),"color":0xffdca0}
+	hit_context = hit_context.duplicate(true)
+	hit_context.style = RuleStyles.normalize(hit_context.get("style",source.get("style")))
+	var style_tuning := RuleStyles.get_style(hit_context.style)
+	var melee_hit: bool = hit_context.get("move_id")=="Melee"
+	var guard_cost: float = c.guardCost*(float(style_tuning.guard_pressure) if melee_hit else 1.0)
 	var amount: float = damage
-	if target.blocking and target.ki>=c.guardCost and not finisher:
-		target.ki -= c.guardCost
+	if target.blocking and target.ki>=guard_cost and not finisher:
+		target.ki -= guard_cost
 		amount *= c.guardDamage
 	elif target.blocking and finisher:
 		target.blocking = false
@@ -210,9 +226,10 @@ func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = fa
 	var distance: float = maxf(1e-20,sqrt(delta.x*delta.x+delta.z*delta.z))
 	if distance<1e-10:
 		distance = 1.0
-	target.vel.x += delta.x/distance*c.knockback
-	target.vel.z += delta.z/distance*c.knockback
-	var hit_context: Dictionary = context if not context.is_empty() else impact_context if source==p and not impact_context.is_empty() else {"presentation_version":1,"move_id":"Melee","actor_id":source.id,"action_sequence":source.get("attackSerial",0),"seed":int(source.get("attackSerial",0)),"color":0xffdca0}
+	var impulse: float = c.knockback*(float(style_tuning.knockback_scale) if melee_hit else 1.0)
+	target.vel.x += delta.x/distance*impulse
+	target.vel.z += delta.z/distance*impulse
+	hit_context.merge(RuleStyles.reaction(hit_context.style,bool(hit_context.get("finisher",finisher)),amount<damage*.5),true)
 	emit("damage",skill_packet(hit_context,"impact",{"id":target.id,"source_id":source.id,"target_id":target.id,"amount":amount,"pos":target.pos+Vector3(0,1.6,0),"blocked":amount<damage*0.5,"finisher":hit_context.get("finisher",finisher),"guard_breaker":finisher}))
 	if target==p:
 		last_damage = clock
@@ -366,7 +383,7 @@ func avatar_state() -> Dictionary:
 func snapshot() -> Dictionary:
 	var e: Dictionary = locked()
 	var target: Variant = null if e.is_empty() else {"id":e.id,"name":e.name,"level":e.level,"health":e.health,"maxHealth":e.maxHealth,"boss":e.boss}
-	return {"skill":skill.duplicate(true),"kaioken":game.kaioken.snapshot(),"avatar":avatar_info(),"instinctFocus":maxf(0,p.get("uiTechniqueUntil",0)-clock),"instinctDodges":int(p.get("uiDodges",UI_DODGES)),"instinctRecharge":maxf(0,float(p.get("uiRecharge",0))-clock),"technique":technique,"techniqueName":move_def(technique).get("name"),
+	return {"style":p.style,"styleBusy":style_busy(),"skill":skill.duplicate(true),"kaioken":game.kaioken.snapshot(),"avatar":avatar_info(),"instinctFocus":maxf(0,p.get("uiTechniqueUntil",0)-clock),"instinctDodges":int(p.get("uiDodges",UI_DODGES)),"instinctRecharge":maxf(0,float(p.get("uiRecharge",0))-clock),"technique":technique,"techniqueName":move_def(technique).get("name"),
 		"beamCharge":minf(1,beam_time/c.beamCharge),"meleeCd":melee_cd,"blastCd":blast_cd,"beamCd":beam_cd,"target":target,"respawn":maxf(0,respawn_at-clock) if respawn_at>0 else 0}
 static func segment_distance(point: Vector3,start: Vector3,end: Vector3) -> float:
 	var delta: Vector3 = end-start
@@ -419,15 +436,16 @@ func update(dt: float,it: Dictionary) -> void:
 		p.yaw = atan2(lock.pos.x-p.pos.x,lock.pos.z-p.pos.z)
 	if p.stun<=0 and not p.charging and not p.blocking:
 		if it.get("melee",false) and melee_cd==0:
-			combo = combo%4+1 if clock-last_swing<c.comboWindow else 1
+			var style_tuning := RuleStyles.get_style(p.style)
+			combo = combo%4+1 if clock-last_swing<float(style_tuning.chain_window) else 1
 			last_swing = clock
-			melee_cd = c.meleeCooldown
-			var target: Dictionary = target_in_front(c.meleeRange*forms.forms.get(p.form,{}).get("size",1))
+			melee_cd = float(style_tuning.cadence[combo-1])
+			var target: Dictionary = target_in_front(float(style_tuning.reach)*forms.forms.get(p.form,{}).get("size",1))
 			p.attackSerial += 1
 			p.attackKind = ["jab","cross","hook","leg kick"][combo-1]
 			impact_context = begin_skill("Melee")
 			if not target.is_empty():
-				hit(target,c.meleeDamage*p.strength*game.kaioken.multiplier()*(1+p.get("egoBoost",0) if p.form=="UltraEgo" else 1)*(c.comboFinish if combo==4 else 1),p,combo==4)
+				hit(target,c.meleeDamage*float(style_tuning.damage_scale)*p.strength*game.kaioken.multiplier()*(1+p.get("egoBoost",0) if p.form=="UltraEgo" else 1)*(c.comboFinish if combo==4 else 1),p,combo==4)
 		impact_context = {}
 		if it.get("ki_blast",false) and blast_cd==0 and fire("KiBlast"):
 			blast_cd = c.blastCooldown
@@ -522,7 +540,10 @@ func update(dt: float,it: Dictionary) -> void:
 			if e.windup<=0 and e.stun<=0 and distance<c.enemyRange+0.5 and not victim.get("invulnerableUntil",0)>clock:
 				e.attackSerial += 1
 				e.attackKind = "cross"
-				hit(victim,(c.enemyDamage+(e.level-1)*c.enemyDamagePerLevel)*(c.bossDamage if e.boss else 1),e)
+				var npc_move := RuleStyles.move(e.style,(int(e.attackSerial)-1)%4+1)
+				var npc_context := npc_move.merged({"presentation_version":1,"move_id":"Melee","actor_id":e.id,"action_sequence":e.attackSerial,"started_at":clock,"seed":absi((str(e.id)+str(e.attackSerial)).hash()),"color":0xffdca0,"origin":e.pos+Vector3.UP,"direction":(victim.pos-e.pos).normalized(),"target_id":victim.id,"socket":npc_move.socket,"pose":"melee_combo","charge":0.0},true)
+				emit("attack",skill_packet(npc_context,"release",{"id":e.id,"kind":"melee","pos":e.pos,"combo":npc_move.combo_step}))
+				hit(victim,(c.enemyDamage+(e.level-1)*c.enemyDamagePerLevel)*(c.bossDamage if e.boss else 1),e,false,npc_context)
 		elif not returning and distance<c.enemyRange and e.cooldown==0 and e.stun==0:
 			e.windup = c.enemyWindup
 			e.cooldown = c.enemyCooldown

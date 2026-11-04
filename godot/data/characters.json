@@ -11,7 +11,8 @@
       "outfit": "TurtleGi",
       "outfitTint": 0,
       "physique": "gokan"
-    }
+    },
+    "style": "turtle"
   },
   "gohan_kid": {
     "name": "Gohin",
@@ -25,7 +26,8 @@
       "outfit": "TurtleGi",
       "outfitTint": 2
     },
-    "scale": 0.68
+    "scale": 0.68,
+    "style": "turtle"
   },
   "gohan": {
     "name": "Gohin",
@@ -39,7 +41,8 @@
       "outfit": "TurtleGi",
       "outfitTint": 2,
       "physique": "gohin"
-    }
+    },
+    "style": "turtle"
   },
   "goten": {
     "name": "Gotin",
@@ -53,7 +56,8 @@
       "outfit": "TurtleGi",
       "outfitTint": 0
     },
-    "scale": 0.6
+    "scale": 0.6,
+    "style": "turtle"
   },
   "trunks_kid": {
     "name": "Kid Tronks",
@@ -67,7 +71,8 @@
       "outfit": "TurtleGi",
       "outfitTint": 6
     },
-    "scale": 0.62
+    "scale": 0.62,
+    "style": "turtle"
   },
   "trunks": {
     "name": "Future Tronks",
@@ -81,7 +86,8 @@
       "outfit": "CapsuleCorp",
       "outfitTint": 1,
       "physique": "tronks"
-    }
+    },
+    "style": "turtle"
   },
   "pan": {
     "name": "Panna",
@@ -96,7 +102,8 @@
       "outfitTint": 5,
       "female": true
     },
-    "scale": 0.5
+    "scale": 0.5,
+    "style": "turtle"
   },
   "piccolo": {
     "name": "Piccor",
@@ -110,7 +117,8 @@
       "outfit": "NamekRobe",
       "outfitTint": 2,
       "physique": "piccor"
-    }
+    },
+    "style": "crane"
   },
   "krillin": {
     "name": "Krilan",
@@ -125,7 +133,8 @@
       "outfitTint": 0,
       "physique": "krilan"
     },
-    "scale": 0.85
+    "scale": 0.85,
+    "style": "turtle"
   },
   "roshi": {
     "name": "Master Roshu",
@@ -140,7 +149,8 @@
       "outfitTint": 6,
       "physique": "roshu"
     },
-    "scale": 0.8
+    "scale": 0.8,
+    "style": "turtle"
   },
   "bulma": {
     "name": "Bulna",
@@ -154,7 +164,8 @@
       "outfit": "CapsuleCorp",
       "outfitTint": 4,
       "female": true
-    }
+    },
+    "style": "turtle"
   },
   "dr_brief": {
     "name": "Dr. Brisk",
@@ -167,7 +178,8 @@
       "build": "Short",
       "outfit": "CapsuleCorp",
       "outfitTint": 4
-    }
+    },
+    "style": "turtle"
   },
   "chichi": {
     "name": "Chi-Mei",
@@ -181,7 +193,8 @@
       "outfit": "CraneGi",
       "outfitTint": 2,
       "female": true
-    }
+    },
+    "style": "turtle"
   },
   "yamcha": {
     "name": "Yamcho",
@@ -195,7 +208,8 @@
       "outfit": "TurtleGi",
       "outfitTint": 0,
       "physique": "yamcho"
-    }
+    },
+    "style": "turtle"
   },
   "tien": {
     "name": "Tenzo",
@@ -209,7 +223,8 @@
       "outfit": "CraneGi",
       "outfitTint": 6,
       "physique": "tenzo"
-    }
+    },
+    "style": "crane"
   },
   "farmer": {
     "name": "Farmer",
@@ -222,7 +237,8 @@
       "build": "Average",
       "outfit": "CraneGi",
       "outfitTint": 1
-    }
+    },
+    "style": "turtle"
   },
   "raditz": {
     "name": "Radix",
@@ -237,7 +253,8 @@
       "outfitTint": 3,
       "physique": "gokan"
     },
-    "scale": 1.08
+    "scale": 1.08,
+    "style": "turtle"
   },
   "nappa": {
     "name": "Nappo",
@@ -252,7 +269,8 @@
       "outfitTint": 3,
       "physique": "nappo"
     },
-    "scale": 1.2
+    "scale": 1.2,
+    "style": "brawler"
   },
   "vegeta": {
     "name": "Vegara",
@@ -267,7 +285,8 @@
       "outfitTint": 1,
       "physique": "vegara"
     },
-    "scale": 0.95
+    "scale": 0.95,
+    "style": "turtle"
   },
   "saibaman": {
     "name": "Saibling",
@@ -281,7 +300,8 @@
       "outfit": "MajinVest",
       "outfitTint": 6
     },
-    "scale": 0.75
+    "scale": 0.75,
+    "style": "turtle"
   },
   "king_kai": {
     "name": "King Kae",
@@ -295,7 +315,8 @@
       "outfit": "TurtleGi",
       "outfitTint": 3
     },
-    "scale": 0.85
+    "scale": 0.85,
+    "style": "turtle"
   },
   "bubbles": {
     "name": "Bubbo",
@@ -309,7 +330,8 @@
       "outfit": "TurtleGi",
       "outfitTint": 3
     },
-    "scale": 0.5
+    "scale": 0.5,
+    "style": "turtle"
   },
   "king_yemma": {
     "name": "King Yemmo",
@@ -325,7 +347,8 @@
       "outfitTint": 2,
       "costume": "yemmo"
     },
-    "scale": 4.2
+    "scale": 4.2,
+    "style": "turtle"
   },
   "princess_snake": {
     "name": "Princess Serpa",
@@ -339,7 +362,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 5,
       "female": true
-    }
+    },
+    "style": "turtle"
   },
   "moori": {
     "name": "Elder Mooru",
@@ -352,7 +376,8 @@
       "build": "Tall",
       "outfit": "NamekRobe",
       "outfitTint": 4
-    }
+    },
+    "style": "turtle"
   },
   "dende": {
     "name": "Dendo",
@@ -366,7 +391,8 @@
       "outfit": "NamekRobe",
       "outfitTint": 4
     },
-    "scale": 0.7
+    "scale": 0.7,
+    "style": "turtle"
   },
   "nail": {
     "name": "Nael",
@@ -379,7 +405,8 @@
       "build": "Tall",
       "outfit": "NamekRobe",
       "outfitTint": 2
-    }
+    },
+    "style": "crane"
   },
   "guru": {
     "name": "Grand Elder Gura",
@@ -393,7 +420,8 @@
       "outfit": "NamekRobe",
       "outfitTint": 4
     },
-    "scale": 2.3
+    "scale": 2.3,
+    "style": "turtle"
   },
   "frieza": {
     "name": "Frigor",
@@ -408,7 +436,8 @@
       "outfitTint": 2,
       "physique": "frigor"
     },
-    "scale": 0.9
+    "scale": 0.9,
+    "style": "speedster"
   },
   "golden_frieza": {
     "name": "Golden Frigor",
@@ -422,7 +451,8 @@
       "outfit": "FrostArmor",
       "outfitTint": 0,
       "physique": "frigor"
-    }
+    },
+    "style": "speedster"
   },
   "zarbon": {
     "name": "Zarvon",
@@ -436,7 +466,8 @@
       "outfit": "FrostArmor",
       "outfitTint": 4,
       "physique": "zarvon"
-    }
+    },
+    "style": "turtle"
   },
   "dodoria": {
     "name": "Dodorra",
@@ -451,7 +482,8 @@
       "outfitTint": 4,
       "physique": "dodorra"
     },
-    "scale": 1.25
+    "scale": 1.25,
+    "style": "brawler"
   },
   "ginyu": {
     "name": "Captain Ginnu",
@@ -464,7 +496,8 @@
       "build": "Muscular",
       "outfit": "SaiyanArmor",
       "outfitTint": 3
-    }
+    },
+    "style": "turtle"
   },
   "recoome": {
     "name": "Rekume",
@@ -479,7 +512,8 @@
       "outfitTint": 3,
       "physique": "recume"
     },
-    "scale": 1.3
+    "scale": 1.3,
+    "style": "brawler"
   },
   "burter": {
     "name": "Burtor",
@@ -493,7 +527,8 @@
       "outfit": "SaiyanArmor",
       "outfitTint": 3
     },
-    "scale": 1.2
+    "scale": 1.2,
+    "style": "speedster"
   },
   "jeice": {
     "name": "Jayce",
@@ -506,7 +541,8 @@
       "build": "Average",
       "outfit": "SaiyanArmor",
       "outfitTint": 3
-    }
+    },
+    "style": "speedster"
   },
   "guldo": {
     "name": "Guldor",
@@ -520,7 +556,8 @@
       "outfit": "SaiyanArmor",
       "outfitTint": 3
     },
-    "scale": 0.7
+    "scale": 0.7,
+    "style": "turtle"
   },
   "frieza_soldier": {
     "name": "Frigor Force soldier",
@@ -533,7 +570,8 @@
       "build": "Average",
       "outfit": "FrostArmor",
       "outfitTint": 3
-    }
+    },
+    "style": "turtle"
   },
   "yardrat_elder": {
     "name": "Yardran Elder",
@@ -547,7 +585,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 2
     },
-    "scale": 0.85
+    "scale": 0.85,
+    "style": "turtle"
   },
   "yardrat": {
     "name": "Yardran",
@@ -561,7 +600,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 6
     },
-    "scale": 0.8
+    "scale": 0.8,
+    "style": "turtle"
   },
   "mecha_frieza": {
     "name": "Mecha Frigor",
@@ -575,7 +615,8 @@
       "outfit": "FrostArmor",
       "outfitTint": 3,
       "physique": "frigor"
-    }
+    },
+    "style": "turtle"
   },
   "king_cold": {
     "name": "King Kold",
@@ -590,7 +631,8 @@
       "outfitTint": 2,
       "physique": "kold"
     },
-    "scale": 1.8
+    "scale": 1.8,
+    "style": "brawler"
   },
   "android_19": {
     "name": "Cyborg 19",
@@ -604,7 +646,8 @@
       "outfit": "PrideTrooper",
       "outfitTint": 4
     },
-    "scale": 1.1
+    "scale": 1.1,
+    "style": "brawler"
   },
   "gero": {
     "name": "Dr. Gerro (Cyborg 20)",
@@ -617,7 +660,8 @@
       "build": "Slim",
       "outfit": "PrideTrooper",
       "outfitTint": 4
-    }
+    },
+    "style": "turtle"
   },
   "android_17": {
     "name": "Cyborg 17",
@@ -631,7 +675,8 @@
       "outfit": "CapsuleCorp",
       "outfitTint": 6,
       "physique": "cyborg_slim"
-    }
+    },
+    "style": "turtle"
   },
   "android_18": {
     "name": "Cyborg 18",
@@ -646,7 +691,8 @@
       "outfitTint": 3,
       "female": true,
       "physique": "cyborg_slim"
-    }
+    },
+    "style": "turtle"
   },
   "android_16": {
     "name": "Cyborg 16",
@@ -661,7 +707,8 @@
       "outfitTint": 6,
       "physique": "cyborg16"
     },
-    "scale": 1.25
+    "scale": 1.25,
+    "style": "brawler"
   },
   "cell": {
     "name": "Cel",
@@ -675,7 +722,8 @@
       "outfit": "FrostArmor",
       "outfitTint": 6,
       "physique": "cel"
-    }
+    },
+    "style": "turtle"
   },
   "cell_jr": {
     "name": "Cel Jr.",
@@ -689,7 +737,8 @@
       "outfit": "FrostArmor",
       "outfitTint": 6
     },
-    "scale": 0.6
+    "scale": 0.6,
+    "style": "turtle"
   },
   "kami": {
     "name": "Kamu",
@@ -702,7 +751,8 @@
       "build": "Tall",
       "outfit": "AngelRobe",
       "outfitTint": 4
-    }
+    },
+    "style": "turtle"
   },
   "mr_popo": {
     "name": "Mr. Pobo",
@@ -715,7 +765,8 @@
       "build": "Short",
       "outfit": "AngelRobe",
       "outfitTint": 5
-    }
+    },
+    "style": "turtle"
   },
   "mr_satan": {
     "name": "Mr. Sadan",
@@ -729,7 +780,8 @@
       "outfit": "CraneGi",
       "outfitTint": 4,
       "physique": "sadan"
-    }
+    },
+    "style": "turtle"
   },
   "videl": {
     "name": "Vidal",
@@ -743,7 +795,8 @@
       "outfit": "CraneGi",
       "outfitTint": 3,
       "female": true
-    }
+    },
+    "style": "turtle"
   },
   "announcer": {
     "name": "Tournament Announcer",
@@ -756,7 +809,8 @@
       "build": "Slim",
       "outfit": "CapsuleCorp",
       "outfitTint": 3
-    }
+    },
+    "style": "turtle"
   },
   "supreme_kai": {
     "name": "Supreme Kae",
@@ -769,7 +823,8 @@
       "build": "Slim",
       "outfit": "AngelRobe",
       "outfitTint": 1
-    }
+    },
+    "style": "crane"
   },
   "kibito": {
     "name": "Kibitto",
@@ -782,7 +837,8 @@
       "build": "Tall",
       "outfit": "AngelRobe",
       "outfitTint": 5
-    }
+    },
+    "style": "crane"
   },
   "elder_kai": {
     "name": "Old Kae",
@@ -796,7 +852,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 5
     },
-    "scale": 0.85
+    "scale": 0.85,
+    "style": "turtle"
   },
   "spopovich": {
     "name": "Spopovik",
@@ -810,7 +867,8 @@
       "outfit": "CraneGi",
       "outfitTint": 3
     },
-    "scale": 1.25
+    "scale": 1.25,
+    "style": "brawler"
   },
   "babidi": {
     "name": "Babido",
@@ -824,7 +882,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 3
     },
-    "scale": 0.6
+    "scale": 0.6,
+    "style": "turtle"
   },
   "dabura": {
     "name": "Dabora",
@@ -839,7 +898,8 @@
       "outfitTint": 3,
       "physique": "morro"
     },
-    "scale": 1.3
+    "scale": 1.3,
+    "style": "turtle"
   },
   "pui_pui": {
     "name": "Poi Poi",
@@ -852,7 +912,8 @@
       "build": "Average",
       "outfit": "SaiyanArmor",
       "outfitTint": 2
-    }
+    },
+    "style": "turtle"
   },
   "yakon": {
     "name": "Yakkon",
@@ -866,7 +927,8 @@
       "outfit": "MajinVest",
       "outfitTint": 6
     },
-    "scale": 1.5
+    "scale": 1.5,
+    "style": "turtle"
   },
   "majin_vegeta": {
     "name": "Majinn Vegara",
@@ -881,7 +943,8 @@
       "outfitTint": 1,
       "physique": "vegara"
     },
-    "scale": 0.95
+    "scale": 0.95,
+    "style": "turtle"
   },
   "fat_buu": {
     "name": "Majinn Boo",
@@ -896,7 +959,8 @@
       "outfitTint": 2,
       "physique": "boo_fat"
     },
-    "scale": 1.35
+    "scale": 1.35,
+    "style": "brawler"
   },
   "super_buu": {
     "name": "Super Boo",
@@ -910,7 +974,8 @@
       "outfit": "MajinVest",
       "outfitTint": 3,
       "physique": "boo_kid"
-    }
+    },
+    "style": "brawler"
   },
   "kid_buu": {
     "name": "Kid Boo",
@@ -925,7 +990,8 @@
       "outfitTint": 3,
       "physique": "boo_kid"
     },
-    "scale": 0.8
+    "scale": 0.8,
+    "style": "speedster"
   },
   "gotenks": {
     "name": "Gotinks",
@@ -939,7 +1005,8 @@
       "outfit": "SaiyanArmor",
       "outfitTint": 1
     },
-    "scale": 0.75
+    "scale": 0.75,
+    "style": "turtle"
   },
   "beerus": {
     "name": "Beeros",
@@ -953,7 +1020,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 3,
       "physique": "beeros"
-    }
+    },
+    "style": "crane"
   },
   "whis": {
     "name": "Wiss",
@@ -967,7 +1035,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 2,
       "physique": "wiss"
-    }
+    },
+    "style": "speedster"
   },
   "oracle_fish": {
     "name": "Oracle Fish",
@@ -981,7 +1050,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 0
     },
-    "scale": 0.5
+    "scale": 0.5,
+    "style": "turtle"
   },
   "sorbet": {
     "name": "Sorbel",
@@ -995,7 +1065,8 @@
       "outfit": "FrostArmor",
       "outfitTint": 3
     },
-    "scale": 0.8
+    "scale": 0.8,
+    "style": "turtle"
   },
   "tagoma": {
     "name": "Tagomo",
@@ -1009,7 +1080,8 @@
       "outfit": "FrostArmor",
       "outfitTint": 3
     },
-    "scale": 1.2
+    "scale": 1.2,
+    "style": "turtle"
   },
   "champa": {
     "name": "Champo",
@@ -1023,7 +1095,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 3
     },
-    "scale": 1.25
+    "scale": 1.25,
+    "style": "turtle"
   },
   "vados": {
     "name": "Vadosa",
@@ -1037,7 +1110,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 1,
       "female": true
-    }
+    },
+    "style": "speedster"
   },
   "hit": {
     "name": "Hitto",
@@ -1051,7 +1125,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 3,
       "physique": "hitto"
-    }
+    },
+    "style": "speedster"
   },
   "cabba": {
     "name": "Kabba",
@@ -1065,7 +1140,8 @@
       "outfit": "EliteArmor",
       "outfitTint": 5,
       "physique": "tronks"
-    }
+    },
+    "style": "turtle"
   },
   "frost": {
     "name": "Frosk",
@@ -1078,7 +1154,8 @@
       "build": "Average",
       "outfit": "FrostArmor",
       "outfitTint": 1
-    }
+    },
+    "style": "speedster"
   },
   "botamo": {
     "name": "Botama",
@@ -1092,7 +1169,8 @@
       "outfit": "MajinVest",
       "outfitTint": 0
     },
-    "scale": 1.4
+    "scale": 1.4,
+    "style": "brawler"
   },
   "magetta": {
     "name": "Magetto",
@@ -1106,7 +1184,8 @@
       "outfit": "PrideTrooper",
       "outfitTint": 3
     },
-    "scale": 1.6
+    "scale": 1.6,
+    "style": "brawler"
   },
   "mai": {
     "name": "Future Mae",
@@ -1120,7 +1199,8 @@
       "outfit": "CapsuleCorp",
       "outfitTint": 6,
       "female": true
-    }
+    },
+    "style": "turtle"
   },
   "goku_black": {
     "name": "Gokan Black",
@@ -1134,7 +1214,8 @@
       "outfit": "TurtleGi",
       "outfitTint": 3,
       "physique": "gokan"
-    }
+    },
+    "style": "turtle"
   },
   "zamasu": {
     "name": "Zamazu",
@@ -1147,7 +1228,8 @@
       "build": "Slim",
       "outfit": "AngelRobe",
       "outfitTint": 6
-    }
+    },
+    "style": "crane"
   },
   "grand_priest": {
     "name": "Grand Priest",
@@ -1161,7 +1243,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 1
     },
-    "scale": 1.05
+    "scale": 1.05,
+    "style": "turtle"
   },
   "zeno": {
     "name": "Grand Zenno",
@@ -1175,7 +1258,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 2
     },
-    "scale": 0.6
+    "scale": 0.6,
+    "style": "turtle"
   },
   "jiren": {
     "name": "Jiran",
@@ -1190,7 +1274,8 @@
       "outfitTint": 5,
       "physique": "jiran"
     },
-    "scale": 1.25
+    "scale": 1.25,
+    "style": "brawler"
   },
   "toppo": {
     "name": "Toppa",
@@ -1205,7 +1290,8 @@
       "outfitTint": 5,
       "physique": "toppa"
     },
-    "scale": 1.35
+    "scale": 1.35,
+    "style": "brawler"
   },
   "kefla": {
     "name": "Kafla",
@@ -1220,7 +1306,8 @@
       "outfitTint": 6,
       "female": true,
       "physique": "kafla"
-    }
+    },
+    "style": "speedster"
   },
   "broly": {
     "name": "Brolo",
@@ -1235,7 +1322,8 @@
       "outfitTint": 6,
       "physique": "brolo"
     },
-    "scale": 1.35
+    "scale": 1.35,
+    "style": "brawler"
   },
   "paragus": {
     "name": "Paragos",
@@ -1249,7 +1337,8 @@
       "outfit": "SaiyanArmor",
       "outfitTint": 3,
       "physique": "paragos"
-    }
+    },
+    "style": "turtle"
   },
   "cheelai": {
     "name": "Chelai",
@@ -1264,7 +1353,8 @@
       "outfitTint": 4,
       "female": true
     },
-    "scale": 0.85
+    "scale": 0.85,
+    "style": "turtle"
   },
   "lemo": {
     "name": "Lemmo",
@@ -1278,7 +1368,8 @@
       "outfit": "FrostArmor",
       "outfitTint": 4
     },
-    "scale": 0.85
+    "scale": 0.85,
+    "style": "turtle"
   },
   "gamma1": {
     "name": "Gama 1",
@@ -1292,7 +1383,8 @@
       "outfit": "PrideTrooper",
       "outfitTint": 5,
       "physique": "gama"
-    }
+    },
+    "style": "speedster"
   },
   "gamma2": {
     "name": "Gama 2",
@@ -1306,7 +1398,8 @@
       "outfit": "PrideTrooper",
       "outfitTint": 5,
       "physique": "gama"
-    }
+    },
+    "style": "speedster"
   },
   "hedo": {
     "name": "Dr. Heddo",
@@ -1319,7 +1412,8 @@
       "build": "Slim",
       "outfit": "CapsuleCorp",
       "outfitTint": 4
-    }
+    },
+    "style": "turtle"
   },
   "magenta": {
     "name": "Majenta",
@@ -1332,7 +1426,8 @@
       "build": "Short",
       "outfit": "CapsuleCorp",
       "outfitTint": 5
-    }
+    },
+    "style": "turtle"
   },
   "cell_max": {
     "name": "Cel Max",
@@ -1346,7 +1441,8 @@
       "outfit": "FrostArmor",
       "outfitTint": 5
     },
-    "scale": 3.2
+    "scale": 3.2,
+    "style": "brawler"
   },
   "shenron": {
     "name": "Shenra",
@@ -1361,7 +1457,8 @@
       "outfitTint": 6
     },
     "scale": 3,
-    "dragon": "earth"
+    "dragon": "earth",
+    "style": "turtle"
   },
   "merus": {
     "name": "Meros",
@@ -1375,7 +1472,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 2,
       "physique": "wiss"
-    }
+    },
+    "style": "speedster"
   },
   "moro": {
     "name": "Morro",
@@ -1390,7 +1488,8 @@
       "outfitTint": 3,
       "physique": "morro"
     },
-    "scale": 1.3
+    "scale": 1.3,
+    "style": "crane"
   },
   "saganbo": {
     "name": "Sagambo",
@@ -1405,7 +1504,8 @@
       "outfitTint": 3,
       "physique": "nappo"
     },
-    "scale": 1.2
+    "scale": 1.2,
+    "style": "brawler"
   },
   "granolah": {
     "name": "Granolo",
@@ -1419,7 +1519,8 @@
       "outfit": "CapsuleCorp",
       "outfitTint": 1,
       "physique": "tronks"
-    }
+    },
+    "style": "crane"
   },
   "monaito": {
     "name": "Monaido",
@@ -1432,7 +1533,8 @@
       "build": "Tall",
       "outfit": "AngelRobe",
       "outfitTint": 4
-    }
+    },
+    "style": "turtle"
   },
   "gas": {
     "name": "Gaz",
@@ -1446,7 +1548,8 @@
       "outfit": "AngelRobe",
       "outfitTint": 3,
       "physique": "hitto"
-    }
+    },
+    "style": "crane"
   },
   "black_frieza": {
     "name": "Black Frigor",
@@ -1461,7 +1564,8 @@
       "outfitTint": 2,
       "physique": "frigor"
     },
-    "scale": 0.9
+    "scale": 0.9,
+    "style": "speedster"
   },
   "porunga": {
     "name": "Porunda",
@@ -1476,7 +1580,8 @@
       "outfitTint": 6
     },
     "scale": 5,
-    "dragon": "namek"
+    "dragon": "namek",
+    "style": "turtle"
   },
   "super_shenron": {
     "name": "Super Shenra",
@@ -1491,7 +1596,8 @@
       "outfitTint": 6
     },
     "scale": 8,
-    "dragon": "super"
+    "dragon": "super",
+    "style": "turtle"
   },
   "toronbo": {
     "name": "Toronba",
@@ -1506,7 +1612,8 @@
       "outfitTint": 6
     },
     "scale": 4,
-    "dragon": "cereal"
+    "dragon": "cereal",
+    "style": "turtle"
   },
   "training_guide": {
     "name": "Training Guide",
@@ -1519,6 +1626,7 @@
       "build": "Average",
       "outfit": "TurtleGi",
       "outfitTint": 1
-    }
+    },
+    "style": "turtle"
   }
 }

@@ -3,6 +3,7 @@ extends RuleGame
 var connection: WeakRef
 func send(name: String,args: Array = []) -> void:
 	if connection!=null and connection.get_ref()!=null: connection.get_ref().command(name,args)
+func set_style(id: String) -> Variant: send("set_style",[id]); return null
 func select_form(id: String) -> Variant: send("form",[id]); return null
 func choose_form_path(path: String) -> Variant: send("path",[path]); return null
 func customize_appearance(changes: Dictionary) -> Variant: send("appearance",[changes]); return null

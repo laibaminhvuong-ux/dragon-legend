@@ -40,6 +40,7 @@ static func endpoint_valid(url: String) -> bool:
 	return (url.begins_with("wss://") and url.length()>6 or url.begins_with("ws://") and url.length()>5) and "@" not in url and " " not in url and "\n" not in url
 
 static func import_valid(slot: Dictionary) -> bool:
+	if slot.has("style") and not RuleStyles.valid(slot.style): return false
 	if not slot.get("race") is String or not RuleTables.table("races").has(slot.race) or not slot.get("appearance") is Dictionary: return false
 	var level: Variant = slot.get("level")
 	if not (level is int or level is float) or not is_finite(float(level)) or level<1 or level>2000: return false

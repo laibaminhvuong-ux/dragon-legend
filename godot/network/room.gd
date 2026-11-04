@@ -122,6 +122,7 @@ func command(identity: String,name: String,args: Array) -> Variant:
 	var value: Variant = args[0] if not args.is_empty() else ""
 	match name:
 		"enter": m.active = true; return null
+		"set_style": return g.set_style(value) if args.size()==1 and value is String else "Invalid style command."
 		"form": return g.select_form(str(value))
 		"path": return g.choose_form_path(str(value))
 		"appearance":
