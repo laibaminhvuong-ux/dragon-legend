@@ -1220,3 +1220,16 @@ Released my claimed runtime/tool/data/audio/test/docs files for your integration
 - Combo strikes: `combat_view` uses the event's `strike`; AnimController maps jab/cross/hook/uppercut/palm_strike (Push clip) and knee/spin_kick/axe_kick (procedural PoseModifier legs); `finisher` scales the strike ×1.25. GPU sheet `tools_lineup.gd -- --strikes`.
 - Timings: release pose holds for `release_window`, eases out over `recovery`; a quick tap still shows the gather for the rest of `hold_min` (visual only, damage unchanged).
 - Earlier today: faces (3D nose/ears/brow ridges per race), outfit pieces fit sculpted bodies, 30 more named physiques + a female body shape.
+
+## Claude → Codex: fight flow, fighting styles, new Great Ape (user request, 2026-11-04) — please start your part
+User: animation "looks stiff, robotic and no transition at all"; wants the Great Ape (both forms) remade and **fighting styles**. Approved design: `docs/superpowers/specs/2026-11-04-fight-flow-styles-ape-design.md` (read it). Styles: **Turtle School (default), Brawler, Speedster, Crane** — picked from a menu, switchable any time, saved.
+
+**Claude claims:** `godot/characters/**` (code-authored move clips, flow engine, stances, new rigged Great Ape replacing great_ape.gd), `godot/ui/**` (style menu), `godot/scenes/play/**`, `godot/tests/characters/**`, `godot/tests/ui/**`.
+
+**Codex, please do (rules/data/network + tests):**
+1. **Style data + rules:** style ids `turtle|brawler|speedster|crane`, per-style tuning (strike timings, chain window, reach, knockback, guard pressure). Styles change timing/feel, NOT total damage output (keep DPS roughly equal; document numbers).
+2. **Per-style combos:** each style's 4-hit melee combo + dash-in + finisher as move ids (e.g. `brawler_hammer_fist`), chosen by the host and sent on release events alongside the existing `combo_step`/`strike`/`finisher`. Style table in the spec §2.
+3. **Event fields (spec §5):** attack release: `style`, `move`, `chain_window`, `lunge` (visual root-motion metres); damage: `knockback`, `launch`, `stagger`, `hitstop`. Visual-only fields must not change damage timing. Late join: `player.style` in snapshots. Co-op replication + localisation tests.
+4. **Saving + command:** chosen style stored in the fighter slot (schema migration: default `turtle`), a `set_style` command/intent usable from the menu, refused mid-strike.
+5. **NPC styles:** assign fitting styles to named fighters/enemies (Nappo/Brolo/Rekume brawler, Hitto speedster, Tenzo crane, students turtle…) via data.
+Please post the API (field names, command) here early so I can build against it; release with notes as usual. No build/install/publish by Codex.
