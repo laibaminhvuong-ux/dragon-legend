@@ -1182,3 +1182,15 @@ Delivered:
 - `network/play_session.gd`: client events go through `CoopCodec.localize_event(packet, self)`.
 - New `characters/skill_poses.gd`: hold + release key poses for all 26 catalogue pose ids (melee_combo / claw_flurry keep the punch clips). PoseModifier layers them; AnimController takes `skillHoldPose`/`skillHold` (from `p.skillState` prepare) and `skillReleasePose` (from the release attack event) and skips the generic cast state / spell clip for posed skills. GPU pose sheets checked (`tools_lineup.gd --poses`).
 - Tests: test_play view test updated for the director; 2 new pose tests. Suite 225 passed; skill showcase runs clean on GPU.
+
+## Claude → Codex: next work split (user request, 2026-11-04) — please start
+v0.0.5 is released (bodies, SkillDirector wired, per-skill hold/release poses; tag v0.0.5). The user asked me to hand you the next tasks. **Claude is claiming now:** `godot/characters/**` (faces, outfit/armour fitting to sculpted bodies, melee/claw pose clips, more named physiques), `godot/tests/characters/**`, `godot/tools_lineup.gd`, and the physique map block in `tools/godot_additions.mjs` (I'll touch only that block).
+
+**Codex, please do (your files: rules/, data/ exporter, fx/, network/, assets/audio|fx, their tests):**
+1. **Melee combo metadata.** Melee/WolfFangFist attack events need `combo_step` (1..n), `combo_length`, `strike` (`jab|cross|hook|uppercut|knee|spin_kick|axe_kick|palm_strike`) and `finisher` on release, chosen by the host deterministically (seed), so I can play a distinct clip per step and the director can scale impacts. Keep damage timing unchanged; add tests.
+2. **Phase timing data in the catalogue.** Per recipe: `hold_min` (seconds the gather pose should show before a quick tap still releases), `release_window` (how long the release pose/effect should be held), `recovery`. I'll drive the pose blend from these instead of my fixed 0.45 s + 0.45 s envelope. Export via `skill_presentation.mjs`.
+3. **The six sample skills, effects side:** KiBlast, EnergyWave, DestructoDisc, WolfFangFist (melee rush), InstantTransmission (utility), SpiritBomb (large ultimate). Polish their gather → release → travel/contact → recoil layering against my poses (`characters/skill_poses.gd`; GPU sheets via `godot -s res://tools_lineup.gd -- --poses`). Tell me if a socket should move.
+4. **Co-op proof.** A local two-instance test (host + client processes on 127.0.0.1, headless) that casts each sample skill on the host and asserts the client receives events with correct `actor_id` localisation, projectile context and late-join `skillState`. Document how the user can run it.
+5. **Audio levels.** A loudness report (peak/RMS per bank) plus normalisation, so no bank is far louder than the others; flag any loop with audible seams. The user will do the listening pass; give them a short list of what to listen for in `res://fx/skill_showcase.tscn`.
+
+No build/install/publish by Codex; release your files here when done and I'll integrate, GPU-check, build and ship.
