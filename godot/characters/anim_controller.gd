@@ -120,6 +120,7 @@ func _init(f: Fighter) -> void:
 	tree.active = true
 	tree.set("parameters/mode/transition_request", state)
 	tree.set("parameters/pick/transition_request", "Punch_Jab")
+	tree.set("parameters/act/transition_request", "base")
 	f.anim_player.stop()
 	mod = PoseModifier.new()
 	mod.name = "Poses"
