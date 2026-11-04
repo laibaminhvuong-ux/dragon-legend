@@ -84,6 +84,33 @@ func _ready() -> void:
 				play.forced = {"beam": true}
 				await get_tree().create_timer(float(_args.get("hold", 1.2))).timeout
 				play.forced = {"beam": false}
+		"house":   # dev: stand in front of a walk-in house's doorway and walk in (cutaway / collision checks)
+			await get_tree().create_timer(1.2).timeout
+			if play != null:
+				var g: RuleGame = play.game
+				var px: Vector3 = g.player.pos
+				var best: Dictionary = {}
+				var bd := INF
+				for l: Dictionary in g.zone.landmarks:
+					if str(l.get("type", "")) != "town": continue
+					for b: Dictionary in RuleTown.layout(l).buildings:
+						if str(b.kind) not in RuleTown.WALK_IN: continue
+						var f := RuleTown._frame(l, b)
+						var dd := Vector2(float(f.x) - px.x, float(f.z) - px.z).length()
+						if dd < bd: bd = dd; best = f
+				if not best.is_empty():
+					var r := float(best.rot)
+					var front := float(best.hd) * (0.78 if best.round else 1.0) + 5.0
+					var sx := float(best.x) + sin(r) * front
+					var sz := float(best.z) + cos(r) * front
+					g.player.pos = Vector3(sx, g.zone.height_at(sx, sz) + 0.1, sz)
+					play.prev_pos = g.player.pos
+					g.player.yaw = r + PI
+					play.follow.set_yaw(r + PI)
+					await get_tree().create_timer(0.4).timeout
+					play.forced = {"move_x": sin(r + PI), "move_z": cos(r + PI)}
+					await get_tree().create_timer(float(_args.get("walkfor", 2.4))).timeout
+					play.forced = {}
 		"brawl":   # dev: walk up to the first enemy, lock on and throw a few full combos (style recordings)
 			await get_tree().create_timer(1.5).timeout
 			if play != null and not play.game.combat.enemies.is_empty():

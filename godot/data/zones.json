@@ -3286,5 +3286,215 @@
       "x": 18,
       "z": -67.5
     }
+  },
+  "interior_home": {
+    "name": "House",
+    "planet": "Interior",
+    "saga": "Interior",
+    "kind": "interior",
+    "terrain": {
+      "size": 90,
+      "ground": "stone",
+      "hills": {
+        "amp": 0,
+        "scale": 50
+      },
+      "flatSpawn": 44,
+      "spawn": {
+        "x": 0,
+        "z": 3.4
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 34,
+        "azimuth": 205
+      },
+      "trees": "broadleaf",
+      "treeCount": 0,
+      "bushes": 0,
+      "rocks": 0,
+      "stones": 0
+    },
+    "landmarks": [
+      {
+        "type": "interior",
+        "style": "home",
+        "name": "House",
+        "x": 0,
+        "z": 0
+      }
+    ],
+    "ceiling": 2.1,
+    "spawnYaw": 3.141592653589793
+  },
+  "interior_tower": {
+    "name": "Tower Lobby",
+    "planet": "Interior",
+    "saga": "Interior",
+    "kind": "interior",
+    "terrain": {
+      "size": 90,
+      "ground": "stone",
+      "hills": {
+        "amp": 0,
+        "scale": 50
+      },
+      "flatSpawn": 44,
+      "spawn": {
+        "x": 0,
+        "z": 8.4
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 34,
+        "azimuth": 205
+      },
+      "trees": "broadleaf",
+      "treeCount": 0,
+      "bushes": 0,
+      "rocks": 0,
+      "stones": 0
+    },
+    "landmarks": [
+      {
+        "type": "interior",
+        "style": "tower",
+        "name": "Tower Lobby",
+        "x": 0,
+        "z": 0
+      }
+    ],
+    "ceiling": 4.9,
+    "spawnYaw": 3.141592653589793
+  },
+  "interior_lab": {
+    "name": "Laboratory",
+    "planet": "Interior",
+    "saga": "Interior",
+    "kind": "interior",
+    "terrain": {
+      "size": 90,
+      "ground": "stone",
+      "hills": {
+        "amp": 0,
+        "scale": 50
+      },
+      "flatSpawn": 44,
+      "spawn": {
+        "x": 0,
+        "z": 8.4
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 34,
+        "azimuth": 205
+      },
+      "trees": "broadleaf",
+      "treeCount": 0,
+      "bushes": 0,
+      "rocks": 0,
+      "stones": 0
+    },
+    "landmarks": [
+      {
+        "type": "interior",
+        "style": "lab",
+        "name": "Laboratory",
+        "x": 0,
+        "z": 0
+      }
+    ],
+    "ceiling": 4.4,
+    "spawnYaw": 3.141592653589793
+  },
+  "interior_temple": {
+    "name": "Temple Hall",
+    "planet": "Interior",
+    "saga": "Interior",
+    "kind": "interior",
+    "terrain": {
+      "size": 90,
+      "ground": "stone",
+      "hills": {
+        "amp": 0,
+        "scale": 50
+      },
+      "flatSpawn": 44,
+      "spawn": {
+        "x": 0,
+        "z": 10.4
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 34,
+        "azimuth": 205
+      },
+      "trees": "broadleaf",
+      "treeCount": 0,
+      "bushes": 0,
+      "rocks": 0,
+      "stones": 0
+    },
+    "landmarks": [
+      {
+        "type": "interior",
+        "style": "temple",
+        "name": "Temple Hall",
+        "x": 0,
+        "z": 0
+      }
+    ],
+    "ceiling": 7.9,
+    "spawnYaw": 3.141592653589793
+  },
+  "interior_hangar": {
+    "name": "Hangar",
+    "planet": "Interior",
+    "saga": "Interior",
+    "kind": "interior",
+    "terrain": {
+      "size": 90,
+      "ground": "stone",
+      "hills": {
+        "amp": 0,
+        "scale": 50
+      },
+      "flatSpawn": 44,
+      "spawn": {
+        "x": 0,
+        "z": 11.4
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 34,
+        "azimuth": 205
+      },
+      "trees": "broadleaf",
+      "treeCount": 0,
+      "bushes": 0,
+      "rocks": 0,
+      "stones": 0
+    },
+    "landmarks": [
+      {
+        "type": "interior",
+        "style": "hangar",
+        "name": "Hangar",
+        "x": 0,
+        "z": 0
+      }
+    ],
+    "ceiling": 10.9,
+    "spawnYaw": 3.141592653589793
   }
 }

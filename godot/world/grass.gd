@@ -155,4 +155,6 @@ static func _paved(towns: Array, x: float, z: float) -> bool:
 			return true
 		if RuleTown._on_road(RuleTown.layout(l), lx, lz, 0.6):
 			return true
+		if not RuleTown.inside(l, x, z).is_empty():   # no grass on the floor of a walk-in building
+			return true
 	return false

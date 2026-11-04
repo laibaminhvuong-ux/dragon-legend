@@ -193,3 +193,78 @@ static func _garden(out: Dictionary, r: NoiseRules.Random32, radius: float) -> v
 	for i in 4:
 		var a: float = r.next_float() * TAU
 		out.extras.append({"kind": "field", "x": cos(a) * radius * 0.6, "z": sin(a) * radius * 0.6, "w": 16.0, "d": 10.0, "rot": r.next_float() * PI})
+
+# ---------------------------------------------------------------------------------------- solid and enterable
+## Houses, cabins and dome houses are hollow: four walls with a doorway on the front (+z) side, so you walk in.
+const WALK_IN := ["house", "cabin", "dome"]
+## Big buildings are solid, with a door that loads their interior map (RuleInterior style id).
+const INTERIOR := {"tower": "interior_tower", "office": "interior_tower", "lighthouse": "interior_tower", "shrine": "interior_temple",
+	"windmill": "interior_home"}
+const WALL := 0.35
+const DOOR := 1.9
+
+## A building's world frame: centre, rotation, half sizes (metres).
+static func _frame(l: Dictionary, b: Dictionary) -> Dictionary:
+	var s := float(l.get("scale", 1.0))
+	var lr := float(l.get("rot", 0.0))
+	var c := cos(lr); var sn := sin(lr)
+	var bx := float(b.x) * s; var bz := float(b.z) * s
+	var round_kind := str(b.kind) in ["tower", "lighthouse", "windmill", "dome"]
+	var hw := float(b.w) * 0.5 * s; var hd := float(b.d) * 0.5 * s
+	if str(b.kind) == "lighthouse": hw = 2.4 * s; hd = 2.4 * s
+	if str(b.kind) == "windmill": hw = 2.6 * s; hd = 2.6 * s
+	return {"x": float(l.x) + bx * c + bz * sn, "z": float(l.z) - bx * sn + bz * c, "rot": lr + float(b.rot), "hw": hw, "hd": hd,
+		"h": float(b.h) * s, "round": round_kind}
+
+static func _box(f: Dictionary, lx: float, lz: float, hw: float, hd: float, h: float) -> Dictionary:
+	var r := float(f.rot)
+	return {"x": float(f.x) + lx * cos(r) + lz * sin(r), "z": float(f.z) - lx * sin(r) + lz * cos(r), "rot": r, "hw": hw, "hd": hd,
+		"height": h, "radius": sqrt(hw * hw + hd * hd)}
+
+## Oriented boxes for the rules (collision): walls for walk-in buildings, one solid box for the rest.
+static func walls(l: Dictionary) -> Array:
+	var out: Array = []
+	for b: Dictionary in layout(l).buildings:
+		if str(b.kind) in ["field", "plaza", "pier", "boat", "bonfire", "fountain", "lamp"]:
+			continue
+		var f := _frame(l, b)
+		var hw: float = f.hw; var hd: float = f.hd; var h: float = f.h
+		if str(b.kind) in WALK_IN:
+			if f.round:   # dome houses: a square of walls just inside the round wall
+				hw *= 0.78; hd *= 0.78
+			var t := WALL
+			out.append(_box(f, 0.0, -hd + t * 0.5, hw, t * 0.5, h))            # back
+			out.append(_box(f, -hw + t * 0.5, 0.0, t * 0.5, hd, h))            # left
+			out.append(_box(f, hw - t * 0.5, 0.0, t * 0.5, hd, h))             # right
+			var side := (hw - DOOR * 0.5) * 0.5                                  # front, either side of the doorway
+			out.append(_box(f, -DOOR * 0.5 - side, hd - t * 0.5, side, t * 0.5, h))
+			out.append(_box(f, DOOR * 0.5 + side, hd - t * 0.5, side, t * 0.5, h))
+		else:
+			out.append(_box(f, 0.0, 0.0, hw * (0.86 if f.round else 1.0), hd * (0.86 if f.round else 1.0), h))
+	return out
+
+## Doors of the big buildings: [{x, z, yaw (facing out), interior, name}].
+static func doors(l: Dictionary) -> Array:
+	var out: Array = []
+	for b: Dictionary in layout(l).buildings:
+		if not INTERIOR.has(str(b.kind)):
+			continue
+		var f := _frame(l, b)
+		var d := _box(f, 0.0, float(f.hd) * (0.86 if f.round else 1.0) + 1.3, 0.1, 0.1, 1.0)
+		out.append({"x": d.x, "z": d.z, "yaw": float(f.rot), "interior": INTERIOR[str(b.kind)],
+			"name": str(l.get("name", "Building")) + " " + str(b.kind).capitalize()})
+	return out
+
+## The walk-in building around a point, or {} (the view hides that roof; the camera stays inside).
+static func inside(l: Dictionary, x: float, z: float) -> Dictionary:
+	for b: Dictionary in layout(l).buildings:
+		if not str(b.kind) in WALK_IN:
+			continue
+		var f := _frame(l, b)
+		var r := float(f.rot)
+		var dx := x - float(f.x); var dz := z - float(f.z)
+		var lx := dx * cos(r) - dz * sin(r); var lz := dx * sin(r) + dz * cos(r)
+		var k := 0.78 if f.round else 1.0
+		if absf(lx) < float(f.hw) * k and absf(lz) < float(f.hd) * k:
+			return f
+	return {}

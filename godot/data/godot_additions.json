@@ -1,5 +1,10 @@
 {
   "zones": [
+    "interior_hangar",
+    "interior_home",
+    "interior_lab",
+    "interior_temple",
+    "interior_tower",
     "snake_way"
   ],
   "note": "Zones changed for the Godot game only; JS parity skips them."

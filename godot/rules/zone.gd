@@ -238,6 +238,44 @@ func surface_at(x: float, z: float) -> String:
 		return "sand"
 	return "dirt" if dirt_at(x,z) > 0.55 else "grass"
 
+## Landmarks with an interior map, entered through a door in front of them.
+const LANDMARK_INTERIORS := {"capsulecorp": "interior_lab", "kamehouse": "interior_home", "farmhouse": "interior_home", "hangar": "interior_hangar",
+	"bunker": "interior_lab", "radartower": "interior_tower", "labdoor": "interior_lab"}
+var _doors: Variant = null
+
+## Building doors on this map: [{x, z, yaw, interior, name}] (the interact key enters); in an interior, its exit.
+func doors() -> Array:
+	if _doors != null:
+		return _doors
+	var out: Array = []
+	for l: Dictionary in landmarks:
+		var t := str(l.get("type", ""))
+		if t == "town":
+			out.append_array(RuleTown.doors(l))
+		elif t == "interior":
+			var e := RuleInterior.exit_door(str(l.get("style", "home")))
+			out.append({"x": float(l.x) + float(e.x), "z": float(l.z) + float(e.z), "yaw": 0.0, "interior": "", "exit": true, "name": "Exit"})
+		elif LANDMARK_INTERIORS.has(t):
+			var r := float(l.get("collide", 4.0)) * float(l.get("scale", 1.0)) + 1.5
+			var rot := float(l.get("rot", 0.0))
+			out.append({"x": float(l.x) + sin(rot) * r, "z": float(l.z) + cos(rot) * r, "yaw": rot, "interior": LANDMARK_INTERIORS[t],
+				"name": str(l.get("name", t.capitalize()))})
+	_doors = out
+	return out
+
+## The walk-in building the point is inside (its frame), or {}.
+func inside_building(x: float, z: float) -> Dictionary:
+	for l: Dictionary in landmarks:
+		if str(l.get("type", "")) == "town" and Vector2(x - float(l.x), z - float(l.z)).length() < float(l.get("radius", 200)) * float(l.get("scale", 1.0)) + 10.0:
+			var f := RuleTown.inside(l, x, z)
+			if not f.is_empty():
+				return f
+	return {}
+
+## Interior maps have a ceiling (feet height above which you can't fly), else INF.
+func ceiling() -> float:
+	return float(def.get("ceiling", INF))
+
 func props() -> RefCounted:
 	if _props == null:
 		_props = PropSet.new(self)
@@ -366,9 +404,16 @@ class PropSet extends RefCounted:
 		for l: Dictionary in zone.landmarks:
 			if l.get("collide",0):
 				_add({"x":l.x,"z":l.z,"radius":l.collide*l.scale,"top":zone.height_at(l.x,l.z)+12*l.scale})
-			if l.get("type")=="town":   # every building in an open-world town is solid
-				for c: Dictionary in RuleTown.colliders(l):
-					_add({"x":c.x,"z":c.z,"radius":c.radius,"top":zone.height_at(c.x,c.z)+c.height})
+			if l.get("type")=="town":   # every building in an open-world town is solid: walls as oriented boxes
+				for c: Dictionary in RuleTown.walls(l):
+					var box: Dictionary = c.duplicate()
+					box.top = zone.height_at(c.x,c.z)+float(c.height)
+					_add(box)
+			if l.get("type")=="interior":   # an interior map: the room's walls and furniture
+				for c: Dictionary in RuleInterior.walls(str(l.get("style","home")),float(l.x),float(l.z)):
+					var box: Dictionary = c.duplicate()
+					box.top = zone.height_at(c.x,c.z)+float(c.height)
+					_add(box)
 
 	func _add(c: Dictionary) -> void:
 		var cell := Vector2i(floori(c.x/16.0),floori(c.z/16.0))

@@ -221,6 +221,21 @@ func travel(zone_id: String) -> void:
 	SaveStore.save_slot(slot_index, slot)
 	travel_requested.emit(zone_id)
 
+## Walk-in buildings: cut the one you're in away above waist height; interiors keep the camera in the room.
+func _building_view(pos: Vector3) -> void:
+	WorldTown.ensure_globals()
+	var inside: Dictionary = game.zone.inside_building(pos.x, pos.z) if game.zone.has_method("inside_building") else {}
+	if inside.is_empty():
+		RenderingServer.global_shader_parameter_set(&"inside_building", Vector4.ZERO)
+	else:
+		RenderingServer.global_shader_parameter_set(&"inside_building", Vector4(float(inside.x), float(inside.z),
+			maxf(float(inside.hw), float(inside.hd)) * 1.5 + 1.0, game.zone.height_at(float(inside.x), float(inside.z))))
+	var interior := str(game.zone.def.get("kind", "")) == "interior"
+	follow.max_distance = 6.0 if interior else (5.0 if not inside.is_empty() else INF)
+	if interior and not follow.bounds.has_area():
+		var d: Dictionary = RuleInterior.dims(RuleInterior.style_of(game.zone.id))
+		follow.bounds = Rect2(-float(d.w) * 0.5 + 0.6, -float(d.d) * 0.5 + 0.6, float(d.w) - 1.2, float(d.d) - 1.2)
+
 ## Per frame: interpolate, animate, move the camera.
 func render(frame_dt: float, alpha: float) -> void:
 	if game == null:
@@ -240,6 +255,7 @@ func render(frame_dt: float, alpha: float) -> void:
 		tutorial.look(absf(look.x) + absf(look.y))
 	if _look_signature() != _look_key:
 		_build_player()
+	_building_view(pos)
 	player.visible = float(p.health) > 0.0
 	player.position = pos
 	player.rotation.y = float(p.yaw)

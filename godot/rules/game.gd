@@ -46,6 +46,11 @@ func _init(index: int = 0,saved: Dictionary = {},bus: Object = null) -> void:
 	player = {"id":"player","kind":"player","style":slot.style,"pos":spawn,"vel":Vector3.ZERO,"yaw":0.0,"onGround":spawn.y<=zone.height_at(spawn.x,spawn.z),"form":"",
 		"health":0.0,"maxHealth":0.0,"ki":0.0,"maxKi":0.0,"kiCostScale":1.0,"runSpeed":0.0,"strength":1.0,"kiPower":1.0,"powerLevel":0,
 		"flying":false,"sprinting":false,"dashing":false,"charging":false,"blocking":false,"stun":0.0,"lockTarget":null,"kaioken":0,"attackSerial":0,"attackKind":"jab"}
+	if slot.get("position")==null and def_has_spawn_yaw():
+		player.yaw = float(zone.def.spawnYaw)
+	if slot.get("returnYaw")!=null:   # back outside a building's door, facing away from it
+		player.yaw = float(slot.returnYaw)
+		slot.erase("returnYaw")
 	entities = [player]
 	refresh_derived(true)
 	kaioken = RuleKaioken.new(self)
@@ -224,10 +229,43 @@ func current_region() -> String:
 ## Set when the player sets off for another world: every later save of this session (the play scene saves again
 ## while closing) keeps that destination and its arrival point instead of the spot the player left.
 var leaving_to := ""
+## With leaving_to: where to arrive (a world position, e.g. back outside a building's door) instead of the spawn.
+var leaving_position: Variant = null
+func def_has_spawn_yaw() -> bool:
+	return zone.def.has("spawnYaw")
+
+## Enters a building's interior map (a door from zone.doors()); remembers where to come back to. Returns the
+## interior zone id (the play scene travels there), or a refusal String.
+func enter_building(door: Dictionary) -> Variant:
+	var target := str(door.get("interior", ""))
+	if target=="" or not RuleTables.table("zones").has(target):
+		return "This door is locked."
+	if player.health<=0:
+		return "You can't do that now."
+	var out := Vector3(float(door.x)+sin(float(door.yaw))*1.6,0.0,float(door.z)+cos(float(door.yaw))*1.6)
+	out.y = zone.height_at(out.x,out.z)+0.1
+	slot.returnTo = {"zone":current_region(),"position":RuleRuntime.position(out),"yaw":float(door.yaw),"mapSpace":slot.get("mapSpace")}
+	leaving_to = target
+	leaving_position = null
+	return target
+
+## Leaves an interior map through its exit: back outside the door you came in by. Returns the zone id to travel to.
+func leave_building() -> Variant:
+	var back: Variant = slot.get("returnTo")
+	if not back is Dictionary:
+		return "earth_plains"
+	leaving_to = str(back.zone)
+	leaving_position = back.position
+	slot.returnYaw = float(back.get("yaw",0.0))
+	if back.get("mapSpace")!=null:
+		slot.mapSpace = back.mapSpace
+	slot.erase("returnTo")
+	return leaving_to
+
 func to_save() -> Dictionary:
 	if leaving_to!="":
 		slot.zone = leaving_to
-		slot.position = null
+		slot.position = leaving_position
 		slot.playedAt = int(Time.get_unix_time_from_system()*1000)
 		return slot
 	slot.position = RuleRuntime.position(player.pos)

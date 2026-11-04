@@ -16,6 +16,10 @@ const ZOOM_MIN := 0.35
 const ZOOM_MAX := 2.6
 const ZOOM_STEP := 0.88
 var zoom := 1.0
+## Interiors and walk-in buildings keep the camera close (metres); INF elsewhere.
+var max_distance := INF
+## Interiors: the camera stays inside this world-space rectangle (x, z, width, depth); empty = no limit.
+var bounds := Rect2()
 var zoom_target := 1.0
 
 func _init(camera: Camera3D, z: RefCounted, cfg: Dictionary) -> void:
@@ -66,9 +70,15 @@ func update(target: Vector3, frame_dt: float, lock_target: Variant = null, scale
 			yaw += delta * _blend(frame_dt, float(C.lockTurnRate))
 		distance = minf(float(C.maxLockDistance) * scale, float(C.distance) * scale + Vector2(dx, dz).length() * float(C.lockDistanceScale)) * zoom
 		look = look.lerp(Vector3(lt.x, lt.y + float(C.lockHeight), lt.z), 0.5)
+	distance = minf(distance, max_distance)
 	var cp := cos(pitch)
 	var want := Vector3(target.x - sin(yaw) * cp * distance, target.y + float(C.height) * scale + sin(pitch) * distance, target.z - cos(yaw) * cp * distance)
 	want.y = maxf(want.y, _ground(want.x, want.z) + float(C.clearance))
+	if zone.has_method("ceiling") and is_finite(float(zone.ceiling())):   # interiors: stay under the ceiling
+		want.y = minf(want.y, float(zone.ceiling()) + 1.6)
+	if bounds.has_area():
+		want.x = clampf(want.x, bounds.position.x, bounds.end.x)
+		want.z = clampf(want.z, bounds.position.y, bounds.end.y)
 	if _first:
 		_pos = want
 		_first = false

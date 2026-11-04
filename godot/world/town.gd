@@ -6,6 +6,51 @@ extends RefCounted
 
 static var _mats: Dictionary = {}
 
+const CUTAWAY := preload("res://world/shaders/cutaway.gdshader")
+static var _cut_mats: Dictionary = {}
+
+## The shader global the cutaway material reads (registered once; play sets it every frame).
+static func ensure_globals() -> void:
+	if not RenderingServer.global_shader_parameter_get_list().has(&"inside_building"):
+		RenderingServer.global_shader_parameter_add(&"inside_building", RenderingServer.GLOBAL_VAR_TYPE_VEC4, Vector4.ZERO)
+
+## Walls/roofs of walk-in buildings: cut away above waist height while you're inside that building.
+static func _cut(color: int, rough := 0.75) -> ShaderMaterial:
+	var key := "%x:%.2f" % [color, rough]
+	if _cut_mats.has(key):
+		return _cut_mats[key]
+	ensure_globals()
+	var m := ShaderMaterial.new()
+	m.shader = CUTAWAY
+	m.set_shader_parameter("albedo", Color.hex((color << 8) | 0xff))
+	m.set_shader_parameter("roughness", rough)
+	_cut_mats[key] = m
+	return m
+
+## Four walls with a doorway in the front (+z) wall, a floor and simple furniture (RuleTown.WALL / DOOR match).
+static func _hollow(n: Node3D, w: float, d: float, h: float, wall: Material, floor_color: int, furnish := true) -> void:
+	var t := RuleTown.WALL
+	var dw := RuleTown.DOOR
+	var dh := 2.3
+	_box(n, Vector3(w, h, t), wall, Vector3(0, h * 0.5, -d * 0.5 + t * 0.5))
+	_box(n, Vector3(t, h, d), wall, Vector3(-w * 0.5 + t * 0.5, h * 0.5, 0))
+	_box(n, Vector3(t, h, d), wall, Vector3(w * 0.5 - t * 0.5, h * 0.5, 0))
+	var side := (w - dw) * 0.5
+	_box(n, Vector3(side, h, t), wall, Vector3(-dw * 0.5 - side * 0.5, h * 0.5, d * 0.5 - t * 0.5))
+	_box(n, Vector3(side, h, t), wall, Vector3(dw * 0.5 + side * 0.5, h * 0.5, d * 0.5 - t * 0.5))
+	if h > dh:
+		_box(n, Vector3(dw, h - dh, t), wall, Vector3(0, dh + (h - dh) * 0.5, d * 0.5 - t * 0.5))
+	_box(n, Vector3(w - t * 2.0, 0.1, d - t * 2.0), _mat(floor_color, {"rough": 0.8}), Vector3(0, 0.05, 0))
+	if furnish and w > 4.0 and d > 4.0:
+		var wood := _mat(0x7a5232, {"rough": 0.8})
+		_box(n, Vector3(1.4, 0.08, 0.9), wood, Vector3(-w * 0.18, 0.75, -d * 0.12))
+		for sx in [-1.0, 1.0]:
+			for sz in [-1.0, 1.0]:
+				_box(n, Vector3(0.08, 0.72, 0.08), wood, Vector3(-w * 0.18 + sx * 0.6, 0.36, -d * 0.12 + sz * 0.35))
+		_box(n, Vector3(1.2, 0.45, 2.0), wood, Vector3(w * 0.5 - t - 0.75, 0.22, -d * 0.5 + t + 1.1))
+		_box(n, Vector3(1.1, 0.15, 1.9), _mat(0xf0eee6), Vector3(w * 0.5 - t - 0.75, 0.52, -d * 0.5 + t + 1.1))
+		_box(n, Vector3(0.6, 1.8, 1.4), wood, Vector3(-w * 0.5 + t + 0.35, 0.9, d * 0.18))
+
 static func _mat(color: int, o := {}) -> StandardMaterial3D:
 	var key := "%x:%s" % [color, str(o)]
 	if _mats.has(key):
@@ -114,10 +159,21 @@ static func _office(n: Node3D, b: Dictionary) -> void:
 
 static func _dome_house(n: Node3D, b: Dictionary) -> void:
 	var r := float(b.w) * 0.5
-	var wall := _mat(int(b.color), {"rough": 0.45})
-	_cyl(n, r, r, 3.4, wall, Vector3(0, 1.7, 0), 24)
+	var wall := _cut(int(b.color), 0.45)
+	var panels := 20
+	for i in panels:
+		var a := (float(i) + 0.5) / panels * TAU
+		if absf(wrapf(a, -PI, PI)) < 0.2:   # the doorway faces +z
+			continue
+		var pw := TAU * r / panels + 0.05
+		var p := _box(n, Vector3(pw, 3.4, 0.3), wall, Vector3(sin(a) * r, 1.7, cos(a) * r))
+		p.rotation.y = a
+	_box(n, Vector3(RuleTown.DOOR + 0.2, 1.0, 0.3), wall, Vector3(0, 2.9, r))
 	_dome(n, r, wall, Vector3(0, 3.4, 0), 0.85)
-	_box(n, Vector3(1.6, 2.4, 0.3), _mat(0x6a4a30), Vector3(0, 1.2, r))
+	_box(n, Vector3(r * 1.5, 0.1, r * 1.5), _mat(0xc8b890, {"rough": 0.8}), Vector3(0, 0.05, 0))
+	var wood := _mat(0x7a5232, {"rough": 0.8})
+	_cyl(n, 0.7, 0.7, 0.08, wood, Vector3(0, 0.75, -r * 0.2), 16)
+	_cyl(n, 0.08, 0.08, 0.72, wood, Vector3(0, 0.36, -r * 0.2), 6)
 	var glass := _mat(0x8cc8f0, {"rough": 0.1, "metal": 0.3})
 	for a in [0.9, -0.9, PI]:
 		_cyl(n, 0.6, 0.6, 0.25, glass, Vector3(sin(a) * r, 2.2, cos(a) * r), 12).rotation = Vector3(PI / 2, a, 0)
@@ -126,27 +182,32 @@ static func _dome_house(n: Node3D, b: Dictionary) -> void:
 # --- villages -----------------------------------------------------------------------------------------
 static func _house(n: Node3D, b: Dictionary) -> void:
 	var w := float(b.w); var d := float(b.d); var h := float(b.h)
-	_box(n, Vector3(w, h, d), _mat(int(b.color), {"rough": 0.8}), Vector3(0, h * 0.5, 0))
+	_hollow(n, w, d, h, _cut(int(b.color), 0.8), 0x9a7a58)
 	var roof := CylinderMesh.new(); roof.top_radius = 0.0; roof.bottom_radius = 1.0; roof.height = 1.0; roof.radial_segments = 4
-	var mi := _put(n, roof, _mat(0xb0462e, {"rough": 0.7}), Vector3(0, h + d * 0.28, 0))
+	var mi := _put(n, roof, _cut(0xb0462e, 0.7), Vector3(0, h + d * 0.28, 0))
 	mi.rotation.y = PI / 4
 	mi.scale = Vector3(w * 0.78, d * 0.56, d * 0.78)
-	_box(n, Vector3(1.3, 2.2, 0.2), _mat(0x5a3a22), Vector3(0, 1.1, d * 0.5 + 0.05))
-	_box(n, Vector3(1.1, 1.0, 0.15), _mat(0x9fd0f0, {"rough": 0.1}), Vector3(w * 0.28, h * 0.6, d * 0.5 + 0.05))
+	_box(n, Vector3(1.1, 1.0, 0.15), _cut(0x9fd0f0, 0.1), Vector3(w * 0.32, h * 0.6, d * 0.5 + 0.05))
 
 static func _cabin(n: Node3D, b: Dictionary) -> void:
 	var w := float(b.w); var d := float(b.d); var h := float(b.h)
 	var logs := _mat(int(b.color), {"rough": 0.9})
+	var cut_logs := _cut(int(b.color), 0.9)
 	for i in int(h / 0.45):
-		var lg := _cyl(n, 0.24, 0.24, w + 0.6, logs, Vector3(0, 0.25 + i * 0.45, d * 0.5), 8); lg.rotation.z = PI / 2
-		var lg2 := _cyl(n, 0.24, 0.24, w + 0.6, logs, Vector3(0, 0.25 + i * 0.45, -d * 0.5), 8); lg2.rotation.z = PI / 2
-	_box(n, Vector3(w - 0.2, h, d - 0.2), logs, Vector3(0, h * 0.5, 0))
+		var y := 0.25 + i * 0.45
+		if y < 2.4:   # the front row of logs leaves the doorway open
+			var seg := (w + 0.6 - RuleTown.DOOR) * 0.5
+			for sx in [-1.0, 1.0]:
+				var lf := _cyl(n, 0.24, 0.24, seg, cut_logs, Vector3(sx * (RuleTown.DOOR * 0.5 + seg * 0.5), y, d * 0.5), 8); lf.rotation.z = PI / 2
+		else:
+			var lg := _cyl(n, 0.24, 0.24, w + 0.6, cut_logs, Vector3(0, y, d * 0.5), 8); lg.rotation.z = PI / 2
+		var lg2 := _cyl(n, 0.24, 0.24, w + 0.6, cut_logs, Vector3(0, y, -d * 0.5), 8); lg2.rotation.z = PI / 2
+	_hollow(n, w, d, h, cut_logs, 0x8a6a48)
 	var roof := CylinderMesh.new(); roof.top_radius = 0.0; roof.bottom_radius = 1.0; roof.height = 1.0; roof.radial_segments = 4
-	var mi := _put(n, roof, _mat(0xf4f7fb, {"rough": 0.6}), Vector3(0, h + d * 0.3, 0))
+	var mi := _put(n, roof, _cut(0xf4f7fb, 0.6), Vector3(0, h + d * 0.3, 0))
 	mi.rotation.y = PI / 4
 	mi.scale = Vector3(w * 0.8, d * 0.6, d * 0.8)
-	_box(n, Vector3(0.8, 2.0, 0.8), _mat(0x6a6a6a, {"rough": 0.9}), Vector3(w * 0.3, h + d * 0.4, 0))
-	_box(n, Vector3(1.2, 2.0, 0.2), _mat(0x3a2414), Vector3(0, 1.0, d * 0.5 + 0.25))
+	_box(n, Vector3(0.8, 2.0, 0.8), _cut(0x6a6a6a, 0.9), Vector3(w * 0.3, h + d * 0.4, 0))
 	_box(n, Vector3(0.9, 0.8, 0.15), _mat(0xffc870, {"emissive": 0xffa040, "glow": 0.8}), Vector3(-w * 0.28, h * 0.55, d * 0.5 + 0.25))
 
 static func _windmill(n: Node3D, b: Dictionary) -> void:

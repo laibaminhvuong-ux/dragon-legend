@@ -270,6 +270,19 @@ func travel_to(id: String) -> bool:
 	return false
 func distance(p: Dictionary) -> float:
 	return Vector2(p.x-player.pos.x,p.z-player.pos.z).length()
+const DOOR_RANGE := 2.6
+## The building door within reach, or null.
+func door_here() -> Variant:
+	var best: Variant = null
+	var bd: float = DOOR_RANGE
+	if not zone.has_method("doors"):
+		return null
+	for d: Dictionary in zone.doors():
+		var dist: float = distance(d)
+		if dist<bd:
+			bd = dist
+			best = d
+	return best
 func interaction() -> Variant:
 	var nearest: Variant = null
 	var best: float = TALK_RANGE
@@ -278,6 +291,10 @@ func interaction() -> Variant:
 		if d<best and absf(n.y-player.pos.y)<4 and not n.boss:
 			best = d
 			nearest = {"id":n.id,"name":n.name,"action":"Travel" if n.get("guide",false) else "Quests" if n.marker=="!" else "Talk","distance":d}
+	if nearest==null:   # people first; a building door when nobody is near
+		var door: Variant = door_here()
+		if door!=null:
+			nearest = {"id":"door","name":str(door.name),"action":"Leave" if door.get("exit",false) else "Enter","distance":distance(door)}
 	return nearest
 func shop() -> Array:
 	var out: Array = []
@@ -549,6 +566,15 @@ func priority(q: Dictionary) -> int:
 	return 0 if q.get("main",false) else 1 if q.id.begins_with("Form_") else 3 if q.get("repeat",false) else 2
 func interact(choose: bool = false) -> Variant:
 	if player.health<=0:
+		return null
+	var near: Variant = interaction()
+	var door: Variant = door_here() if near is Dictionary and near.id=="door" else null
+	if door!=null:
+		var to: Variant = game().leave_building() if door.get("exit",false) else game().enter_building(door)
+		if to is String and RuleTables.table("zones").has(to):
+			emit("travel",{"zone":to})
+			return "door"
+		emit("notify",{"text":str(to)})
 		return null
 	var here: Array = npcs().filter(func(n: Dictionary) -> bool: return distance(n)<TALK_RANGE*maxf(1,n.scale*0.8) and absf(n.y-player.pos.y)<4+n.scale*2)
 	here.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return distance(a)<distance(b))

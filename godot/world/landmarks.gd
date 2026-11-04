@@ -8,7 +8,7 @@ extends RefCounted
 const BUILDERS := ["pod", "crater", "crashpod", "farmhouse", "kamehouse", "snakehead", "kingkaihouse", "car",
 	"namekhouse", "gurutower", "friezaship", "capsuleship", "timemachine", "yardrathut", "capsulecorp", "dome",
 	"labdoor", "ruin", "husk", "palace", "htcdoor", "htcroom", "cellarena", "budokai", "babidiship", "zsword",
-	"crystals", "pyramid", "stands", "bunker", "pillar", "zenobox", "hangar", "radartower", "checkin", "town", "kaiplanet"]
+	"crystals", "pyramid", "stands", "bunker", "pillar", "zenobox", "hangar", "radartower", "checkin", "town", "kaiplanet", "interior"]
 
 static func has_builder(type: String) -> bool:
 	return type in BUILDERS
@@ -138,6 +138,100 @@ class Builder extends RefCounted:
 		box(1.2, 2, 0.1, mat(0x5a3a22), 0, 1, 2.55)
 		box(3, 2, 2.4, mat(0x9a3a2a), 6, 1, -1)
 		box(2.6, 1.2, 1.6, mat(0x3a4a7a, {"metal": 0.4}), -6, 0.8, 3)
+
+	# --- interiors (RuleInterior): one closed room, furniture, lights, a glowing exit door on the +z wall ---
+	func _interior() -> void:
+		var style := str(l.get("style", "home"))
+		var d: Dictionary = RuleInterior.dims(style)
+		var w: float = d.w; var dd: float = d.d; var h: float = d.h
+		var pal: Array = {
+			"home": [0xe9dcc3, 0x8a6a48, 0xf4efe6], "tower": [0xdfe6ee, 0x6d7a8a, 0xf6f8fb], "lab": [0xe4ecf0, 0x8fa0ad, 0xf0f6fa],
+			"temple": [0xd9c9a3, 0x9a8460, 0xcdb88a], "hangar": [0xb8bec6, 0x5d646d, 0x9aa1aa]}.get(style, [0xe9dcc3, 0x8a6a48, 0xf4efe6])
+		var wall := mat(int(pal[0]), {"rough": 0.85}); var floor_m := mat(int(pal[1]), {"rough": 0.7}); var ceil_m := mat(int(pal[2]), {"rough": 0.9})
+		box(w + 1.0, 0.3, dd + 1.0, floor_m, 0, -0.12, 0)   # top just above the ground plane (no flicker)
+		box(w + 1.0, 0.3, dd + 1.0, ceil_m, 0, h + 0.15, 0)
+		box(w + 1.0, h, 0.4, wall, 0, h * 0.5, -dd * 0.5 - 0.2)
+		box(w + 1.0, h, 0.4, wall, 0, h * 0.5, dd * 0.5 + 0.2)
+		box(0.4, h, dd + 1.0, wall, -w * 0.5 - 0.2, h * 0.5, 0)
+		box(0.4, h, dd + 1.0, wall, w * 0.5 + 0.2, h * 0.5, 0)
+		# skirting and a rug / floor markings
+		for side in [-1.0, 1.0]:
+			box(w, 0.25, 0.08, mat(int(pal[1])), 0, 0.12, side * (dd * 0.5 - 0.02))
+		box(w * 0.45, 0.03, dd * 0.4, mat(0xa83a32 if style in ["home", "temple"] else 0x3a6ea8, {"rough": 1.0}), 0, 0.02, 0)
+		# the exit door (glows so you can find it)
+		box(2.0, 3.0, 0.15, mat(0x6a4426), 0, 1.5, dd * 0.5 - 0.05)
+		box(2.4, 0.2, 0.2, mat(0xffe9a8, {"emissive": 0xffd070, "glow": 1.6}), 0, 3.15, dd * 0.5 - 0.1)
+		# lights: a warm grid of lamps under the ceiling
+		var lamp := mat(0xfff4d8, {"emissive": 0xffe6b0, "glow": 2.2})
+		var nx := maxi(1, int(w / 9.0)); var nz := maxi(1, int(dd / 9.0))
+		for i in nx:
+			for k in nz:
+				var lx := (float(i) + 0.5) / nx * w - w * 0.5
+				var lz := (float(k) + 0.5) / nz * dd - dd * 0.5
+				cyl(0.5, 0.5, 0.12, lamp, lx, h - 0.1, lz)
+				var light := OmniLight3D.new()
+				light.light_color = Color(1.0, 0.92, 0.8)
+				light.light_energy = 1.4
+				light.omni_range = maxf(w, dd) * 0.7
+				light.position = Vector3(lx, h - 0.6, lz)
+				g.add_child(light)
+		# windows (bright panes) on the side walls
+		var glass := mat(0xbfe2ff, {"emissive": 0x9ccfff, "glow": 0.9, "rough": 0.1})
+		for side in [-1.0, 1.0]:
+			for k in maxi(1, int(dd / 6.0)):
+				box(0.1, 1.6, 2.0, glass, side * (w * 0.5 - 0.02), h * 0.55, (float(k) + 0.5) / maxi(1, int(dd / 6.0)) * dd - dd * 0.5)
+		for f: Dictionary in RuleInterior.furniture(style):
+			_furnish(f)
+
+	func _furnish(f: Dictionary) -> void:
+		var x: float = f.x; var z: float = f.z; var fw: float = f.w; var fd: float = f.d; var fh: float = f.h
+		var wood := mat(0x7a5232, {"rough": 0.8}); var metal := mat(0xaab4c0, {"metal": 0.6, "rough": 0.35})
+		match str(f.kind):
+			"table", "desk", "bench":
+				box(fw, 0.12, fd, wood if f.kind != "bench" else metal, x, fh, z)
+				for sx in [-1.0, 1.0]:
+					for sz in [-1.0, 1.0]:
+						box(0.12, fh, 0.12, wood if f.kind != "bench" else metal, x + sx * (fw * 0.5 - 0.15), fh * 0.5, z + sz * (fd * 0.5 - 0.15))
+			"bed":
+				box(fw, fh * 0.6, fd, wood, x, fh * 0.3, z)
+				box(fw * 0.95, 0.22, fd * 0.95, mat(0xf2f2ee), x, fh * 0.6 + 0.11, z)
+				box(fw * 0.7, 0.16, 0.6, mat(0xe8e8f6), x, fh * 0.6 + 0.3, z - fd * 0.35)
+			"shelf":
+				box(fw, fh, fd, wood, x, fh * 0.5, z)
+				for i in 4:
+					box(fw * 0.4, 0.3, fd * 0.8, mat([0xb04a3a, 0x3a6ab0, 0xd8b040, 0x4a9a5a][i]), x - 0.1, 0.5 + i * 0.5, z)
+			"stove":
+				box(fw, fh, fd, mat(0x3a3a3e, {"rough": 0.5}), x, fh * 0.5, z)
+			"pillar":
+				cyl(fw * 0.5, fw * 0.55, fh, mat(0xd8d2c4, {"rough": 0.7}), x, fh * 0.5, z, null, 16)
+			"lift":
+				box(fw, fh, 0.3, metal, x, fh * 0.5, z - fd * 0.4)
+				box(fw * 0.45, fh * 0.85, 0.05, mat(0xc8d2dc, {"metal": 0.8, "rough": 0.2}), x - fw * 0.23, fh * 0.43, z - fd * 0.4 + 0.18)
+				box(fw * 0.45, fh * 0.85, 0.05, mat(0xc8d2dc, {"metal": 0.8, "rough": 0.2}), x + fw * 0.23, fh * 0.43, z - fd * 0.4 + 0.18)
+			"plant":
+				cyl(fw * 0.35, fw * 0.3, 0.6, mat(0x8a5a3a), x, 0.3, z, null, 12)
+				sphere(fw * 0.55, mat(0x3f8a3a, {"rough": 0.9}), x, 1.2, z, null, 12)
+			"console":
+				box(fw, fh, fd, metal, x, fh * 0.5, z)
+				box(fw * 0.9, 0.6, 0.08, mat(0x5ad0ff, {"emissive": 0x2aa0ff, "glow": 1.4}), x, fh + 0.4, z - fd * 0.3)
+			"pod":
+				cyl(fw * 0.5, fw * 0.5, 0.4, metal, x, 0.2, z, null, 20)
+				cyl(fw * 0.42, fw * 0.42, fh - 0.8, mat(0x9fe8ff, {"emissive": 0x5ac8ff, "glow": 0.6, "rough": 0.05}), x, fh * 0.5, z, null, 20)
+				cyl(fw * 0.5, fw * 0.5, 0.4, metal, x, fh - 0.2, z, null, 20)
+			"altar":
+				box(fw, fh, fd, mat(0xcdb88a, {"rough": 0.6}), x, fh * 0.5, z)
+				sphere(0.45, mat(0xffb040, {"emissive": 0xff9020, "glow": 2.0}), x, fh + 0.5, z, null, 16)
+			"ship":
+				sphere(fw * 0.5, mat(0xe8eaee, {"metal": 0.4, "rough": 0.3}), x, fh * 0.45, z, null, 28)
+				cyl(fw * 0.52, fw * 0.52, 0.5, mat(0x8a96a8, {"metal": 0.6}), x, fh * 0.45, z, null, 28)
+				for i in 3:
+					var a := float(i) / 3.0 * TAU
+					cyl(0.18, 0.25, fh * 0.45, metal, x + sin(a) * fw * 0.35, fh * 0.22, z + cos(a) * fw * 0.35, null, 8)
+			"crates":
+				for i in 3:
+					box(fw * 0.45, fh * 0.5, fd * 0.45, mat(0x9a7a4a, {"rough": 0.9}), x + (i - 1) * fw * 0.3, fh * 0.25 + (fh * 0.5 if i == 1 else 0.0), z)
+			_:
+				box(fw, fh, fd, wood, x, fh * 0.5, z)
 
 	func _kamehouse() -> void:
 		var walls := mat(0xf2a6b8); var roof := mat(0xc8322a, {"rough": 0.5}); var trim := mat(0xf6f0e6)

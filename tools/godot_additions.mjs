@@ -125,13 +125,35 @@ function openWorld(zones, zoneOrder) {
   return {planets, changed: [...towns, ...more]};
 }
 
+// User request 2026-11-04: big buildings have interiors. Each style is a small map holding one closed room
+// (RuleInterior in godot/rules/interior.gd draws/collides it); doors on the open-world maps lead here.
+function interiors(zones) {
+  const styles = {home: ['House', 'stone', 4.2, 12], tower: ['Tower Lobby', 'stone', 7, 22], lab: ['Laboratory', 'stone', 6.5, 22],
+    temple: ['Temple Hall', 'stone', 10, 26], hangar: ['Hangar', 'stone', 13, 28]};
+  const ids = [];
+  for (const [style, [name, ground, h, d]] of Object.entries(styles)) {
+    const id = 'interior_' + style;
+    const biome = structuredClone(zones.earth_plains.biome);
+    for (const k of Object.keys(biome)) if (typeof biome[k] === 'number' && /count|bushes|rocks|stones|grass|flowers/i.test(k)) biome[k] = 0;
+    zones[id] = {
+      name, planet: 'Interior', saga: 'Interior', kind: 'interior',
+      terrain: {size: 90, ground, hills: {amp: 0, scale: 50}, flatSpawn: 44, spawn: {x: 0, z: d / 2 - 2.6}},
+      biome: {...biome, treeCount: 0, bushes: 0, rocks: 0, stones: 0},
+      landmarks: [{type: 'interior', style, name, x: 0, z: 0}],
+      ceiling: h - 2.1, spawnYaw: Math.PI,
+    };
+    ids.push(id);
+  }
+  return ids;
+}
+
 export function applyGodotAdditions(tables) {
   const zones = structuredClone(tables.zones);
   const npcs = structuredClone(tables.npcs);
   const characters = structuredClone(tables.characters);
   const zoneOrder = [...tables.zone_order];
   const world = openWorld(zones, zoneOrder);
-  const changed = [...checkInStation(zones, npcs)];
+  const changed = [...checkInStation(zones, npcs), ...interiors(zones)];
   // giant, seated behind the desk: red skin, black beard, judge's hat (Parts.costume "yemmo")
   Object.assign(characters.king_yemma, {scale: 4.2, look: {race: 'Human', skin: 0, skinHex: 0xc8463c, face: 'Fierce', hair: 'None',
     hairColor: 0, build: 'Muscular', outfit: 'CraneGi', outfitTint: 2, costume: 'yemmo'}});
