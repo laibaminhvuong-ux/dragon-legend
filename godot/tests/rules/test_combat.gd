@@ -48,8 +48,8 @@ func test_beam_release_and_low_ki_rejection() -> void:
 func test_guard_shield_and_enemy_ai_leash_altitude() -> void:
 	var a := fresh()
 	var b := fresh()
-	target(a)
-	target(b)
+	a.combat.provoke(target(a))   # trainees only fight back once provoked (2026-11-04)
+	b.combat.provoke(target(b))
 	tick(a,{},46)
 	tick(b,{"block":true},46)
 	ok(a.player.maxHealth-a.player.health>0)

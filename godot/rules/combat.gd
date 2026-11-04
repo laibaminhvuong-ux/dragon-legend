@@ -93,6 +93,13 @@ func sync() -> void:
 		var d: Dictionary = definitions[uid]
 		if not enemies.any(func(e: Dictionary) -> bool:return str(e.get("uid",e.key))==uid and (e.has("uid") or not String(e.key).begins_with("patrol_"))):
 			spawn(d.merged({"look":d.look if d.get("look") is Dictionary else game.schema.default_look("Saiyan")},true),100+int(d.get("index",0)))
+## A trainee you hit fights back, and so do the trainees standing right next to it.
+func provoke(target: Dictionary) -> void:
+	target.provoked = true
+	if String(target.key).begins_with("patrol_"):
+		for e: Dictionary in enemies:
+			if e.key==target.key and e.health>0 and (e.pos as Vector3).distance_to(target.pos)<18.0:
+				e.provoked = true
 func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = false) -> void:
 	if party!=null and party.get_ref()!=null:
 		var owner: Variant = party.get_ref().game_for_player(str(target.id)) if target.get("kind")=="player" else party.get_ref().game_for_player(str(source.get("id","")))
@@ -101,6 +108,8 @@ func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = fa
 			return
 	if target.health<=0 or (target==p and p.get("evadeUntil",0)>clock):
 		return
+	if target.get("kind")=="enemy" and source.get("kind")=="player":
+		provoke(target)
 	if target==p:
 		var instinct: Dictionary = forms.instinct_benefits(p,clock)
 		if instinct.kind=="form":   # Ultra Instinct forms: UI_DODGES sure dodges, then UI_COOLDOWN seconds without
@@ -395,18 +404,28 @@ func update(dt: float,it: Dictionary) -> void:
 			continue
 		var distance: float = e.pos.distance_to(victim.pos)
 		var home_distance: float = e.pos.distance_to(e.home)
+		# trainees (patrols) leave you alone until you hit them (user request 2026-11-04); quest enemies always fight
+		var peaceful: bool = String(e.key).begins_with("patrol_") and not e.get("provoked",false)
 		e.cooldown = maxf(0,e.cooldown-dt)
 		e.stun = maxf(0,e.stun-dt)
-		if distance>c.aggroRange and not e.get("aggro",false) and home_distance<0.5:
+		if peaceful and home_distance<0.5:
+			e.aggro = false
+			e.windup = 0.0
 			e.health = minf(e.maxHealth,e.health+e.maxHealth*dt*c.enemyRegen)
 			continue
-		var returning: bool = distance>c.leashRange or home_distance>c.leashRange or victim.pos.y-e.pos.y>5
+		if distance>c.aggroRange and not e.get("aggro",false) and home_distance<0.5:
+			e.provoked = false   # you left: it calms down
+			e.health = minf(e.maxHealth,e.health+e.maxHealth*dt*c.enemyRegen)
+			continue
+		var returning: bool = peaceful or distance>c.leashRange or home_distance>c.leashRange or victim.pos.y-e.pos.y>5
 		var goal: Vector3 = e.home if returning else victim.pos
 		var delta: Vector3 = goal-e.pos
 		var planar: float = sqrt(delta.x*delta.x+delta.z*delta.z)
 		if planar==0:
 			planar = 1
 		e.aggro = not returning
+		if returning and home_distance<1.0:
+			e.provoked = false   # back at its spot: calm again
 		if returning:
 			e.windup = 0.0
 			e.health = minf(e.maxHealth,e.health+e.maxHealth*dt*c.enemyRegen)
