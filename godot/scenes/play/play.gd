@@ -119,6 +119,8 @@ func intents() -> Dictionary:
 	it.move_z = cos(yaw) * mv.y + sin(yaw) * mv.x
 	for a: String in ["jump", "dash", "flight", "melee", "ki_blast", "transform", "kaioken", "lock_on", "interact"]:
 		it[a] = input.pressed(a)
+	it.boost = it.dash   # Q is the rocket boost now (user request 2026-11-04); the short dash stays for NPCs
+	it.dash = false
 	for a: String in ["ascend", "descend", "charge", "block", "beam"]:
 		it[a] = input.down(a)
 	# hold Shift (or push the stick all the way) to run / fly fast; otherwise walk / cruise
@@ -135,6 +137,7 @@ func intents() -> Dictionary:
 	it.melee = input.down("melee") or it.melee
 	for k: String in forced:
 		it[k] = forced[k]
+	forced.erase("boost")   # a press, not a hold (a held boost would toggle off again)
 	return it
 
 ## One fixed 1/60 s simulation step.
@@ -221,6 +224,26 @@ func travel(zone_id: String) -> void:
 	SaveStore.save_slot(slot_index, slot)
 	travel_requested.emit(zone_id)
 
+var _boost_serial := 0
+var _trail_t := 0.0
+## Rocket boost: a blast and dust on launch, a glowing trail while boosting, and a wider camera for speed.
+func _boost_view(pos: Vector3, frame_dt: float) -> void:
+	var p: Dictionary = game.player
+	var color := Color.hex((int(RuleRuntime.ki_color(game.slot.appearance)) << 8) | 0xff)
+	if int(p.get("boostSerial", 0)) != _boost_serial:
+		_boost_serial = int(p.get("boostSerial", 0))
+		Burst.spawn(self, pos + Vector3.UP * 0.3, color, 3.0)
+		Burst.spawn(self, Vector3(pos.x, game.zone.height_at(pos.x, pos.z) + 0.1, pos.z), Color(0.7, 0.65, 0.55, 0.8), 3.5)
+		Events.emit_named("notify", {"text": "Rocket boost! 20 s (%s again to stop)" % UiKit.key_name("dash")})
+	var boosting: bool = p.get("boosting", false)
+	if boosting:
+		_trail_t -= frame_dt
+		if _trail_t <= 0.0:
+			_trail_t = 0.05
+			Burst.spawn(self, pos + Vector3.UP * 0.9, color, 0.7)
+	var want_fov := 60.0 + (16.0 if boosting else 0.0)
+	camera.fov = lerpf(camera.fov, want_fov, 1.0 - exp(-frame_dt * 4.0))
+
 ## Walk-in buildings: cut the one you're in away above waist height; interiors keep the camera in the room.
 func _building_view(pos: Vector3) -> void:
 	WorldTown.ensure_globals()
@@ -256,6 +279,7 @@ func render(frame_dt: float, alpha: float) -> void:
 	if _look_signature() != _look_key:
 		_build_player()
 	_building_view(pos)
+	_boost_view(pos, frame_dt)
 	player.visible = float(p.health) > 0.0
 	player.position = pos
 	player.rotation.y = float(p.yaw)
@@ -265,6 +289,7 @@ func render(frame_dt: float, alpha: float) -> void:
 	var vel: Vector3 = p.vel
 	player.update(anim_dt, {"speed": Vector2(vel.x, vel.z).length(), "vy": vel.y, "onGround": p.onGround, "flying": p.flying, "sprint": p.get("sprinting", true),
 		"charging": p.charging, "kaioken": p.kaioken, "dashing": p.dashing, "blocking": p.blocking,
+		"boosting": p.get("boosting", false), "boostLaunch": float(p.get("boostLaunch", 0.0)),
 		"attackSerial": p.attackSerial, "attackKind": p.attackKind, "hurt": float(p.get("hurtUntil", 0.0)) > float(game.combat.get("clock")) if game.combat.get("clock") != null else false})
 	var target: Variant = null
 	for e: Dictionary in game.combat.enemies:

@@ -173,7 +173,7 @@ func _slow_update() -> void:
 	var frozen := play.is_frozen()
 	_prompt.visible = inter is Dictionary and not frozen
 	_prompt.text = "[%s] %s · %s" % [UiKit.key_name("interact"), inter.action, inter.name] if inter is Dictionary else ""
-	_actions.text = "%s Melee · %s Ki blast · %s %s · %s Guard · %s Charge · %s Lock-on · %s Flight · %s Run %s · %s Dash · %s Kaiyoken · %s Base form · %s Style: %s · %s Menu" % [
+	_actions.text = "%s Melee · %s Ki blast · %s %s · %s Guard · %s Charge · %s Lock-on · %s Flight · %s Run %s · %s Rocket boost · %s Kaiyoken · %s Base form · %s Style: %s · %s Menu" % [
 		UiKit.key_name("melee"), UiKit.key_name("ki_blast"), UiKit.key_name("beam"), str(c.get("techniqueName", "Energy Wave")), UiKit.key_name("block"),
 		UiKit.key_name("charge"), UiKit.key_name("lock_on"), UiKit.key_name("flight"), UiKit.key_name("sprint"), "ON" if play.fast_mode else "off", UiKit.key_name("dash"), UiKit.key_name("kaioken"), UiKit.key_name("base"),
 		UiKit.key_name("style"), FightStyles.NAMES.get(str(p.get("style", "turtle")), "Turtle School"), UiKit.key_name("menu")]
@@ -183,6 +183,8 @@ func _slow_update() -> void:
 		_target.text = "%s%s · Lv. %d · %d / %d HP" % ["BOSS · " if tgt.get("boss", false) else "", tgt.name, int(tgt.level), ceili(float(tgt.health)), ceili(float(tgt.maxHealth))]
 	var bits: Array[String] = []
 	if float(c.get("beamCharge", 0.0)) > 0.0: bits.append("charging %d%%" % roundi(float(c.beamCharge) * 100.0))
+	if p.get("boosting", false): bits.append("Rocket boost %ds" % ceili(float(p.get("boostRemaining", 0.0))))
+	elif float(p.get("boostCooldown", 0.0)) > 0.0: bits.append("Boost ready in %.0fs" % ceilf(float(p.boostCooldown)))
 	if float(c.get("beamCd", 0.0)) > 0.0: bits.append("%s cooldown %.1fs" % [c.get("techniqueName", ""), float(c.beamCd)])
 	if float(c.get("instinctFocus", 0.0)) > 0.0: bits.append("UI focus %.1fs" % float(c.instinctFocus))
 	if str(play.game.player.form).begins_with("UI"):

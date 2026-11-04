@@ -18,6 +18,8 @@ var dash_side := 0.0
 var dash_back := 0.0
 var block := 0.0
 var kick := 0.0
+var launch := 0.0   # rocket boost take-off: body straight, one fist punched at the sky
+var boost := 0.0    # rocket boost cruise: stretched flat, fist forward, legs together
 var kick_phase := 0.0
 var finisher := 1.0   # combo finisher: strikes land bigger
 var idle := 0.0
@@ -84,6 +86,21 @@ func _process_modification() -> void:
 		var lead := maxf(fast, up)
 		arm.R.x += (-2.75 - 0.5 * up) * lead * k; fore.R.x += 0.15 * lead * k
 		arm.L.x += 0.45 * lead * k; arm.L.z += 0.12 * lead * k; fore.L.x -= 0.15 * lead * k
+	if boost > 0.01 and k > 0.01:   # superman: flatter, legs straight together, lead fist further forward
+		var bb := boost * (1.0 - launch)
+		body.x += 0.25 * bb
+		thigh.R.x += 0.7 * bb; shin.R.x -= 1.1 * bb * hov
+		thigh.L.x -= 0.1 * bb; shin.L.x -= 0.35 * bb
+		arm.R.x -= 0.2 * bb
+		arm.L.x += 0.4 * bb; arm.L.z += 0.15 * bb
+	if launch > 0.01:   # take-off: upright, right fist straight up, left arm tucked, legs straight
+		var ln := launch
+		body.x -= body.x * ln
+		chest.x -= 0.15 * ln; neck.x -= 0.5 * ln
+		arm.R = arm.R.lerp(Vector3(-3.0, 0, -0.1), ln); fore.R = fore.R.lerp(Vector3.ZERO, ln)
+		arm.L = arm.L.lerp(Vector3(0.3, 0, 0.25), ln); fore.L = fore.L.lerp(Vector3(-0.9, 0, 0), ln)
+		thigh.L = thigh.L.lerp(Vector3.ZERO, ln); thigh.R = thigh.R.lerp(Vector3(-0.15, 0, 0), ln)
+		shin.L = shin.L.lerp(Vector3.ZERO, ln); shin.R = shin.R.lerp(Vector3(0.3, 0, 0), ln)
 	if charge > 0.01:
 		var c := charge; var shake := sin(t * 40.0) * 0.01
 		drop += 0.1 * c

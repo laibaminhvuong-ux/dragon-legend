@@ -274,7 +274,10 @@ func update(dt: float, anim: Dictionary) -> void:
 	w.block += ((1.0 if anim.get("blocking", false) and state!="dead" else 0.0) - w.block) * e
 	var fly_speed := Vector2(speed, vy * 0.6).length()
 	# slow cruise (no Shift) keeps an upright, lightly leaning glide; only fast flight goes fully horizontal
-	var fast_target := clampf((fly_speed - 2.0) / 8.0, 0.0, 1.0) * (1.0 if anim.get("sprint", true) else 0.3)
+	var fast_target := clampf((fly_speed - 2.0) / 8.0, 0.0, 1.0) * (1.0 if anim.get("sprint", true) or anim.get("boosting", false) else 0.3)
+	# rocket boost: a straight-up launch pose, then a stretched-out superman pose (PoseModifier)
+	mod.launch = lerpf(mod.launch, 1.0 if float(anim.get("boostLaunch", 0.0)) > 0.0 else 0.0, 1.0 - exp(-dt * 12.0))
+	mod.boost = lerpf(mod.boost, 1.0 if anim.get("boosting", false) else 0.0, 1.0 - exp(-dt * 6.0))
 	w.fast += (fast_target - w.fast) * minf(1.0, dt * 3.0)
 	w.climb += (clampf(vy / 10.0, -1.0, 1.0) - w.climb) * minf(1.0, dt * 3.0)
 	if _kick_t >= 0.0:

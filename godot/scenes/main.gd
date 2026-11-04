@@ -111,6 +111,15 @@ func _ready() -> void:
 					play.forced = {"move_x": sin(r + PI), "move_z": cos(r + PI)}
 					await get_tree().create_timer(float(_args.get("walkfor", 2.4))).timeout
 					play.forced = {}
+		"boost":   # dev: rocket boost from the ground, then steer (recordings)
+			await get_tree().create_timer(1.5).timeout
+			if play != null:
+				play.forced = {"boost": true}
+				await get_tree().process_frame
+				await get_tree().create_timer(0.5).timeout
+				play.forced = {"move_x": sin(play.follow.yaw), "move_z": cos(play.follow.yaw)}
+				await get_tree().create_timer(6.0).timeout
+				play.forced = {}
 		"brawl":   # dev: walk up to the first enemy, lock on and throw a few full combos (style recordings)
 			await get_tree().create_timer(1.5).timeout
 			if play != null and not play.game.combat.enemies.is_empty():

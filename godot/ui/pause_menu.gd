@@ -4,7 +4,7 @@ extends Control
 # fullscreen, FPS), Controls (rebind any action: click Change, press a key or mouse button; Esc cancels) and Save
 # code. From the title screen it opens as a settings-only panel.
 
-const ACTIONS := [["jump", "Jump"], ["melee", "Melee attack"], ["block", "Block"], ["dash", "Dash"], ["flight", "Toggle flight"],
+const ACTIONS := [["jump", "Jump"], ["melee", "Melee attack"], ["block", "Block"], ["dash", "Rocket boost (20 s; again to stop)"], ["flight", "Toggle flight"],
 	["ascend", "Fly up"], ["descend", "Fly down"], ["charge", "Charge ki"], ["ki_blast", "Ki blast"], ["beam", "Beam (hold to charge)"],
 	["transform", "Transform"], ["kaioken", "Toggle Kaiyoken overlay"], ["lock_on", "Lock on"], ["interact", "Talk / interact"],
 	["menu", "Fighter menu (stats, forms...)"], ["radar", "Dragon Radar on/off"], ["map", "World map"], ["style", "Fighting style"], ["sprint", "Run / fly fast (tap to switch)"], ["base", "Back to base form"], ["pause", "Pause menu"],
