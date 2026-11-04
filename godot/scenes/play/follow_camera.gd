@@ -11,12 +11,26 @@ var C: Dictionary
 var _pos := Vector3.ZERO
 var _first := true
 var _last_scale := 1.0
+# mouse-wheel zoom (multiplies the follow distance), eased toward the target
+const ZOOM_MIN := 0.35
+const ZOOM_MAX := 2.6
+const ZOOM_STEP := 0.88
+var zoom := 1.0
+var zoom_target := 1.0
 
 func _init(camera: Camera3D, z: RefCounted, cfg: Dictionary) -> void:
 	cam = camera
 	zone = z
 	C = cfg
 	pitch = float(C.get("pitch", 0.25))
+	if Engine.get_main_loop() is SceneTree and (Engine.get_main_loop() as SceneTree).root.has_node("Settings"):
+		zoom = clampf(float(Settings.get_value("cameraZoom")), ZOOM_MIN, ZOOM_MAX)
+		zoom_target = zoom
+
+## Wheel steps: negative = closer, positive = further.
+func add_zoom(steps: float) -> void:
+	if is_finite(steps):
+		zoom_target = clampf(zoom_target * pow(ZOOM_STEP, -steps), ZOOM_MIN, ZOOM_MAX)
 
 func add_look(d: Vector2) -> void:
 	yaw -= d.x if is_finite(d.x) else 0.0
@@ -39,8 +53,9 @@ func update(target: Vector3, frame_dt: float, lock_target: Variant = null, scale
 	if scale != _last_scale:
 		_first = true
 		_last_scale = scale
+	zoom = lerpf(zoom, zoom_target, _blend(frame_dt, 12.0))
 	var look := Vector3(target.x, target.y + float(C.height) * scale, target.z)
-	var distance := float(C.distance) * scale
+	var distance := float(C.distance) * scale * zoom
 	if lock_target is Vector3:
 		var lt: Vector3 = lock_target
 		var dx := lt.x - target.x
@@ -49,7 +64,7 @@ func update(target: Vector3, frame_dt: float, lock_target: Variant = null, scale
 			var angle := atan2(dx, dz)
 			var delta := atan2(sin(angle - yaw), cos(angle - yaw))
 			yaw += delta * _blend(frame_dt, float(C.lockTurnRate))
-		distance = minf(float(C.maxLockDistance) * scale, float(C.distance) * scale + Vector2(dx, dz).length() * float(C.lockDistanceScale))
+		distance = minf(float(C.maxLockDistance) * scale, float(C.distance) * scale + Vector2(dx, dz).length() * float(C.lockDistanceScale)) * zoom
 		look = look.lerp(Vector3(lt.x, lt.y + float(C.lockHeight), lt.z), 0.5)
 	var cp := cos(pitch)
 	var want := Vector3(target.x - sin(yaw) * cp * distance, target.y + float(C.height) * scale + sin(pitch) * distance, target.z - cos(yaw) * cp * distance)

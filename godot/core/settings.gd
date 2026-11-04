@@ -13,6 +13,7 @@ const SCHEMA := {
 	"voiceVolume": {"default": 0.9, "min": 0.0, "max": 1.0},
 	"mouseSensitivity": {"default": 1.0, "min": 0.1, "max": 3.0},
 	"invertY": {"default": false, "type": "bool"},
+	"cameraZoom": {"default": 1.0, "min": 0.35, "max": 2.6},
 	"showFps": {"default": false, "type": "bool"},
 	"voices": {"default": true, "type": "bool"},
 	"fullscreen": {"default": false, "type": "bool"},

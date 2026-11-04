@@ -22,9 +22,15 @@ func set_capture(on: bool) -> void:
 	if DisplayServer.get_name() != "headless":
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if on else Input.MOUSE_MODE_VISIBLE
 
+var _zoom := 0.0
+
 func _input(e: InputEvent) -> void:
 	if e is InputEventMouseMotion and capture:
 		_look += (e as InputEventMouseMotion).relative * 0.0025
+	if e is InputEventMouseButton and (e as InputEventMouseButton).pressed and capture:
+		var b := (e as InputEventMouseButton).button_index
+		if b == MOUSE_BUTTON_WHEEL_UP: _zoom -= 1.0
+		elif b == MOUSE_BUTTON_WHEEL_DOWN: _zoom += 1.0
 		last_device = "keyboard"
 	for a: String in ACTIONS:
 		if e.is_action_pressed(a, false, false):   # not exact: Shift (run) or Ctrl held must not block other keys
@@ -67,6 +73,12 @@ func take_look(frame_dt: float) -> Vector2:
 	var out := Vector2((_look.x + pad.x) * sens, (_look.y + pad.y) * sens * inv)
 	_look = Vector2.ZERO
 	return out
+
+## Mouse-wheel steps since the last call (negative = zoom in).
+func take_zoom() -> float:
+	var z := _zoom
+	_zoom = 0.0
+	return z
 
 ## Adds look from a touch drag (radians).
 func add_look(d: Vector2) -> void:

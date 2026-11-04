@@ -229,8 +229,12 @@ func render(frame_dt: float, alpha: float) -> void:
 	var frozen := is_frozen()
 	var anim_dt := frame_dt if (frozen_by.has("cutscene") or not frozen) else 0.0
 	var look := input.take_look(frame_dt)
+	var wheel := input.take_zoom()
 	if not frozen:
 		follow.add_look(look)
+		if wheel != 0.0:
+			follow.add_zoom(wheel)
+			Settings.set_value("cameraZoom", follow.zoom_target)
 		tutorial.look(absf(look.x) + absf(look.y))
 	if _look_signature() != _look_key:
 		_build_player()
