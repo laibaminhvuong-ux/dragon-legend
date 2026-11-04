@@ -221,8 +221,49 @@ func _strikes(out: String) -> void:
 	_paint(neutral, Color(0.86, 0.87, 0.9))
 	await _shot(out + "_strikes.png")
 
+## Every fighting style's moves frozen at their contact frame (rows = styles; stance, combo 1-4, dash, finisher).
+func _styles(out: String) -> void:
+	stage = Node3D.new()
+	vp.add_child(stage)
+	var slots := ["stance", "combo1", "combo2", "combo3", "combo4", "dash", "finisher"]
+	var r := 0
+	for style: String in FightStyles.IDS:
+		var c := 0
+		for slot: String in slots:
+			var id := "%s_%s" % [style, slot]
+			var f := Fighter.create(_look("Saiyan"))
+			f.position = Vector3((c - 3) * 1.5, -r * 2.4, 0)
+			f.rotation.y = 0.9
+			stage.add_child(f)
+			f.anim.tree.active = false
+			if not f.anim_player.has_animation_library("moves"):
+				f.anim_player.add_animation_library("moves", FightStyles.library(f))
+			var mv: Dictionary = FightStyles.moves(style)[id]
+			f.anim_player.play("moves/" + id)
+			f.anim_player.seek(float(mv.contact) if slot != "stance" else 0.5, true)
+			f.anim_player.pause()
+			f.position.x += MoveClips.lunge_at(f.anim_player.get_animation("moves/" + id), float(mv.contact)) * 0.0
+			var label := Label3D.new()
+			label.text = id
+			label.font_size = 30
+			label.pixel_size = 0.004
+			label.modulate = Color(0.1, 0.1, 0.12)
+			label.position = f.position + Vector3(0, -0.15, 0.8)
+			stage.add_child(label)
+			c += 1
+		r += 1
+	cam.size = 4 * 2.4 + 0.2
+	vp.size = Vector2i(roundi(H * 1.6 * (7 * 1.5 + 0.3) / cam.size), roundi(H * 1.6))
+	cam.position = Vector3(0, -1.5 * 2.4 + 0.95, 8)
+	_paint(neutral, Color(0.86, 0.87, 0.9))
+	await _shot(out + "_styles.png")
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--styles" in OS.get_cmdline_user_args():
+		await _styles(out)
+		quit()
+		return
 	if "--strikes" in OS.get_cmdline_user_args():
 		await _strikes(out)
 		quit()
