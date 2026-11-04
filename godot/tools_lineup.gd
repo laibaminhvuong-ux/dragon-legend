@@ -308,8 +308,41 @@ func _flow(out: String) -> void:
 		t += dt
 	print("saved %d flow frames" % frame)
 
+## Both Great Apes (normal, golden) in key frames of their clips, in real colours.
+func _ape(out: String) -> void:
+	stage = Node3D.new()
+	vp.add_child(stage)
+	env.environment.background_color = Color(0.55, 0.62, 0.72)
+	var shots := [["idle", 0.6], ["walk", 0.2], ["roar", 0.8], ["swipe", 0.42], ["grab_slam", 0.78], ["mouth_blast", 0.55], ["stomp", 0.38]]
+	var r := 0
+	for golden in [false, true]:
+		var c := 0
+		for sh: Array in shots:
+			var g := GreatApe.create(golden)
+			g.position = Vector3((c - 3) * 2.2, -r * 2.6, 0)
+			g.rotation.y = 0.55
+			stage.add_child(g)
+			g.update(1.6, {})
+			g.play(sh[0], 0.0)
+			g.update(float(sh[1]), {})
+			var label := Label3D.new()
+			label.text = ("golden " if golden else "") + str(sh[0])
+			label.font_size = 34; label.pixel_size = 0.004; label.modulate = Color(0.08, 0.08, 0.1)
+			label.position = g.position + Vector3(0, -0.15, 1.2)
+			stage.add_child(label)
+			c += 1
+		r += 1
+	cam.size = 2 * 2.6 + 0.3
+	vp.size = Vector2i(roundi(1150 * 1.6 * (7 * 2.2 + 0.4) / cam.size), roundi(1150 * 1.6))
+	cam.position = Vector3(0, -1.3 + 1.0, 8)
+	await _shot(out + "_ape.png")
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--ape" in OS.get_cmdline_user_args():
+		await _ape(out)
+		quit()
+		return
 	if "--flow" in OS.get_cmdline_user_args():
 		await _flow(out)
 		quit()
