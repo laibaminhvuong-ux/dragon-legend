@@ -18,6 +18,8 @@ var mod: PoseModifier
 var state := "ground"         # ground, air, fly, talk, sit, dead
 var one_shot := ""            # the attack/hit animation playing, "" when none
 var one_shot_left := 0.0
+var _skill_serial := -1
+var _skill_age := 10.0
 var _serial := 0
 var _hurt := false
 var _reaction_serial := 0
@@ -135,14 +137,15 @@ func update(dt: float, anim: Dictionary) -> void:
 	mod.dash_side = float(anim.get("dashSide",0))
 	mod.dash_back = float(anim.get("dashBack",0))
 	mod.aim_pitch = lerpf(mod.aim_pitch,clampf(float(anim.get("aimPitch",0)),-0.9,0.9),1.0-exp(-dt*14))
-	mod.cast = lerpf(mod.cast,clampf(float(anim.get("beamCharge",0)),0,1),1.0-exp(-dt*14))
+	var generic_cast := 0.0 if SkillPoses.has_pose(str(anim.get("skillHoldPose",""))) else clampf(float(anim.get("beamCharge",0)),0,1)
+	mod.cast = lerpf(mod.cast,generic_cast,1.0-exp(-dt*14))
 	mod.heavy_hit = lerpf(mod.heavy_hit,0.0,1.0-exp(-dt*7))
 	var next := "ground"
 	if anim.get("dead", false): next = "dead"
 	elif flying: next = "fly"
 	elif not on_ground: next = "air"
 	elif anim.get("sitting", false): next = "sit"
-	elif float(anim.get("beamCharge",0))>0.05 and speed<0.5: next = "cast"
+	elif float(anim.get("beamCharge",0))>0.05 and speed<0.5 and not SkillPoses.has_pose(str(anim.get("skillHoldPose",""))): next = "cast"
 	elif anim.get("talking", false) and speed < 0.3: next = "talk"
 	if next != state:
 		state = next
@@ -162,6 +165,8 @@ func update(dt: float, anim: Dictionary) -> void:
 			if kind.contains("kick"):
 				_kick_t = 0.0
 				_end_shot()
+			elif SkillPoses.has_pose(str(anim.get("skillReleasePose", ""))):
+				_end_shot()   # the skill's own release pose (SkillPoses) replaces the generic spell clip
 			else:
 				_play_shot(ATTACKS.get(kind, "Punch_Jab"))
 		var hurt: bool = anim.get("hurt", false)
@@ -189,6 +194,21 @@ func update(dt: float, anim: Dictionary) -> void:
 		mod.surge_weight = 0.0
 		_age = 10.0
 	mod.strike = MotionStyle.strike(_age,0.38 if _kind=="jab" else 0.5) if _age<0.5 else 0.0
+	# skill poses: hold while the technique is gathered, then the release pose for ~0.8 s after it fires
+	var hold_pose := str(anim.get("skillHoldPose", ""))
+	if hold_pose != "":
+		mod.skill_hold_pose = hold_pose
+	mod.skill_hold = lerpf(mod.skill_hold, clampf(float(anim.get("skillHold", 0.0)), 0.0, 1.0) if hold_pose != "" and state != "dead" else 0.0, 1.0 - exp(-dt * 10.0))
+	var release_pose := str(anim.get("skillReleasePose", ""))
+	if release_pose != "" and serial != _skill_serial:
+		_skill_serial = serial
+		mod.skill_release_pose = release_pose
+		_skill_age = 0.0
+	_skill_age += dt
+	var target := 0.0
+	if mod.skill_release_pose != "" and state != "dead":
+		target = clampf(_skill_age / 0.08, 0.0, 1.0) * (1.0 - clampf((_skill_age - 0.45) / 0.45, 0.0, 1.0))
+	mod.skill_release = target
 	mod.strike_kind = _kind
 	var e := 1.0-exp(-dt*8.0)
 	var w := mod

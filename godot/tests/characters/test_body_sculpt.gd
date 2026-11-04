@@ -71,3 +71,22 @@ func test_sockets_sit_on_the_body() -> void:
 	ok(f.socket("head").origin.y > f.socket("chest").origin.y, "head above chest")
 	ok(f.socket("hand_l").origin.x > 0.5 and f.socket("hand_r").origin.x < -0.5, "hands out to the sides in rest pose")
 	f.free()
+
+func test_every_catalogue_pose_is_animated() -> void:
+	var skills: Dictionary = SkillCatalog.all() if SkillCatalog.all() is Dictionary else {}
+	ok(skills.size() >= 26, "catalogue loaded (%d)" % skills.size())
+	for id: String in skills:
+		var pose := str((skills[id] as Dictionary).get("pose", ""))
+		ok(SkillPoses.has_pose(pose) or pose in ["claw_flurry", "melee_combo"], "%s pose %s has hold and release key poses" % [id, pose])
+
+func test_skill_pose_replaces_the_generic_cast() -> void:
+	var f := Fighter.create({"race": "Human"})
+	for i in 20:
+		f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true, "beamCharge": 1.0, "skillHoldPose": "overhead_sphere", "skillHold": 1.0})
+	eq(f.anim.state, "ground", "no generic cast clip while a skill pose is held")
+	ok(f.anim.mod.skill_hold > 0.9, "hold pose applied")
+	f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true, "attackSerial": 7, "attackKind": "beam", "skillReleasePose": "overhead_sphere"})
+	for i in 6:
+		f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true, "attackSerial": 7, "attackKind": "beam", "skillReleasePose": "overhead_sphere"})
+	ok(f.anim.mod.skill_release > 0.9, "release pose plays after the cast")
+	f.free()

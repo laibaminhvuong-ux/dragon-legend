@@ -132,8 +132,52 @@ func _turn(yaw: float) -> void:
 	for f: Fighter in stage.find_children("*", "Fighter", true, false):
 		f.rotation.y = yaw
 
+## Every skill pose, held (gathering) and released, as a grid; seen from a three-quarter angle.
+func _poses(out: String) -> void:
+	var ids: Array = SkillPoses.all().keys()
+	ids.sort()
+	for which: String in ["hold", "release"]:
+		if stage != null:
+			stage.free()
+		stage = Node3D.new()
+		vp.add_child(stage)
+		var cols := 9
+		var rows := ceili(ids.size() / float(cols))
+		for i in ids.size():
+			var f := Fighter.create(_look("Saiyan"))
+			f.position = Vector3((i % cols - (cols - 1) / 2.0) * 1.35, -(i / cols) * 2.5, 0)
+			f.rotation.y = 0.65
+			stage.add_child(f)
+			var label := Label3D.new()
+			label.text = ids[i]
+			label.font_size = 30
+			label.pixel_size = 0.004
+			label.modulate = Color(0.1, 0.1, 0.12)
+			label.position = f.position + Vector3(0, -0.15, 0.6)
+			stage.add_child(label)
+		cam.size = rows * 2.5 + 0.2
+		vp.size = Vector2i(roundi(H * 1.6 * (cols * 1.35 + 0.3) / cam.size), roundi(H * 1.6))
+		cam.position = Vector3(0, -(rows - 1) * 2.5 / 2.0 + 0.95, 8)
+		var serial := 1
+		for f: Fighter in stage.find_children("*", "Fighter", true, false):
+			var id: String = ids[stage.find_children("*", "Fighter", true, false).find(f)]
+			for k in 24:
+				var a := {"speed": 0.0, "onGround": true}
+				if which == "hold":
+					a.skillHoldPose = id; a.skillHold = 1.0
+				elif k >= 12:
+					a.skillReleasePose = id; a.attackSerial = serial; a.attackKind = "beam"
+				f.update(1.0 / 30.0, a)
+			serial += 1
+		_paint(neutral, Color(0.86, 0.87, 0.9))
+		await _shot("%s_poses_%s.png" % [out, which])
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--poses" in OS.get_cmdline_user_args():
+		await _poses(out)
+		quit()
+		return
 	var races: Array = []
 	for r: String in RACES:
 		races.append([r, _look(r), 1.0])

@@ -31,6 +31,11 @@ var strike := 0.0
 var strike_kind := ""
 var heavy_hit := 0.0
 var hit_side := 0.0
+# skill poses (SkillPoses): the held technique's gathering pose and the release pose after it fires
+var skill_hold_pose := ""
+var skill_hold := 0.0
+var skill_release_pose := ""
+var skill_release := 0.0
 var t := 0.0
 var _ids: Dictionary = {}
 
@@ -117,10 +122,28 @@ func _process_modification() -> void:
 	for side in ["L","R"]:
 		arm[side].x += surge*0.35
 		fore[side].x -= surge*0.45
+	# Per-skill poses (presentation rebuild): replace the generic cast/strike arms when the technique has one.
+	var posed := false
+	var parts: Dictionary = {"body": body, "chest": chest, "neck": neck, "armL": arm.L, "armR": arm.R, "foreL": fore.L, "foreR": fore.R}
+	for layer: Array in [[skill_hold_pose, "hold", skill_hold], [skill_release_pose, "release", skill_release]]:
+		var w: float = layer[2]
+		if w <= 0.01 or not SkillPoses.has_pose(layer[0]):
+			continue
+		posed = true
+		var key_pose := SkillPoses.key(layer[0], layer[1])
+		for name: String in key_pose:
+			parts[name] = parts[name] + (key_pose[name] as Vector3) * w
+	if posed:
+		body = parts.body; chest = parts.chest; neck = parts.neck
+		arm.L = parts.armL; arm.R = parts.armR; fore.L = parts.foreL; fore.R = parts.foreR
+		for side in ["L", "R"]:
+			arm[side].x -= aim_pitch * maxf(skill_hold, skill_release) * 0.6
 	# Beam wind-up: cupped hands drawn back, then both palms thrust forward.
 	var release := maxf(0.0,strike) if strike_kind in ["beam","ultimate","avatar"] else 0.0
 	var casting := maxf(cast,release)
-	if casting>0.01:
+	if posed:
+		pass
+	elif casting>0.01:
 		body.y += cast*0.28
 		for side in ["L","R"]:
 			var sx := 1.0 if side=="L" else -1.0

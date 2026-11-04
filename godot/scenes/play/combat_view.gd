@@ -11,14 +11,13 @@ const BAR := preload("res://fx/shaders/bar.gdshader")
 var combat: RuleCombat
 var camera: Camera3D
 var views: Dictionary = {}      # enemy id -> {fighter, tag, bar}
-var balls: Dictionary = {}      # projectile id -> Node3D
 var effects: Array = []         # {node, life, kind}
 var avatar: Node3D
 var _energy_mat: ShaderMaterial
 var _bar_mat: ShaderMaterial
-var _ball_mesh: SphereMesh
 var flourish_root: Node3D
 var audio: CombatAudio
+var skill_fx: SkillDirector   # Codex's per-skill effects and sound bank (presentation rebuild 2026-11-04)
 var _attack_poses: Dictionary = {}
 var _reactions: Dictionary = {}
 var _charge_age := 0.0
@@ -33,17 +32,19 @@ func _init(c: RuleCombat, cam: Camera3D) -> void:
 	camera = cam
 	_energy_mat = ShaderMaterial.new(); _energy_mat.shader = ENERGY
 	_bar_mat = ShaderMaterial.new(); _bar_mat.shader = BAR
-	_ball_mesh = SphereMesh.new(); _ball_mesh.radius = 0.17; _ball_mesh.height = 0.34; _ball_mesh.radial_segments = 16; _ball_mesh.rings = 8
 	_bar_mesh = QuadMesh.new(); _bar_mesh.size = Vector2(1.35, 0.12)
 	flourish_root = Node3D.new(); flourish_root.name = "Flourishes"; add_child(flourish_root)
 	audio = CombatAudio.new(); audio.name = "CombatAudio"; add_child(audio)
 	Events.attack.connect(_on_attack)
 	Events.damage.connect(_on_damage)
-	Events.beam.connect(_on_beam)
 	Events.avatar_strike.connect(_on_avatar_strike)
+	# Skill casts, beams, projectiles and hit impacts/sounds are all drawn by the director (no duplicate generic FX here).
+	skill_fx = SkillDirector.new(); skill_fx.name = "SkillFX"; add_child(skill_fx)
+	skill_fx.bind(Events, _resolve_fighter, str(Settings.get_value("quality")) if Engine.get_main_loop() is SceneTree and (Engine.get_main_loop() as SceneTree).root.has_node("Settings") else "medium")
+	skill_fx.ghost_factory = _ghost
 
 func _exit_tree() -> void:
-	for sig: Signal in [Events.attack, Events.damage, Events.beam, Events.avatar_strike]:
+	for sig: Signal in [Events.attack, Events.damage, Events.avatar_strike]:
 		for c in sig.get_connections():
 			if c.callable.get_object() == self:
 				sig.disconnect(c.callable)
@@ -74,40 +75,12 @@ func _on_damage(d: Dictionary) -> void:
 	_reaction_serial += 1
 	_reactions[str(d.get("id",""))] = {"serial":_reaction_serial,"left":0.35,"hitWeight":weight,"hitSide":clampf(incoming.x*cos(yaw)-incoming.z*sin(yaw),-1,1)}
 	_push_player_presentation()
-	_flourish("impact",pos,Color("9cdcff") if d.get("blocked",false) else Color("ffbc62"),incoming)
-	audio.play_cue("guard" if d.get("blocked",false) else "hit",pos,weight)
 	var l := _label(("GUARD " if d.get("blocked", false) else "") + str(d.get("amount", "")), Color("#ff8279") if player_hit else Color("#ffe294"), 42)
 	l.position = pos + Vector3(randf_range(-0.3, 0.3), 0.2, 0)
 	add_child(l)
 	effects.append({"node": l, "life": 1.0, "kind": "text"})
-	Burst.spawn(self, pos, Color(1.0, 0.75, 0.4) if not d.get("blocked", false) else Color(0.6, 0.85, 1.0), 0.7)
 	while effects.size() > 32:
 		_remove(effects.pop_front())
-
-func _on_beam(b: Dictionary) -> void:
-	var from: Vector3 = RuleRuntime.vector(b.from)
-	var to: Vector3 = RuleRuntime.vector(b.to)
-	var color := _hex(b.get("color"))
-	audio.play_cue("beam",from,1.4)
-	_flourish("surge",from,color)
-	var dir := to - from
-	var length := dir.length()
-	if length < 0.01:
-		return
-	var holder := Node3D.new()
-	add_child(holder)
-	holder.position = from.lerp(to, 0.5)
-	holder.basis = Basis(Quaternion(Vector3.UP, dir.normalized()))
-	for layer: Array in [[0.16, 0.2, 1.6], [0.42, 0.55, 0.8]]:   # hot core, coloured sheath
-		var c := CylinderMesh.new(); c.top_radius = layer[0]; c.bottom_radius = layer[1]; c.height = length; c.radial_segments = 16; c.rings = 1
-		var mi := MeshInstance3D.new(); mi.mesh = c; mi.material_override = _energy_mat
-		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		mi.set_instance_shader_parameter("energy_color", color)
-		mi.set_instance_shader_parameter("strength", layer[2])
-		holder.add_child(mi)
-	effects.append({"node": holder, "life": 0.45, "kind": "beam"})
-	Burst.spawn(self, from, color, 0.8)
-	Burst.spawn(self, to, color, 2.2)
 
 func _on_avatar_strike(d: Dictionary) -> void:
 	var pos: Vector3 = RuleRuntime.vector(d.get("pos", Vector3.ZERO))
@@ -117,6 +90,60 @@ func _remove(e: Dictionary) -> void:
 	var n: Node = e.node
 	if is_instance_valid(n):
 		n.queue_free()
+
+## The live Fighter for an event's actor id: "player" (and our own co-op id), enemies, co-op friends.
+func _resolve_fighter(id: String) -> Node3D:
+	if id == "player" or id == "":
+		return get_parent().get_node_or_null("Player") as Node3D if get_parent() != null else null
+	if views.has(id):
+		return views[id].fighter
+	var friends: Variant = get_parent().get("friends") if get_parent() != null else null
+	if friends is Dictionary and (friends as Dictionary).has(id):
+		return friends[id].fighter
+	return null
+
+func _skill_actors() -> Array:
+	var out: Array = [combat.p]
+	var friends: Variant = get_parent().get("friends") if get_parent() != null else null
+	if friends is Dictionary:
+		for id: String in friends:
+			var st: Variant = friends[id].get("state")
+			if st is Dictionary:
+				var row: Dictionary = (st as Dictionary).duplicate()
+				if row.get("skillState") is Dictionary and not (row.skillState as Dictionary).is_empty():
+					row.skillState = (row.skillState as Dictionary).duplicate(); row.skillState.actor_id = id
+				out.append(row)
+	return out
+
+## Afterimage: a frozen copy of the caster's actual model in its current pose (visual only, no scripts or physics).
+func _ghost(id: String, color: Variant) -> Node3D:
+	var f := _resolve_fighter(id) as Fighter
+	if f == null or not is_instance_valid(f):
+		return null
+	var ghost := Node3D.new()
+	var mat := StandardMaterial3D.new()
+	var c: Color = color if color is Color else _hex(color)
+	mat.albedo_color = Color(c.r, c.g, c.b, 0.35)
+	mat.emission_enabled = true; mat.emission = c; mat.emission_energy_multiplier = 1.4
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	for mi: MeshInstance3D in f.find_children("*", "MeshInstance3D", true, false):
+		if not mi.is_visible_in_tree() or mi.mesh == null:
+			continue
+		var copy := MeshInstance3D.new()
+		copy.mesh = mi.mesh if mi.skin == null else _baked_pose(mi)
+		copy.material_override = mat
+		copy.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		copy.transform = f.global_transform.affine_inverse() * mi.global_transform
+		ghost.add_child(copy)
+	# the effect is placed at the cast socket; put the copy back where the fighter stands
+	ghost.ready.connect(func() -> void: ghost.global_transform = f.global_transform if is_instance_valid(f) else ghost.global_transform, CONNECT_ONE_SHOT)
+	return ghost
+
+## The skinned body in its current pose as a static mesh (for afterimages).
+static func _baked_pose(mi: MeshInstance3D) -> Mesh:
+	var baked: Variant = mi.call("bake_mesh_from_current_skeleton_pose") if mi.has_method("bake_mesh_from_current_skeleton_pose") else null
+	return baked if baked is Mesh else mi.mesh
 
 func update_view(dt: float) -> void:
 	audio.set_paused(dt<=0)
@@ -168,22 +195,9 @@ func update_view(dt: float) -> void:
 			var v: Dictionary = views[id]
 			(v.fighter as Fighter).dispose(); (v.tag as Node).queue_free(); (v.bar as Node).queue_free()
 			views.erase(id)
-	var shots := {}
-	for b: Dictionary in combat.projectiles:
-		var id := str(b.id)
-		shots[id] = true
-		var n: Node3D = balls.get(id)
-		if n == null:
-			n = _make_ball(_hex(b.get("color")))
-			add_child(n)
-			balls[id] = n
-		n.position = RuleRuntime.vector(b.pos)
-	for id: String in balls.keys():
-		if not shots.has(id):
-			var n: Node3D = balls[id]
-			Burst.spawn(self, n.position, n.get_meta("color"), 0.9)
-			n.queue_free()
-			balls.erase(id)
+	skill_fx.set_paused(dt <= 0)
+	skill_fx.sync_projectiles(combat.projectiles)
+	skill_fx.update_actor_states(_skill_actors())
 	for i in range(effects.size() - 1, -1, -1):
 		var e: Dictionary = effects[i]
 		e.life -= dt
@@ -198,30 +212,6 @@ func update_view(dt: float) -> void:
 			for mi: MeshInstance3D in n.get_children():
 				mi.set_instance_shader_parameter("strength", clampf(e.life / 0.45, 0.0, 1.0) * 1.4)
 
-func _make_ball(color: Color) -> Node3D:
-	var root := Node3D.new()
-	root.set_meta("color", color)
-	var core := MeshInstance3D.new(); core.mesh = _ball_mesh; core.material_override = _energy_mat
-	core.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	core.set_instance_shader_parameter("energy_color", color)
-	core.set_instance_shader_parameter("strength", 1.6)
-	root.add_child(core)
-	var halo := MeshInstance3D.new(); var q := QuadMesh.new(); q.size = Vector2(1.1, 1.1)
-	var hm := ShaderMaterial.new(); hm.shader = GLOW; hm.set_shader_parameter("tint", color)
-	q.material = hm; halo.mesh = q
-	halo.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	root.add_child(halo)
-	var trail := CPUParticles3D.new()
-	trail.amount = 24; trail.lifetime = 0.35; trail.local_coords = false
-	trail.direction = Vector3.ZERO; trail.spread = 180.0; trail.initial_velocity_min = 0.2; trail.initial_velocity_max = 0.8
-	trail.gravity = Vector3.ZERO; trail.scale_amount_min = 0.5; trail.scale_amount_max = 1.0
-	var tq := QuadMesh.new(); tq.size = Vector2(0.14, 0.14); tq.material = hm
-	trail.mesh = tq
-	trail.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	root.add_child(trail)
-	return root
-
-# ---- the Ultra Instinct energy avatar (port of fx/ultra_instinct_avatar.js)
 var _av_time := 0.0
 var _av_pulse := 0
 var _av_strike := 1.0
@@ -301,12 +291,14 @@ func _nearest_enemy_position() -> Vector3:
 			best = d; nearest = e.pos
 	return nearest
 func _on_attack(d: Dictionary) -> void:
+	if str(d.get("phase", "release")) not in ["release", ""]:
+		return   # prepare / cancel / recovery / dodge are presentation-only (SkillDirector)
 	var e := _entity(str(d.get("id","")))
 	if e.is_empty(): return
 	var kind := str(d.get("kind","jab"))
 	if kind=="melee": kind = str(e.attackKind)
 	if kind=="projectile": kind = "ki"
-	_attack_poses[str(e.id)] = {"serial":e.attackSerial,"kind":kind}
+	_attack_poses[str(e.id)] = {"serial":e.attackSerial,"kind":kind,"pose":str(d.get("pose",""))}
 	_push_player_presentation()
 	var pos: Vector3 = e.pos+Vector3.UP*1.1
 	if kind in ["jab","cross","hook","leg kick"]:
@@ -323,7 +315,12 @@ func _presentation(e: Dictionary) -> Dictionary:
 	if _attack_poses.has(id):
 		if _attack_poses[id].serial==e.attackSerial:
 			a.attackKind = _attack_poses[id].kind
+			a.skillReleasePose = _attack_poses[id].get("pose","")
 		else: _attack_poses.erase(id)
+	var st: Variant = e.get("skillState")
+	if st is Dictionary and str((st as Dictionary).get("phase","")) == "prepare":
+		a.skillHoldPose = str(st.get("pose",""))
+		a.skillHold = 0.55 + 0.45 * clampf(float(st.get("charge",0)),0,1)
 	if _reactions.has(id):
 		a.reactionSerial = _reactions[id].serial
 		a.hitWeight = _reactions[id].hitWeight

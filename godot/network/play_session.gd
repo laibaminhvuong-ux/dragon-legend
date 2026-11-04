@@ -46,8 +46,8 @@ func apply_frame(data: Dictionary) -> void:
 	game.entities = [game.player]+game.combat.enemies
 	_update_friends(data.get("friends",[]))
 	for event: Dictionary in data.get("events",[]):
-		var payload: Dictionary = event.data
-		if payload.get("id")==data.self: payload.id = "player"
+		# our own host id becomes "player" in id/actor/source/target, so skill effects attach to our own model
+		var payload: Dictionary = CoopCodec.localize_event(event.data,str(data.self))
 		if event.name in ["notify","dialogue","questAccepted","questCompleted","questProgress","enemyDefeated","levelup","stats","attack","damage","beam","avatarStrike"]:
 			Events.emit_named(event.name,payload)
 func _update_friends(rows: Array) -> void:
