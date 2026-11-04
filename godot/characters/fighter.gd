@@ -99,6 +99,10 @@ func _build() -> void:
 	feet.name = "FootPlacement"
 	skeleton.add_child(feet)
 
+## How far the body is visually lunging forward right now (metres, world scale).
+func lunge_world() -> float:
+	return body.position.z * scale.z
+
 ## Per-frame update with the JS anim contract (see AnimController); also swings the cape.
 func update(dt: float, a: Dictionary = {}) -> void:
 	if dt <= 0.0:

@@ -20,6 +20,7 @@ const ALIASES := {
 
 static var _moves: Dictionary = {}
 static var _library: AnimationLibrary
+static var _reactions: Dictionary = {}
 
 static func _add(a: Dictionary, b: Dictionary, w := 1.0) -> Dictionary:
 	var out := a.duplicate()
@@ -184,6 +185,21 @@ static func _build() -> void:
 				"hips": V.call(0.12, -0.38), "armL": V.call(0.32, 0, 0.42)}, 0.52]]),
 	}
 	_moves = {"turtle": turtle, "brawler": brawler, "speedster": speedster, "crane": crane}
+	# hit reactions (shared by every style): a short stagger, a knockback (pushed back off the feet), a launch
+	var n := {}
+	_reactions = {
+		"react_stagger": _seq(n, 0.5, 0.1, [[0.1, "out", {"chest": V.call(-0.35, 0.15), "neck": V.call(-0.3), "armL": V.call(-0.4, 0, 0.6),
+			"armR": V.call(-0.3, 0, -0.5), "hips": V.call(-0.1), "shinL": V.call(0.3), "shinR": V.call(0.3)}, -0.15],
+			[0.3, "inout", {"chest": V.call(-0.12), "neck": V.call(-0.1), "shinL": V.call(0.2), "shinR": V.call(0.2)}, -0.2]]),
+		"react_knockback": _seq(n, 0.75, 0.12, [[0.12, "out", {"chest": V.call(-0.55), "neck": V.call(-0.45), "hips": V.call(-0.3),
+			"armL": V.call(-1.0, 0, 0.9), "armR": V.call(-1.0, 0, -0.9), "thighL": V.call(-0.5), "thighR": V.call(-0.2), "shinL": V.call(0.4)}, -0.7],
+			[0.45, "inout", {"chest": V.call(0.2), "hips": V.call(0.1), "thighL": V.call(-0.4), "shinL": V.call(0.7), "shinR": V.call(0.5),
+				"armL": V.call(-0.3, 0, 0.3), "armR": V.call(-0.3, 0, -0.3)}, -0.9]]),
+		"react_launch": _seq(n, 0.9, 0.12, [[0.12, "out", {"chest": V.call(-0.7), "neck": V.call(-0.6), "hips": V.call(-0.45),
+			"armL": V.call(-1.6, 0, 0.9), "armR": V.call(-1.6, 0, -0.9), "thighL": V.call(-0.9), "thighR": V.call(-0.6), "shinL": V.call(0.8),
+			"shinR": V.call(0.6)}, -0.5],
+			[0.6, "inout", {"chest": V.call(-0.3), "hips": V.call(-0.2), "thighL": V.call(-0.6), "shinL": V.call(0.9), "shinR": V.call(0.7)}, -0.8]]),
+	}
 
 ## The clip to play for a style's move: the exact move, else its alias slot, else that style's combo step, else turtle.
 static func move_for(style: String, move: String, combo_step: int) -> String:
@@ -209,5 +225,19 @@ static func library(f: Fighter) -> AnimationLibrary:
 			var mv: Dictionary = m[id]
 			# Crane fights with open palms; every other style closes its hands into fists
 			lib.add_animation(id, MoveClips.build(f.skeleton, base, mv.keys, float(mv.length), mv.get("loop", false), {} if style == "crane" else fists))
+	for id: String in _reactions:
+		var mv: Dictionary = _reactions[id]
+		lib.add_animation(id, MoveClips.build(f.skeleton, base, mv.keys, float(mv.length)))
 	_library = lib
 	return lib
+
+## Move data (length, contact, keys) for any clip in the library, styles and reactions alike.
+static func data(id: String) -> Dictionary:
+	if _moves.is_empty():
+		_build()
+	if _reactions.has(id):
+		return _reactions[id]
+	for style: String in IDS:
+		if (_moves[style] as Dictionary).has(id):
+			return _moves[style][id]
+	return {}

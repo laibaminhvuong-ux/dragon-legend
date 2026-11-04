@@ -37,9 +37,22 @@ var _ground := true
 var _vy := 0.0
 var _transform := 10.0
 var _bt: AnimationNodeBlendTree
+# fight flow (2026-11-04): style move clips crossfade through two alternating slots; visual lunge and hit-stop
+var _f: Fighter
+var current_move := ""
+var _move_slot := "b"
+var _move_t := 0.0
+var _move_clip: Animation
+var _lunge := 0.0
+var _hitstop := 0.0
+var _hitstop_serial := 0
+var _style := ""
 
 func _init(f: Fighter) -> void:
 	player = f.anim_player
+	_f = f
+	if not player.has_animation_library("moves"):
+		player.add_animation_library("moves", FightStyles.library(f))
 	_bt = AnimationNodeBlendTree.new()
 	var loco := AnimationNodeBlendSpace1D.new()
 	for pt: Array in [["Idle", 0.0], ["Walk", 1.8], ["Jog_Fwd", 5.5], ["Sprint", 10.0]]:
@@ -51,7 +64,8 @@ func _init(f: Fighter) -> void:
 	_bt.connect_node("stride",0,"loco")
 	var mode := AnimationNodeTransition.new()
 	mode.xfade_time = 0.22
-	var inputs := {"ground": "loco", "air": "Jump", "fly": "Idle", "talk": "Idle_Talking", "sit": "Sitting_Idle", "dead": "Death01", "cast":"Spell_Simple_Idle"}
+	var inputs := {"ground": "loco", "air": "Jump", "fly": "Idle", "talk": "Idle_Talking", "sit": "Sitting_Idle", "dead": "Death01", "cast":"Spell_Simple_Idle",
+		"stance": "moves/turtle_stance"}
 	var idx := 0
 	for st: String in inputs:
 		mode.add_input(st)
@@ -65,18 +79,24 @@ func _init(f: Fighter) -> void:
 		_bt.connect_node("mode", idx, "stride" if inputs[st] == "loco" else "a_" + st)
 		idx += 1
 	var shot_pick := AnimationNodeTransition.new()
-	shot_pick.xfade_time = 0.0
+	shot_pick.xfade_time = 0.1   # one strike flows into the next instead of snapping
 	var shots := ["Punch_Jab", "Punch_Cross", "Punch_Enter", "Push", "Spell_Simple_Shoot", "Hit_Chest", "Hit_Head"]
 	if player.has_animation("Jump_Land"): shots.append("Jump_Land")
 	for i in shots.size():
 		shot_pick.add_input(shots[i])
 		var a := AnimationNodeAnimation.new(); a.animation = shots[i]
 		_bt.add_node("s_" + shots[i], a, Vector2(300, 200 + 100 * i))
+	for slot: String in ["a", "b"]:
+		shot_pick.add_input("move_" + slot)
+		var m := AnimationNodeAnimation.new(); m.animation = "moves/turtle_combo1"
+		_bt.add_node("m_" + slot, m, Vector2(300, 1000 + (100 if slot == "b" else 0)))
 	_bt.add_node("pick", shot_pick, Vector2(500, 200))
 	for i in shots.size():
 		_bt.connect_node("pick", i, "s_" + shots[i])
+	_bt.connect_node("pick", shots.size(), "m_a")
+	_bt.connect_node("pick", shots.size() + 1, "m_b")
 	var os := AnimationNodeOneShot.new()
-	os.fadein_time = 0.06; os.fadeout_time = 0.18
+	os.fadein_time = 0.1; os.fadeout_time = 0.22
 	for b: String in _upper_tracks(f.skeleton):
 		os.set_filter_path(NodePath(b), true)
 	_bt.add_node("shot", os, Vector2(700, 0))
@@ -150,6 +170,11 @@ func update(dt: float, anim: Dictionary) -> void:
 	elif anim.get("sitting", false): next = "sit"
 	elif float(anim.get("beamCharge",0))>0.05 and speed<0.5 and not SkillPoses.has_pose(str(anim.get("skillHoldPose",""))): next = "cast"
 	elif anim.get("talking", false) and speed < 0.3: next = "talk"
+	elif anim.get("inCombat", false) and speed < 0.5: next = "stance"
+	var style := str(anim.get("style", ""))
+	if style != "" and style != _style and FightStyles.IDS.has(style):
+		_style = style
+		(_bt.get_node("a_stance") as AnimationNodeAnimation).animation = "moves/%s_stance" % style
 	if next != state:
 		state = next
 		tree.set("parameters/mode/transition_request", state)
@@ -166,7 +191,10 @@ func update(dt: float, anim: Dictionary) -> void:
 			_age = 0.0
 			_kind = kind
 			mod.finisher = 1.25 if anim.get("finisher", false) else 1.0
-			if kind.contains("kick") or kind == "knee":
+			if style != "" and not SkillPoses.has_pose(str(anim.get("skillReleasePose", ""))) and kind not in ["ki", "beam", "ultimate", "utility", "avatar"]:
+				_play_move(FightStyles.move_for(style, str(anim.get("move", "")), int(anim.get("comboStep", 1))))
+				_kind = ""   # the clip carries the whole motion; no procedural strike layer on top
+			elif kind.contains("kick") or kind == "knee":
 				_kick_t = 0.0   # leg strikes are procedural (PoseModifier: front kick, knee, spin kick, axe kick)
 				_end_shot()
 			elif SkillPoses.has_pose(str(anim.get("skillReleasePose", ""))):
@@ -176,7 +204,11 @@ func update(dt: float, anim: Dictionary) -> void:
 		var hurt: bool = anim.get("hurt", false)
 		var reaction_serial := int(anim.get("reactionSerial",0))
 		if hurt and (not _hurt or reaction_serial!=_reaction_serial):
-			_play_shot("Hit_Head" if absf(float(anim.get("hitSide",0)))>0.5 else "Hit_Chest")
+			var reaction := str(anim.get("reaction", ""))
+			if reaction in ["stagger", "knockback", "launch"]:
+				_play_move("react_" + reaction)
+			else:
+				_play_shot("Hit_Head" if absf(float(anim.get("hitSide",0)))>0.5 else "Hit_Chest")
 			mod.heavy_hit = clampf(float(anim.get("hitWeight",0.4)),0.15,1.0)
 			mod.hit_side = clampf(float(anim.get("hitSide",0)),-1,1)
 			_age = 10.0
@@ -247,8 +279,26 @@ func update(dt: float, anim: Dictionary) -> void:
 	mod.t += dt
 	# the upper-body filter: whole body when standing still on the ground, arms only while moving or flying
 	var shot: AnimationNodeOneShot = _bt.get_node("shot")
-	shot.filter_enabled = speed > 0.5 or flying or not on_ground
-	tree.advance(dt)
+	shot.filter_enabled = (speed > 0.5 or flying or not on_ground) and current_move == ""
+	# hit-stop: a short freeze of this fighter's animation on impact (visual only; the game keeps running)
+	var hs_serial := int(anim.get("hitstopSerial", 0))
+	if hs_serial != _hitstop_serial:
+		_hitstop_serial = hs_serial
+		_hitstop = clampf(float(anim.get("hitstop", 0.0)), 0.0, 0.2)
+	var adv := dt
+	if _hitstop > 0.0:
+		_hitstop -= dt
+		adv = 0.0
+	# visual lunge: the body travels with the move's root motion, then eases back onto the fighter's real spot
+	if current_move != "":
+		_move_t += adv
+		_lunge = MoveClips.lunge_at(_move_clip, _move_t)
+		if _move_t >= _move_clip.length:
+			current_move = ""
+	else:
+		_lunge = lerpf(_lunge, 0.0, 1.0 - exp(-dt * 7.0))
+	_f.body.position = Vector3(0, 0, _lunge)
+	tree.advance(adv)
 
 func _play_shot(anim_name: String) -> void:
 	one_shot = anim_name
@@ -256,6 +306,26 @@ func _play_shot(anim_name: String) -> void:
 	one_shot_left = (a.length if a != null else 0.5) + 0.05
 	tree.set("parameters/pick/transition_request", anim_name)
 	tree.set("parameters/shot/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+
+## Seconds into the current move clip (frozen during hit-stop).
+func move_time() -> float:
+	return _move_t
+
+## Plays a clip from the "moves" library (style strikes, reactions); chains crossfade from whatever is playing.
+func _play_move(id: String) -> void:
+	var clip := player.get_animation("moves/" + id) if player.has_animation("moves/" + id) else null
+	if clip == null:
+		return
+	_move_slot = "a" if _move_slot == "b" else "b"
+	(_bt.get_node("m_" + _move_slot) as AnimationNodeAnimation).animation = "moves/" + id
+	current_move = id
+	_move_clip = clip
+	_move_t = 0.0
+	tree.set("parameters/pick/transition_request", "move_" + _move_slot)
+	if one_shot == "":
+		tree.set("parameters/shot/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+	one_shot = "moves/" + id
+	one_shot_left = clip.length + 0.05
 
 func _end_shot() -> void:
 	if one_shot != "":
