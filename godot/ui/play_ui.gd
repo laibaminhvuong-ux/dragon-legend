@@ -8,6 +8,7 @@ var input: GameInput
 var hud: Hud
 var rpg: RpgMenu
 var forms: FormPicker
+var styles: StylePicker
 var map: WorldMap
 var radar: DragonRadar
 var tutorial: TutorialPanel
@@ -38,6 +39,14 @@ func _init(p: PlaySession, gi: GameInput) -> void:
 		input.capture = false)
 	forms.closed.connect(func() -> void:
 		play.freeze("forms", false)
+		input.capture = not play.paused)
+	styles = StylePicker.new(p)
+	add_child(styles)
+	styles.opened.connect(func() -> void:
+		play.freeze("styles", true)
+		input.capture = false)
+	styles.closed.connect(func() -> void:
+		play.freeze("styles", false)
 		input.capture = not play.paused)
 	map = WorldMap.new(p)
 	add_child(map)
@@ -94,6 +103,12 @@ func handle_input() -> bool:
 		elif input.pressed("interact") or (input.last_device == "gamepad" and input.pressed("jump")):
 			forms.activate()
 		return true
+	if styles.is_open:
+		if input.pressed("pause") or input.pressed("menu") or input.pressed("style") or (input.last_device == "gamepad" and input.pressed("dash")):
+			styles.close()
+		elif input.pressed("interact") or (input.last_device == "gamepad" and input.pressed("jump")):
+			styles.activate()
+		return true
 	if play.paused:
 		return false
 	# A visible cursor lets players select HUD quests without firing or moving.
@@ -105,6 +120,9 @@ func handle_input() -> bool:
 		return true
 	if input.pressed("map"):
 		map.open()
+		return true
+	if input.pressed("style"):
+		styles.open()
 		return true
 	if input.pressed("menu"):
 		rpg.open_tab("Stats")

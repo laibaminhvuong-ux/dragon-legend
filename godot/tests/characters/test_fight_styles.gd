@@ -29,7 +29,20 @@ func test_move_for_fallbacks() -> void:
 
 func test_named_moves_alias_combo_slots() -> void:
 	eq(FightStyles.move_for("brawler", "brawler_hammer_fist", 2), "brawler_combo2", "spec move names map to their combo slot")
-	eq(FightStyles.move_for("crane", "crane_one_finger", 4), "crane_finisher", "finisher names map to the finisher")
+	eq(FightStyles.move_for("crane", "crane_one_finger_strike", 4), "crane_finisher", "finisher names map to the finisher")
+	eq(FightStyles.move_for("speedster", "speedster_afterimage_blink", 1), "speedster_dash", "dash-in names map to the dash")
+
+func test_every_rules_move_id_has_a_clip() -> void:
+	var table: Dictionary = RuleTables.table("fighting_styles")
+	var n := 0
+	for style: String in FightStyles.IDS:
+		for step in range(1, 5):
+			for dash in [false, true]:
+				var mv: Dictionary = RuleStyles.move(style, step, dash)
+				var id := str(mv.get("move", ""))
+				ok(FightStyles.ALIASES.has(id), "%s is mapped to a clip" % id)
+				n += 1
+	ok(n == 32 and not table.is_empty(), "rules move table read")
 
 func test_styles_differ() -> void:
 	var sigs := {}

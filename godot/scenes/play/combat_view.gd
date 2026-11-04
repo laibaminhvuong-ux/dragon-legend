@@ -24,6 +24,7 @@ var _charge_age := 0.0
 var _last_form := ""
 var _last_dash := false
 var _reaction_serial := 0
+var _hitstops: Dictionary = {}   # fighter id -> {serial, value}: impact freeze for attacker and victim (visual only)
 var _bar_mesh: QuadMesh
 
 func _init(c: RuleCombat, cam: Camera3D) -> void:
@@ -73,7 +74,15 @@ func _on_damage(d: Dictionary) -> void:
 	var incoming: Vector3 = pos-combat.p.pos if not player_hit else combat.p.pos-_nearest_enemy_position()
 	var yaw := float(entity.get("yaw",0))
 	_reaction_serial += 1
-	_reactions[str(d.get("id",""))] = {"serial":_reaction_serial,"left":0.35,"hitWeight":weight,"hitSide":clampf(incoming.x*cos(yaw)-incoming.z*sin(yaw),-1,1)}
+	# style reactions (Codex's damage fields): launch, a knockback shove, or a stagger
+	var reaction := "launch" if d.get("launch", false) else ("knockback" if float(d.get("knockback", 0.0)) >= 0.45 else ("stagger" if d.has("stagger") else ""))
+	_reactions[str(d.get("id",""))] = {"serial":_reaction_serial,"left":maxf(0.35, float(d.get("stagger", 0.0))),"hitWeight":weight,
+		"hitSide":clampf(incoming.x*cos(yaw)-incoming.z*sin(yaw),-1,1),"reaction":reaction}
+	var hs := float(d.get("hitstop", 0.0))
+	if hs > 0.0:
+		for who: String in [str(d.get("id","")), str(d.get("source_id",""))]:
+			if who != "":
+				_hitstops[who] = {"serial": _reaction_serial, "value": hs}
 	_push_player_presentation()
 	var l := _label(("GUARD " if d.get("blocked", false) else "") + str(d.get("amount", "")), Color("#ff8279") if player_hit else Color("#ffe294"), 42)
 	l.position = pos + Vector3(randf_range(-0.3, 0.3), 0.2, 0)
@@ -301,6 +310,7 @@ func _on_attack(d: Dictionary) -> void:
 	if kind=="projectile": kind = "ki"
 	var recipe := SkillCatalog.get_skill(str(d.get("move_id","")))
 	_attack_poses[str(e.id)] = {"serial":e.attackSerial,"kind":kind,"pose":str(d.get("pose","")),"finisher":bool(d.get("finisher",false)),
+		"style":str(d.get("style","")),"move":str(d.get("finisher_move",d.get("dash_move",d.get("move","")))),"comboStep":int(d.get("combo_step",1)),
 		"hold_min":float(recipe.get("hold_min",0.0)),"release_window":float(recipe.get("release_window",0.45)),"recovery":float(recipe.get("recovery",0.45))}
 	_push_player_presentation()
 	var pos: Vector3 = e.pos+Vector3.UP*1.1
@@ -320,6 +330,10 @@ func _presentation(e: Dictionary) -> Dictionary:
 			a.attackKind = _attack_poses[id].kind
 			a.skillReleasePose = _attack_poses[id].get("pose","")
 			a.finisher = _attack_poses[id].get("finisher",false)
+			if str(_attack_poses[id].get("style","")) != "":
+				a.style = _attack_poses[id].style
+				a.move = _attack_poses[id].move
+				a.comboStep = _attack_poses[id].comboStep
 			a.skillHoldMin = _attack_poses[id].get("hold_min",0.0)
 			a.skillReleaseWindow = _attack_poses[id].get("release_window",0.45)
 			a.skillRecovery = _attack_poses[id].get("recovery",0.45)
@@ -328,7 +342,14 @@ func _presentation(e: Dictionary) -> Dictionary:
 	if st is Dictionary and str((st as Dictionary).get("phase","")) == "prepare":
 		a.skillHoldPose = str(st.get("pose",""))
 		a.skillHold = 0.55 + 0.45 * clampf(float(st.get("charge",0)),0,1)
+	if not a.has("style"):
+		a.style = str(e.get("style", "turtle"))
+	a.inCombat = _in_combat(e)
+	if _hitstops.has(id):
+		a.hitstop = _hitstops[id].value
+		a.hitstopSerial = _hitstops[id].serial
 	if _reactions.has(id):
+		a.reaction = _reactions[id].get("reaction", "")
 		a.reactionSerial = _reactions[id].serial
 		a.hitWeight = _reactions[id].hitWeight
 		a.hitSide = _reactions[id].hitSide
@@ -339,6 +360,23 @@ func _presentation(e: Dictionary) -> Dictionary:
 		a.beamCharge = combat.snapshot().beamCharge
 		a.dead = e.health<=0
 	return a
+## Whether a fighter should stand in its fighting guard: the player near a hostile enemy (or locked on), an enemy
+## that is hostile and near the player.
+func _in_combat(e: Dictionary) -> bool:
+	if float(e.get("health", 1.0)) <= 0.0:
+		return false
+	if str(e.get("id", "")) == "player":
+		if combat.snapshot().get("target") is Dictionary:
+			return true
+		for o: Dictionary in combat.enemies:
+			if float(o.health) > 0.0 and _hostile(o) and (o.pos as Vector3).distance_squared_to(combat.p.pos) < 144.0:
+				return true
+		return false
+	return _hostile(e) and (e.pos as Vector3).distance_squared_to(combat.p.pos) < 225.0
+
+static func _hostile(e: Dictionary) -> bool:
+	return not str(e.get("key", "")).begins_with("patrol_") or bool(e.get("provoked", false))
+
 func _flourish(kind: String,pos: Vector3,color: Color,direction := Vector3.FORWARD) -> CombatFlourish:
 	while flourish_root.get_child_count()>=24:
 		var old := flourish_root.get_child(0)

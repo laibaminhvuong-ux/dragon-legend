@@ -7,7 +7,7 @@ extends Control
 const ACTIONS := [["jump", "Jump"], ["melee", "Melee attack"], ["block", "Block"], ["dash", "Dash"], ["flight", "Toggle flight"],
 	["ascend", "Fly up"], ["descend", "Fly down"], ["charge", "Charge ki"], ["ki_blast", "Ki blast"], ["beam", "Beam (hold to charge)"],
 	["transform", "Transform"], ["kaioken", "Toggle Kaiyoken overlay"], ["lock_on", "Lock on"], ["interact", "Talk / interact"],
-	["menu", "Fighter menu (stats, forms...)"], ["radar", "Dragon Radar on/off"], ["map", "World map"], ["sprint", "Run / fly fast (tap to switch)"], ["base", "Back to base form"], ["pause", "Pause menu"],
+	["menu", "Fighter menu (stats, forms...)"], ["radar", "Dragon Radar on/off"], ["map", "World map"], ["style", "Fighting style"], ["sprint", "Run / fly fast (tap to switch)"], ["base", "Back to base form"], ["pause", "Pause menu"],
 	["move_forward", "Move forward"], ["move_back", "Move back"], ["move_left", "Move left"], ["move_right", "Move right"]]
 var main: Node
 var title_mode := false

@@ -149,3 +149,23 @@ func test_shift_toggles_running_and_fast_flight() -> void:
 	gi.end_tick()
 	eq(p.intents().sprint, false)
 	_end(p)
+
+func test_style_moves_and_reactions_reach_the_fighters() -> void:
+	var p := _session()
+	p.render(DT, 1.0)
+	var cv: Node = p.combat_view
+	var e: Dictionary = p.game.combat.enemies[0]
+	var player_fighter: Fighter = p.get_node("Player")
+	p.game.player.attackSerial = int(p.game.player.get("attackSerial", 0)) + 1
+	Events.emit_named("attack", {"id": "player", "kind": "melee", "phase": "release", "style": "brawler", "move": "brawler_hammer_fist",
+		"combo_step": 2, "lunge": 0.4})
+	p.render(DT, 1.0)
+	eq(player_fighter.anim.current_move, "brawler_combo2", "the player's style clip plays")
+	var victim: Fighter = cv.views[str(e.id)].fighter
+	e.hurtUntil = p.game.combat.clock + 0.5
+	Events.emit_named("damage", {"id": str(e.id), "source_id": "player", "amount": 12, "pos": e.pos, "knockback": 0.6, "launch": false,
+		"stagger": 0.22, "hitstop": 0.075})
+	p.render(DT, 1.0)
+	p.render(DT, 1.0)
+	eq(victim.anim.current_move, "react_knockback", "the victim's knockback reaction plays")
+	_end(p)

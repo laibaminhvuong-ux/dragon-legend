@@ -10,12 +10,15 @@ extends RefCounted
 const IDS := ["turtle", "brawler", "speedster", "crane"]
 const NAMES := {"turtle": "Turtle School", "brawler": "Brawler", "speedster": "Speedster", "crane": "Crane"}
 ## The spec's move names, mapped to their slot in the style's set.
-const ALIASES := {
-	"turtle_jab": "combo1", "turtle_cross": "combo2", "turtle_front_kick": "combo3", "turtle_straight": "combo4", "turtle_double_palm": "finisher",
+const ALIASES := {   # Codex's stable move ids (docs/fighting-styles-contract.md) -> slot
+	"turtle_jab": "combo1", "turtle_cross": "combo2", "turtle_front_kick": "combo3", "turtle_straight_punch": "combo4",
+	"turtle_step_in": "dash", "turtle_double_palm_push": "finisher",
 	"brawler_wide_hook": "combo1", "brawler_hammer_fist": "combo2", "brawler_shoulder_charge": "combo3", "brawler_uppercut": "combo4",
-	"brawler_overhead_slam": "finisher", "speedster_jab_flurry": "combo1", "speedster_side_knee": "combo2", "speedster_spin_kick": "combo3",
-	"speedster_back_fist": "combo4", "speedster_blur_rush": "finisher", "crane_palm_strike": "combo1", "crane_high_kick": "combo2",
-	"crane_knife_hand": "combo3", "crane_crane_kick": "combo4", "crane_one_finger": "finisher",
+	"brawler_charge": "dash", "brawler_overhead_slam": "finisher",
+	"speedster_jab_flurry": "combo1", "speedster_side_step_knee": "combo2", "speedster_spin_kick": "combo3", "speedster_back_fist": "combo4",
+	"speedster_afterimage_blink": "dash", "speedster_blur_rush": "finisher",
+	"crane_palm_strike": "combo1", "crane_high_kick": "combo2", "crane_knife_hand": "combo3", "crane_crane_kick": "combo4",
+	"crane_gliding_step": "dash", "crane_one_finger_strike": "finisher",
 }
 
 static var _moves: Dictionary = {}
