@@ -9,7 +9,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "TurtleGi",
-      "outfitTint": 0
+      "outfitTint": 0,
+      "physique": "gokan"
     }
   },
   "gohan_kid": {
@@ -105,7 +106,8 @@
       "hairColor": 0,
       "build": "Tall",
       "outfit": "NamekRobe",
-      "outfitTint": 2
+      "outfitTint": 2,
+      "physique": "piccor"
     }
   },
   "krillin": {
@@ -118,7 +120,8 @@
       "hairColor": 0,
       "build": "Short",
       "outfit": "TurtleGi",
-      "outfitTint": 0
+      "outfitTint": 0,
+      "physique": "krilan"
     },
     "scale": 0.85
   },
@@ -132,7 +135,8 @@
       "hairColor": 5,
       "build": "Short",
       "outfit": "TurtleGi",
-      "outfitTint": 6
+      "outfitTint": 6,
+      "physique": "roshu"
     },
     "scale": 0.8
   },
@@ -240,7 +244,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "SaiyanArmor",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "nappo"
     },
     "scale": 1.2
   },
@@ -254,7 +259,8 @@
       "hairColor": 0,
       "build": "Average",
       "outfit": "SaiyanArmor",
-      "outfitTint": 1
+      "outfitTint": 1,
+      "physique": "vegara"
     },
     "scale": 0.95
   },
@@ -394,7 +400,8 @@
       "hairColor": 0,
       "build": "Short",
       "outfit": "FrostArmor",
-      "outfitTint": 2
+      "outfitTint": 2,
+      "physique": "frigor"
     },
     "scale": 0.9
   },
@@ -408,7 +415,8 @@
       "hairColor": 3,
       "build": "Average",
       "outfit": "FrostArmor",
-      "outfitTint": 0
+      "outfitTint": 0,
+      "physique": "frigor"
     }
   },
   "zarbon": {
@@ -461,7 +469,8 @@
       "hairColor": 4,
       "build": "Muscular",
       "outfit": "SaiyanArmor",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "recume"
     },
     "scale": 1.3
   },
@@ -557,7 +566,8 @@
       "hairColor": 0,
       "build": "Average",
       "outfit": "FrostArmor",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "frigor"
     }
   },
   "king_cold": {
@@ -570,7 +580,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "FrostArmor",
-      "outfitTint": 2
+      "outfitTint": 2,
+      "physique": "kold"
     },
     "scale": 1.8
   },
@@ -638,7 +649,8 @@
       "hairColor": 4,
       "build": "Tall",
       "outfit": "SaiyanArmor",
-      "outfitTint": 6
+      "outfitTint": 6,
+      "physique": "cyborg16"
     },
     "scale": 1.25
   },
@@ -854,7 +866,8 @@
       "hairColor": 3,
       "build": "Average",
       "outfit": "SaiyanSuit",
-      "outfitTint": 1
+      "outfitTint": 1,
+      "physique": "vegara"
     },
     "scale": 0.95
   },
@@ -868,7 +881,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "MajinVest",
-      "outfitTint": 2
+      "outfitTint": 2,
+      "physique": "boo_fat"
     },
     "scale": 1.35
   },
@@ -895,7 +909,8 @@
       "hairColor": 0,
       "build": "Short",
       "outfit": "MajinVest",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "boo_kid"
     },
     "scale": 0.8
   },
@@ -1360,7 +1375,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "SaiyanArmor",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "nappo"
     },
     "scale": 1.2
   },
@@ -1413,7 +1429,8 @@
       "hairColor": 0,
       "build": "Short",
       "outfit": "FrostArmor",
-      "outfitTint": 2
+      "outfitTint": 2,
+      "physique": "frigor"
     },
     "scale": 0.9
   },

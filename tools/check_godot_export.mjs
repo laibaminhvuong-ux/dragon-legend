@@ -13,6 +13,12 @@ try{
  for(const id of ['s_namek_dragon','s_super_dragon','s_cereal_dragon','t_ui_avatar'])assert.ok(tables.quests.some(q=>q.id===id));
  assert.equal(tables.characters.goku.name,'Gokan');assert.equal(tables.schema.version,6);assert.equal(tables.narrative.talk_range,4.5);assert.ok(tables.narrative.talk_replies.shenron);assert.ok(tables.forms.UITrue);assert.ok(tables.form_looks.SSJ4);
  ok('all loaded story, dragon, form, appearance and renamed content exported');
+ const presentation=JSON.parse(await fs.readFile(path.join(temp,'skill_presentation.json'),'utf8'));
+ assert.equal(Object.keys(presentation.skills).length,28);
+ for(const id of Object.keys(tables.moves)){const row=presentation.skills[id];assert.ok(row);assert.ok(presentation.sockets.includes(row.socket));assert.ok(row.phases.prepare.audio);assert.ok(row.phases.impact.audio);}
+ assert.equal(presentation.skills.GodKi.availability,'passive');assert.equal(presentation.skills.FusionDance.availability,'not_castable');
+ assert.equal(presentation.skills.SpiritBomb.delivery,'instant_ray');ok('every skill has an explicit presentation and availability contract');
+
  for(const [file,meta] of Object.entries(manifest.files)){const raw=await fs.readFile(path.join(temp,file));assert.equal(raw.byteLength,meta.bytes);assert.equal(createHash('sha256').update(raw).digest('hex'),meta.sha256);JSON.parse(raw);}
  assert.ok(Object.keys(manifest.sources).length>20);ok('manifest hashes every generated table and records source hashes');
  const parity=JSON.parse(await fs.readFile(path.join(temp,'parity.json'),'utf8'));

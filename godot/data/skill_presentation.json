@@ -1,0 +1,986 @@
+{
+  "version": 1,
+  "event_version": 1,
+  "sockets": [
+    "hand_l",
+    "hand_r",
+    "chest",
+    "head",
+    "pelvis",
+    "foot_l",
+    "foot_r",
+    "aura_root",
+    "cast_origin"
+  ],
+  "quality": {
+    "low": {
+      "effects": 12,
+      "segments": 12,
+      "particles": 8
+    },
+    "medium": {
+      "effects": 28,
+      "segments": 24,
+      "particles": 20
+    },
+    "high": {
+      "effects": 48,
+      "segments": 40,
+      "particles": 36
+    }
+  },
+  "skills": {
+    "EnergyWave": {
+      "id": "EnergyWave",
+      "name": "Energy Wave",
+      "kind": "beam",
+      "availability": "active",
+      "geometry": "wave",
+      "pose": "cupped_wave",
+      "socket": "cast_origin",
+      "accent": 6608639,
+      "custom_ki": true,
+      "width": 0.18,
+      "lifetime": 0.6,
+      "delivery": "instant_ray",
+      "phases": {
+        "prepare": {
+          "socket": "cast_origin",
+          "visual": "gather",
+          "audio": "wave_charge"
+        },
+        "release": {
+          "visual": "wave",
+          "audio": "wave_release"
+        },
+        "impact": {
+          "visual": "wave",
+          "audio": "wave_impact"
+        },
+        "recovery": {
+          "duration": 0.24
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "KiBlast": {
+      "id": "KiBlast",
+      "name": "Ki Blast",
+      "kind": "blast",
+      "availability": "active",
+      "geometry": "orb",
+      "pose": "palm_shot",
+      "socket": "hand_r",
+      "accent": 16767842,
+      "custom_ki": true,
+      "width": 0.12,
+      "lifetime": 0.3,
+      "delivery": "projectile",
+      "phases": {
+        "prepare": {
+          "socket": "hand_r",
+          "visual": "gather",
+          "audio": "blast_charge"
+        },
+        "release": {
+          "visual": "orb",
+          "audio": "blast_release"
+        },
+        "impact": {
+          "visual": "orb",
+          "audio": "blast_impact"
+        },
+        "recovery": {
+          "duration": 0.12
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "Kamehameha": {
+      "id": "Kamehameha",
+      "name": "Kamehamera",
+      "kind": "beam",
+      "availability": "active",
+      "geometry": "wave",
+      "pose": "cupped_wave",
+      "socket": "cast_origin",
+      "accent": 5101311,
+      "custom_ki": true,
+      "width": 0.26,
+      "lifetime": 0.7,
+      "delivery": "instant_ray",
+      "phases": {
+        "prepare": {
+          "socket": "cast_origin",
+          "visual": "gather",
+          "audio": "wave_charge"
+        },
+        "release": {
+          "visual": "wave",
+          "audio": "wave_release"
+        },
+        "impact": {
+          "visual": "wave",
+          "audio": "wave_impact"
+        },
+        "recovery": {
+          "duration": 0.27999999999999997
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "DestructoDisc": {
+      "id": "DestructoDisc",
+      "name": "Destro Disc",
+      "kind": "blast",
+      "availability": "active",
+      "geometry": "disc",
+      "pose": "disc_throw",
+      "socket": "hand_r",
+      "accent": 16768080,
+      "custom_ki": true,
+      "width": 0.38,
+      "lifetime": 0.7,
+      "delivery": "projectile",
+      "phases": {
+        "prepare": {
+          "socket": "hand_r",
+          "visual": "gather",
+          "audio": "disc_charge"
+        },
+        "release": {
+          "visual": "disc",
+          "audio": "disc_release"
+        },
+        "impact": {
+          "visual": "disc",
+          "audio": "disc_impact"
+        },
+        "recovery": {
+          "duration": 0.27999999999999997
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "SolarFlare": {
+      "id": "SolarFlare",
+      "name": "Solar Flash",
+      "kind": "utility",
+      "availability": "active",
+      "geometry": "sunburst",
+      "pose": "face_flare",
+      "socket": "head",
+      "accent": 16774837,
+      "custom_ki": true,
+      "width": 1.4,
+      "lifetime": 0.7,
+      "delivery": "utility",
+      "phases": {
+        "prepare": {
+          "socket": "head",
+          "visual": "gather",
+          "audio": "flare_charge"
+        },
+        "release": {
+          "visual": "sunburst",
+          "audio": "flare_release"
+        },
+        "impact": {
+          "visual": "sunburst",
+          "audio": "flare_impact"
+        },
+        "recovery": {
+          "duration": 0.27999999999999997
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "TriBeam": {
+      "id": "TriBeam",
+      "name": "Triad Beam",
+      "kind": "beam",
+      "availability": "active",
+      "geometry": "triad",
+      "pose": "triangle_hands",
+      "socket": "cast_origin",
+      "accent": 16762980,
+      "custom_ki": true,
+      "width": 0.48,
+      "lifetime": 0.65,
+      "delivery": "instant_ray",
+      "phases": {
+        "prepare": {
+          "socket": "cast_origin",
+          "visual": "gather",
+          "audio": "triad_charge"
+        },
+        "release": {
+          "visual": "triad",
+          "audio": "triad_release"
+        },
+        "impact": {
+          "visual": "triad",
+          "audio": "triad_impact"
+        },
+        "recovery": {
+          "duration": 0.26
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "WolfFangFist": {
+      "id": "WolfFangFist",
+      "name": "Wolf Claw Fist",
+      "kind": "melee",
+      "availability": "active",
+      "geometry": "claw",
+      "pose": "claw_flurry",
+      "socket": "hand_r",
+      "accent": 10544639,
+      "custom_ki": true,
+      "width": 0.8,
+      "lifetime": 0.55,
+      "delivery": "contact",
+      "phases": {
+        "prepare": {
+          "socket": "hand_r",
+          "visual": "gather",
+          "audio": "rush_charge"
+        },
+        "release": {
+          "visual": "claw",
+          "audio": "rush_release"
+        },
+        "impact": {
+          "visual": "claw",
+          "audio": "rush_impact"
+        },
+        "recovery": {
+          "duration": 0.22000000000000003
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "Kaioken": {
+      "id": "Kaioken",
+      "name": "Kaiyoken",
+      "kind": "utility",
+      "availability": "active",
+      "geometry": "surge",
+      "pose": "strain_activation",
+      "socket": "aura_root",
+      "accent": 16729670,
+      "custom_ki": true,
+      "width": 1.3,
+      "lifetime": 0.7,
+      "delivery": "utility",
+      "phases": {
+        "prepare": {
+          "socket": "aura_root",
+          "visual": "gather",
+          "audio": "transform_charge"
+        },
+        "release": {
+          "visual": "surge",
+          "audio": "transform_release"
+        },
+        "impact": {
+          "visual": "surge",
+          "audio": "transform_impact"
+        },
+        "recovery": {
+          "duration": 0.27999999999999997
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "SpiritBomb": {
+      "id": "SpiritBomb",
+      "name": "Spirit Sphere",
+      "kind": "ultimate",
+      "availability": "active",
+      "geometry": "spirit",
+      "pose": "overhead_sphere",
+      "socket": "head",
+      "accent": 10218239,
+      "custom_ki": true,
+      "width": 1.7,
+      "lifetime": 0.95,
+      "delivery": "instant_ray",
+      "phases": {
+        "prepare": {
+          "socket": "head",
+          "visual": "gather",
+          "audio": "spirit_charge"
+        },
+        "release": {
+          "visual": "spirit",
+          "audio": "spirit_release"
+        },
+        "impact": {
+          "visual": "spirit",
+          "audio": "spirit_impact"
+        },
+        "recovery": {
+          "duration": 0.38
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "SpecialBeamCannon": {
+      "id": "SpecialBeamCannon",
+      "name": "Spiral Beam Cannon",
+      "kind": "beam",
+      "availability": "active",
+      "geometry": "spiral",
+      "pose": "two_finger_focus",
+      "socket": "hand_r",
+      "accent": 14852351,
+      "custom_ki": true,
+      "width": 0.18,
+      "lifetime": 0.7,
+      "delivery": "instant_ray",
+      "phases": {
+        "prepare": {
+          "socket": "hand_r",
+          "visual": "gather",
+          "audio": "spiral_charge"
+        },
+        "release": {
+          "visual": "spiral",
+          "audio": "spiral_release"
+        },
+        "impact": {
+          "visual": "spiral",
+          "audio": "spiral_impact"
+        },
+        "recovery": {
+          "duration": 0.27999999999999997
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "Masenko": {
+      "id": "Masenko",
+      "name": "Masenka",
+      "kind": "beam",
+      "availability": "active",
+      "geometry": "lance",
+      "pose": "forehead_push",
+      "socket": "cast_origin",
+      "accent": 16770680,
+      "custom_ki": true,
+      "width": 0.24,
+      "lifetime": 0.55,
+      "delivery": "instant_ray",
+      "phases": {
+        "prepare": {
+          "socket": "cast_origin",
+          "visual": "gather",
+          "audio": "lance_charge"
+        },
+        "release": {
+          "visual": "lance",
+          "audio": "lance_release"
+        },
+        "impact": {
+          "visual": "lance",
+          "audio": "lance_impact"
+        },
+        "recovery": {
+          "duration": 0.22000000000000003
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "GalickGun": {
+      "id": "GalickGun",
+      "name": "Galik Blaster",
+      "kind": "beam",
+      "availability": "active",
+      "geometry": "double_wave",
+      "pose": "side_palm_wave",
+      "socket": "cast_origin",
+      "accent": 12685823,
+      "custom_ki": true,
+      "width": 0.32,
+      "lifetime": 0.65,
+      "delivery": "instant_ray",
+      "phases": {
+        "prepare": {
+          "socket": "cast_origin",
+          "visual": "gather",
+          "audio": "galick_charge"
+        },
+        "release": {
+          "visual": "double_wave",
+          "audio": "galick_release"
+        },
+        "impact": {
+          "visual": "double_wave",
+          "audio": "galick_impact"
+        },
+        "recovery": {
+          "duration": 0.26
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "FinalFlash": {
+      "id": "FinalFlash",
+      "name": "Final Blaze",
+      "kind": "beam",
+      "availability": "active",
+      "geometry": "wide_wave",
+      "pose": "wide_palm_release",
+      "socket": "cast_origin",
+      "accent": 16770653,
+      "custom_ki": true,
+      "width": 0.65,
+      "lifetime": 0.9,
+      "delivery": "instant_ray",
+      "phases": {
+        "prepare": {
+          "socket": "cast_origin",
+          "visual": "gather",
+          "audio": "flash_charge"
+        },
+        "release": {
+          "visual": "wide_wave",
+          "audio": "flash_release"
+        },
+        "impact": {
+          "visual": "wide_wave",
+          "audio": "flash_impact"
+        },
+        "recovery": {
+          "duration": 0.36000000000000004
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "BigBangAttack": {
+      "id": "BigBangAttack",
+      "name": "Big Burst Attack",
+      "kind": "blast",
+      "availability": "active",
+      "geometry": "heavy_orb",
+      "pose": "one_hand_burst",
+      "socket": "hand_r",
+      "accent": 7391999,
+      "custom_ki": true,
+      "width": 0.62,
+      "lifetime": 0.8,
+      "delivery": "projectile",
+      "phases": {
+        "prepare": {
+          "socket": "hand_r",
+          "visual": "gather",
+          "audio": "heavy_charge"
+        },
+        "release": {
+          "visual": "heavy_orb",
+          "audio": "heavy_release"
+        },
+        "impact": {
+          "visual": "heavy_orb",
+          "audio": "heavy_impact"
+        },
+        "recovery": {
+          "duration": 0.32000000000000006
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "DeathBeam": {
+      "id": "DeathBeam",
+      "name": "Doom Beam",
+      "kind": "blast",
+      "availability": "active",
+      "geometry": "needle",
+      "pose": "finger_lance",
+      "socket": "hand_r",
+      "accent": 16743089,
+      "custom_ki": true,
+      "width": 0.055,
+      "lifetime": 0.35,
+      "delivery": "projectile",
+      "phases": {
+        "prepare": {
+          "socket": "hand_r",
+          "visual": "gather",
+          "audio": "needle_charge"
+        },
+        "release": {
+          "visual": "needle",
+          "audio": "needle_release"
+        },
+        "impact": {
+          "visual": "needle",
+          "audio": "needle_impact"
+        },
+        "recovery": {
+          "duration": 0.13999999999999999
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "DeathBall": {
+      "id": "DeathBall",
+      "name": "Doom Orb",
+      "kind": "ultimate",
+      "availability": "active",
+      "geometry": "eclipse",
+      "pose": "raised_finger_orb",
+      "socket": "hand_r",
+      "accent": 12089087,
+      "custom_ki": true,
+      "width": 1.45,
+      "lifetime": 0.95,
+      "delivery": "instant_ray",
+      "phases": {
+        "prepare": {
+          "socket": "hand_r",
+          "visual": "gather",
+          "audio": "eclipse_charge"
+        },
+        "release": {
+          "visual": "eclipse",
+          "audio": "eclipse_release"
+        },
+        "impact": {
+          "visual": "eclipse",
+          "audio": "eclipse_impact"
+        },
+        "recovery": {
+          "duration": 0.38
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "Regeneration": {
+      "id": "Regeneration",
+      "name": "Regeneration",
+      "kind": "utility",
+      "availability": "active",
+      "geometry": "heal",
+      "pose": "healing_breath",
+      "socket": "chest",
+      "accent": 8388538,
+      "custom_ki": true,
+      "width": 1,
+      "lifetime": 1.3,
+      "delivery": "utility",
+      "phases": {
+        "prepare": {
+          "socket": "chest",
+          "visual": "gather",
+          "audio": "heal_charge"
+        },
+        "release": {
+          "visual": "heal",
+          "audio": "heal_release"
+        },
+        "impact": {
+          "visual": "heal",
+          "audio": "heal_impact"
+        },
+        "recovery": {
+          "duration": 0.4
+        }
+      },
+      "max_duration": 2.3,
+      "seeded_variations": 3
+    },
+    "CandyBeam": {
+      "id": "CandyBeam",
+      "name": "Sweet Beam",
+      "kind": "utility",
+      "availability": "active",
+      "geometry": "ribbon",
+      "pose": "tentacle_cast",
+      "socket": "head",
+      "accent": 16745430,
+      "custom_ki": true,
+      "width": 0.18,
+      "lifetime": 0.65,
+      "delivery": "utility",
+      "phases": {
+        "prepare": {
+          "socket": "head",
+          "visual": "gather",
+          "audio": "sweet_charge"
+        },
+        "release": {
+          "visual": "ribbon",
+          "audio": "sweet_release"
+        },
+        "impact": {
+          "visual": "ribbon",
+          "audio": "sweet_impact"
+        },
+        "recovery": {
+          "duration": 0.26
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "InstantTransmission": {
+      "id": "InstantTransmission",
+      "name": "Instant Transfer",
+      "kind": "utility",
+      "availability": "active",
+      "geometry": "transfer",
+      "pose": "forehead_transfer",
+      "socket": "chest",
+      "accent": 12577535,
+      "custom_ki": true,
+      "width": 1,
+      "lifetime": 0.45,
+      "delivery": "utility",
+      "phases": {
+        "prepare": {
+          "socket": "chest",
+          "visual": "gather",
+          "audio": "transfer_charge"
+        },
+        "release": {
+          "visual": "transfer",
+          "audio": "transfer_release"
+        },
+        "impact": {
+          "visual": "transfer",
+          "audio": "transfer_impact"
+        },
+        "recovery": {
+          "duration": 0.18000000000000002
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "Afterimage": {
+      "id": "Afterimage",
+      "name": "Afterimage Technique",
+      "kind": "utility",
+      "availability": "active",
+      "geometry": "afterimage",
+      "pose": "evasive_step",
+      "socket": "chest",
+      "accent": 10865151,
+      "custom_ki": true,
+      "width": 1,
+      "lifetime": 0.5,
+      "delivery": "utility",
+      "phases": {
+        "prepare": {
+          "socket": "chest",
+          "visual": "gather",
+          "audio": "evade_charge"
+        },
+        "release": {
+          "visual": "afterimage",
+          "audio": "evade_release"
+        },
+        "impact": {
+          "visual": "afterimage",
+          "audio": "evade_impact"
+        },
+        "recovery": {
+          "duration": 0.2
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "ExplodingDemonWave": {
+      "id": "ExplodingDemonWave",
+      "name": "Bursting Demon Wave",
+      "kind": "beam",
+      "availability": "active",
+      "geometry": "demon_wave",
+      "pose": "open_palm_surge",
+      "socket": "hand_r",
+      "accent": 16762728,
+      "custom_ki": true,
+      "width": 0.46,
+      "lifetime": 0.7,
+      "delivery": "instant_ray",
+      "phases": {
+        "prepare": {
+          "socket": "hand_r",
+          "visual": "gather",
+          "audio": "demon_charge"
+        },
+        "release": {
+          "visual": "demon_wave",
+          "audio": "demon_release"
+        },
+        "impact": {
+          "visual": "demon_wave",
+          "audio": "demon_impact"
+        },
+        "recovery": {
+          "duration": 0.27999999999999997
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "FusionDance": {
+      "id": "FusionDance",
+      "name": "Fusion Step",
+      "kind": "utility",
+      "availability": "not_castable",
+      "geometry": "formation",
+      "pose": "fusion_choreography",
+      "socket": "chest",
+      "accent": 16379552,
+      "custom_ki": true,
+      "width": 1,
+      "lifetime": 1.2,
+      "delivery": "utility",
+      "phases": {
+        "prepare": {
+          "socket": "chest",
+          "visual": "gather",
+          "audio": "chime_charge"
+        },
+        "release": {
+          "visual": "formation",
+          "audio": "chime_release"
+        },
+        "impact": {
+          "visual": "formation",
+          "audio": "chime_impact"
+        },
+        "recovery": {
+          "duration": 0.4
+        }
+      },
+      "max_duration": 2.2,
+      "seeded_variations": 3
+    },
+    "Hakai": {
+      "id": "Hakai",
+      "name": "Hakaido",
+      "kind": "ultimate",
+      "availability": "active",
+      "geometry": "destruction",
+      "pose": "destruction_palm",
+      "socket": "hand_r",
+      "accent": 13465855,
+      "custom_ki": true,
+      "width": 1.4,
+      "lifetime": 0.85,
+      "delivery": "instant_ray",
+      "phases": {
+        "prepare": {
+          "socket": "hand_r",
+          "visual": "gather",
+          "audio": "destroy_charge"
+        },
+        "release": {
+          "visual": "destruction",
+          "audio": "destroy_release"
+        },
+        "impact": {
+          "visual": "destruction",
+          "audio": "destroy_impact"
+        },
+        "recovery": {
+          "duration": 0.34
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "GodKi": {
+      "id": "GodKi",
+      "name": "God Ki Control",
+      "kind": "utility",
+      "availability": "passive",
+      "geometry": "focus",
+      "pose": "controlled_breath",
+      "socket": "aura_root",
+      "accent": 16761304,
+      "custom_ki": true,
+      "width": 0.6,
+      "lifetime": 0.8,
+      "delivery": "utility",
+      "phases": {
+        "prepare": {
+          "socket": "aura_root",
+          "visual": "gather",
+          "audio": "focus_charge"
+        },
+        "release": {
+          "visual": "focus",
+          "audio": "focus_release"
+        },
+        "impact": {
+          "visual": "focus",
+          "audio": "focus_impact"
+        },
+        "recovery": {
+          "duration": 0.32000000000000006
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "UltraInstinctSign": {
+      "id": "UltraInstinctSign",
+      "name": "Ultra Intuition -Sign-",
+      "kind": "utility",
+      "availability": "active",
+      "geometry": "focus",
+      "pose": "instinct_focus",
+      "socket": "chest",
+      "accent": 12245759,
+      "custom_ki": true,
+      "width": 0.65,
+      "lifetime": 0.7,
+      "delivery": "utility",
+      "phases": {
+        "prepare": {
+          "socket": "chest",
+          "visual": "gather",
+          "audio": "focus_charge"
+        },
+        "release": {
+          "visual": "focus",
+          "audio": "focus_release"
+        },
+        "impact": {
+          "visual": "focus",
+          "audio": "focus_impact"
+        },
+        "recovery": {
+          "duration": 0.27999999999999997
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "UltraInstinctAvatar": {
+      "id": "UltraInstinctAvatar",
+      "name": "Ultra Intuition Energy Avatar",
+      "kind": "avatar",
+      "availability": "active",
+      "geometry": "avatar",
+      "pose": "avatar_manifest",
+      "socket": "aura_root",
+      "accent": 12639743,
+      "custom_ki": true,
+      "width": 2.4,
+      "lifetime": 1,
+      "delivery": "utility",
+      "phases": {
+        "prepare": {
+          "socket": "aura_root",
+          "visual": "gather",
+          "audio": "avatar_charge"
+        },
+        "release": {
+          "visual": "avatar",
+          "audio": "avatar_release"
+        },
+        "impact": {
+          "visual": "avatar",
+          "audio": "avatar_impact"
+        },
+        "recovery": {
+          "duration": 0.4
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "EnergyField": {
+      "id": "EnergyField",
+      "name": "Energy Field",
+      "kind": "utility",
+      "availability": "active",
+      "geometry": "shield",
+      "pose": "barrier_brace",
+      "socket": "chest",
+      "accent": 6938623,
+      "custom_ki": true,
+      "width": 1.25,
+      "lifetime": 0.8,
+      "delivery": "utility",
+      "phases": {
+        "prepare": {
+          "socket": "chest",
+          "visual": "gather",
+          "audio": "shield_charge"
+        },
+        "release": {
+          "visual": "shield",
+          "audio": "shield_release"
+        },
+        "impact": {
+          "visual": "shield",
+          "audio": "shield_impact"
+        },
+        "recovery": {
+          "duration": 0.32000000000000006
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
+    "Melee": {
+      "id": "Melee",
+      "name": "Melee combo",
+      "kind": "melee",
+      "availability": "active",
+      "geometry": "claw",
+      "pose": "melee_combo",
+      "socket": "hand_r",
+      "accent": 16768432,
+      "custom_ki": true,
+      "width": 0.6,
+      "lifetime": 0.3,
+      "delivery": "contact",
+      "phases": {
+        "prepare": {
+          "socket": "hand_r",
+          "visual": "gather",
+          "audio": "impact_charge"
+        },
+        "release": {
+          "visual": "claw",
+          "audio": "impact_release"
+        },
+        "impact": {
+          "visual": "claw",
+          "audio": "impact_impact"
+        },
+        "recovery": {
+          "duration": 0.12
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    }
+  }
+}

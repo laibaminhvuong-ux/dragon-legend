@@ -101,7 +101,7 @@ func nearest_player(map: String,pos: Vector3,fallback: Dictionary) -> Dictionary
 	return best
 func event(identity: String,type: String,payload: Dictionary) -> void:
 	if not members.has(identity): return
-	if type=="attack": members[identity].visual_kind = members[identity].game.player.attackKind if payload.get("kind")=="melee" else payload.get("kind","ki")
+	if type=="attack" and payload.get("phase","release")=="release": members[identity].visual_kind = members[identity].game.player.attackKind if payload.get("kind")=="melee" else payload.get("kind","ki")
 	if type=="travel":
 		members[identity].travel = str(payload.get("zone","")); return
 	for id: String in members:

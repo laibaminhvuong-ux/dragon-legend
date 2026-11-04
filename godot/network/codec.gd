@@ -80,3 +80,12 @@ static func import_valid(slot: Dictionary) -> bool:
 		if not look.get(key) is String: return false
 	if RuleSchema.new().validate_look(look)!=null: return false
 	return true
+
+## Keep stable event ids while translating this client's actor identity for scene consumers.
+static func localize_event(packet: Dictionary,self_id: String) -> Dictionary:
+	var out := packet.duplicate(true)
+	for key: String in ["id","actor_id","source_id","target_id"]:
+		if out.get(key)==self_id: out[key] = "player"
+	for key: String in ["pos","origin","direction","from","to"]:
+		if out.get(key) is Dictionary: out[key] = RuleRuntime.vector(out[key])
+	return out

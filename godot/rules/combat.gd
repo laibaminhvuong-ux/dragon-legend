@@ -30,6 +30,12 @@ var beam_time: float = 0
 var respawn_at: float = 0
 var last_damage: float = -100
 var avatar: Dictionary = {"remaining":0.0,"readyAt":0.0,"nextStrike":0.0,"damage":0.0,"pulse":0}
+var last_kaioken := 0
+var action_sequence := 0
+var event_sequence := 0
+var skill: Dictionary = {}
+var impact_context: Dictionary = {}
+var avatar_context: Dictionary = {}
 var technique: String
 ## Ultra Instinct forms dodge every hit automatically this many times, then rest this long (user request 2026-11-03).
 const UI_DODGES := 20
@@ -59,6 +65,35 @@ static func camp_in(world: RuleZone,area: String) -> Dictionary:
 	return {"x":float(sp.x)+18,"z":float(sp.z)+22}
 func emit(event: String,value: Dictionary = {}) -> void:
 	RuleRuntime.emit(events,event,value)
+## Presentation is runtime state only; combat remains authoritative and keeps its original timing.
+func skill_packet(context: Dictionary,phase: String,extra: Dictionary = {}) -> Dictionary:
+	event_sequence += 1
+	return context.merged({"phase":phase,"server_time":clock,"event_id":"%s:%s:%d:%d:%d" % [p.id,zone.id,get_instance_id(),int(clock*1000000),event_sequence]},true).merged(extra,true)
+func begin_skill(id: String,phase: String = "release",charge: float = 0) -> Dictionary:
+	if skill.get("move_id")!=id or skill.get("phase")!="prepare":
+		cancel_skill("superseded")
+		action_sequence += 1
+		var profile: Dictionary = RuleTables.table("skill_presentation").skills.get(id,{})
+		var ray := aim()
+		skill = {"presentation_version":1,"move_id":id,"actor_id":p.id,"action_sequence":action_sequence,"started_at":clock,"seed":absi((str(p.id)+id+str(action_sequence)).hash()),"socket":profile.get("socket","cast_origin"),"pose":profile.get("pose","palm_shot"),"color":RuleRuntime.ki_color(game.slot.appearance),"origin":ray.origin,"direction":ray.dir,"target_id":p.get("lockTarget")}
+	if id=="Melee": skill.socket = "foot_r" if combo==4 else "hand_l" if combo in [1,3] else "hand_r"
+	skill.phase = phase
+	skill.charge = charge
+	skill.until = clock+float(RuleTables.table("skill_presentation").skills.get(id,{}).get("max_duration",2))
+	p.skillState = skill.duplicate(true)
+	var packet := skill_packet(skill,phase,{"id":p.id,"kind":move_def(id).get("kind","melee"),"pos":p.pos,"combo":combo})
+	emit("attack",packet)
+	return skill.duplicate(true)
+func emit_dodge() -> void:
+	emit("attack",skill_packet({"presentation_version":1,"move_id":"UltraInstinctSign","actor_id":p.id,"action_sequence":action_sequence,"seed":event_sequence,"socket":"chest","pose":"evasive_step","origin":p.pos+Vector3.UP,"color":RuleRuntime.ki_color(game.slot.appearance)},"dodge",{"id":p.id,"pos":p.pos}))
+func cancel_skill(reason: String = "interrupted") -> void:
+	if skill.is_empty(): return
+	emit("attack",skill_packet(skill,"cancel",{"id":p.id,"reason":reason,"pos":p.pos}))
+	skill = {}; p.skillState = {}
+func finish_skill() -> void:
+	if skill.is_empty(): return
+	emit("attack",skill_packet(skill,"recovery",{"id":p.id,"pos":p.pos}))
+	skill = {}; p.skillState = {}
 func notify(text: String) -> void:
 	emit("notify",{"text":text})
 func move_def(id: String) -> Dictionary:
@@ -100,11 +135,11 @@ func provoke(target: Dictionary) -> void:
 		for e: Dictionary in enemies:
 			if e.key==target.key and e.health>0 and (e.pos as Vector3).distance_to(target.pos)<18.0:
 				e.provoked = true
-func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = false) -> void:
+func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = false,context: Dictionary = {}) -> void:
 	if party!=null and party.get_ref()!=null:
 		var owner: Variant = party.get_ref().game_for_player(str(target.id)) if target.get("kind")=="player" else party.get_ref().game_for_player(str(source.get("id","")))
 		if owner!=null and owner.combat!=self:
-			owner.combat.hit(target,damage,source,finisher)
+			owner.combat.hit(target,damage,source,finisher,context)
 			return
 	if target.health<=0 or (target==p and p.get("evadeUntil",0)>clock):
 		return
@@ -124,10 +159,12 @@ func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = fa
 					notify("Ultra Instinct dodge! Instinct exhausted: back in %d s." % int(UI_COOLDOWN))
 				else:
 					notify("Ultra Instinct dodge! (%d left)" % p.uiDodges)
+				emit_dodge()
 				return
 		elif clock>=p.get("dodgeReady",0) and p.ki>=instinct.cost and randf()<instinct.chance:
 			RuleKi.try_spend_ki(p,instinct.cost)
 			p.dodgeReady = clock+instinct.cooldown
+			emit_dodge()
 			notify("Ultra Instinct dodge!" if instinct.kind=="form" else "Instinct focus: dodged.")
 			return
 	if source==p:
@@ -152,7 +189,8 @@ func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = fa
 		distance = 1.0
 	target.vel.x += delta.x/distance*c.knockback
 	target.vel.z += delta.z/distance*c.knockback
-	emit("damage",{"id":target.id,"amount":amount,"pos":target.pos+Vector3(0,1.6,0),"blocked":amount<damage*0.5})
+	var hit_context: Dictionary = context if not context.is_empty() else impact_context if source==p and not impact_context.is_empty() else {"presentation_version":1,"move_id":"Melee","actor_id":source.id,"action_sequence":source.get("attackSerial",0),"seed":int(source.get("attackSerial",0)),"color":0xffdca0}
+	emit("damage",skill_packet(hit_context,"impact",{"id":target.id,"source_id":source.id,"target_id":target.id,"amount":amount,"pos":target.pos+Vector3(0,1.6,0),"blocked":amount<damage*0.5,"finisher":finisher}))
 	if target==p:
 		last_damage = clock
 		if p.form=="UltraEgo":
@@ -165,6 +203,7 @@ func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = fa
 		p.charging = false
 		p.lockTarget = null
 		p.form = ""
+		cancel_skill("defeated")
 		respawn_at = clock+c.respawnSeconds
 		beam_held = false
 		projectiles.clear()
@@ -211,20 +250,28 @@ func aim_state() -> Dictionary:
 func fire(id: String,charge: float = 0) -> bool:
 	if id=="Kaioken":
 		var error: Variant = game.kaioken.toggle()
+		if skill.get("move_id")=="Kaioken": cancel_skill("toggle_complete")
 		if error!=null:
 			notify(error)
 		return error==null
+	if id in ["GodKi","FusionDance"]: return false
 	var definition: Dictionary = move_def(id)
 	if definition.get("kind")=="avatar":
 		if not forms.can_manifest_avatar(game.slot,p):
+			cancel_skill("requirements")
 			notify("The Avatar requires learned training and active Perfected or True Ultra Instinct.")
 			return false
 		if avatar.remaining>0 or clock<avatar.readyAt:
+			cancel_skill("cooldown")
 			notify("Avatar cooldown: %ds." % ceili(maxf(0,avatar.readyAt-clock)))
 			return false
 	if definition.is_empty() or not RuleKi.try_spend_ki(p,definition.kiCost*p.kiCostScale):
+		cancel_skill("insufficient_ki")
 		notify("Not enough ki. Hold Charge to recover.")
 		return false
+	p.attackSerial += 1
+	p.attackKind = "cross"
+	impact_context = begin_skill(id,"release",charge)
 	var ray: Dictionary = aim()
 	var damage: float = c.meleeDamage*p.kiPower*definition.power*(1+charge)*game.kaioken.multiplier()*(1+p.get("egoBoost",0) if p.form=="UltraEgo" else 1)
 	match definition.kind:
@@ -233,6 +280,7 @@ func fire(id: String,charge: float = 0) -> bool:
 			avatar.readyAt = clock+a.cooldown
 			avatar.nextStrike = clock
 			avatar.damage = damage
+			avatar_context = impact_context.duplicate(true)
 			notify("Ultra Instinct Energy Avatar manifested!")
 		"utility":
 			match id:
@@ -250,6 +298,7 @@ func fire(id: String,charge: float = 0) -> bool:
 					var e: Dictionary = target_in_front(c.lockRange)
 					if not e.is_empty():
 						p.pos = e.pos-Vector3(sin(e.yaw),0,cos(e.yaw))*c.teleportOffset
+						emit("attack",skill_packet(impact_context,"impact",{"id":p.id,"pos":p.pos,"destination":p.pos}))
 				"UltraInstinctSign":
 					p.uiTechniqueUntil = clock+c.uiTechniqueDuration
 					notify("Ultra Instinct Sign focus: small dodge chance, no form stat boost.")
@@ -263,13 +312,11 @@ func fire(id: String,charge: float = 0) -> bool:
 			for e: Dictionary in enemies:
 				if e.health>0 and segment_distance(e.pos+Vector3.UP,ray.origin,end)<c.beamRadius:
 					hit(e,damage,p,true)
-			emit("beam",{"from":ray.origin,"to":end,"color":RuleRuntime.ki_color(game.slot.appearance)})
+			emit("beam",skill_packet(impact_context,"release",{"from":ray.origin,"to":end,"color":RuleRuntime.ki_color(game.slot.appearance)}))
 		_:
 			serial += 1
-			projectiles.append({"id":(p.id+":"+str(serial)) if party!=null else serial,"pos":ray.origin,"dir":ray.dir,"life":c.projectileLife,"damage":damage,"owner":p,"color":RuleRuntime.ki_color(game.slot.appearance)})
-	p.attackSerial += 1
-	p.attackKind = "cross"
-	emit("attack",{"id":p.id,"kind":definition.kind,"pos":p.pos})
+			projectiles.append({"id":(p.id+":"+str(serial)) if party!=null else serial,"pos":ray.origin,"dir":ray.dir,"life":c.projectileLife,"damage":damage,"owner":p,"move_id":id,"presentation":impact_context.duplicate(true),"color":RuleRuntime.ki_color(game.slot.appearance)})
+	impact_context = {}
 	return true
 func available_techniques() -> Array:
 	var result: Array = ["EnergyWave"]
@@ -282,6 +329,9 @@ func available_techniques() -> Array:
 func set_technique(id: String) -> bool:
 	if id not in available_techniques():
 		return false
+	if id!=technique:
+		cancel_skill("technique_changed")
+		beam_held = false; beam_time = 0
 	technique = id
 	game.slot.loadout.technique = id
 	return true
@@ -293,7 +343,7 @@ func avatar_state() -> Dictionary:
 func snapshot() -> Dictionary:
 	var e: Dictionary = locked()
 	var target: Variant = null if e.is_empty() else {"id":e.id,"name":e.name,"level":e.level,"health":e.health,"maxHealth":e.maxHealth,"boss":e.boss}
-	return {"kaioken":game.kaioken.snapshot(),"avatar":avatar_info(),"instinctFocus":maxf(0,p.get("uiTechniqueUntil",0)-clock),"instinctDodges":int(p.get("uiDodges",UI_DODGES)),"instinctRecharge":maxf(0,float(p.get("uiRecharge",0))-clock),"technique":technique,"techniqueName":move_def(technique).get("name"),
+	return {"skill":skill.duplicate(true),"kaioken":game.kaioken.snapshot(),"avatar":avatar_info(),"instinctFocus":maxf(0,p.get("uiTechniqueUntil",0)-clock),"instinctDodges":int(p.get("uiDodges",UI_DODGES)),"instinctRecharge":maxf(0,float(p.get("uiRecharge",0))-clock),"technique":technique,"techniqueName":move_def(technique).get("name"),
 		"beamCharge":minf(1,beam_time/c.beamCharge),"meleeCd":melee_cd,"blastCd":blast_cd,"beamCd":beam_cd,"target":target,"respawn":maxf(0,respawn_at-clock) if respawn_at>0 else 0}
 static func segment_distance(point: Vector3,start: Vector3,end: Vector3) -> float:
 	var delta: Vector3 = end-start
@@ -301,6 +351,13 @@ static func segment_distance(point: Vector3,start: Vector3,end: Vector3) -> floa
 	return point.distance_to(start+delta*weight)
 func update(dt: float,it: Dictionary) -> void:
 	clock += dt
+	if int(p.get("kaioken",0))!=last_kaioken:
+		last_kaioken = int(p.get("kaioken",0))
+		action_sequence += 1
+		var ray := aim()
+		var activation := {"presentation_version":1,"move_id":"Kaioken","actor_id":p.id,"action_sequence":action_sequence,"started_at":clock,"seed":action_sequence,"charge":0.0,"socket":"aura_root","pose":"strain_activation","origin":ray.origin,"direction":ray.dir,"target_id":p.lockTarget,"color":RuleRuntime.ki_color(game.slot.appearance),"rank":last_kaioken,"id":p.id,"kind":"utility","pos":p.pos}
+		emit("attack",skill_packet(activation,"release" if last_kaioken>0 else "cancel"))
+	if not skill.is_empty() and skill.phase!="prepare" and clock>=float(skill.until): finish_skill()
 	melee_cd = maxf(0,melee_cd-dt)
 	blast_cd = maxf(0,blast_cd-dt)
 	beam_cd = maxf(0,beam_cd-dt)
@@ -345,20 +402,28 @@ func update(dt: float,it: Dictionary) -> void:
 			var target: Dictionary = target_in_front(c.meleeRange*forms.forms.get(p.form,{}).get("size",1))
 			p.attackSerial += 1
 			p.attackKind = ["jab","cross","hook","leg kick"][combo-1]
-			emit("attack",{"id":p.id,"kind":"melee","combo":combo,"pos":p.pos})
+			impact_context = begin_skill("Melee")
 			if not target.is_empty():
 				hit(target,c.meleeDamage*p.strength*game.kaioken.multiplier()*(1+p.get("egoBoost",0) if p.form=="UltraEgo" else 1)*(c.comboFinish if combo==4 else 1),p,combo==4)
+		impact_context = {}
 		if it.get("ki_blast",false) and blast_cd==0 and fire("KiBlast"):
 			blast_cd = c.blastCooldown
 		if it.get("beam",false) and beam_cd==0:
+			if not beam_held or skill.get("move_id")!=technique: begin_skill(technique,"prepare")
 			beam_held = true
 			beam_time = minf(c.beamCharge,beam_time+dt)
+			if skill.get("phase")=="prepare":
+				skill.charge = beam_time/c.beamCharge
+				var ray := aim()
+				skill.origin = ray.origin; skill.direction = ray.dir
+				p.skillState = skill.duplicate(true)
 		if not it.get("beam",false) and beam_held:
 			if fire(technique,beam_time/c.beamCharge):
 				beam_cd = c.utilityCooldown if move_def(technique).kind=="utility" else c.beamCooldown
 			beam_held = false
 			beam_time = 0
 	else:
+		if beam_held: cancel_skill("interrupted")
 		beam_held = false
 		beam_time = 0
 	if avatar.remaining>0:
@@ -374,8 +439,8 @@ func update(dt: float,it: Dictionary) -> void:
 					var dz: float = enemy.pos.z-p.pos.z
 					var along: float = dx*sin(p.yaw)+dz*cos(p.yaw)
 					if enemy.health>0 and along>=0 and along<=a.range and absf(dx*cos(p.yaw)-dz*sin(p.yaw))<=a.halfWidth and absf(enemy.pos.y-p.pos.y)<=a.verticalReach:
-						hit(enemy,avatar.damage,p,true)
-				emit("avatarStrike",{"pos":p.pos,"yaw":p.yaw,"pulse":avatar.pulse})
+						hit(enemy,avatar.damage,p,true,avatar_context)
+				emit("avatarStrike",skill_packet(avatar_context,"impact",{"pos":p.pos,"yaw":p.yaw,"pulse":avatar.pulse}))
 	if p.form!="UltraEgo":
 		p.egoBoost = 0.0
 	if clock-last_damage>c.regenDelay and not game.kaioken.snapshot().active:
@@ -388,7 +453,7 @@ func update(dt: float,it: Dictionary) -> void:
 		b.pos += b.dir*c.projectileSpeed*dt
 		for target: Dictionary in enemies:
 			if target.health>0 and segment_distance(target.pos+Vector3.UP,old,b.pos)<c.projectileRadius:
-				hit(target,b.damage,b.owner)
+				hit(target,b.damage,b.owner,false,b.get("presentation",{}))
 				b.life = 0.0
 				break
 		if b.life<=0 or b.pos.y<zone.height_at(b.pos.x,b.pos.z):

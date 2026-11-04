@@ -1,3 +1,4 @@
+import {skillPresentation} from './skill_presentation.mjs';
 // Content that exists only in the Godot game (the classic web game in web/ stays as it was).
 // export_godot_data.mjs applies these on top of the evaluated JS tables before writing godot/data/.
 // Every zone changed here is listed in godot_additions.json so the JS-parity tests skip it and test
@@ -133,8 +134,14 @@ export function applyGodotAdditions(tables) {
   // giant, seated behind the desk: red skin, black beard, judge's hat (Parts.costume "yemmo")
   Object.assign(characters.king_yemma, {scale: 4.2, look: {race: 'Human', skin: 0, skinHex: 0xc8463c, face: 'Fierce', hair: 'None',
     hairColor: 0, build: 'Muscular', outfit: 'CraneGi', outfitTint: 2, costume: 'yemmo'}});
+  // Presentation rebuild 2026-11-04: named fighters get their own body shape (BodySculpt.NAMED, by look.physique)
+  const physiques = {goku: 'gokan', vegeta: 'vegara', majin_vegeta: 'vegara', piccolo: 'piccor', nappa: 'nappo', krillin: 'krilan',
+    roshi: 'roshu', frieza: 'frigor', golden_frieza: 'frigor', mecha_frieza: 'frigor', recoome: 'recume', android_16: 'cyborg16',
+    king_cold: 'kold', fat_buu: 'boo_fat', kid_buu: 'boo_kid'};
+  for (const [id, physique] of Object.entries(physiques)) if (characters[id]?.look) characters[id].look.physique = physique;
   return {
     ...tables, zones, npcs, characters, zone_order: zoneOrder, planets: world.planets,
+    skill_presentation: skillPresentation(tables.moves,tables.combat.starterMove),
     godot_additions: {zones: [...new Set(changed)].sort(), note: 'Zones changed for the Godot game only; JS parity skips them.'},
   };
 }

@@ -118,6 +118,7 @@ export function parityFixtures(){
 }
 async function sourceHashes(){
  const out={};for(const folder of ['web/src/data','web/src/game'])for(const name of (await fs.readdir(path.join(root,folder))).sort())if(name.endsWith('.js')){const rel=folder+'/'+name;out[rel]=digest(await fs.readFile(path.join(root,rel)));}
+ out['tools/skill_presentation.mjs']=digest(await fs.readFile(path.join(root,'tools/skill_presentation.mjs')));
  out['tools/godot_additions.mjs']=digest(await fs.readFile(path.join(root,'tools/godot_additions.mjs')));
  out['web/src/core/save.js']=digest(await fs.readFile(path.join(root,'web/src/core/save.js')));return out;
 }
