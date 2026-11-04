@@ -337,8 +337,53 @@ func _ape(out: String) -> void:
 	cam.position = Vector3(0, -1.3 + 1.0, 8)
 	await _shot(out + "_ape.png")
 
+## Both Great Apes performing their moves in real time (frames <prefix>_apeflow_0000.png ...).
+func _apeflow(out: String) -> void:
+	stage = Node3D.new()
+	vp.add_child(stage)
+	var apes: Array[GreatApe] = []
+	for i in 2:
+		var g := GreatApe.create(i == 1)
+		g.position = Vector3((i - 0.5) * 4.2, 0, 0)
+		g.rotation.y = 0.45 if i == 0 else -0.45
+		stage.add_child(g)
+		apes.append(g)
+	var floor := MeshInstance3D.new(); var pm := PlaneMesh.new(); pm.size = Vector2(30, 20); floor.mesh = pm; stage.add_child(floor)
+	env.environment.background_color = Color(0.55, 0.62, 0.72)
+	cam.projection = Camera3D.PROJECTION_PERSPECTIVE
+	cam.fov = 45
+	cam.position = Vector3(0, 2.3, 9.5)
+	cam.rotation = Vector3(-0.08, 0, 0)
+	vp.size = Vector2i(1600, 800)
+	# script: transform-in, idle, walk on the spot, swipe, swipe, grab-slam, stomp, mouth blast, roar, chest pound
+	var plan := [[0.0, {}], [1.6, {"speed": 3.5}], [3.4, {"attackSerial": 1, "attackKind": "jab"}], [4.3, {"attackSerial": 2, "attackKind": "jab"}],
+		[5.2, {"attackSerial": 3, "attackKind": "jab"}], [6.7, {"attackSerial": 4, "attackKind": "leg kick"}], [7.9, {"attackSerial": 5, "attackKind": "beam"}],
+		[9.3, {"charging": true}], [10.9, {}]]
+	var dt := 1.0 / 30.0
+	var t := 0.0
+	var frame := 0
+	while t < 12.0:
+		var a := {}
+		for step: Array in plan:
+			if t >= float(step[0]):
+				a = (step[1] as Dictionary).duplicate()
+		if not a.has("attackSerial") and t >= 3.4:
+			a.attackSerial = 5 if t >= 7.9 else (4 if t >= 6.7 else (3 if t >= 5.2 else (2 if t >= 4.3 else 1)))
+		for g in apes:
+			g.update(dt, a)
+		await process_frame
+		await process_frame
+		vp.get_texture().get_image().save_png("%s_apeflow_%04d.png" % [out, frame])
+		frame += 1
+		t += dt
+	print("saved %d ape frames" % frame)
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--apeflow" in OS.get_cmdline_user_args():
+		await _apeflow(out)
+		quit()
+		return
 	if "--ape" in OS.get_cmdline_user_args():
 		await _ape(out)
 		quit()
