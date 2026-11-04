@@ -19,6 +19,10 @@ for family, entries in bank.items():
         assert max(abs(s) for s in samples)<32760
         assert math.sqrt(sum(s*s for s in samples)/len(samples))>40
         assert abs(samples[-1]-samples[0])<3 if entry['loop'] else abs(samples[-1])<3
+        rms_db=20*math.log10(math.sqrt(sum(s*s for s in samples)/len(samples))/32768)
+        assert abs(rms_db-(-24 if entry['loop'] else -22))<.25, (family,rms_db)
+        ceiling=.42 if entry['loop'] else .7
+        assert max(abs(s) for s in samples)/32768<=ceiling+.0001
         count+=1
 catalogue=json.loads((root/'godot/data/skill_presentation.json').read_text())
 for skill in catalogue['skills'].values():

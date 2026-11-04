@@ -94,3 +94,59 @@ Automated checks cover catalogue coverage, hashes/audio format and loop seams, d
 ## Validation recorded 2026-11-04
 
 Native Godot 4.7.2 `tools/godot_test.sh --check-data`: **223 passed, 0 failed**, exit 0; 40 generated tables verified. Exporter/runner checker: six checks passed. Audio validator: all 258 files / 86 banks passed, including two deterministic rerenders. Separate in-tree audio smoke: passed, with clean teardown after the audio server's deferred cleanup. The full suite still prints existing post-test focus/exit resource diagnostics and sandbox TCP-listen denials during editor import; these were not counted as clean visual/network acceptance. Showcase scene was loaded headlessly; a forced immediate `--quit-after` can print an audio playback resource-exit diagnostic. GPU visuals, actual listening and real multi-machine co-op remain Claude's acceptance work.
+
+## Follow-up assignment: combos, timing and six samples (2026-11-04)
+
+The follow-up adds root numeric `hold_min`, `release_window`, `recovery` to **every** recipe; `phases.recovery.duration` matches root recovery. All times are seconds and visual-only. A quick tap still spends Ki/releases/deals damage immediately. SkillDirector retains an already-created gather for the remaining hold_min while the authoritative release proceeds. Claude's pose consumer should similarly retain/blend the gather visually; do not delay combat, input or projectile motion.
+
+| Sample | hold_min | release_window | recovery | Gather socket |
+|---|---:|---:|---:|---|
+| KiBlast | .06 | .16 | .12 | hand_r |
+| EnergyWave | .14 | .48 | .24 | hand_r |
+| DestructoDisc | .18 | .28 | .22 | hand_r + .15 m up |
+| WolfFangFist | .10 | .34 | .20 | hand_r |
+| InstantTransmission | .12 | .18 | .16 | head + (.12, .10, 0) m |
+| SpiritBomb | .32 | .65 | .38 | head + 2.2 m up |
+
+`recipe.phases.prepare.socket` selects the gather socket; `recipe.socket` selects the release socket. Existing Fighter socket names/signatures need **no changes**. EnergyWave now gathers at the cupped-hand side rather than in front of the chest. SpiritBomb's extra world-up offset keeps the gather overhead; DestructoDisc stays just above the raised palm. Gather offsets live in recipe `gather_offset`. GPU review should check these offsets against very large forms too; no actor bones/pose files were edited by Codex.
+
+Six-sample `layers` describe their implemented gather/muzzle/core/sheath/trail/contact/recoil components. Actual host projectiles acquire direction-aligned streaks; the effect never predicts or writes a hit. WolfFangFist uses curved claw ribbons and rush streaks; teleport uses departure/arrival columns instead of a false travel beam; SpiritBomb gathers inward motes and resolves at the original immediate endpoint. Finisher impacts scale up. The audition stage now uses **the actual Fighter and current SkillPoses** via their public APIs, rather than an empty effects stage. H holds the gather indefinitely for repeated loop listening, Q toggles quick-tap release, V changes sound variant; Space/arrow controls remain.
+
+### Combo metadata and integration
+
+Melee and WolfFangFist release events / `player.skillState` / impact context add:
+
+- `combo_step`: 1-based host-selected step.
+- `combo_length`: Melee 4, WolfFangFist 6.
+- `strike`: `jab`, `cross`, `hook`, `uppercut`, `knee`, `spin_kick`, `axe_kick`, or `palm_strike`.
+- `finisher`: true on the final **visual combo step**.
+
+Choices come from the recipe `combo.strikes` options indexed by the host's seed; every peer consumes the transmitted choice. Melee keeps its original four-hit timing/window/damage and final damage multiplier. WolfFangFist advances one visual step per cast, resets after more than `beamCooldown + comboWindow` without a cast, and still does one original immediate hit per activation. It does not simulate six extra damage hits. Its existing guard-break mechanic remains on every cast: damage event `guard_breaker` records that separately from the visual `finisher` flag. Claude should route `strike` and `combo_step` into distinct body clips; the legacy attackKind field is retained for existing consumers.
+
+Release state also includes `released_at`, `hold_elapsed` and the three timing envelope fields, so animation consumers can compare actual hold duration with the visual minimum. A prepare→release action keeps its original action_sequence/started_at. No RNG is introduced on clients.
+
+### Repeatable two-process co-op proof
+
+From the repository root, with a native Godot 4.7.2 executable:
+
+```sh
+python3 tools/run_skill_coop_proof.py --output /tmp/dragon-skill-proof
+# If Godot is elsewhere:
+python3 tools/run_skill_coop_proof.py --godot /path/to/godot --port 18936 --output /tmp/dragon-skill-proof
+```
+
+On Windows Python, use `python` and a Windows executable/output path. From WSL with a Windows executable, the runner translates project/artifact paths with wslpath. It imports the project first (use `--skip-import` only for an already imported project), then launches **separate processes** on 127.0.0.1, with temporary level-2000 fixture fighters. It does not import, overwrite or back up your real fighter slots. No build/install/server deployment is involved.
+
+The host starts gathering EnergyWave before the client joins. The client must receive the host's `skillState` in a late-join snapshot; then all six samples are cast on the host. The client verifies remote `actor_id` remains the host's id, its own attack event localises to `player`, event ids survive translation, Wolf combo metadata agrees, and KiBlast/DestructoDisc snapshots retain the correct original actor/sequence/seed without an owner dictionary. Per-cast acknowledgements prevent a short-lived projectile from being skipped between casts. Final JSON compares host/client PIDs, all moves, seeds/sequences and the client's evidence. Host closes the room after the final acknowledgement.
+
+Artifacts: `import.log`, `host.log`, `client.log`, `ready.json`, `host.json`, `client.json`. Success prints PASS and exits zero only after both distinct processes finish with matching evidence. A listener failure, timeout, missing event/state/projectile, lost actor identity or nonzero child exit fails the run. Port 18936 can be changed if occupied. Ordinary unit tests exercise the verifier's collection logic separately; they are **not** a substitute for this socket run.
+
+**Restricted-environment result:** the attempted real run could not open the listener (`ERR_CANT_CREATE`, host exit 78; runner exit 1). Python socket creation is also denied here. No network success is claimed. Claude has been asked in COLLABORATION.md to run the command in his unrestricted terminal and record the artifacts. Real-loopback execution remains an acceptance gate until that evidence exists.
+
+### Audio levels and listening
+
+All 258 WAVs were regenerated with full-clip RMS normalization: one-shots -22 dBFS; sustained loops -24 dBFS. Peak ceilings remain .70/.42, with crest compression when necessary. Sustained percussive charge banks now keep an air/body layer instead of an impact followed by near-silence. Runtime gain/settings/positional playback are unchanged. These are PCM peak/RMS measurements, not perceptual LUFS or a claim of equal perceived loudness.
+
+`python3 tools/report_combat_audio.py` measures actual delivered WAVs and writes `docs/combat-audio-levels.{md,json}` with every bank's peak/RMS range and per-clip boundary diagnostics. Current objective review flag: `shield_charge_1.wav`, head/tail energy difference > 6 dB despite matching endpoint samples. The user/Claude must listen to determine audibility. See `docs/skill-audio-review.md` for the short five-point pass and audition controls. `tools/check_combat_audio.py` now enforces RMS target tolerance ±.25 dB, peak ceilings, format, hash, distinct variations, seams and deterministic sample reproduction.
+
+Follow-up validation: native Godot 4.7.2 `tools/godot_test.sh --check-data` **233 passed, 0 failed**, exit 0; 40 tables verified. Exporter checker six checks passed. All 258 audio files / 86 banks passed normalization/peak/hash/format/seam checks and deterministic sample rerenders; one objective loop-energy listening flag is recorded in the report. In-tree audio smoke passed cleanly. Real two-process execution was attempted and failed at the environment's socket restriction (host 78 / runner 1), so network acceptance remains pending the unrestricted run requested from Claude. No GPU/listening acceptance or publication is claimed.

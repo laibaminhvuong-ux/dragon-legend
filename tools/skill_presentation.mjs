@@ -29,16 +29,38 @@ const rows = {
  EnergyField:['shield','barrier_brace','chest',0x69dfff,'shield',1.25,0.8],
  Melee:['claw','melee_combo','hand_r',0xffddb0,'impact',0.6,0.3],
 };
+// Visual-only envelopes: quick taps still deal their original immediate damage.
+const timing = {
+ KiBlast:[.06,.16,.12], EnergyWave:[.14,.48,.24], DestructoDisc:[.18,.28,.22],
+ WolfFangFist:[.10,.34,.20], InstantTransmission:[.12,.18,.16], SpiritBomb:[.32,.65,.38],
+ Melee:[0,.18,.12], FinalFlash:[.24,.65,.32], DeathBeam:[.04,.15,.12],
+};
+const samples = {
+ KiBlast:{layers:['palm_spark','muzzle_ring','comet_tail','contact_star','recoil_ring'],gather_socket:'hand_r',gather_offset:[0,0,0],trail:1.1},
+ EnergyWave:{layers:['cupped_core','counter_orbits','core_sheath','contact_crown','recoil_ring'],gather_socket:'hand_r',gather_offset:[0,0,0],trail:0},
+ DestructoDisc:{layers:['palm_disc','razor_rim','speed_streaks','sliced_contact','recoil_ring'],gather_socket:'hand_r',gather_offset:[0,.15,0],trail:1.8},
+ WolfFangFist:{layers:['knuckle_gather','paired_claws','rush_streaks','contact_slashes','recoil_ring'],gather_socket:'hand_r',gather_offset:[0,0,0],trail:0},
+ InstantTransmission:{layers:['forehead_focus','departure_columns','arrival_columns','recoil_ring'],gather_socket:'head',gather_offset:[.12,.1,0],trail:0},
+ SpiritBomb:{layers:['overhead_core','inward_motes','orb_shell','endpoint_crown','recoil_ring'],gather_socket:'head',gather_offset:[0,2.2,0],trail:0},
+};
+const combos = {
+ Melee:{length:4,strikes:[['jab','palm_strike'],['cross','knee'],['hook','uppercut'],['spin_kick','axe_kick']]},
+ WolfFangFist:{length:6,strikes:[['jab'],['cross'],['hook'],['uppercut'],['knee'],['palm_strike','spin_kick']]},
+};
 export function skillPresentation(moves,starter){
  const skills={};
  for(const [id,row] of Object.entries(rows)){
   const [geometry,pose,socket,accent,audio,width,lifetime]=row;
   const def=id==='EnergyWave'?starter:id==='Melee'?{name:'Melee combo',kind:'melee'}:moves[id];
   if(!def)throw new Error('Missing gameplay definition for '+id);
+  const [hold_min,release_window,recovery]=timing[id]??[.12,Math.min(.6,lifetime),Math.min(.35,lifetime*.35)];
+  const sample=samples[id];
   const availability=id==='GodKi'?'passive':id==='FusionDance'?'not_castable':'active';
   skills[id]={id,name:def.name,kind:def.kind,availability,geometry,pose,socket,accent,
-   custom_ki:true,width,lifetime,delivery:def.kind==='blast'?'projectile':def.kind==='beam'||def.kind==='ultimate'?'instant_ray':def.kind==='melee'?'contact':'utility',
-   phases:{prepare:{socket,visual:'gather',audio:audio+'_charge'},release:{visual:geometry,audio:audio+'_release'},impact:{visual:geometry,audio:audio+'_impact'},recovery:{duration:Math.min(.4,lifetime*.4)}},
+   custom_ki:true,width,lifetime,hold_min,release_window,recovery,
+   ...(sample?{layers:sample.layers,trail_length:sample.trail,gather_offset:sample.gather_offset}:{}),
+   ...(combos[id]?{combo:combos[id]}:{}),delivery:def.kind==='blast'?'projectile':def.kind==='beam'||def.kind==='ultimate'?'instant_ray':def.kind==='melee'?'contact':'utility',
+   phases:{prepare:{socket:sample?.gather_socket??socket,visual:'gather',audio:audio+'_charge'},release:{visual:geometry,audio:audio+'_release'},impact:{visual:geometry,audio:audio+'_impact'},recovery:{duration:recovery}},
    max_duration:Math.max(2,lifetime+1),seeded_variations:3};
  }
  for(const id of Object.keys(moves))if(!skills[id])throw new Error('Missing presentation for '+id);

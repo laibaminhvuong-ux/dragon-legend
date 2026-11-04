@@ -27,7 +27,10 @@ def render(family,phase,variant):
         sweep=1+(2.2*math.exp(-t*25) if percussive else .35*math.sin(t*math.tau*1.5) if loop else (1-p)*.8)
         phase_a+=math.tau*base*sweep/RATE;phase_b+=math.tau*base*1.003/RATE
         modal=sum(a*math.sin(math.tau*f*t+q)*math.exp(-t*(5+j*2)) for j,(f,a,q) in enumerate(modes))*.12
-        if percussive:
+        if percussive and loop:
+            # A charge is sustained air/body, not an isolated impact followed by silence.
+            value=(math.sin(phase_a)*.12+low*.8+air*.08)*(.85+.15*math.sin(t*math.tau*4))
+        elif percussive:
             body=math.sin(phase_a+math.sin(phase_a*.5)*.35)*math.exp(-t*22)*.5
             texture=low*math.exp(-t*16)*1.8+air*math.exp(-t*70)*.4
             if family=='guard':body=modal*math.exp(-t*4);texture=high*math.exp(-t*60)*.15
@@ -67,9 +70,19 @@ def render(family,phase,variant):
         fade=min(int(.012*RATE),n//4)
         for i in range(fade):output[-fade+i]*=1-i/max(1,fade-1)
         output[0]=output[-1]=0.
+    # Full-clip RMS targets are explicit (not LUFS). Compress only excessive crest factors.
+    target=10**((-24 if loop else -22)/20)
+    ceiling=.42 if loop else .7
+    for _ in range(8):
+        rms=math.sqrt(sum(x*x for x in output)/len(output)) or 1
+        gain=target/rms
+        output=[x*gain for x in output]
+        peak=max(abs(x) for x in output)
+        if peak<=ceiling: break
+        output=[ceiling*math.tanh(x/ceiling) for x in output]
     peak=max(abs(x) for x in output) or 1
-    scale=(.42 if loop else .7)/peak
-    pcm=array.array('h',(round(max(-.98,min(.98,x*scale))*32767) for x in output))
+    if peak>ceiling: output=[x*ceiling/peak for x in output]
+    pcm=array.array('h',(round(x*32767) for x in output))
     if struct.pack('=H',1)!=struct.pack('<H',1):pcm.byteswap()
     return pcm.tobytes(),loop
 
@@ -88,9 +101,9 @@ def build(out):
             peak=max(abs(x) for x in samples)/32768
             rms=math.sqrt(sum((x/32768)**2 for x in samples)/len(samples))
             sounds[key].append({'file':file,'loop':loop,'frames':len(samples),'rate':RATE,'peak':round(peak,7),'rms':round(rms,7),'sha256':hashlib.sha256((out/file).read_bytes()).hexdigest()})
-    manifest={'version':1,'source':'Original project sound design: offline modal/transient/noise/FM layers and early reflections. No external recordings.','license':'CC0-1.0','generator':'tools/build_combat_audio.py','families':sounds}
+    manifest={'version':1,'source':'Original project sound design: offline modal/transient/noise/FM layers and early reflections. No external recordings.','license':'CC0-1.0','generator':'tools/build_combat_audio.py','normalization':{'metric':'full-clip RMS dBFS (not LUFS)','one_shot_target_dbfs':-22,'loop_target_dbfs':-24,'one_shot_peak_ceiling':.7,'loop_peak_ceiling':.42},'families':sounds}
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
-    (out/'SOURCES.md').write_text('# Combat sound bank\n\nOriginal project audio rendered by `tools/build_combat_audio.py`. CC0-1.0. No third-party samples are included. These are designed/synthesized assets, not recorded human foley. The generator, seed, hashes, loop flags, frames, RMS and peaks are recorded for reproducibility.\n\nThree variations per family/phase; runtime playback uses the WAV bank instead of synthesizing six cues. Listening review in the game is required; sample counts or tests do not establish aesthetic quality.\n')
+    (out/'SOURCES.md').write_text('# Combat sound bank\n\nOriginal project audio rendered by `tools/build_combat_audio.py`. CC0-1.0. No third-party samples are included. These are designed/synthesized assets, not recorded human foley. The generator, seed, hashes, loop flags, frames, RMS and peaks are recorded for reproducibility.\n\nFull-clip RMS normalization: one-shots -22 dBFS, loops -24 dBFS, with crest compression and peak ceilings. RMS is not perceptual LUFS; listening is required.\n\nThree variations per family/phase; runtime playback uses the WAV bank instead of synthesizing six cues. Listening review in the game is required; sample counts or tests do not establish aesthetic quality.\n')
     print(f'Rendered {sum(map(len,sounds.values()))} original WAV assets across {len(sounds)} phase/family banks.')
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--out',type=pathlib.Path,default=ROOT/'godot/assets/audio/combat');args=parser.parse_args();build(args.out)

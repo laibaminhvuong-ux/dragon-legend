@@ -43,7 +43,7 @@
     "web/src/game/story.js": "78427bc84e7997290d5ceac4847db659337db401cecff65a637d790071901a3e",
     "web/src/game/tutorial.js": "6396d9262a04df0b6f54f8319469de787dac94cf95d849ccf0f0144c366c66b3",
     "web/src/game/zones.js": "c38525cfada5f1496007b9e0555d13926ef1ec944abbc238832901109696e0e4",
-    "tools/skill_presentation.mjs": "e76d3b06d14a82c4ff6fce4a6f8c21b6edce188235075f6906865a9164ea915f",
+    "tools/skill_presentation.mjs": "447b6907ff183affbc451f0cfc6ea987c0e928256f7a3c5f988cc01a5636b322",
     "tools/godot_additions.mjs": "ce1f0fbdc7c5889d641fb462adcc978407958835a528a9a74f7fce3492ffac9d",
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
@@ -271,8 +271,8 @@
       "entries": 9
     },
     "skill_presentation.json": {
-      "sha256": "f0aab6c4a40cda490f12990af4c592af138bc60238a83bebb466d40a1c99bd20",
-      "bytes": 23539,
+      "sha256": "c8b7e396e4cbfcfc31ba919bb24d34b95cfb7aeb88ceae5f7d11dc6224bfc342",
+      "bytes": 28016,
       "kind": "object",
       "entries": 5
     },

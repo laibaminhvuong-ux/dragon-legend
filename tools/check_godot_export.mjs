@@ -15,7 +15,7 @@ try{
  ok('all loaded story, dragon, form, appearance and renamed content exported');
  const presentation=JSON.parse(await fs.readFile(path.join(temp,'skill_presentation.json'),'utf8'));
  assert.equal(Object.keys(presentation.skills).length,28);
- for(const id of Object.keys(tables.moves)){const row=presentation.skills[id];assert.ok(row);assert.ok(presentation.sockets.includes(row.socket));assert.ok(row.phases.prepare.audio);assert.ok(row.phases.impact.audio);}
+ for(const id of Object.keys(tables.moves)){const row=presentation.skills[id];assert.ok(row);assert.ok(presentation.sockets.includes(row.socket));assert.ok(row.phases.prepare.audio);assert.ok(row.phases.impact.audio);assert.ok(Number.isFinite(row.hold_min)&&row.hold_min>=0);assert.ok(row.release_window>0);assert.ok(row.recovery>0);assert.equal(row.recovery,row.phases.recovery.duration);}
  assert.equal(presentation.skills.GodKi.availability,'passive');assert.equal(presentation.skills.FusionDance.availability,'not_castable');
  assert.equal(presentation.skills.SpiritBomb.delivery,'instant_ray');ok('every skill has an explicit presentation and availability contract');
 

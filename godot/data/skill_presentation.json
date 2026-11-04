@@ -42,10 +42,26 @@
       "custom_ki": true,
       "width": 0.18,
       "lifetime": 0.6,
+      "hold_min": 0.14,
+      "release_window": 0.48,
+      "recovery": 0.24,
+      "layers": [
+        "cupped_core",
+        "counter_orbits",
+        "core_sheath",
+        "contact_crown",
+        "recoil_ring"
+      ],
+      "trail_length": 0,
+      "gather_offset": [
+        0,
+        0,
+        0
+      ],
       "delivery": "instant_ray",
       "phases": {
         "prepare": {
-          "socket": "cast_origin",
+          "socket": "hand_r",
           "visual": "gather",
           "audio": "wave_charge"
         },
@@ -76,6 +92,22 @@
       "custom_ki": true,
       "width": 0.12,
       "lifetime": 0.3,
+      "hold_min": 0.06,
+      "release_window": 0.16,
+      "recovery": 0.12,
+      "layers": [
+        "palm_spark",
+        "muzzle_ring",
+        "comet_tail",
+        "contact_star",
+        "recoil_ring"
+      ],
+      "trail_length": 1.1,
+      "gather_offset": [
+        0,
+        0,
+        0
+      ],
       "delivery": "projectile",
       "phases": {
         "prepare": {
@@ -110,6 +142,9 @@
       "custom_ki": true,
       "width": 0.26,
       "lifetime": 0.7,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.24499999999999997,
       "delivery": "instant_ray",
       "phases": {
         "prepare": {
@@ -126,7 +161,7 @@
           "audio": "wave_impact"
         },
         "recovery": {
-          "duration": 0.27999999999999997
+          "duration": 0.24499999999999997
         }
       },
       "max_duration": 2,
@@ -144,6 +179,22 @@
       "custom_ki": true,
       "width": 0.38,
       "lifetime": 0.7,
+      "hold_min": 0.18,
+      "release_window": 0.28,
+      "recovery": 0.22,
+      "layers": [
+        "palm_disc",
+        "razor_rim",
+        "speed_streaks",
+        "sliced_contact",
+        "recoil_ring"
+      ],
+      "trail_length": 1.8,
+      "gather_offset": [
+        0,
+        0.15,
+        0
+      ],
       "delivery": "projectile",
       "phases": {
         "prepare": {
@@ -160,7 +211,7 @@
           "audio": "disc_impact"
         },
         "recovery": {
-          "duration": 0.27999999999999997
+          "duration": 0.22
         }
       },
       "max_duration": 2,
@@ -178,6 +229,9 @@
       "custom_ki": true,
       "width": 1.4,
       "lifetime": 0.7,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.24499999999999997,
       "delivery": "utility",
       "phases": {
         "prepare": {
@@ -194,7 +248,7 @@
           "audio": "flare_impact"
         },
         "recovery": {
-          "duration": 0.27999999999999997
+          "duration": 0.24499999999999997
         }
       },
       "max_duration": 2,
@@ -212,6 +266,9 @@
       "custom_ki": true,
       "width": 0.48,
       "lifetime": 0.65,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.22749999999999998,
       "delivery": "instant_ray",
       "phases": {
         "prepare": {
@@ -228,7 +285,7 @@
           "audio": "triad_impact"
         },
         "recovery": {
-          "duration": 0.26
+          "duration": 0.22749999999999998
         }
       },
       "max_duration": 2,
@@ -246,6 +303,46 @@
       "custom_ki": true,
       "width": 0.8,
       "lifetime": 0.55,
+      "hold_min": 0.1,
+      "release_window": 0.34,
+      "recovery": 0.2,
+      "layers": [
+        "knuckle_gather",
+        "paired_claws",
+        "rush_streaks",
+        "contact_slashes",
+        "recoil_ring"
+      ],
+      "trail_length": 0,
+      "gather_offset": [
+        0,
+        0,
+        0
+      ],
+      "combo": {
+        "length": 6,
+        "strikes": [
+          [
+            "jab"
+          ],
+          [
+            "cross"
+          ],
+          [
+            "hook"
+          ],
+          [
+            "uppercut"
+          ],
+          [
+            "knee"
+          ],
+          [
+            "palm_strike",
+            "spin_kick"
+          ]
+        ]
+      },
       "delivery": "contact",
       "phases": {
         "prepare": {
@@ -262,7 +359,7 @@
           "audio": "rush_impact"
         },
         "recovery": {
-          "duration": 0.22000000000000003
+          "duration": 0.2
         }
       },
       "max_duration": 2,
@@ -280,6 +377,9 @@
       "custom_ki": true,
       "width": 1.3,
       "lifetime": 0.7,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.24499999999999997,
       "delivery": "utility",
       "phases": {
         "prepare": {
@@ -296,7 +396,7 @@
           "audio": "transform_impact"
         },
         "recovery": {
-          "duration": 0.27999999999999997
+          "duration": 0.24499999999999997
         }
       },
       "max_duration": 2,
@@ -314,6 +414,22 @@
       "custom_ki": true,
       "width": 1.7,
       "lifetime": 0.95,
+      "hold_min": 0.32,
+      "release_window": 0.65,
+      "recovery": 0.38,
+      "layers": [
+        "overhead_core",
+        "inward_motes",
+        "orb_shell",
+        "endpoint_crown",
+        "recoil_ring"
+      ],
+      "trail_length": 0,
+      "gather_offset": [
+        0,
+        2.2,
+        0
+      ],
       "delivery": "instant_ray",
       "phases": {
         "prepare": {
@@ -348,6 +464,9 @@
       "custom_ki": true,
       "width": 0.18,
       "lifetime": 0.7,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.24499999999999997,
       "delivery": "instant_ray",
       "phases": {
         "prepare": {
@@ -364,7 +483,7 @@
           "audio": "spiral_impact"
         },
         "recovery": {
-          "duration": 0.27999999999999997
+          "duration": 0.24499999999999997
         }
       },
       "max_duration": 2,
@@ -382,6 +501,9 @@
       "custom_ki": true,
       "width": 0.24,
       "lifetime": 0.55,
+      "hold_min": 0.12,
+      "release_window": 0.55,
+      "recovery": 0.1925,
       "delivery": "instant_ray",
       "phases": {
         "prepare": {
@@ -398,7 +520,7 @@
           "audio": "lance_impact"
         },
         "recovery": {
-          "duration": 0.22000000000000003
+          "duration": 0.1925
         }
       },
       "max_duration": 2,
@@ -416,6 +538,9 @@
       "custom_ki": true,
       "width": 0.32,
       "lifetime": 0.65,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.22749999999999998,
       "delivery": "instant_ray",
       "phases": {
         "prepare": {
@@ -432,7 +557,7 @@
           "audio": "galick_impact"
         },
         "recovery": {
-          "duration": 0.26
+          "duration": 0.22749999999999998
         }
       },
       "max_duration": 2,
@@ -450,6 +575,9 @@
       "custom_ki": true,
       "width": 0.65,
       "lifetime": 0.9,
+      "hold_min": 0.24,
+      "release_window": 0.65,
+      "recovery": 0.32,
       "delivery": "instant_ray",
       "phases": {
         "prepare": {
@@ -466,7 +594,7 @@
           "audio": "flash_impact"
         },
         "recovery": {
-          "duration": 0.36000000000000004
+          "duration": 0.32
         }
       },
       "max_duration": 2,
@@ -484,6 +612,9 @@
       "custom_ki": true,
       "width": 0.62,
       "lifetime": 0.8,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.27999999999999997,
       "delivery": "projectile",
       "phases": {
         "prepare": {
@@ -500,7 +631,7 @@
           "audio": "heavy_impact"
         },
         "recovery": {
-          "duration": 0.32000000000000006
+          "duration": 0.27999999999999997
         }
       },
       "max_duration": 2,
@@ -518,6 +649,9 @@
       "custom_ki": true,
       "width": 0.055,
       "lifetime": 0.35,
+      "hold_min": 0.04,
+      "release_window": 0.15,
+      "recovery": 0.12,
       "delivery": "projectile",
       "phases": {
         "prepare": {
@@ -534,7 +668,7 @@
           "audio": "needle_impact"
         },
         "recovery": {
-          "duration": 0.13999999999999999
+          "duration": 0.12
         }
       },
       "max_duration": 2,
@@ -552,6 +686,9 @@
       "custom_ki": true,
       "width": 1.45,
       "lifetime": 0.95,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.33249999999999996,
       "delivery": "instant_ray",
       "phases": {
         "prepare": {
@@ -568,7 +705,7 @@
           "audio": "eclipse_impact"
         },
         "recovery": {
-          "duration": 0.38
+          "duration": 0.33249999999999996
         }
       },
       "max_duration": 2,
@@ -586,6 +723,9 @@
       "custom_ki": true,
       "width": 1,
       "lifetime": 1.3,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.35,
       "delivery": "utility",
       "phases": {
         "prepare": {
@@ -602,7 +742,7 @@
           "audio": "heal_impact"
         },
         "recovery": {
-          "duration": 0.4
+          "duration": 0.35
         }
       },
       "max_duration": 2.3,
@@ -620,6 +760,9 @@
       "custom_ki": true,
       "width": 0.18,
       "lifetime": 0.65,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.22749999999999998,
       "delivery": "utility",
       "phases": {
         "prepare": {
@@ -636,7 +779,7 @@
           "audio": "sweet_impact"
         },
         "recovery": {
-          "duration": 0.26
+          "duration": 0.22749999999999998
         }
       },
       "max_duration": 2,
@@ -654,10 +797,25 @@
       "custom_ki": true,
       "width": 1,
       "lifetime": 0.45,
+      "hold_min": 0.12,
+      "release_window": 0.18,
+      "recovery": 0.16,
+      "layers": [
+        "forehead_focus",
+        "departure_columns",
+        "arrival_columns",
+        "recoil_ring"
+      ],
+      "trail_length": 0,
+      "gather_offset": [
+        0.12,
+        0.1,
+        0
+      ],
       "delivery": "utility",
       "phases": {
         "prepare": {
-          "socket": "chest",
+          "socket": "head",
           "visual": "gather",
           "audio": "transfer_charge"
         },
@@ -670,7 +828,7 @@
           "audio": "transfer_impact"
         },
         "recovery": {
-          "duration": 0.18000000000000002
+          "duration": 0.16
         }
       },
       "max_duration": 2,
@@ -688,6 +846,9 @@
       "custom_ki": true,
       "width": 1,
       "lifetime": 0.5,
+      "hold_min": 0.12,
+      "release_window": 0.5,
+      "recovery": 0.175,
       "delivery": "utility",
       "phases": {
         "prepare": {
@@ -704,7 +865,7 @@
           "audio": "evade_impact"
         },
         "recovery": {
-          "duration": 0.2
+          "duration": 0.175
         }
       },
       "max_duration": 2,
@@ -722,6 +883,9 @@
       "custom_ki": true,
       "width": 0.46,
       "lifetime": 0.7,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.24499999999999997,
       "delivery": "instant_ray",
       "phases": {
         "prepare": {
@@ -738,7 +902,7 @@
           "audio": "demon_impact"
         },
         "recovery": {
-          "duration": 0.27999999999999997
+          "duration": 0.24499999999999997
         }
       },
       "max_duration": 2,
@@ -756,6 +920,9 @@
       "custom_ki": true,
       "width": 1,
       "lifetime": 1.2,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.35,
       "delivery": "utility",
       "phases": {
         "prepare": {
@@ -772,7 +939,7 @@
           "audio": "chime_impact"
         },
         "recovery": {
-          "duration": 0.4
+          "duration": 0.35
         }
       },
       "max_duration": 2.2,
@@ -790,6 +957,9 @@
       "custom_ki": true,
       "width": 1.4,
       "lifetime": 0.85,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.2975,
       "delivery": "instant_ray",
       "phases": {
         "prepare": {
@@ -806,7 +976,7 @@
           "audio": "destroy_impact"
         },
         "recovery": {
-          "duration": 0.34
+          "duration": 0.2975
         }
       },
       "max_duration": 2,
@@ -824,44 +994,13 @@
       "custom_ki": true,
       "width": 0.6,
       "lifetime": 0.8,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.27999999999999997,
       "delivery": "utility",
       "phases": {
         "prepare": {
           "socket": "aura_root",
-          "visual": "gather",
-          "audio": "focus_charge"
-        },
-        "release": {
-          "visual": "focus",
-          "audio": "focus_release"
-        },
-        "impact": {
-          "visual": "focus",
-          "audio": "focus_impact"
-        },
-        "recovery": {
-          "duration": 0.32000000000000006
-        }
-      },
-      "max_duration": 2,
-      "seeded_variations": 3
-    },
-    "UltraInstinctSign": {
-      "id": "UltraInstinctSign",
-      "name": "Ultra Intuition -Sign-",
-      "kind": "utility",
-      "availability": "active",
-      "geometry": "focus",
-      "pose": "instinct_focus",
-      "socket": "chest",
-      "accent": 12245759,
-      "custom_ki": true,
-      "width": 0.65,
-      "lifetime": 0.7,
-      "delivery": "utility",
-      "phases": {
-        "prepare": {
-          "socket": "chest",
           "visual": "gather",
           "audio": "focus_charge"
         },
@@ -880,6 +1019,43 @@
       "max_duration": 2,
       "seeded_variations": 3
     },
+    "UltraInstinctSign": {
+      "id": "UltraInstinctSign",
+      "name": "Ultra Intuition -Sign-",
+      "kind": "utility",
+      "availability": "active",
+      "geometry": "focus",
+      "pose": "instinct_focus",
+      "socket": "chest",
+      "accent": 12245759,
+      "custom_ki": true,
+      "width": 0.65,
+      "lifetime": 0.7,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.24499999999999997,
+      "delivery": "utility",
+      "phases": {
+        "prepare": {
+          "socket": "chest",
+          "visual": "gather",
+          "audio": "focus_charge"
+        },
+        "release": {
+          "visual": "focus",
+          "audio": "focus_release"
+        },
+        "impact": {
+          "visual": "focus",
+          "audio": "focus_impact"
+        },
+        "recovery": {
+          "duration": 0.24499999999999997
+        }
+      },
+      "max_duration": 2,
+      "seeded_variations": 3
+    },
     "UltraInstinctAvatar": {
       "id": "UltraInstinctAvatar",
       "name": "Ultra Intuition Energy Avatar",
@@ -892,6 +1068,9 @@
       "custom_ki": true,
       "width": 2.4,
       "lifetime": 1,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.35,
       "delivery": "utility",
       "phases": {
         "prepare": {
@@ -908,7 +1087,7 @@
           "audio": "avatar_impact"
         },
         "recovery": {
-          "duration": 0.4
+          "duration": 0.35
         }
       },
       "max_duration": 2,
@@ -926,6 +1105,9 @@
       "custom_ki": true,
       "width": 1.25,
       "lifetime": 0.8,
+      "hold_min": 0.12,
+      "release_window": 0.6,
+      "recovery": 0.27999999999999997,
       "delivery": "utility",
       "phases": {
         "prepare": {
@@ -942,7 +1124,7 @@
           "audio": "shield_impact"
         },
         "recovery": {
-          "duration": 0.32000000000000006
+          "duration": 0.27999999999999997
         }
       },
       "max_duration": 2,
@@ -960,6 +1142,30 @@
       "custom_ki": true,
       "width": 0.6,
       "lifetime": 0.3,
+      "hold_min": 0,
+      "release_window": 0.18,
+      "recovery": 0.12,
+      "combo": {
+        "length": 4,
+        "strikes": [
+          [
+            "jab",
+            "palm_strike"
+          ],
+          [
+            "cross",
+            "knee"
+          ],
+          [
+            "hook",
+            "uppercut"
+          ],
+          [
+            "spin_kick",
+            "axe_kick"
+          ]
+        ]
+      },
       "delivery": "contact",
       "phases": {
         "prepare": {

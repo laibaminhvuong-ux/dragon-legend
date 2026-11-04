@@ -23,6 +23,8 @@ var sync_at: float = 0
 var melee_cd: float = 0
 var blast_cd: float = 0
 var beam_cd: float = 0
+var wolf_combo := 0
+var wolf_swing := -100.0
 var combo: int = 0
 var last_swing: float = -10
 var beam_held: bool = false
@@ -69,6 +71,15 @@ func emit(event: String,value: Dictionary = {}) -> void:
 func skill_packet(context: Dictionary,phase: String,extra: Dictionary = {}) -> Dictionary:
 	event_sequence += 1
 	return context.merged({"phase":phase,"server_time":clock,"event_id":"%s:%s:%d:%d:%d" % [p.id,zone.id,get_instance_id(),int(clock*1000000),event_sequence]},true).merged(extra,true)
+## The host chooses visual strike variants. This never schedules an extra hit.
+static func combo_metadata(id: String,step: int,seed: int) -> Dictionary:
+	var definition: Dictionary = RuleTables.table("skill_presentation").skills.get(id,{}).get("combo",{})
+	if definition.is_empty(): return {}
+	var length: int = int(definition.length)
+	var current := posmod(step-1,length)+1
+	var choices: Array = definition.strikes[current-1]
+	var strike: String = choices[posmod(seed,choices.size())]
+	return {"combo_step":current,"combo_length":length,"strike":strike,"finisher":current==length,"socket":"foot_r" if strike in ["spin_kick","axe_kick","knee"] else "hand_l" if strike in ["jab","hook"] else "hand_r"}
 func begin_skill(id: String,phase: String = "release",charge: float = 0) -> Dictionary:
 	if skill.get("move_id")!=id or skill.get("phase")!="prepare":
 		cancel_skill("superseded")
@@ -76,7 +87,19 @@ func begin_skill(id: String,phase: String = "release",charge: float = 0) -> Dict
 		var profile: Dictionary = RuleTables.table("skill_presentation").skills.get(id,{})
 		var ray := aim()
 		skill = {"presentation_version":1,"move_id":id,"actor_id":p.id,"action_sequence":action_sequence,"started_at":clock,"seed":absi((str(p.id)+id+str(action_sequence)).hash()),"socket":profile.get("socket","cast_origin"),"pose":profile.get("pose","palm_shot"),"color":RuleRuntime.ki_color(game.slot.appearance),"origin":ray.origin,"direction":ray.dir,"target_id":p.get("lockTarget")}
-	if id=="Melee": skill.socket = "foot_r" if combo==4 else "hand_l" if combo in [1,3] else "hand_r"
+	var recipe: Dictionary = RuleTables.table("skill_presentation").skills.get(id,{})
+	skill.socket = recipe.get("phases",{}).get("prepare",{}).get("socket",recipe.get("socket","cast_origin")) if phase=="prepare" else recipe.get("socket","cast_origin")
+	if phase=="release" and id in ["Melee","WolfFangFist"]:
+		if id=="WolfFangFist":
+			wolf_combo = wolf_combo%6+1 if clock-wolf_swing<=c.beamCooldown+c.comboWindow else 1
+			wolf_swing = clock
+		skill.merge(combo_metadata(id,combo if id=="Melee" else wolf_combo,int(skill.seed)),true)
+	if phase=="release":
+		skill.released_at = clock
+		skill.hold_elapsed = maxf(0,clock-float(skill.started_at))
+	skill.hold_min = recipe.get("hold_min",0)
+	skill.release_window = recipe.get("release_window",.45)
+	skill.recovery = recipe.get("recovery",.2)
 	skill.phase = phase
 	skill.charge = charge
 	skill.until = clock+float(RuleTables.table("skill_presentation").skills.get(id,{}).get("max_duration",2))
@@ -190,7 +213,7 @@ func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = fa
 	target.vel.x += delta.x/distance*c.knockback
 	target.vel.z += delta.z/distance*c.knockback
 	var hit_context: Dictionary = context if not context.is_empty() else impact_context if source==p and not impact_context.is_empty() else {"presentation_version":1,"move_id":"Melee","actor_id":source.id,"action_sequence":source.get("attackSerial",0),"seed":int(source.get("attackSerial",0)),"color":0xffdca0}
-	emit("damage",skill_packet(hit_context,"impact",{"id":target.id,"source_id":source.id,"target_id":target.id,"amount":amount,"pos":target.pos+Vector3(0,1.6,0),"blocked":amount<damage*0.5,"finisher":finisher}))
+	emit("damage",skill_packet(hit_context,"impact",{"id":target.id,"source_id":source.id,"target_id":target.id,"amount":amount,"pos":target.pos+Vector3(0,1.6,0),"blocked":amount<damage*0.5,"finisher":hit_context.get("finisher",finisher),"guard_breaker":finisher}))
 	if target==p:
 		last_damage = clock
 		if p.form=="UltraEgo":

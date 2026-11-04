@@ -28,11 +28,15 @@ func bind(bus: Object,resolver: Callable,tier: String = "medium") -> void:
 func actor_key(packet: Dictionary) -> String:
 	return str(packet.get("actor_id",packet.get("id","player")))
 func socket_position(packet: Dictionary) -> Vector3:
+	var offset := Vector3.ZERO
+	if packet.get("phase")=="prepare":
+		var values: Array = SkillCatalog.get_skill(str(packet.get("move_id",""))).get("gather_offset",[0,0,0])
+		offset = Vector3(float(values[0]),float(values[1]),float(values[2]))
 	var actor: Variant = resolve_actor.call(actor_key(packet)) if resolve_actor.is_valid() else null
 	if is_instance_valid(actor) and actor.has_method("socket"):
 		var pose: Transform3D = actor.socket(str(packet.get("socket","cast_origin")))
-		return pose.origin
-	return RuleRuntime.vector(packet.get("origin",packet.get("pos",Vector3.ZERO)))
+		return pose.origin+offset
+	return RuleRuntime.vector(packet.get("origin",packet.get("pos",Vector3.ZERO)))+offset
 func spawn_effect(profile: Dictionary,packet: Dictionary,phase: String,pos: Vector3) -> SkillEffect:
 	var budget := SkillCatalog.budget(quality)
 	if effects.size()>=int(budget.effects): remove_effect(effects[0])
@@ -84,9 +88,20 @@ func handle_event(name: String,packet: Dictionary) -> void:
 		charging[key] = spawn_effect(profile,packet,"prepare",socket_position(packet))
 		if audio!=null: audio.start_loop(key,profile.phases.prepare.audio,socket_position(packet),int(packet.get("seed",0)))
 		return
-	if phase=="release" and charging.has(key) and int(charging[key].packet.get("action_sequence",0))<=sequence: remove_effect(charging[key])
+	if phase=="release" and charging.has(key) and int(charging[key].packet.get("action_sequence",0))<=sequence:
+		var gather: SkillEffect = charging[key]
+		var remaining := maxf(0,float(profile.get("hold_min",0))-gather.age)
+		if remaining>0:
+			charging.erase(key)
+			if audio!=null: audio.stop_loop(key)
+			gather.sustained = false; gather.duration = gather.age+remaining
+		else: remove_effect(gather)
 	var pos := socket_position(packet)
+	if phase=="release" and name=="attack" and profile.has("layers"):
+		spawn_effect(profile,packet,"recoil",pos)
+		if profile.delivery=="projectile": spawn_effect(profile,packet,"release",pos)
 	if name in ["damage","avatarStrike"] or phase=="impact": pos = RuleRuntime.vector(packet.get("pos",pos))
+	if id=="InstantTransmission" and phase=="impact": pos += Vector3.UP*1.1
 	# Instant rays draw once on the beam event; their attack event provides pose/audio only.
 	if name=="beam" and profile.geometry in ["spirit","eclipse","heavy_orb","destruction"]:
 		spawn_effect(profile,packet,"impact",RuleRuntime.vector(packet.get("to",pos)))
@@ -123,6 +138,8 @@ func sync_projectiles(rows: Array) -> void:
 			packet.color = row.get("color",0x66ccff)
 			shots[key] = spawn_effect(SkillCatalog.get_skill(str(row.get("move_id","KiBlast"))),packet,"projectile",RuleRuntime.vector(row.pos))
 		shots[key].position = to_local(RuleRuntime.vector(row.pos)) if is_inside_tree() else RuleRuntime.vector(row.pos)
+		var direction: Vector3 = RuleRuntime.vector(row.get("dir",row.get("presentation",{}).get("direction",Vector3.FORWARD)))
+		if direction.length_squared()>.0001: shots[key].quaternion = Quaternion(Vector3.BACK,direction.normalized())
 	for key: String in shots.keys():
 		if not live.has(key): remove_effect(shots[key])
 func cancel_actor(id: String) -> void:
