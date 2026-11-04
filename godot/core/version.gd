@@ -1,7 +1,7 @@
 class_name GameVersion
 extends RefCounted
 # The game's version (bumped by the integrator on each release; continues the web game's numbering).
-const VERSION := "0.0.5"
+const VERSION := "0.0.6"
 
 ## The version running now: a downloaded update, or the built-in one.
 static func current() -> String:
