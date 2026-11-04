@@ -108,6 +108,12 @@ func _paint(mat: Material, bg: Color) -> void:
 			mi.visible = bg != Color.WHITE
 			mi.material_override = neutral
 			continue
+		if mat == null:   # real colours: put the fighter's own materials back
+			if mi.has_meta("own"):
+				mi.material_override = mi.get_meta("own")
+			continue
+		if not mi.has_meta("own"):
+			mi.set_meta("own", mi.material_override)
 		mi.material_override = mat
 		for s in mi.get_surface_override_material_count():
 			mi.set_surface_override_material(s, null)
@@ -172,8 +178,36 @@ func _poses(out: String) -> void:
 		_paint(neutral, Color(0.86, 0.87, 0.9))
 		await _shot("%s_poses_%s.png" % [out, which])
 
+## Close-up faces of the six races in their real colours (front and three-quarter rows).
+func _faces(out: String) -> void:
+	stage = Node3D.new()
+	vp.add_child(stage)
+	env.environment.background_color = Color(0.3, 0.33, 0.4)
+	var i := 0
+	for row in 2:
+		for r: String in RACES:
+			var l := _look(r)
+			l.face = ["Calm", "Fierce", "Smirk", "Determined", "Cold", "Calm"][i % 6]
+			var f := Fighter.create(l)
+			f.position = Vector3((i % 6 - 2.5) * 0.42, -row * 0.62, 0)
+			f.position.z = row * 3.0
+			f.rotation.y = 0.0 if row == 0 else 0.7
+			stage.add_child(f)
+			i += 1
+	for f: Fighter in stage.find_children("*", "Fighter", true, false):
+		for k in 20:
+			f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true})
+	cam.size = 1.0
+	vp.size = Vector2i(2600, roundi(2600 * 1.0 / (6 * 0.42 + 0.1)))
+	cam.position = Vector3(0, 1.72 - 0.3, 8)
+	await _shot(out + "_faces.png")
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--faces" in OS.get_cmdline_user_args():
+		await _faces(out)
+		quit()
+		return
 	if "--poses" in OS.get_cmdline_user_args():
 		await _poses(out)
 		quit()
@@ -199,4 +233,5 @@ func _run(out: String) -> void:
 	await _settle()
 	_paint(neutral, Color(0.86, 0.87, 0.9)); await _shot(out + "_named_neutral.png")
 	_paint(black, Color.WHITE); await _shot(out + "_named_silhouette.png")
+	_paint(null, Color(0.3, 0.33, 0.4)); await _shot(out + "_named_dressed.png")
 	quit()
