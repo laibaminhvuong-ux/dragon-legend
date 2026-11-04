@@ -37,7 +37,8 @@
       "hairColor": 0,
       "build": "Average",
       "outfit": "TurtleGi",
-      "outfitTint": 2
+      "outfitTint": 2,
+      "physique": "gohin"
     }
   },
   "goten": {
@@ -78,7 +79,8 @@
       "hairColor": 2,
       "build": "Average",
       "outfit": "CapsuleCorp",
-      "outfitTint": 1
+      "outfitTint": 1,
+      "physique": "tronks"
     }
   },
   "pan": {
@@ -191,7 +193,8 @@
       "hairColor": 0,
       "build": "Average",
       "outfit": "TurtleGi",
-      "outfitTint": 0
+      "outfitTint": 0,
+      "physique": "yamcho"
     }
   },
   "tien": {
@@ -204,7 +207,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "CraneGi",
-      "outfitTint": 6
+      "outfitTint": 6,
+      "physique": "tenzo"
     }
   },
   "farmer": {
@@ -230,7 +234,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "SaiyanArmor",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "gokan"
     },
     "scale": 1.08
   },
@@ -429,7 +434,8 @@
       "hairColor": 0,
       "build": "Tall",
       "outfit": "FrostArmor",
-      "outfitTint": 4
+      "outfitTint": 4,
+      "physique": "zarvon"
     }
   },
   "dodoria": {
@@ -442,7 +448,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "FrostArmor",
-      "outfitTint": 4
+      "outfitTint": 4,
+      "physique": "dodorra"
     },
     "scale": 1.25
   },
@@ -622,7 +629,8 @@
       "hairColor": 0,
       "build": "Slim",
       "outfit": "CapsuleCorp",
-      "outfitTint": 6
+      "outfitTint": 6,
+      "physique": "cyborg_slim"
     }
   },
   "android_18": {
@@ -636,7 +644,8 @@
       "build": "Slim",
       "outfit": "CapsuleCorp",
       "outfitTint": 3,
-      "female": true
+      "female": true,
+      "physique": "cyborg_slim"
     }
   },
   "android_16": {
@@ -664,7 +673,8 @@
       "hairColor": 0,
       "build": "Tall",
       "outfit": "FrostArmor",
-      "outfitTint": 6
+      "outfitTint": 6,
+      "physique": "cel"
     }
   },
   "cell_jr": {
@@ -717,7 +727,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "CraneGi",
-      "outfitTint": 4
+      "outfitTint": 4,
+      "physique": "sadan"
     }
   },
   "videl": {
@@ -825,7 +836,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "FrostArmor",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "morro"
     },
     "scale": 1.3
   },
@@ -896,7 +908,8 @@
       "hairColor": 0,
       "build": "Tall",
       "outfit": "MajinVest",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "boo_kid"
     }
   },
   "kid_buu": {
@@ -938,7 +951,8 @@
       "hairColor": 0,
       "build": "Slim",
       "outfit": "AngelRobe",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "beeros"
     }
   },
   "whis": {
@@ -951,7 +965,8 @@
       "hairColor": 5,
       "build": "Tall",
       "outfit": "AngelRobe",
-      "outfitTint": 2
+      "outfitTint": 2,
+      "physique": "wiss"
     }
   },
   "oracle_fish": {
@@ -1034,7 +1049,8 @@
       "hairColor": 0,
       "build": "Tall",
       "outfit": "AngelRobe",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "hitto"
     }
   },
   "cabba": {
@@ -1047,7 +1063,8 @@
       "hairColor": 0,
       "build": "Slim",
       "outfit": "EliteArmor",
-      "outfitTint": 5
+      "outfitTint": 5,
+      "physique": "tronks"
     }
   },
   "frost": {
@@ -1115,7 +1132,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "TurtleGi",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "gokan"
     }
   },
   "zamasu": {
@@ -1169,7 +1187,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "PrideTrooper",
-      "outfitTint": 5
+      "outfitTint": 5,
+      "physique": "jiran"
     },
     "scale": 1.25
   },
@@ -1183,7 +1202,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "PrideTrooper",
-      "outfitTint": 5
+      "outfitTint": 5,
+      "physique": "toppa"
     },
     "scale": 1.35
   },
@@ -1198,7 +1218,8 @@
       "build": "Slim",
       "outfit": "SaiyanArmor",
       "outfitTint": 6,
-      "female": true
+      "female": true,
+      "physique": "kafla"
     }
   },
   "broly": {
@@ -1211,7 +1232,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "SaiyanSuit",
-      "outfitTint": 6
+      "outfitTint": 6,
+      "physique": "brolo"
     },
     "scale": 1.35
   },
@@ -1225,7 +1247,8 @@
       "hairColor": 0,
       "build": "Tall",
       "outfit": "SaiyanArmor",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "paragos"
     }
   },
   "cheelai": {
@@ -1267,7 +1290,8 @@
       "hairColor": 0,
       "build": "Tall",
       "outfit": "PrideTrooper",
-      "outfitTint": 5
+      "outfitTint": 5,
+      "physique": "gama"
     }
   },
   "gamma2": {
@@ -1280,7 +1304,8 @@
       "hairColor": 0,
       "build": "Tall",
       "outfit": "PrideTrooper",
-      "outfitTint": 5
+      "outfitTint": 5,
+      "physique": "gama"
     }
   },
   "hedo": {
@@ -1348,7 +1373,8 @@
       "hairColor": 5,
       "build": "Tall",
       "outfit": "AngelRobe",
-      "outfitTint": 2
+      "outfitTint": 2,
+      "physique": "wiss"
     }
   },
   "moro": {
@@ -1361,7 +1387,8 @@
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "FrostArmor",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "morro"
     },
     "scale": 1.3
   },
@@ -1390,7 +1417,8 @@
       "hairColor": 2,
       "build": "Average",
       "outfit": "CapsuleCorp",
-      "outfitTint": 1
+      "outfitTint": 1,
+      "physique": "tronks"
     }
   },
   "monaito": {
@@ -1416,7 +1444,8 @@
       "hairColor": 0,
       "build": "Tall",
       "outfit": "AngelRobe",
-      "outfitTint": 3
+      "outfitTint": 3,
+      "physique": "hitto"
     }
   },
   "black_frieza": {

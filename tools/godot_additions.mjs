@@ -137,7 +137,11 @@ export function applyGodotAdditions(tables) {
   // Presentation rebuild 2026-11-04: named fighters get their own body shape (BodySculpt.NAMED, by look.physique)
   const physiques = {goku: 'gokan', vegeta: 'vegara', majin_vegeta: 'vegara', piccolo: 'piccor', nappa: 'nappo', krillin: 'krilan',
     roshi: 'roshu', frieza: 'frigor', golden_frieza: 'frigor', mecha_frieza: 'frigor', recoome: 'recume', android_16: 'cyborg16',
-    king_cold: 'kold', fat_buu: 'boo_fat', kid_buu: 'boo_kid'};
+    king_cold: 'kold', fat_buu: 'boo_fat', kid_buu: 'boo_kid', goku_black: 'gokan', broly: 'brolo', jiren: 'jiran', toppo: 'toppa',
+    dodoria: 'dodorra', zarbon: 'zarvon', gohan: 'gohin', trunks: 'tronks', android_17: 'cyborg_slim', android_18: 'cyborg_slim',
+    cell: 'cel', tien: 'tenzo', yamcha: 'yamcho', dabura: 'dabora', hit: 'hitto', beerus: 'beeros', whis: 'wiss', mr_satan: 'sadan',
+    kefla: 'kafla', paragus: 'paragos', gamma1: 'gama', gamma2: 'gama', moro: 'morro', black_frieza: 'frigor', super_buu: 'boo_kid',
+    raditz: 'gokan', cabba: 'tronks'};
   for (const [id, physique] of Object.entries(physiques)) if (characters[id]?.look) characters[id].look.physique = physique;
   return {
     ...tables, zones, npcs, characters, zone_order: zoneOrder, planets: world.planets,

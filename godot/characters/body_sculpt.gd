@@ -203,7 +203,41 @@ const NAMED := {
 		"upper_arm": 1.18, "forearm": 1.16, "hands": 1.1},
 	"recume": {"head_w": 0.94, "neck": 1.3, "shoulders": 1.18, "chest": 1.2, "back": 1.14, "belly": 0.02, "waist": 1.1, "upper_arm": 1.24,
 		"forearm": 1.18, "thigh": 1.16, "calf": 1.1},
+	"brolo": {"head_w": 1.04, "jaw": 1.12, "neck": 1.35, "shoulders": 1.2, "chest": 1.22, "back": 1.16, "waist": 1.02, "upper_arm": 1.3,
+		"forearm": 1.22, "thigh": 1.2, "calf": 1.12, "hands": 1.1},
+	"jiran": {"head_w": 1.08, "cranium": 0.94, "neck": 1.3, "shoulders": 1.14, "chest": 1.12, "back": 1.12, "waist": 1.0, "upper_arm": 1.16,
+		"forearm": 1.1, "thigh": 1.08},
+	"toppa": {"head_w": 1.06, "jaw": 1.1, "neck": 1.2, "shoulders": 1.1, "chest": 1.14, "belly": 0.07, "waist": 1.28, "hips": 1.12,
+		"upper_arm": 1.12, "forearm": 1.08, "thigh": 1.1},
+	"dodorra": {"head_w": 1.16, "head_h": 0.9, "cranium": 0.84, "neck": 1.3, "chest": 1.1, "belly": 0.12, "waist": 1.55, "hips": 1.3,
+		"upper_arm": 1.08, "forearm": 1.04, "thigh": 1.14, "calf": 1.0, "soft": 0.012},
+	"zarvon": {"jaw": 0.92, "neck": 0.94, "shoulders": 1.02, "waist": 0.88, "hips": 0.94, "upper_arm": 0.96},
+	"gohin": {"jaw": 0.96, "shoulders": 1.04, "chest": 1.04, "waist": 0.92, "upper_arm": 1.04},
+	"tronks": {"jaw": 0.95, "shoulders": 1.02, "waist": 0.9, "upper_arm": 0.98, "thigh": 0.96},
+	"cyborg_slim": {"head_w": 0.96, "jaw": 0.92, "neck": 0.92, "shoulders": 0.96, "waist": 0.88, "upper_arm": 0.92, "forearm": 0.94},
+	"cel": {"head_h": 1.04, "cranium": 1.18, "jaw": 0.86, "neck": 0.96, "shoulders": 1.12, "chest": 1.06, "waist": 0.82, "upper_arm": 1.0,
+		"forearm": 0.96, "thigh": 1.02, "calf": 0.92, "feet": 1.1},
+	"tenzo": {"head_h": 1.04, "cranium": 1.08, "neck": 1.14, "shoulders": 1.1, "chest": 1.1, "waist": 0.94, "upper_arm": 1.12},
+	"yamcho": {"jaw": 1.02, "shoulders": 1.04, "waist": 0.94, "upper_arm": 1.04},
+	"dabora": {"head_w": 1.04, "jaw": 1.1, "neck": 1.24, "shoulders": 1.12, "chest": 1.14, "waist": 1.0, "upper_arm": 1.14, "forearm": 1.08},
+	"hitto": {"head_w": 0.94, "head_h": 1.06, "jaw": 0.84, "neck": 0.86, "shoulders": 1.0, "chest": 0.94, "waist": 0.82, "upper_arm": 0.86,
+		"forearm": 0.88, "thigh": 0.9, "calf": 0.88},
+	"beeros": {"head_w": 1.08, "cranium": 1.06, "jaw": 0.82, "neck": 0.78, "shoulders": 0.86, "chest": 0.86, "waist": 0.8, "hips": 0.92,
+		"upper_arm": 0.78, "forearm": 0.8, "thigh": 0.84, "calf": 0.8, "hands": 0.94},
+	"wiss": {"head_w": 0.96, "jaw": 0.86, "neck": 0.9, "shoulders": 0.92, "waist": 0.86, "upper_arm": 0.86, "forearm": 0.88},
+	"sadan": {"head_w": 1.04, "jaw": 1.1, "chin": 0.006, "neck": 1.16, "shoulders": 1.08, "chest": 1.16, "belly": 0.015, "waist": 1.04,
+		"upper_arm": 1.1},
+	"kafla": {"waist": 0.86, "hips": 1.06, "shoulders": 0.96},
+	"paragos": {"jaw": 1.06, "chin": 0.005, "neck": 1.04, "shoulders": 1.04, "chest": 1.04, "waist": 0.98},
+	"gama": {"head_w": 0.96, "jaw": 1.04, "chin": 0.01, "neck": 1.06, "shoulders": 1.12, "chest": 1.08, "waist": 0.86, "upper_arm": 1.06,
+		"thigh": 1.04},
+	"morro": {"head_w": 1.06, "head_h": 0.94, "neck": 0.9, "shoulders": 0.92, "chest": 0.96, "belly": 0.02, "waist": 1.06,
+		"upper_arm": 0.9, "forearm": 0.92, "thigh": 0.94},
 }
+
+## Every female character (look.female): narrower shoulders, neck and arms, a defined waist and wider hips.
+const FEMALE := {"head_w": 0.96, "jaw": 0.9, "chin": -0.004, "neck": 0.86, "shoulders": 0.9, "chest": 0.98, "back": 0.94, "waist": 0.86,
+	"hips": 1.1, "upper_arm": 0.86, "forearm": 0.88, "hands": 0.9, "thigh": 1.02, "calf": 0.94, "feet": 0.92}
 
 const OFFSETS := ["chin", "brow", "belly", "soft"]
 
@@ -219,6 +253,8 @@ static func combine(a: Dictionary, b: Dictionary) -> Dictionary:
 ## The full profile for a look: race anatomy, build shape, named physique, then any explicit look.sculpt overrides.
 static func profile_for(look: Dictionary) -> Dictionary:
 	var p := combine(RACES.get(str(look.get("race", "Human")), {}), BUILDS.get(str(look.get("build", "Average")), {}))
+	if look.get("female", false):
+		p = combine(p, FEMALE)
 	p = combine(p, NAMED.get(str(look.get("physique", "")), {}))
 	var extra: Variant = look.get("sculpt")
 	if extra is Dictionary:
