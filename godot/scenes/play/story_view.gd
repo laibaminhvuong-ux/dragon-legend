@@ -76,7 +76,10 @@ func _sync_npcs() -> void:
 			if n.get("dragon") != null:
 				model = WishDragon.create(str(n.dragon))
 			else:
-				model = Fighter.create(n.look if n.get("look") is Dictionary else {"race": "Human"})
+				var nlook: Dictionary = (n.look as Dictionary).duplicate() if n.get("look") is Dictionary else {"race": "Human"}
+				if not nlook.has("faceSeed"):
+					nlook.faceSeed = str(n.get("id", n.get("name", "")))
+				model = Fighter.create(nlook)
 			model.scale = Vector3.ONE * sc
 			model.position = Vector3(float(n.x), float(n.y), float(n.z))
 			model.rotation.y = float(n.get("rot", 0.0))

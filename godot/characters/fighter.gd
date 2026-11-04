@@ -43,6 +43,7 @@ var _attachments: Dictionary = {}   # bone -> BoneAttachment3D
 var _skin_pieces: Array = []        # [MeshInstance3D, shade]
 var _form_nodes: Array[Node] = []
 var sculpt: Dictionary = {}       # BodySculpt profile for this look
+var face_params: Dictionary = {}  # FaceShape: this character's own face
 var _head_xform := Transform3D.IDENTITY
 
 static func create(l: Dictionary) -> Fighter:
@@ -59,7 +60,8 @@ func _build() -> void:
 	anim_player = body.find_children("*", "AnimationPlayer", true, false)[0]
 	body_mesh = body.find_children("*", "MeshInstance3D", true, false)[0]
 	body_mesh.mesh = BodyRegions.dressed_mesh(body_mesh)
-	sculpt = BodySculpt.profile_for(look)
+	face_params = FaceShape.params(FaceShape.seed_for(look))
+	sculpt = BodySculpt.combine(BodySculpt.profile_for(look), face_params.sculpt)
 	body_mesh.mesh = BodySculpt.sculpted(body_mesh.mesh, sculpt)
 	_head_xform = BodySculpt.head_xform(sculpt)
 	material = ShaderMaterial.new()
@@ -77,6 +79,9 @@ func _build() -> void:
 	material.set_shader_parameter("colors", BodyRegions.colours(parts))
 	material.set_shader_parameter("plate_gloss", 1.0 if parts.has("armor") else 0.0)
 	material.set_shader_parameter("face", int(FACES.get(str(look.get("face", "Calm")), 0)))
+	material.set_shader_parameter("face_eyes", face_params.eyes)
+	material.set_shader_parameter("face_brows", face_params.brows)
+	material.set_shader_parameter("face_mouth", face_params.mouth)
 	material.set_shader_parameter("brow_color", hair_color.darkened(0.3) if race.get("hairStyles", []).size() > 1 else skin.darkened(0.45))
 	_set_skin(skin, 0.0)
 	_set_eyes(int(BASE_EYES.get(race.get("id", ""), 0x2a1d14)))

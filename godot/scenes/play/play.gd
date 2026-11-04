@@ -83,6 +83,8 @@ func _build_player() -> void:
 		player.dispose()
 	var look: Dictionary = (game.slot.appearance as Dictionary).duplicate()
 	look["race"] = game.slot.race
+	if not look.has("faceSeed"):
+		look["faceSeed"] = "player:" + str(game.slot.get("name", ""))   # your own face (the creator can reroll it)
 	player = Fighter.create(look)
 	if str(look.get("race", "")) in ["Saiyan", "HalfSaiyan"]:
 		GreatApe.warm()   # Great Ape bodies ready before the first transformation

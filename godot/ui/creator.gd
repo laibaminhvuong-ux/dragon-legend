@@ -92,6 +92,11 @@ func _draw() -> void:
 	_choices("Build", Data.appearance.BUILDS.map(func(x: Dictionary) -> Array: return [x.id, x.name]), look.get("build"), func(v: Variant) -> void: look["build"] = v; _draw())
 	_swatches("Skin", race.skins, int(look.get("skin", 0)), func(i: int) -> void: look["skin"] = i; _draw())
 	_choices("Face", Data.appearance.FACES.map(func(x: Dictionary) -> Array: return [x.id, x.name]), look.get("face"), func(v: Variant) -> void: look["face"] = v; _draw())
+	# your own face shape (eyes, brows, mouth, nose, jaw): reroll until you like it
+	var face_row := HBoxContainer.new()
+	face_row.add_child(UiKit.label("Face shape", "Muted"))
+	face_row.add_child(UiKit.button("New face", func() -> void: look["faceSeed"] = "face:%d" % randi(); _draw()))
+	_form.add_child(face_row)
 	if (race.hairStyles as Array).size() > 1 or race.hairStyles[0] != "None":
 		_choices("Hair", (race.hairStyles as Array).map(func(id: String) -> Array: return [id, id]), look.get("hair"), func(v: Variant) -> void: look["hair"] = v; _draw())
 		_swatches("Hair colour", Data.appearance.HAIR_COLORS, int(look.get("hairColor", 0)), func(i: int) -> void: look["hairColor"] = i; _draw())
@@ -133,7 +138,7 @@ func _randomize() -> void:
 	var race: Dictionary = Data.races[order.pick_random()]
 	var builds: Array = Data.appearance.BUILDS
 	look = _fix({"race": race.id, "build": builds.pick_random().id, "skin": randi() % (race.skins as Array).size(),
-		"face": (Data.appearance.FACES as Array).pick_random().id, "hair": (race.hairStyles as Array).pick_random(),
+		"face": (Data.appearance.FACES as Array).pick_random().id, "faceSeed": "face:%d" % randi(), "hair": (race.hairStyles as Array).pick_random(),
 		"hairColor": randi() % (Data.appearance.HAIR_COLORS as Array).size(), "outfit": _starters(race.id).pick_random(),
 		"outfitTint": randi() % (Data.appearance.TINTS as Array).size(), "kiColor": look.get("kiColor", 0)})
 	_draw()

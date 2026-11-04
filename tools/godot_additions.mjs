@@ -144,6 +144,8 @@ export function applyGodotAdditions(tables) {
     kefla: 'kafla', paragus: 'paragos', gamma1: 'gama', gamma2: 'gama', moro: 'morro', black_frieza: 'frigor', super_buu: 'boo_kid',
     raditz: 'gokan', cabba: 'tronks'};
   for (const [id, physique] of Object.entries(physiques)) if (characters[id]?.look) characters[id].look.physique = physique;
+  // Every character's own face (FaceShape): seeded by the character id, so identical looks still differ
+  for (const [id, c] of Object.entries(characters)) if (c.look && c.look.faceSeed == null) c.look.faceSeed = id;
   const fighting_styles = fightingStyles(tables.combat);
   for (const [id, character] of Object.entries(characters)) character.style = fighting_styles.npc_assignments[id] ?? 'turtle';
   return {

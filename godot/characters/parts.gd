@@ -118,12 +118,15 @@ static func face(f: Fighter, race_id: String, skin: Color) -> void:
 	var key := "face_" + race_id
 	match race_id:
 		"Saiyan", "HalfSaiyan", "Human":
-			f.add_skin_piece(f.add_piece("DEF-head", Transform3D.IDENTITY, _mesh(key, func(g: Geo) -> void:
-				# nose: a bridge running down from between the eyes to a rounded tip with nostril wings
+			var ns := float(f.face_params.get("nose", 1.0))
+			var nose_at := Vector3(0, 1.665, 0.118)
+			f.add_skin_piece(f.add_piece("DEF-head", Transform3D(Basis.from_scale(Vector3(ns, ns, ns)), nose_at - nose_at * ns), _mesh(key + "_nose", func(g: Geo) -> void:
 				g.tube(PackedVector3Array([Vector3(0, 1.694, 0.113), Vector3(0, 1.676, 0.122), Vector3(0, 1.659, 0.131)]), 0.0055, 0.0085, 10, 8)
 				g.sphere(Transform3D(Basis.from_scale(Vector3(1.15, 0.85, 1.0)), Vector3(0, 1.654, 0.128)), 0.0105, 8, 10)
 				for s in [1, -1]:
-					g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 0.7, 0.8)), Vector3(s * 0.0105, 1.651, 0.121)), 0.0075, 6, 8)
+					g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 0.7, 0.8)), Vector3(s * 0.0105, 1.651, 0.121)), 0.0075, 6, 8)), flesh), 1.0)
+			f.add_skin_piece(f.add_piece("DEF-head", Transform3D.IDENTITY, _mesh(key, func(g: Geo) -> void:
+				for s in [1, -1]:
 					# ears: a flattened shell standing a little off the side of the head
 					g.sphere(Transform3D(Basis.from_euler(Vector3(0, s * 0.35, 0)) * Basis.from_scale(Vector3(0.32, 1.0, 0.68)), Vector3(s * 0.087, 1.684, -0.008)), 0.027, 8, 12)
 					pass), flesh), 1.0)

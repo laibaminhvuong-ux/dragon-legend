@@ -14,6 +14,10 @@ uniform vec4 eye_color : source_color = vec4(0.16, 0.11, 0.08, 1.0);
 uniform int face = 0;            // 0 calm, 1 fierce, 2 smirk, 3 determined, 4 cold
 uniform float brows = 1.0;
 uniform vec4 brow_color : source_color = vec4(0.08, 0.06, 0.05, 1.0);
+// per-character face proportions (FaceShape); the defaults are the original face
+uniform vec4 face_eyes = vec4(1.0, 0.0, 0.0, 0.0);    // size, extra gap, outer-corner tilt, height offset
+uniform vec4 face_brows = vec4(1.0, 1.0, 0.0, 0.0);   // thickness, length, arch, height offset
+uniform vec4 face_mouth = vec4(1.0, 0.0, 1.0, 0.0);   // width, height offset, iris size, mark (1 scar, 2 freckles)
 uniform vec4 rim_color : source_color = vec4(1.0, 0.95, 0.85, 1.0);
 
 varying vec3 rest;
@@ -58,7 +62,9 @@ void fragment() {
 	// ---- face (front of the head)
 	float front = above(p.z, 0.05) * above(p.y, 1.58) * (1.0 - is_arm);
 	if (front > 0.0) {
-		vec2 q = vec2(ax - 0.039, p.y - 1.703);       // per-eye frame, +x outwards
+		vec2 q = vec2(ax - 0.039 - face_eyes.y, p.y - 1.703 - face_eyes.w);   // per-eye frame, +x outwards
+		q.y -= q.x * face_eyes.z;                      // tilted eyes (outer corner up or down)
+		q /= face_eyes.x;                              // bigger or smaller eyes
 		float lid = 0.02;                              // upper lid cut (lower = narrower eye)
 		float slope = 0.0;
 		if (face == 1) { lid = 0.0068; slope = 0.3; }
@@ -69,8 +75,8 @@ void fragment() {
 		float eye_sdf = max(ellipse(q, vec2(0.021, 0.0128)), q.y - top_line);
 		float eye = inside(eye_sdf) * front;
 		vec2 iq = q - vec2(-0.002, -0.0015);
-		float iris = inside(length(iq) - 0.0105) * eye;
-		float pupil = inside(length(iq) - 0.0048) * eye;
+		float iris = inside(length(iq) - 0.0105 * face_mouth.z) * eye;
+		float pupil = inside(length(iq) - 0.0048 * face_mouth.z) * eye;
 		float glint = inside(length(iq - vec2(0.004, 0.0045)) - 0.0026) * eye;
 		float lash = (1.0 - inside(eye_sdf + 0.0032)) * inside(eye_sdf - 0.0012) * above(q.y + 0.002, 0.0) * front;
 		vec3 iris_col = mix(eye_color.rgb * 0.55, eye_color.rgb * 1.15, smoothstep(0.0105, 0.002, length(iq - vec2(0.0, -0.004))));
@@ -80,13 +86,16 @@ void fragment() {
 		c = mix(c, vec3(1.0), glint);
 		c = mix(c, vec3(0.05, 0.04, 0.04), lash);
 		// brows: inner end lower when fierce/determined/cold, a soft arch when calm
-		float by = 1.73 + (face == 0 ? -0.002 : 0.0);
+		float by = 1.73 + (face == 0 ? -0.002 : 0.0) + face_eyes.w + face_brows.w;
 		float tilt = face == 1 ? 0.36 : (face == 3 ? 0.24 : (face == 4 ? 0.1 : (face == 2 ? 0.12 : -0.08)));
-		vec2 bq = vec2(ax, p.y);
-		float brow = inside(segment(bq, vec2(0.02, by - tilt * 0.02), vec2(0.064, by + tilt * 0.024), 0.0034)) * front * brows;
+		vec2 bq = vec2(ax - face_eyes.y, p.y);
+		float bx = clamp((bq.x - 0.042) / 0.024, -1.0, 1.0);
+		bq.y -= face_brows.z * 0.004 * (1.0 - bx * bx);   // arched or flat brows
+		float brow_end = 0.02 + 0.044 * face_brows.y;
+		float brow = inside(segment(bq, vec2(0.02, by - tilt * 0.02), vec2(brow_end, by + tilt * 0.024 * face_brows.y), 0.0034 * face_brows.x)) * front * brows;
 		c = mix(c, brow_color.rgb, brow);
 		// mouth
-		vec2 mq = vec2(p.x, p.y - 1.628);
+		vec2 mq = vec2(p.x / face_mouth.x, p.y - 1.628 - face_mouth.y);
 		float mouth_sdf;
 		if (face == 2) mouth_sdf = segment(mq, vec2(-0.016, -0.001), vec2(0.018, 0.005), 0.0018);
 		else if (face == 1 || face == 3) mouth_sdf = segment(mq, vec2(-0.016, 0.0), vec2(0.016, 0.0), 0.002) + mq.x * mq.x * 3.0;
@@ -94,6 +103,16 @@ void fragment() {
 		else mouth_sdf = segment(mq, vec2(-0.015, 0.001), vec2(0.015, 0.001), 0.0017) - (0.0003 - mq.x * mq.x * 0.0);
 		if (face == 0) mouth_sdf = abs(length(mq - vec2(0.0, 0.03)) - 0.031) - 0.0017 + step(0.016, abs(mq.x)) * 1.0;
 		c = mix(c, vec3(0.32, 0.12, 0.1), inside(mouth_sdf) * front);
+		// a mark: a scar across one cheek, or freckles
+		if (face_mouth.w > 0.5 && face_mouth.w < 1.5) {
+			float scar = inside(segment(vec2(p.x, p.y), vec2(-0.062, 1.708), vec2(-0.032, 1.664), 0.0016));
+			c = mix(c, skin_color.rgb * vec3(0.72, 0.52, 0.5), scar * front);
+		} else if (face_mouth.w > 1.5) {
+			vec2 fq = vec2(ax, p.y) * 260.0;
+			float dots = step(0.82, fract(sin(dot(floor(fq), vec2(12.9898, 78.233))) * 43758.5453))
+				* step(length(fract(fq) - 0.5), 0.3) * inside(ellipse(vec2(ax - 0.045, p.y - 1.672), vec2(0.022, 0.011)));
+			c = mix(c, skin_color.rgb * vec3(0.72, 0.55, 0.42), dots * front);
+		}
 		// a hint of nose shadow
 		c *= 1.0 - 0.08 * inside(ellipse(vec2(p.x, p.y - 1.668), vec2(0.006, 0.011))) * front;
 	}

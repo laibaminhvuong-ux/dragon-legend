@@ -378,8 +378,31 @@ func _apeflow(out: String) -> void:
 		t += dt
 	print("saved %d ape frames" % frame)
 
+## Twelve fighters with the SAME look and different face seeds, close up (the faces must all differ).
+func _faces2(out: String) -> void:
+	stage = Node3D.new()
+	vp.add_child(stage)
+	env.environment.background_color = Color(0.3, 0.33, 0.4)
+	for i in 12:
+		var l := _look(["Human", "Saiyan", "Namekian"][i / 6 if i < 12 else 0] if false else "Human")
+		l.hair = "None" if i % 3 == 0 else "Short"
+		l.faceSeed = "trainee_%d" % i
+		var f := Fighter.create(l)
+		f.position = Vector3((i % 6 - 2.5) * 0.36, -(i / 6) * 0.5, (i / 6) * 3.0)
+		stage.add_child(f)
+		for k in 10:
+			f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true})
+	cam.size = 0.95
+	vp.size = Vector2i(2600, roundi(2600 * 0.95 / (6 * 0.36 + 0.06)))
+	cam.position = Vector3(0, 1.72 - 0.24, 8)
+	await _shot(out + "_faces2.png")
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--faces2" in OS.get_cmdline_user_args():
+		await _faces2(out)
+		quit()
+		return
 	if "--apeflow" in OS.get_cmdline_user_args():
 		await _apeflow(out)
 		quit()

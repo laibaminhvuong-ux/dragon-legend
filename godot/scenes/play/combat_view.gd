@@ -167,7 +167,10 @@ func update_view(dt: float) -> void:
 		seen[id] = true
 		var v: Dictionary = views.get(id, {})
 		if v.is_empty():
-			var f := Fighter.create(e.look if e.get("look") is Dictionary else {"race": "Human"})
+			var elook: Dictionary = (e.look as Dictionary).duplicate() if e.get("look") is Dictionary else {"race": "Human"}
+			if not elook.has("faceSeed"):
+				elook.faceSeed = str(e.id)   # every enemy its own face, even identical trainees
+			var f := Fighter.create(elook)
 			f.scale = Vector3.ONE * float(e.get("scale", 1.0))
 			add_child(f)
 			var tag := _label("%s · Lv. %d" % [e.name, int(e.level)], Color("#ffd17c") if e.get("boss", false) else Color("#f3d9d9"))

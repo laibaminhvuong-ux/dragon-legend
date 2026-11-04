@@ -45,7 +45,7 @@
     "web/src/game/zones.js": "c38525cfada5f1496007b9e0555d13926ef1ec944abbc238832901109696e0e4",
     "tools/fighting_styles.mjs": "3fe9a62f1f9aa477f68fffd3688a500f9b5f5f0caf96681904030b3c8fd07907",
     "tools/skill_presentation.mjs": "447b6907ff183affbc451f0cfc6ea987c0e928256f7a3c5f988cc01a5636b322",
-    "tools/godot_additions.mjs": "4527a4ca8aaa08ae977fb38568aad27d4571b5bf498cfdc244a0fd541c92e5ff",
+    "tools/godot_additions.mjs": "9a3554c94d88f4debcfa3a34e5fa67be1109fb76745f54d78bf88503b5e066e6",
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
   "files": {
@@ -68,8 +68,8 @@
       "entries": 168
     },
     "characters.json": {
-      "sha256": "2bbcb01c75d744da17e529e44230a4ab3164e286bec9d822fd43786ef463c817",
-      "bytes": 32176,
+      "sha256": "a5b70d3869b99ea6a003bf8e83faedc177521d2d7be36f554e09371cc34dbdf0",
+      "bytes": 35284,
       "kind": "object",
       "entries": 108
     },
