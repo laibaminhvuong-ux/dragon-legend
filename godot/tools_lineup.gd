@@ -13,6 +13,10 @@ const NAMED := [
 	["roshi", "roshu"], ["frieza", "frigor"], ["recoome", "recume"], ["android_16", "cyborg16"], ["king_cold", "kold"],
 	["fat_buu", "boo_fat"], ["kid_buu", "boo_kid"],
 ]
+const NAMED2 := [
+	["broly", "brolo"], ["jiren", "jiran"], ["toppo", "toppa"], ["dodoria", "dodorra"], ["cell", "cel"], ["hit", "hitto"],
+	["beerus", "beeros"], ["mr_satan", "sadan"], ["bulma", ""], ["android_18", "cyborg_slim"], ["videl", ""], ["gamma1", "gama"],
+]
 
 var vp: SubViewport
 var stage: Node3D
@@ -223,7 +227,7 @@ func _run(out: String) -> void:
 	_paint(neutral, Color(0.86, 0.87, 0.9)); await _shot(out + "_races_side.png")
 	var chars: Dictionary = root.get_node("Data").characters if root.has_node("Data") else {}
 	var named: Array = []
-	for pair: Array in NAMED:
+	for pair: Array in (NAMED2 if "--more" in OS.get_cmdline_user_args() else NAMED):
 		var c: Dictionary = chars.get(pair[0], {})
 		var l: Dictionary = c.get("look", _look("Human")).duplicate()
 		l["physique"] = pair[1]
