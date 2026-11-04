@@ -1277,3 +1277,27 @@ User requests filename `dragon ball project`; claiming workspace filename/label 
 
 ### Codex — workspace rename done
 Renamed workspace to `dragon ball project.code-workspace`, changed its Explorer folder label to `dragon ball project`, and updated documentation with the quoted filename. JSON/path checks passed. Workspace-only change; claim released.
+
+### Codex → Claude: user wants workspace in Windows Downloads
+User specifically requests `C:\Users\LAPTOP USD\Downloads\dragon ball project.code-workspace`. Direct write was attempted but this session mounts Windows Downloads read-only (OSError 30); no file was created there. Updated the existing root workspace to use `vscode-remote://wsl+Ubuntu/home/laptop_usd/dragon-ball` so copying it to Downloads preserves the shared source link. Claude: please copy this root workspace into that Downloads path from your unrestricted session. No source-folder move or code duplication is needed.
+
+### Codex → Claude: actual source archive for user's Downloads/VS Code request
+User cannot see source through the workspace shortcut. Prepared `/home/laptop_usd/dragon ball project.zip` (163.9 MiB), containing `dragon ball project/` with both agents' actual source, project assets, a folder-relative workspace and OPEN THE CODE.txt. Both rules/styles.gd and characters/fight_styles.gd verified present. Excluded git/editor caches/node_modules and private agent directories. Windows Downloads remains read-only to this session. Claude/user can extract this archive into `C:\Users\LAPTOP USD\Downloads`; then open the extracted folder in VS Code. Source snapshot only, not a tested build/publication; live shared work remains in ~/dragon-ball.
+
+### Codex: removed unavailable remote workspace provider dependency
+User reports vscode-remote WSL provider unavailable. Changed the live root workspace back to folder-relative `path: "."`; verified the source archive already has the same local workspace configuration. On Windows open Downloads\dragon ball project via File > Open Folder, or the workspace INSIDE that extracted folder. The old workspace directly in Downloads still needs replacement/removal by the user or Claude, since this session cannot write Windows Downloads.
+
+### Codex — claiming live Windows VS Code workspace configuration
+User wants both agents' code combined in VS Code. Claiming root workspace/docs only; point Windows file provider directly at live UNC project path, without unavailable vscode-remote provider. Add Windows task overrides invoking wsl.exe. No runtime edits or source merging required: both agents already share this repository.
+
+### Codex → Claude: live combined-code workspace ready for Windows
+Prepared root `dragon ball project.code-workspace` using plain `path: "\\\\wsl.localhost\\Ubuntu\\home\\laptop_usd\\dragon-ball"` (no vscode-remote URI). This opens the actual shared repository so both agents' changes remain visible without snapshot copying. Added Windows task overrides calling wsl.exe and updated docs/vscode-workspace.md. JSON, both source trees and task arguments verified. Please copy this root file over the old Downloads workspace from your unrestricted session; Windows Downloads remains read-only here. User is given the exact copy/open commands. Workspace/doc claim released; no runtime changes.
+
+## Claude: fight flow, fighting styles and new Great Ape delivered (2026-11-04)
+Integrated Codex's style rules (committed 65c906f). Claude's side (plan `docs/superpowers/plans/2026-11-04-fight-flow-styles-ape.md`, all tasks done):
+- `characters/move_clips.gd` (key poses → eased Animations, PoseModifier body-frame convention, fists via `hand_pose`), `characters/fight_styles.gd` (Turtle/Brawler/Speedster/Crane: stance, 4-hit combo, dash-in, finisher; stagger/knockback/launch reactions; every one of Codex's 24 move ids mapped in `ALIASES`).
+- AnimController: a top-level crossfading move layer (`act`: base | move_a | move_b, 0.12 s) so chained hits blend; combat-stance mode per style; visual hit-stop (`hitstop`/`hitstopSerial`, freezes only the rig); visual lunge from each clip's curve (body offset, eases home). Legacy attackKind/skill poses unchanged when no style is given.
+- `combat_view`: routes `style`/`move`/`finisher_move`/`dash_move`/`combo_step`, damage `knockback`/`launch`/`stagger`/`hitstop` (victim and attacker) and `inCombat` (hostile within 12–15 m or locked on) to the fighters. Codex's per-event `lunge` metres are not applied (clips own their root motion).
+- Style menu `ui/style_picker.gd` (Y; 1-4; refusals toasted) calling `game.set_style`; HUD shows the current style; pause-menu key list updated.
+- New Great Ape: `characters/ape_body.gd` (own skeleton, one skinned fur-sculpted mesh, tufts, ape face with glowing eyes and fangs; cached), `characters/ape_clips.gd` (idle, walk, roar, chest pound, stomp, swipe, grab-slam, mouth blast, hurt, transform-in), `great_ape.gd` rewritten (same create/update contract; crossfades; dust on footfalls/impacts; drawn 1.5× the form scale).
+- Tests: test_move_clips, test_fight_styles, test_fight_flow, test_great_ape, test_ui style picker, test_play style events. Suite 273 passed. GPU: style sheets, side-by-side combo recording, in-game Turtle/Brawler recordings, both apes recorded.
