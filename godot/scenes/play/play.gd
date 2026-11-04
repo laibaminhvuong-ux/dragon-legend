@@ -84,6 +84,8 @@ func _build_player() -> void:
 	var look: Dictionary = (game.slot.appearance as Dictionary).duplicate()
 	look["race"] = game.slot.race
 	player = Fighter.create(look)
+	if str(look.get("race", "")) in ["Saiyan", "HalfSaiyan"]:
+		GreatApe.warm()   # Great Ape bodies ready before the first transformation
 	player.name = "Player"
 	add_child(player)
 	_look_key = _look_signature()

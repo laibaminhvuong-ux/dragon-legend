@@ -33,6 +33,11 @@ static func create(gold: bool) -> GreatApe:
 	g._build()
 	return g
 
+## Builds and caches both ape bodies (about 0.1 s) so the first transformation doesn't hitch; call while loading.
+static func warm() -> void:
+	for gold in [false, true]:
+		(ApeBody.build(gold).root as Node).free()
+
 func _build() -> void:
 	var b := ApeBody.build(golden)
 	rig = b.root

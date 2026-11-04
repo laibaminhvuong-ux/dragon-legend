@@ -22,6 +22,8 @@ const BONES := [
 	["tail4", "tail3", Vector3(0.35, 1.05, -0.86)], ["tail_end", "tail4", Vector3(0.34, 1.30, -0.78)],
 ]
 
+static var _cache: Dictionary = {}
+
 const FUR := Color(0.36, 0.21, 0.13)
 const GOLD := Color(0.78, 0.52, 0.12)
 const SKIN := Color(0.55, 0.38, 0.27)
@@ -53,7 +55,9 @@ static func build(golden: bool) -> Dictionary:
 	var bare := GOLD_SKIN if golden else SKIN
 	var mi := MeshInstance3D.new()
 	mi.name = "ApeBody"
-	mi.mesh = _mesh(sk, fur, bare, golden)
+	if not _cache.has(golden):   # generated once per form; transforming again is instant
+		_cache[golden] = _mesh(sk, fur, bare, golden)
+	mi.mesh = _cache[golden]
 	sk.add_child(mi)
 	mi.skeleton = NodePath("..")
 	mi.skin = sk.create_skin_from_rest_transforms()
