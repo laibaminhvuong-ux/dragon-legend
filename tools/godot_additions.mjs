@@ -214,6 +214,50 @@ export function applyGodotAdditions(tables) {
   // Female fighters (user request 2026-11-04): two new hair styles for the races with hair
   for (const id of ['Long', 'Bun']) if (!appearance.HAIR_STYLES.some(h => h.id === id)) appearance.HAIR_STYLES.push({id, name: id});
   for (const r of ['Saiyan', 'HalfSaiyan', 'Human']) for (const id of ['Ponytail', 'Long', 'Bun']) if (!races[r].hairStyles.includes(id)) races[r].hairStyles.push(id);
+  // Origins looks (Claude, 2026-11-05): each childhood character gets its own silhouette, colours and costume.
+  // tint: 0 orange 1 blue 2 purple 3 black 4 white 5 red 6 green; hairColor: 0 black 1 brown 2 lilac 3 blond 4 red 5 white
+  const origins = {
+    goku_kid: [{race: 'Saiyan', build: 'Short', hair: 'Spiky', outfit: 'TurtleGi', outfitTint: 1, costume: 'powerpole', physique: 'gokan'}, 0.62],
+    krillin_kid: [{race: 'Human', build: 'Short', hair: 'None', outfit: 'TurtleGi', outfitTint: 0, physique: 'krilan'}, 0.6],
+    oolong: [{race: 'Human', build: 'Short', hair: 'None', skinHex: 0xeaa2b4, outfit: 'TurtleGi', outfitTint: 6, sculpt: {belly: 0.05, head_w: 1.12, soft: 0.008}}, 0.68],
+    puar: [{race: 'Human', build: 'Slim', hair: 'None', skinHex: 0x8ac4ee, outfit: 'TurtleGi', outfitTint: 4, sculpt: {head_w: 1.15, head_h: 1.1}}, 0.5],
+    yamcha_young: [{race: 'Human', build: 'Average', hair: 'LongSpiky', outfit: 'CraneGi', outfitTint: 6, physique: 'yamcho'}, 0.95],
+    ox_king: [{race: 'Human', build: 'Muscular', hair: 'None', outfit: 'SaiyanArmor', outfitTint: 2, costume: 'oxhelmet', physique: 'sadan', sculpt: {belly: 0.06}}, 2.2],
+    pilaf: [{race: 'Human', build: 'Short', hair: 'None', skinHex: 0x7aaee0, outfit: 'CapsuleCorp', outfitTint: 3, sculpt: {head_w: 1.12, head_h: 1.06}}, 0.6],
+    shu: [{race: 'Human', build: 'Slim', hair: 'None', skinHex: 0x6a7090, outfit: 'CraneGi', outfitTint: 2}, 0.8],
+    jackie_chun: [{race: 'Human', build: 'Average', hair: 'Wild', hairColor: 5, outfit: 'CraneGi', outfitTint: 1, physique: 'yamcho'}, 0.92],
+    giran: [{race: 'FrostDemon', build: 'Muscular', skinHex: 0x5aa04a, outfit: 'SaiyanArmor', outfitTint: 6, physique: 'kold'}, 1.55],
+    nam: [{race: 'Human', build: 'Muscular', hair: 'None', outfit: 'CraneGi', outfitTint: 4, physique: 'tenzo'}, 1.0],
+    silver: [{race: 'Human', build: 'Muscular', hair: 'Short', hairColor: 5, outfit: 'SaiyanArmor', outfitTint: 3}, 1.0],
+    white: [{race: 'Human', build: 'Tall', hair: 'None', outfit: 'SaiyanArmor', outfitTint: 4, physique: 'zarvon'}, 1.0],
+    murasaki: [{race: 'Human', build: 'Short', hair: 'None', outfit: 'CraneGi', outfitTint: 2}, 0.85],
+    android_8: [{race: 'Human', build: 'Tall', hair: 'Short', skinHex: 0xd8b890, outfit: 'SaiyanArmor', outfitTint: 6, physique: 'cyborg16'}, 2.1],
+    blue: [{race: 'Human', build: 'Average', hair: 'Short', hairColor: 3, outfit: 'SaiyanArmor', outfitTint: 1, physique: 'tronks'}, 1.0],
+    tao: [{race: 'Human', build: 'Muscular', hair: 'None', outfit: 'CraneGi', outfitTint: 4, costume: 'braid', physique: 'tenzo'}, 1.0],
+    tao_cyborg: [{race: 'Human', build: 'Muscular', hair: 'None', skinHex: 0xc8ccd4, outfit: 'SaiyanArmor', outfitTint: 3, costume: 'braid', physique: 'cyborg16'}, 1.05],
+    red: [{race: 'Human', build: 'Short', hair: 'Short', hairColor: 4, outfit: 'SaiyanArmor', outfitTint: 5}, 0.7],
+    baba: [{race: 'Human', build: 'Short', hair: 'None', female: true, skinHex: 0xf4dcc8, outfit: 'CraneGi', outfitTint: 2, costume: 'witchhat'}, 0.7],
+    grandpa_gohan: [{race: 'Human', build: 'Short', hair: 'None', outfit: 'CraneGi', outfitTint: 6, physique: 'roshu'}, 0.85],
+    tien_young: [{race: 'Human', build: 'Muscular', hair: 'None', outfit: 'CraneGi', outfitTint: 6, physique: 'tenzo'}, 1.0],
+    chiaotzu: [{race: 'Human', build: 'Short', hair: 'None', skinHex: 0xf6eceb, outfit: 'CraneGi', outfitTint: 0, sculpt: {head_w: 1.12, head_h: 1.06}}, 0.55],
+    tambourine: [{race: 'Namekian', build: 'Slim', outfit: 'NamekRobe', outfitTint: 3, skinHex: 0x6aa860, physique: 'cel'}, 1.05],
+    cymbal: [{race: 'Namekian', build: 'Muscular', outfit: 'NamekRobe', outfitTint: 6, skinHex: 0x4a8a44}, 1.2],
+    drum: [{race: 'Namekian', build: 'Muscular', outfit: 'NamekRobe', outfitTint: 2, skinHex: 0x7a9a4a, physique: 'brolo'}, 1.5],
+    king_piccolo: [{race: 'Namekian', build: 'Tall', outfit: 'NamekRobe', outfitTint: 3, physique: 'piccor', sculpt: {neck: 0.9, shoulders: 0.94}}, 1.45],
+    korin: [{race: 'Human', build: 'Slim', hair: 'None', skinHex: 0xf2ece0, outfit: 'CraneGi', outfitTint: 4, sculpt: {head_w: 1.1}}, 0.6],
+    yajirobe: [{race: 'Human', build: 'Muscular', hair: 'Wild', outfit: 'CraneGi', outfitTint: 1, sculpt: {belly: 0.07, waist: 1.25, hips: 1.15}}, 0.9],
+    piccolo_jr: [{race: 'Namekian', build: 'Tall', outfit: 'NamekRobe', outfitTint: 2, physique: 'piccor'}, 1.0],
+    pilav_robot: [{race: 'Human', build: 'Muscular', hair: 'None', skinHex: 0x8a96a8, outfit: 'SaiyanArmor', outfitTint: 3, physique: 'cyborg16'}, 1.9],
+    baaba_fangs: [{race: 'Human', build: 'Slim', hair: 'Swept', hairColor: 3, skinHex: 0xb8c0d0, outfit: 'CraneGi', outfitTint: 3}, 1.0],
+    baaba_invisible: [{race: 'Human', build: 'Average', hair: 'None', skinHex: 0xe8f0f8, outfit: 'TurtleGi', outfitTint: 4}, 1.0],
+    baaba_mummy: [{race: 'Human', build: 'Muscular', hair: 'None', skinHex: 0xe4dcc4, outfit: 'TurtleGi', outfitTint: 4, physique: 'recume'}, 1.4],
+    baaba_devil: [{race: 'Majin', build: 'Average', outfit: 'FrostArmor', outfitTint: 5, skinHex: 0x5a8ad0}, 1.05],
+  };
+  for (const [id, [look, scale]] of Object.entries(origins)) {
+    if (!characters[id]) continue;
+    characters[id].look = {...characters[id].look, ...look};
+    characters[id].scale = scale;
+  }
   // Every character's own face (FaceShape): seeded by the character id, so identical looks still differ
   for (const [id, c] of Object.entries(characters)) if (c.look && c.look.faceSeed == null) c.look.faceSeed = id;
   const fighting_styles = fightingStyles(tables.combat);

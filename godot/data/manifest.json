@@ -46,7 +46,7 @@
     "tools/fighting_styles.mjs": "3fe9a62f1f9aa477f68fffd3688a500f9b5f5f0caf96681904030b3c8fd07907",
     "tools/skill_presentation.mjs": "447b6907ff183affbc451f0cfc6ea987c0e928256f7a3c5f988cc01a5636b322",
     "tools/origins.mjs": "53193315419770fe6a6308fe9183180f3acdf2437facc73f7e7fff97554faeb4",
-    "tools/godot_additions.mjs": "4692783583f84cc57f7e10ca703ca054da9943aee17cba91296d1326914da930",
+    "tools/godot_additions.mjs": "d5e006d9f2b331356c7f755ca54ca01858b5313215fc298fdb6df50fe1d2acf1",
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
   "files": {
@@ -69,8 +69,8 @@
       "entries": 208
     },
     "characters.json": {
-      "sha256": "dfd7e0b9c1484fe57a5531ba46d7bb2c6c65aa9f8abe2edd7bb3222f98f44068",
-      "bytes": 47390,
+      "sha256": "84d279f8bc7e6d3c785bb8449d9a60b36277c8834b081fc2c52847aba8b39364",
+      "bytes": 49411,
       "kind": "object",
       "entries": 144
     },

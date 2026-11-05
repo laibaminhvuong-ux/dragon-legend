@@ -423,8 +423,29 @@ func _genders(out: String) -> void:
 	cam.position = Vector3(0, cam.size * 0.5 - 0.2, 8)
 	await _shot(out + "_genders.png")
 
+## The childhood (Origins) cast in their real looks, two rows.
+func _origins(out: String) -> void:
+	var chars: Dictionary = root.get_node("Data").characters
+	var ids := ["goku_kid", "krillin_kid", "bulma_young", "oolong", "puar", "yamcha_young", "ox_king", "pilaf", "shu", "jackie_chun", "giran", "nam",
+		"tao", "android_8", "blue", "red", "baba", "chiaotzu", "tien_young", "korin", "yajirobe", "king_piccolo", "drum", "piccolo_jr"]
+	for half in 2:
+		var row: Array = []
+		for id: String in ids.slice(half * 12, half * 12 + 12):
+			var c: Dictionary = chars.get(id, {})
+			var l: Dictionary = (c.get("look", {}) as Dictionary).duplicate()
+			l.faceSeed = id
+			row.append([str(c.get("name", id)), l, minf(float(c.get("scale", 1.0)) if c.get("scale") != null else 1.0, 2.2)])
+		_row(row, 1.0)
+		await _settle()
+		_paint(null, Color(0.3, 0.33, 0.4))
+		await _shot("%s_origins%d.png" % [out, half + 1])
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--origins" in OS.get_cmdline_user_args():
+		await _origins(out)
+		quit()
+		return
 	if "--genders" in OS.get_cmdline_user_args():
 		await _genders(out)
 		quit()
