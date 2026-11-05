@@ -440,8 +440,27 @@ func _origins(out: String) -> void:
 		_paint(null, Color(0.3, 0.33, 0.4))
 		await _shot("%s_origins%d.png" % [out, half + 1])
 
+## Adults beside their younger versions (child / teen models), real colours.
+func _ages(out: String) -> void:
+	var chars: Dictionary = root.get_node("Data").characters
+	var ids := ["goku", "goku_kid", "krillin", "krillin_kid", "bulma", "bulma_young", "yamcha", "yamcha_young", "tien", "tien_young", "chiaotzu"]
+	var row: Array = []
+	for id: String in ids:
+		var c: Dictionary = chars.get(id, {})
+		var l: Dictionary = (c.get("look", {}) as Dictionary).duplicate()
+		l.faceSeed = id
+		row.append([str(c.get("name", id)), l, float(c.get("scale", 1.0)) if c.get("scale") != null else 1.0])
+	_row(row, 1.0)
+	await _settle()
+	_paint(null, Color(0.3, 0.33, 0.4))
+	await _shot(out + "_ages.png")
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--ages" in OS.get_cmdline_user_args():
+		await _ages(out)
+		quit()
+		return
 	if "--origins" in OS.get_cmdline_user_args():
 		await _origins(out)
 		quit()

@@ -61,6 +61,8 @@ func _build() -> void:
 	body_mesh = body.find_children("*", "MeshInstance3D", true, false)[0]
 	body_mesh.mesh = BodyRegions.dressed_mesh(body_mesh)
 	face_params = FaceShape.params(FaceShape.seed_for(look))
+	if str(look.get("age", "")) == "child":
+		face_params.nose = float(face_params.nose) * 0.65   # a small button nose
 	sculpt = BodySculpt.combine(BodySculpt.profile_for(look), face_params.sculpt)
 	body_mesh.mesh = BodySculpt.sculpted(body_mesh.mesh, sculpt)
 	_head_xform = BodySculpt.head_xform(sculpt)
@@ -79,7 +81,11 @@ func _build() -> void:
 	material.set_shader_parameter("colors", BodyRegions.colours(parts))
 	material.set_shader_parameter("plate_gloss", 1.0 if parts.has("armor") else 0.0)
 	material.set_shader_parameter("face", int(FACES.get(str(look.get("face", "Calm")), 0)))
-	material.set_shader_parameter("face_eyes", face_params.eyes)
+	var eyes_v: Vector4 = face_params.eyes
+	match str(look.get("age", "")):
+		"child": eyes_v.x *= 1.45   # big round eyes
+		"teen": eyes_v.x *= 1.18
+	material.set_shader_parameter("face_eyes", eyes_v)
 	var brows_v: Vector4 = face_params.brows
 	if look.get("female", false):
 		brows_v.x *= 0.6   # finer brows

@@ -239,11 +239,11 @@ export function applyGodotAdditions(tables) {
   // Origins looks (Claude, 2026-11-05): each childhood character gets its own silhouette, colours and costume.
   // tint: 0 orange 1 blue 2 purple 3 black 4 white 5 red 6 green; hairColor: 0 black 1 brown 2 lilac 3 blond 4 red 5 white
   const origins = {
-    goku_kid: [{race: 'Saiyan', build: 'Short', hair: 'Spiky', outfit: 'TurtleGi', outfitTint: 1, costume: 'powerpole', physique: 'gokan'}, 0.62],
-    krillin_kid: [{race: 'Human', build: 'Short', hair: 'None', outfit: 'TurtleGi', outfitTint: 0, physique: 'krilan'}, 0.6],
+    goku_kid: [{race: 'Saiyan', age: 'child', build: 'Average', hair: 'Spiky', outfit: 'TurtleGi', outfitTint: 1, costume: 'powerpole'}, 0.62],
+    krillin_kid: [{race: 'Human', age: 'child', build: 'Average', hair: 'None', outfit: 'TurtleGi', outfitTint: 0}, 0.6],
     oolong: [{race: 'Human', build: 'Short', hair: 'None', skinHex: 0xeaa2b4, outfit: 'TurtleGi', outfitTint: 6, sculpt: {belly: 0.05, head_w: 1.12, soft: 0.008}}, 0.68],
     puar: [{race: 'Human', build: 'Slim', hair: 'None', skinHex: 0x8ac4ee, outfit: 'TurtleGi', outfitTint: 4, sculpt: {head_w: 1.15, head_h: 1.1}}, 0.5],
-    yamcha_young: [{race: 'Human', build: 'Average', hair: 'LongSpiky', outfit: 'CraneGi', outfitTint: 6, physique: 'yamcho'}, 0.95],
+    yamcha_young: [{race: 'Human', age: 'teen', build: 'Slim', hair: 'LongSpiky', outfit: 'CraneGi', outfitTint: 6, physique: 'yamcho'}, 0.95],
     ox_king: [{race: 'Human', build: 'Muscular', hair: 'None', outfit: 'SaiyanArmor', outfitTint: 2, costume: 'oxhelmet', physique: 'sadan', sculpt: {belly: 0.06}}, 2.2],
     pilaf: [{race: 'Human', build: 'Short', hair: 'None', skinHex: 0x7aaee0, outfit: 'CapsuleCorp', outfitTint: 3, sculpt: {head_w: 1.12, head_h: 1.06}}, 0.6],
     shu: [{race: 'Human', build: 'Slim', hair: 'None', skinHex: 0x6a7090, outfit: 'CraneGi', outfitTint: 2}, 0.8],
@@ -260,8 +260,8 @@ export function applyGodotAdditions(tables) {
     red: [{race: 'Human', build: 'Short', hair: 'Short', hairColor: 4, outfit: 'SaiyanArmor', outfitTint: 5}, 0.7],
     baba: [{race: 'Human', build: 'Short', hair: 'None', female: true, skinHex: 0xf4dcc8, outfit: 'CraneGi', outfitTint: 2, costume: 'witchhat'}, 0.7],
     grandpa_gohan: [{race: 'Human', build: 'Short', hair: 'None', outfit: 'CraneGi', outfitTint: 6, physique: 'roshu'}, 0.85],
-    tien_young: [{race: 'Human', build: 'Muscular', hair: 'None', outfit: 'CraneGi', outfitTint: 6, physique: 'tenzo'}, 1.0],
-    chiaotzu: [{race: 'Human', build: 'Short', hair: 'None', skinHex: 0xf6eceb, outfit: 'CraneGi', outfitTint: 0, sculpt: {head_w: 1.12, head_h: 1.06}}, 0.55],
+    tien_young: [{race: 'Human', age: 'teen', build: 'Average', hair: 'None', outfit: 'CraneGi', outfitTint: 6, physique: 'tenzo'}, 1.0],
+    chiaotzu: [{race: 'Human', age: 'child', build: 'Average', hair: 'None', skinHex: 0xf6eceb, outfit: 'CraneGi', outfitTint: 0, sculpt: {head_w: 1.12, head_h: 1.06}}, 0.55],
     tambourine: [{race: 'Namekian', build: 'Slim', outfit: 'NamekRobe', outfitTint: 3, skinHex: 0x6aa860, physique: 'cel'}, 1.05],
     cymbal: [{race: 'Namekian', build: 'Muscular', outfit: 'NamekRobe', outfitTint: 6, skinHex: 0x4a8a44}, 1.2],
     drum: [{race: 'Namekian', build: 'Muscular', outfit: 'NamekRobe', outfitTint: 2, skinHex: 0x7a9a4a, physique: 'brolo'}, 1.5],
@@ -287,6 +287,7 @@ export function applyGodotAdditions(tables) {
     zero_origin: [{race: 'Human', build: 'Tall', hair: 'None', skinHex: 0xf4ecd8, outfit: 'AngelRobe', outfitTint: 4, costume: 'zero', physique: 'cyborg16'}, 2.4],
     archivist_tem: [{race: 'Human', build: 'Slim', hair: 'Long', female: true, hairColor: 5, outfit: 'AngelRobe', outfitTint: 1}, 1.0],
   });
+  origins.bulma_young = [{...(characters.bulma_young?.look ?? {race: 'Human', female: true, outfit: 'CapsuleCorp'}), age: 'teen', build: 'Slim', hair: 'Ponytail', hairColor: 2, outfitTint: 5}, 0.92];
   for (const [id, [look, scale]] of Object.entries(origins)) {
     if (!characters[id]) continue;
     characters[id].look = {...characters[id].look, ...look};

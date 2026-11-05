@@ -239,6 +239,16 @@ const NAMED := {
 		"upper_arm": 0.9, "forearm": 0.92, "thigh": 0.94},
 }
 
+## Younger versions (look.age, user request 2026-11-05): a child has a much bigger head for the body (about 1/5 of
+## the height instead of 1/7), a soft round jaw, a thin neck, narrow shoulders and slim limbs; a teen sits between.
+const AGES := {
+	"child": {"head_w": 1.72, "head_h": 1.66, "head_d": 1.66, "jaw": 0.84, "chin": -0.006, "cheek": 1.08, "brow": -0.004, "neck": 0.62,
+		"shoulders": 0.76, "chest": 0.82, "back": 0.84, "waist": 0.92, "belly": 0.012, "hips": 0.9, "upper_arm": 0.72, "forearm": 0.76,
+		"hands": 0.82, "thigh": 0.82, "calf": 0.8, "feet": 0.85, "height": 0.92},
+	"teen": {"head_w": 1.16, "head_h": 1.14, "head_d": 1.14, "height": 0.96, "jaw": 0.93, "neck": 0.88, "shoulders": 0.92, "chest": 0.93, "waist": 0.93,
+		"upper_arm": 0.88, "forearm": 0.9, "thigh": 0.92, "calf": 0.92, "hands": 0.92},
+}
+
 ## Every female character (look.female): narrower shoulders, neck and arms, a defined waist and wider hips.
 const FEMALE := {"head_w": 0.95, "head_h": 0.98, "jaw": 0.86, "chin": -0.004, "cheek": 0.97, "neck": 0.84, "shoulders": 0.88, "chest": 0.96,
 	"back": 0.92, "waist": 0.82, "hips": 1.12, "upper_arm": 0.84, "forearm": 0.86, "hands": 0.86, "thigh": 1.03, "calf": 0.93, "feet": 0.88,
@@ -260,6 +270,7 @@ static func profile_for(look: Dictionary) -> Dictionary:
 	var p := combine(RACES.get(str(look.get("race", "Human")), {}), BUILDS.get(str(look.get("build", "Average")), {}))
 	if look.get("female", false):
 		p = combine(p, FEMALE)
+	p = combine(p, AGES.get(str(look.get("age", "")), {}))
 	p = combine(p, NAMED.get(str(look.get("physique", "")), {}))
 	var extra: Variant = look.get("sculpt")
 	if extra is Dictionary:

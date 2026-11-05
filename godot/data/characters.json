@@ -1745,12 +1745,12 @@
       "face": "Calm",
       "hair": "Spiky",
       "hairColor": 0,
-      "build": "Short",
+      "build": "Average",
       "outfit": "TurtleGi",
       "outfitTint": 1,
       "faceSeed": "goku_kid",
-      "costume": "powerpole",
-      "physique": "gokan"
+      "age": "child",
+      "costume": "powerpole"
     },
     "scale": 0.62,
     "style": "turtle",
@@ -1764,11 +1764,11 @@
       "face": "Calm",
       "hair": "None",
       "hairColor": 0,
-      "build": "Short",
+      "build": "Average",
       "outfit": "TurtleGi",
       "outfitTint": 0,
       "faceSeed": "krillin_kid",
-      "physique": "krilan"
+      "age": "child"
     },
     "scale": 0.6,
     "style": "turtle",
@@ -1784,12 +1784,14 @@
       "hairColor": 2,
       "build": "Slim",
       "outfit": "CapsuleCorp",
-      "outfitTint": 4,
+      "outfitTint": 5,
       "female": true,
-      "faceSeed": "bulma_young"
+      "faceSeed": "bulma_young",
+      "age": "teen"
     },
     "style": "speedster",
-    "origins": true
+    "origins": true,
+    "scale": 0.92
   },
   "oolong": {
     "name": "Ulong",
@@ -1844,10 +1846,11 @@
       "face": "Smirk",
       "hair": "LongSpiky",
       "hairColor": 0,
-      "build": "Average",
+      "build": "Slim",
       "outfit": "CraneGi",
       "outfitTint": 6,
       "faceSeed": "yamcha_young",
+      "age": "teen",
       "physique": "yamcho"
     },
     "style": "speedster",
@@ -2142,10 +2145,11 @@
       "face": "Determined",
       "hair": "None",
       "hairColor": 0,
-      "build": "Muscular",
+      "build": "Average",
       "outfit": "CraneGi",
       "outfitTint": 6,
       "faceSeed": "tien_young",
+      "age": "teen",
       "physique": "tenzo"
     },
     "style": "crane",
@@ -2160,10 +2164,11 @@
       "face": "Calm",
       "hair": "None",
       "hairColor": 0,
-      "build": "Short",
+      "build": "Average",
       "outfit": "CraneGi",
       "outfitTint": 0,
       "faceSeed": "chiaotzu",
+      "age": "child",
       "skinHex": 16182507,
       "sculpt": {
         "head_w": 1.12,
