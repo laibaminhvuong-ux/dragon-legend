@@ -114,6 +114,7 @@ func _ready() -> void:
 		"boost":   # dev: rocket boost from the ground, then steer (recordings)
 			await get_tree().create_timer(1.5).timeout
 			if play != null:
+				play.game.player.flying = true
 				play.forced = {"boost": true}
 				await get_tree().process_frame
 				await get_tree().create_timer(0.5).timeout

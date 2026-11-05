@@ -169,3 +169,15 @@ func test_style_moves_and_reactions_reach_the_fighters() -> void:
 	p.render(DT, 1.0)
 	eq(victim.anim.current_move, "react_knockback", "the victim's knockback reaction plays")
 	_end(p)
+
+func test_q_dashes_on_the_ground_and_boosts_in_flight() -> void:
+	var p := _session()
+	p.game.player.flying = false
+	p.input.press("dash")
+	var it := p.intents()
+	ok(it.dash and not it.get("boost", false), "on the ground Q is the dash")
+	p.game.player.flying = true
+	p.input.press("dash")
+	it = p.intents()
+	ok(it.boost and not it.dash, "while flying Q is the rocket boost")
+	_end(p)

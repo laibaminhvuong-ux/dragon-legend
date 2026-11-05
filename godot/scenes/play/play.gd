@@ -119,8 +119,10 @@ func intents() -> Dictionary:
 	it.move_z = cos(yaw) * mv.y + sin(yaw) * mv.x
 	for a: String in ["jump", "dash", "flight", "melee", "ki_blast", "transform", "kaioken", "lock_on", "interact"]:
 		it[a] = input.pressed(a)
-	it.boost = it.dash   # Q is the rocket boost now (user request 2026-11-04); the short dash stays for NPCs
-	it.dash = false
+	# Q (user request 2026-11-04): the quick dash on the ground, the rocket boost while flying
+	if game.player.flying:
+		it.boost = it.dash
+		it.dash = false
 	for a: String in ["ascend", "descend", "charge", "block", "beam"]:
 		it[a] = input.down(a)
 	# hold Shift (or push the stick all the way) to run / fly fast; otherwise walk / cruise
