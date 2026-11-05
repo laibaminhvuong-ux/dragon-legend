@@ -151,6 +151,8 @@ export function applyGodotAdditions(tables) {
   const zones = structuredClone(tables.zones);
   const npcs = structuredClone(tables.npcs);
   const characters = structuredClone(tables.characters);
+  const appearance = structuredClone(tables.appearance);
+  const races = structuredClone(tables.races);
   const zoneOrder = [...tables.zone_order];
   const world = openWorld(zones, zoneOrder);
   const changed = [...checkInStation(zones, npcs), ...interiors(zones)];
@@ -166,12 +168,15 @@ export function applyGodotAdditions(tables) {
     kefla: 'kafla', paragus: 'paragos', gamma1: 'gama', gamma2: 'gama', moro: 'morro', black_frieza: 'frigor', super_buu: 'boo_kid',
     raditz: 'gokan', cabba: 'tronks'};
   for (const [id, physique] of Object.entries(physiques)) if (characters[id]?.look) characters[id].look.physique = physique;
+  // Female fighters (user request 2026-11-04): two new hair styles for the races with hair
+  for (const id of ['Long', 'Bun']) if (!appearance.HAIR_STYLES.some(h => h.id === id)) appearance.HAIR_STYLES.push({id, name: id});
+  for (const r of ['Saiyan', 'HalfSaiyan', 'Human']) for (const id of ['Ponytail', 'Long', 'Bun']) if (!races[r].hairStyles.includes(id)) races[r].hairStyles.push(id);
   // Every character's own face (FaceShape): seeded by the character id, so identical looks still differ
   for (const [id, c] of Object.entries(characters)) if (c.look && c.look.faceSeed == null) c.look.faceSeed = id;
   const fighting_styles = fightingStyles(tables.combat);
   for (const [id, character] of Object.entries(characters)) character.style = fighting_styles.npc_assignments[id] ?? 'turtle';
   return {
-    ...tables, zones, npcs, characters, zone_order: zoneOrder, planets: world.planets,
+    ...tables, zones, npcs, characters, appearance, races, zone_order: zoneOrder, planets: world.planets,
     fighting_styles, schema:{...tables.schema, version:7, slots:10},
     skill_presentation: skillPresentation(tables.moves,tables.combat.starterMove),
     godot_additions: {zones: [...new Set(changed)].sort(), note: 'Zones changed for the Godot game only; JS parity skips them.'},

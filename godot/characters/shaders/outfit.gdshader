@@ -17,7 +17,8 @@ uniform vec4 brow_color : source_color = vec4(0.08, 0.06, 0.05, 1.0);
 // per-character face proportions (FaceShape); the defaults are the original face
 uniform vec4 face_eyes = vec4(1.0, 0.0, 0.0, 0.0);    // size, extra gap, outer-corner tilt, height offset
 uniform vec4 face_brows = vec4(1.0, 1.0, 0.0, 0.0);   // thickness, length, arch, height offset
-uniform vec4 face_mouth = vec4(1.0, 0.0, 1.0, 0.0);   // width, height offset, iris size, mark (1 scar, 2 freckles)
+uniform vec4 face_mouth = vec4(1.0, 0.0, 1.0, 0.0);
+uniform float feminine = 0.0;   // female faces: bolder lashes with a flick, coloured lips   // width, height offset, iris size, mark (1 scar, 2 freckles)
 uniform vec4 rim_color : source_color = vec4(1.0, 0.95, 0.85, 1.0);
 
 varying vec3 rest;
@@ -78,7 +79,8 @@ void fragment() {
 		float iris = inside(length(iq) - 0.0105 * face_mouth.z) * eye;
 		float pupil = inside(length(iq) - 0.0048 * face_mouth.z) * eye;
 		float glint = inside(length(iq - vec2(0.004, 0.0045)) - 0.0026) * eye;
-		float lash = (1.0 - inside(eye_sdf + 0.0032)) * inside(eye_sdf - 0.0012) * above(q.y + 0.002, 0.0) * front;
+		float lash = (1.0 - inside(eye_sdf + 0.0032 + 0.0018 * feminine)) * inside(eye_sdf - 0.0012) * above(q.y + 0.002, 0.0) * front;
+		lash = max(lash, feminine * inside(segment(q, vec2(0.018, 0.006), vec2(0.03, 0.013), 0.0016)) * front);   // outer flick
 		vec3 iris_col = mix(eye_color.rgb * 0.55, eye_color.rgb * 1.15, smoothstep(0.0105, 0.002, length(iq - vec2(0.0, -0.004))));
 		c = mix(c, vec3(0.97, 0.96, 0.95), eye);
 		c = mix(c, iris_col, iris);
@@ -103,6 +105,10 @@ void fragment() {
 		else mouth_sdf = segment(mq, vec2(-0.015, 0.001), vec2(0.015, 0.001), 0.0017) - (0.0003 - mq.x * mq.x * 0.0);
 		if (face == 0) mouth_sdf = abs(length(mq - vec2(0.0, 0.03)) - 0.031) - 0.0017 + step(0.016, abs(mq.x)) * 1.0;
 		c = mix(c, vec3(0.32, 0.12, 0.1), inside(mouth_sdf) * front);
+		if (feminine > 0.5) {   // lips: a soft rose tint around the mouth line
+			float lips = inside(ellipse(vec2(mq.x, mq.y + 0.001), vec2(0.017 * face_mouth.x, 0.0055)));
+			c = mix(c, vec3(0.72, 0.3, 0.34), lips * 0.75 * front);
+		}
 		// a mark: a scar across one cheek, or freckles
 		if (face_mouth.w > 0.5 && face_mouth.w < 1.5) {
 			float scar = inside(segment(vec2(p.x, p.y), vec2(-0.062, 1.708), vec2(-0.032, 1.664), 0.0016));

@@ -14,7 +14,10 @@
       "Spiky",
       "Wild",
       "Swept",
-      "LongSpiky"
+      "LongSpiky",
+      "Ponytail",
+      "Long",
+      "Bun"
     ],
     "tail": true,
     "powerMultiplier": 1.1,
@@ -65,7 +68,9 @@
       "LongSpiky",
       "Short",
       "Ponytail",
-      "None"
+      "None",
+      "Long",
+      "Bun"
     ],
     "tail": false,
     "powerMultiplier": 1.05,
@@ -119,7 +124,9 @@
       "LongSpiky",
       "Short",
       "Ponytail",
-      "None"
+      "None",
+      "Long",
+      "Bun"
     ],
     "tail": false,
     "powerMultiplier": 1,

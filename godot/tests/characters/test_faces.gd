@@ -32,3 +32,15 @@ func test_every_named_character_has_a_face_seed() -> void:
 		if look is Dictionary and not (look as Dictionary).has("faceSeed"):
 			missing += 1
 	eq(missing, 0, "every character's look carries its own face seed")
+
+func test_female_fighters_have_their_own_model() -> void:
+	var m := Fighter.create({"race": "Human", "faceSeed": "x"})
+	var f := Fighter.create({"race": "Human", "faceSeed": "x", "female": true, "hair": "Long"})
+	ok(float(f.sculpt.get("bust", 0.0)) > 0.02 and float(m.sculpt.get("bust", 0.0)) == 0.0, "female figure")
+	ok(float(f.sculpt.get("hips", 1.0)) > float(m.sculpt.get("hips", 1.0)), "wider hips")
+	ok(f.body.scale.y < m.body.scale.y, "a little shorter")
+	eq(float(f.material.get_shader_parameter("feminine")), 1.0, "female face (lashes, lips)")
+	ok(f.hair != null and f.hair_base == "long", "long hair")
+	for style in ["Long", "Bun"]:
+		ok(Hair.mesh(Hair.BASE[style]) != null, "%s hair builds" % style)
+	m.free(); f.free()

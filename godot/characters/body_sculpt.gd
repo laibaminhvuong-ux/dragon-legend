@@ -18,7 +18,7 @@ const LEG_X := 0.089
 const NEUTRAL := {
 	"head_w": 1.0, "head_h": 1.0, "head_d": 1.0, "cranium": 1.0, "jaw": 1.0, "chin": 0.0, "brow": 0.0, "cheek": 1.0,
 	"neck": 1.0, "shoulders": 1.0, "chest": 1.0, "back": 1.0, "waist": 1.0, "belly": 0.0, "hips": 1.0,
-	"upper_arm": 1.0, "forearm": 1.0, "hands": 1.0, "thigh": 1.0, "calf": 1.0, "feet": 1.0, "soft": 0.0,
+	"upper_arm": 1.0, "forearm": 1.0, "hands": 1.0, "thigh": 1.0, "calf": 1.0, "feet": 1.0, "soft": 0.0, "bust": 0.0,
 }
 
 static var _cache: Dictionary = {}
@@ -115,6 +115,10 @@ static func shape(p: Vector3, n: Vector3, pr: Dictionary) -> Vector3:
 		var waist := _band(0.92, 1.0, 1.12, 1.24, p.y)
 		t.x *= lerpf(1.0, g.call("waist"), waist)
 		t.z *= lerpf(1.0, g.call("waist"), waist * 0.8)
+		if p.z > 0.0 and g.call("bust") > 0.0:   # female figure: two soft lobes on the chest
+			var lobe := exp(-(pow(ax - 0.08, 2.0) / 0.0042 + pow(p.y - 1.34, 2.0) / 0.0055))
+			t.z += g.call("bust") * lobe
+			t.y -= g.call("bust") * lobe * 0.25
 		if p.z > -0.02:
 			t.z += g.call("belly") * _band(0.92, 1.02, 1.14, 1.28, p.y) * smoothstep(-0.02, 0.10, p.z) * (1.0 - smoothstep(0.08, 0.16, ax))
 		t.x *= lerpf(1.0, g.call("hips"), _band(0.80, 0.88, 0.96, 1.04, p.y))
@@ -236,10 +240,11 @@ const NAMED := {
 }
 
 ## Every female character (look.female): narrower shoulders, neck and arms, a defined waist and wider hips.
-const FEMALE := {"head_w": 0.96, "jaw": 0.9, "chin": -0.004, "neck": 0.86, "shoulders": 0.9, "chest": 0.98, "back": 0.94, "waist": 0.86,
-	"hips": 1.1, "upper_arm": 0.86, "forearm": 0.88, "hands": 0.9, "thigh": 1.02, "calf": 0.94, "feet": 0.92}
+const FEMALE := {"head_w": 0.95, "head_h": 0.98, "jaw": 0.86, "chin": -0.004, "cheek": 0.97, "neck": 0.84, "shoulders": 0.88, "chest": 0.96,
+	"back": 0.92, "waist": 0.82, "hips": 1.12, "upper_arm": 0.84, "forearm": 0.86, "hands": 0.86, "thigh": 1.03, "calf": 0.93, "feet": 0.88,
+	"bust": 0.055, "height": 0.96}
 
-const OFFSETS := ["chin", "brow", "belly", "soft"]
+const OFFSETS := ["chin", "brow", "belly", "soft", "bust"]
 
 static func combine(a: Dictionary, b: Dictionary) -> Dictionary:
 	var out := a.duplicate()

@@ -5,7 +5,7 @@ extends RefCounted
 # mannequin's head (model space, rest pose). Meshes are cached per style and shared by every fighter.
 
 const HEAD_SPACE := Transform3D(Vector3(0.98, 0, 0), Vector3(0, 1.1, 0), Vector3(0, 0, 1.12), Vector3(0, 1.66, 0.002))
-const BASE := {"Spiky": "goku", "Wild": "wild", "Swept": "flame", "LongSpiky": "mane", "Short": "short", "Bowl": "bowl", "Ponytail": "ponytail"}
+const BASE := {"Spiky": "goku", "Wild": "wild", "Swept": "flame", "LongSpiky": "mane", "Short": "short", "Bowl": "bowl", "Ponytail": "ponytail", "Long": "long", "Bun": "bun"}
 const FORM_STYLES := ["ssj1", "ssj2", "ssj3", "ssj4", "grade3", "legendary", "ego", "beast"]
 static var _cache: Dictionary = {}
 
@@ -60,6 +60,25 @@ static func _build(g: Geo, style: String) -> void:
 			_cap(g, 0.114, 0.4, 0.6)
 			g.torus(Transform3D(Basis.from_euler(Vector3(1.2, 0, 0)), Vector3(0, 0.07, -0.115)), 0.026, 0.01, 16, 8)
 			g.tube(PackedVector3Array([Vector3(0, 0.07, -0.115), Vector3(0, 0.02, -0.17), Vector3(0, -0.1, -0.18), Vector3(0, -0.22, -0.15)]), 0.032, 0.012, 20, 10)
+		"long":   # long straight hair: a full cap, a side-swept fringe and a curtain of locks down the back
+			_cap(g, 0.116, 0.38, 0.66)
+			for i in 7:
+				var x := (i / 6.0 - 0.5) * 0.17
+				g.spike(Vector3(x, 0.115, 0.085), 0.05, 0.02, Vector3(x * 0.8 + 0.25, -1, 0.3))
+			for i in 15:
+				var a := lerpf(-1.9, 1.9, i / 14.0)
+				var top := Vector3(sin(a) * 0.112, 0.03, cos(a) * 0.112 - 0.012)
+				if cos(a) > 0.55:
+					continue   # leave the face clear
+				var out := Vector3(sin(a), 0, cos(a)) * 0.03
+				g.tube(PackedVector3Array([top, top + out + Vector3(0, -0.1, -0.02), top + out * 1.3 + Vector3(0, -0.24, -0.035), top + out * 1.2 + Vector3(0, -0.36, -0.03)]), 0.026, 0.008, 14, 6)
+		"bun":   # hair pulled back into a round bun with a short fringe
+			_cap(g, 0.114, 0.4, 0.6)
+			g.sphere(Transform3D(Basis.IDENTITY, Vector3(0, 0.13, -0.1)), 0.05, 10, 14)
+			g.torus(Transform3D(Basis.from_euler(Vector3(0.9, 0, 0)), Vector3(0, 0.12, -0.075)), 0.04, 0.008, 16, 6)
+			for i in 5:
+				var x := (i / 4.0 - 0.5) * 0.12
+				g.spike(Vector3(x, 0.115, 0.088), 0.035, 0.016, Vector3(x * 0.5, -1, 0.35))
 		_:
 			_cap(g, 0.113)
 			_form(g, style)

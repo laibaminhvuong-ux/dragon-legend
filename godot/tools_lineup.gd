@@ -397,8 +397,38 @@ func _faces2(out: String) -> void:
 	cam.position = Vector3(0, 1.72 - 0.24, 8)
 	await _shot(out + "_faces2.png")
 
+## Men and women of each race, side by side, in real colours.
+func _genders(out: String) -> void:
+	stage = Node3D.new()
+	vp.add_child(stage)
+	env.environment.background_color = Color(0.3, 0.33, 0.4)
+	var hair_f := {"Saiyan": "Long", "HalfSaiyan": "Ponytail", "Human": "Bun", "Namekian": "None", "FrostDemon": "None", "Majin": "None"}
+	var i := 0
+	for r: String in RACES:
+		for fem in [false, true]:
+			var l := _look(r)
+			l.faceSeed = "%s_%s" % [r, fem]
+			if fem:
+				l.female = true
+				l.hair = hair_f[r]
+			var f := Fighter.create(l)
+			f.position = Vector3((i - 5.5) * 0.85, 0, 0)
+			f.rotation.y = 0.35
+			stage.add_child(f)
+			for k in 10:
+				f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true})
+			i += 1
+	cam.size = 2.35
+	vp.size = Vector2i(roundi(1150 * (12 * 0.85 + 0.3) / cam.size), 1150)
+	cam.position = Vector3(0, cam.size * 0.5 - 0.2, 8)
+	await _shot(out + "_genders.png")
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--genders" in OS.get_cmdline_user_args():
+		await _genders(out)
+		quit()
+		return
 	if "--faces2" in OS.get_cmdline_user_args():
 		await _faces2(out)
 		quit()

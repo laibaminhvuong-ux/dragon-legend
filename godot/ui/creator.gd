@@ -89,6 +89,14 @@ func _draw() -> void:
 	var desc := UiKit.label(RuleRuntime.rename_text(str(race.get("desc", race.get("description", "")))), "Muted", true)
 	desc.custom_minimum_size.x = 560
 	_form.add_child(desc)
+	_choices("Body", [[false, "Male"], [true, "Female"]], bool(look.get("female", false)), func(v: Variant) -> void:
+		look["female"] = v
+		var hairs: Array = race.hairStyles
+		if v and str(look.get("hair", "")) in ["Spiky", "Wild", "Swept", "LongSpiky", "Short", "Bowl"] and hairs.has("Long"):
+			look["hair"] = "Long"   # a feminine default; any style can still be picked
+		elif not v and str(look.get("hair", "")) in ["Long", "Bun"] and hairs.size() > 0:
+			look["hair"] = hairs[0]
+		_draw())
 	_choices("Build", Data.appearance.BUILDS.map(func(x: Dictionary) -> Array: return [x.id, x.name]), look.get("build"), func(v: Variant) -> void: look["build"] = v; _draw())
 	_swatches("Skin", race.skins, int(look.get("skin", 0)), func(i: int) -> void: look["skin"] = i; _draw())
 	_choices("Face", Data.appearance.FACES.map(func(x: Dictionary) -> Array: return [x.id, x.name]), look.get("face"), func(v: Variant) -> void: look["face"] = v; _draw())
@@ -138,7 +146,7 @@ func _randomize() -> void:
 	var race: Dictionary = Data.races[order.pick_random()]
 	var builds: Array = Data.appearance.BUILDS
 	look = _fix({"race": race.id, "build": builds.pick_random().id, "skin": randi() % (race.skins as Array).size(),
-		"face": (Data.appearance.FACES as Array).pick_random().id, "faceSeed": "face:%d" % randi(), "hair": (race.hairStyles as Array).pick_random(),
+		"face": (Data.appearance.FACES as Array).pick_random().id, "faceSeed": "face:%d" % randi(), "female": randf() < 0.5, "hair": (race.hairStyles as Array).pick_random(),
 		"hairColor": randi() % (Data.appearance.HAIR_COLORS as Array).size(), "outfit": _starters(race.id).pick_random(),
 		"outfitTint": randi() % (Data.appearance.TINTS as Array).size(), "kiColor": look.get("kiColor", 0)})
 	_draw()

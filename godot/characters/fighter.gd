@@ -80,7 +80,11 @@ func _build() -> void:
 	material.set_shader_parameter("plate_gloss", 1.0 if parts.has("armor") else 0.0)
 	material.set_shader_parameter("face", int(FACES.get(str(look.get("face", "Calm")), 0)))
 	material.set_shader_parameter("face_eyes", face_params.eyes)
-	material.set_shader_parameter("face_brows", face_params.brows)
+	var brows_v: Vector4 = face_params.brows
+	if look.get("female", false):
+		brows_v.x *= 0.6   # finer brows
+	material.set_shader_parameter("face_brows", brows_v)
+	material.set_shader_parameter("feminine", 1.0 if look.get("female", false) else 0.0)
 	material.set_shader_parameter("face_mouth", face_params.mouth)
 	material.set_shader_parameter("brow_color", hair_color.darkened(0.3) if race.get("hairStyles", []).size() > 1 else skin.darkened(0.45))
 	_set_skin(skin, 0.0)

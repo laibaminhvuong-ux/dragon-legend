@@ -98,6 +98,14 @@
     {
       "id": "Ponytail",
       "name": "Ponytail"
+    },
+    {
+      "id": "Long",
+      "name": "Long"
+    },
+    {
+      "id": "Bun",
+      "name": "Bun"
     }
   ],
   "KI_CHARGE_LOOK": {

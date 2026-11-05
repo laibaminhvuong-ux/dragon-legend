@@ -170,6 +170,12 @@ func update_view(dt: float) -> void:
 			var elook: Dictionary = (e.look as Dictionary).duplicate() if e.get("look") is Dictionary else {"race": "Human"}
 			if not elook.has("faceSeed"):
 				elook.faceSeed = str(e.id)   # every enemy its own face, even identical trainees
+			# generic fighters (trainees, patrols, soldiers) are a mix of men and women
+			var generic: bool = str(e.get("key", "")).begins_with("patrol_") or str(e.get("name", "")).contains("Trainee") or str(e.get("name", "")).contains("soldier")
+			if generic and not elook.has("female") and str(elook.get("race", "Human")) in ["Human", "Saiyan", "HalfSaiyan"] and absi(hash(str(e.id))) % 5 < 2:
+				elook.female = true
+				if str(elook.get("hair", "")) not in ["None", "Ponytail"]:
+					elook.hair = ["Long", "Ponytail", "Bun"][absi(hash(str(e.id) + "h")) % 3]
 			var f := Fighter.create(elook)
 			f.scale = Vector3.ONE * float(e.get("scale", 1.0))
 			add_child(f)
