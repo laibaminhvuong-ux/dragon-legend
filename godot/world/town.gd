@@ -10,9 +10,12 @@ const CUTAWAY := preload("res://world/shaders/cutaway.gdshader")
 static var _cut_mats: Dictionary = {}
 
 ## The shader global the cutaway material reads (registered once; play sets it every frame).
+static var _globals_ready := false
 static func ensure_globals() -> void:
-	if not RenderingServer.global_shader_parameter_get_list().has(&"inside_building"):
-		RenderingServer.global_shader_parameter_add(&"inside_building", RenderingServer.GLOBAL_VAR_TYPE_VEC4, Vector4.ZERO)
+	if _globals_ready:
+		return
+	_globals_ready = true
+	RenderingServer.global_shader_parameter_add(&"inside_building", RenderingServer.GLOBAL_VAR_TYPE_VEC4, Vector4.ZERO)
 
 ## Walls/roofs of walk-in buildings: cut away above waist height while you're inside that building.
 static func _cut(color: int, rough := 0.75) -> ShaderMaterial:

@@ -76,3 +76,16 @@ func test_enter_and_leave_round_trip() -> void:
 	ok(out.position != null and absf(float(out.position.z) - float(door.z) - 1.6) < 0.01, "outside the same door")
 	var again := RuleGame.new(0, out.duplicate(true))
 	ok(Vector2(again.player.pos.x - float(door.x), again.player.pos.z - (float(door.z) + 1.6)).length() < 0.05, "standing outside the door")
+
+func test_countryside_hamlets() -> void:
+	var p := RulePlanet.new("earth")
+	var hs: Array = p.landmarks.filter(func(l: Dictionary) -> bool: return l.get("hamlet", false))
+	ok(hs.size() >= 20, "Earth's countryside has hamlets (%d)" % hs.size())
+	for h: Dictionary in hs:
+		ok(p.region_at(float(h.x), float(h.z)) == "", "%s is out in the countryside" % h.name)
+		ok(not RuleTown.layout(h).buildings.is_empty(), "%s has buildings" % h.name)
+	var again: Array = RulePlanet.new("earth").landmarks.filter(func(l: Dictionary) -> bool: return l.get("hamlet", false))
+	eq(again.map(func(l: Dictionary) -> String: return l.name), hs.map(func(l: Dictionary) -> String: return l.name), "the same every time")
+	var props: RefCounted = p.props()
+	for h: Dictionary in hs.slice(0, 5):
+		ok(props.trees.filter(func(t: Dictionary) -> bool: return Vector2(float(t.x) - float(h.x), float(t.z) - float(h.z)).length() < float(h.radius) * 0.9).is_empty(), "no trees inside %s" % h.name)

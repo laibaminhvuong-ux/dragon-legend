@@ -331,6 +331,7 @@ class PropSet extends RefCounted:
 	func _init(zone: RefCounted, saved: Dictionary = {}) -> void:
 		if not saved.is_empty():
 			trees = saved.trees; rocks = saved.rocks; bushes = saved.bushes; stones = saved.stones
+			_clear_hamlets(zone)
 			_colliders(zone)
 			return
 		var b: Dictionary = zone.biome
@@ -393,7 +394,21 @@ class PropSet extends RefCounted:
 			if surface in ["water","void","white"] or (surface=="grass" and r.next_float()>0.3):
 				continue
 			stones.append({"x":p.x,"y":zone.height_at(p.x,p.z)-0.03,"z":p.z,"scale":0.08+r.next_float()*0.25,"rx":r.next_float()*6.3,"ry":r.next_float()*6.3,"rz":r.next_float()*6.3,"variant":floori(r.next_float()*5)})
+		_clear_hamlets(zone)
 		_colliders(zone)
+
+	## Countryside hamlets were added after the planets' props were baked: keep trees and rocks out of them.
+	func _clear_hamlets(zone: RefCounted) -> void:
+		var spots: Array = zone.landmarks.filter(func(l: Dictionary) -> bool: return l.get("hamlet", false))
+		if spots.is_empty():
+			return
+		var keep := func(p: Dictionary) -> bool:
+			for l: Dictionary in spots:
+				var dx: float = float(p.x) - float(l.x); var dz: float = float(p.z) - float(l.z)
+				if dx * dx + dz * dz < pow(float(l.radius) * 0.95, 2.0):
+					return false
+			return true
+		trees = trees.filter(keep); rocks = rocks.filter(keep); bushes = bushes.filter(keep); stones = stones.filter(keep)
 
 	func _colliders(zone: RefCounted) -> void:
 		for t: Dictionary in trees:

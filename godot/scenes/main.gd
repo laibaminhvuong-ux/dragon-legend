@@ -280,6 +280,11 @@ func _dev_shot_setup() -> void:
 		var p: Dictionary = play.game.zone.place(float(c[0]) if c.size() > 1 else 0.0, float(c[-1]))
 		play.game.player.pos = Vector3(p.x, play.game.zone.height_at(p.x, p.z) + 0.1, p.z)
 		play.prev_pos = play.game.player.pos
+	if _args.has("face"):   # dev: --face=x,z turns the camera toward a point
+		var fc: PackedStringArray = str(_args.face).split(",")
+		var pp: Vector3 = play.game.player.pos
+		play.follow.set_yaw(atan2(float(fc[0]) - pp.x, float(fc[1]) - pp.z))
+		play.game.player.yaw = play.follow.yaw
 	if _args.has("pitch"):
 		await get_tree().create_timer(0.5).timeout
 		play.follow.pitch = float(_args.pitch)

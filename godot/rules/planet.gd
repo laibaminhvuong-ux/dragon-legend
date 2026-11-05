@@ -78,7 +78,64 @@ func _init(planet_id: String, start: String = "", data: Object = null) -> void:
 			m.z = float(l.z) + regions[rid].z
 			m.region = rid
 			landmarks.append(m)
+	landmarks.append_array(hamlets(planet_id))
 	_props = null
+
+# ------------------------------------------------------------------------------------------------- countryside
+## Hamlets and farmsteads scattered over the countryside (user request 2026-11-04: "the open world is big but
+## there aren't any details"). Same every time (planet seed); only on fairly flat dry land away from the areas and
+## from each other. Each is an ordinary town landmark (solid, enterable buildings; RuleTown layouts).
+const HAMLET_STYLES := {"earth": ["village", "village", "village", "snowvillage"], "nameck": ["domevillage"], "new_nameck": ["domevillage"],
+	"yardran": ["domevillage", "village"], "grain": ["village", "village", "domevillage"], "beeros": ["garden"],
+	"future_earth": ["ruins", "ruins", "village"], "kae_world": ["garden"], "nameless": ["ruins"]}
+const HAMLET_NAMES := ["Willow", "Stonebrook", "Red Barn", "Cedar", "Hilltop", "Mossy Creek", "Old Mill", "Sunfield", "Pine Ridge",
+	"Clearwater", "Fox Hollow", "Briar", "Long Meadow", "Amberleaf", "Windy Knoll", "Tall Oak", "Riverbend", "Copperfield",
+	"Misty Vale", "Lark", "Ember", "Golden Rye", "Quiet Pond", "Thornbury", "Bluebell", "Ashgrove", "Kestrel", "Highfield"]
+const HAMLET_KINDS := ["Hamlet", "Farmstead", "Village", "Homestead", "Crossing"]
+
+func hamlets(planet_id: String) -> Array:
+	var out: Array = []
+	var styles: Array = HAMLET_STYLES.get(planet_id, ["village"])
+	var r := NoiseRules.Random32.new(seed * 131 + 977)
+	var want := clampi(int(size * size / 300000.0), 4, 40)
+	var half := size * 0.5 - 140.0
+	for attempt in want * 90:
+		if out.size() >= want:
+			break
+		var x := (r.next_float() * 2.0 - 1.0) * half
+		var z := (r.next_float() * 2.0 - 1.0) * half
+		var radius := 42.0 + r.next_float() * 30.0
+		var far := true
+		for rid: String in regions:
+			var g: Dictionary = regions[rid]
+			if Vector2(x - float(g.x), z - float(g.z)).length() < float(g.radius) + float(g.blend) + radius + 40.0:
+				far = false
+				break
+		for h: Dictionary in out:
+			if Vector2(x - float(h.x), z - float(h.z)).length() < float(h.radius) + radius + 140.0:
+				far = false
+				break
+		if not far:
+			continue
+		var h0 := height_at(x, z)
+		var lo := INF; var hi := -INF
+		var dry := true
+		for k in 9:
+			var a := float(k) / 8.0 * TAU
+			var px := x + cos(a) * radius * (0.0 if k == 8 else 0.8); var pz := z + sin(a) * radius * (0.0 if k == 8 else 0.8)
+			var hh := height_at(px, pz)
+			lo = minf(lo, hh); hi = maxf(hi, hh)
+			if water is Dictionary and hh < float(water.level) + 1.5:
+				dry = false
+		if not dry or hi - lo > radius * 0.3 or not is_finite(h0):
+			continue
+		var style: String = styles[floori(r.next_float() * styles.size())]
+		if planet_id == "earth" and z > float(_base.get("northFrom", 1e9)):
+			style = "snowvillage"
+		var nm := "%s %s" % [HAMLET_NAMES[floori(r.next_float() * HAMLET_NAMES.size())], HAMLET_KINDS[floori(r.next_float() * HAMLET_KINDS.size())]]
+		out.append({"type": "town", "name": nm, "x": x, "z": z, "style": style, "radius": radius, "seed": int(r.next_float() * 100000.0) + 1,
+			"rot": r.next_float() * TAU, "hamlet": true})
+	return out
 
 static func _region_in(p: Dictionary, zone_id: String) -> bool:
 	for r: Dictionary in p.regions:
