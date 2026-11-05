@@ -3,6 +3,21 @@ extends RuleGame
 var connection: WeakRef
 func send(name: String,args: Array = []) -> void:
 	if connection!=null and connection.get_ref()!=null: connection.get_ref().command(name,args)
+func give_zeni(target_player_id: String,amount: Variant) -> Variant:
+	var client: Variant = connection.get_ref() if connection!=null else null
+	if client==null or not client.connected: return "Join a server to send zeni"
+	var error := RuleZeniTransfer.amount_error(amount)
+	if error!="": return error
+	send("give_zeni",[target_player_id,amount])
+	return null
+func zeni_recipients() -> Array:
+	var client: Variant = connection.get_ref() if connection!=null else null
+	if client==null or not client.connected: return []
+	var self_id: String = str(client.latest.get("self",""))
+	var out := []
+	for peer: Dictionary in client.latest.get("players",[]):
+		if peer.id!=self_id: out.append({"id":str(peer.id),"name":str(peer.name)})
+	return out
 func set_style(id: String) -> Variant: send("set_style",[id]); return null
 func select_form(id: String) -> Variant: send("form",[id]); return null
 func choose_form_path(path: String) -> Variant: send("path",[path]); return null

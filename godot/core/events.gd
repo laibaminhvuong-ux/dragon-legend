@@ -17,6 +17,7 @@ signal attack(d: Dictionary)
 signal damage(d: Dictionary)
 signal beam(d: Dictionary)
 signal avatar_strike(d: Dictionary)
+signal zeni_transfer(d: Dictionary)
 
 ## Emits a JS-style event: name as in the JS game, payload the same object it sends.
 func emit_named(name: String, payload: Variant = null) -> void:
@@ -36,4 +37,5 @@ func emit_named(name: String, payload: Variant = null) -> void:
 		"beam": beam.emit(d)
 		"discovered", "teleport": area_event.emit(name, d)   # open world: a new area found / same-planet travel
 		"avatarStrike": avatar_strike.emit(d)
+		"zeniTransfer": zeni_transfer.emit(d)
 		_: push_warning("Events: unknown event '%s'" % name)

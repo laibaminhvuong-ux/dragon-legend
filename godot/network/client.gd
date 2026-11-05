@@ -20,6 +20,8 @@ var _time := 0.0
 var _ping := 0.0
 var _save := 0.0
 var _closing := false
+var _saved_zeni_revision := 0
+var _zeni_save_failed := false
 func begin(url: String,mode: String,invite: String,index: int,name: String) -> String:
 	if local_host==null and url!="" and not CoopCodec.endpoint_valid(url): return "Enter a valid ws:// or wss:// host address."
 	if mode=="join" and not CoopCodec.code_valid(invite): return "Enter exactly six digits."
@@ -35,6 +37,7 @@ func begin(url: String,mode: String,invite: String,index: int,name: String) -> S
 	endpoint = url
 	pending = {"type":mode,"version":CoopCodec.VERSION,"token":token,"code":invite,"slot_index":index,"slot":slot,"name":name.left(24)}
 	_time = 0; _sent = false; _closing = false
+	_saved_zeni_revision = 0; _zeni_save_failed = false
 	if local_host!=null:
 		var reply: Dictionary = local_host.get_ref().service.authenticate("owner","127.0.0.1",pending,Time.get_ticks_msec()/1000.0)
 		pending.clear()
@@ -57,7 +60,7 @@ func _process(dt: float) -> void:
 		if connected and local_host.get_ref()!=null and local_host.get_ref().running:
 			_time += dt
 			if _time>0.1:
-				_time = 0; latest = local_host.get_ref().service.snapshot("owner"); frame.emit(latest)
+				accept_snapshot(local_host.get_ref().service.snapshot("owner"))
 			_save += dt
 			if _save>5: _save = 0; save_progress()
 		return
@@ -80,9 +83,7 @@ func _process(dt: float) -> void:
 			match message.get("type",""):
 				"welcome": connected = true; code = str(message.code); welcomed.emit(code)
 				"snapshot":
-					latest = message; _time = 0
-					if _save>=5: save_progress(); _save = 0
-					frame.emit(message)
+					accept_snapshot(message)
 				"server_closed":
 					save_progress(); close(); failed.emit("The owner left. This server is now closed."); disconnected.emit()
 				"error": failed.emit(str(message.get("message","The server rejected that request.")))
@@ -92,6 +93,19 @@ func _process(dt: float) -> void:
 		save_progress(); disconnected.emit()
 	if _time>15:
 		close(); failed.emit("The owner did not respond. Check the host address, room code and router/firewall.")
+## Both transports use the same persistence path. Failed writes keep the revision dirty for retry.
+func accept_snapshot(data: Dictionary) -> void:
+	latest = data; _time = 0
+	var revision := int(data.get("zeniRevision",0))
+	if revision>_saved_zeni_revision:
+		if save_progress():
+			_saved_zeni_revision = revision; _zeni_save_failed = false; _save = 0
+		elif not _zeni_save_failed:
+			_zeni_save_failed = true
+			failed.emit("Your server zeni changed, but saving this fighter failed. Retrying with the next update.")
+	elif _save>=5:
+		save_progress(); _save = 0
+	frame.emit(data)
 func _connect(url: String) -> Error:
 	endpoint = url
 	socket = WebSocketPeer.new()
@@ -107,9 +121,10 @@ func command(name: String,args: Array = []) -> void: send({"type":"command","nam
 func inputs(it: Dictionary) -> void:
 	_sequence += 1
 	send({"type":"input","sequence":_sequence,"intents":it})
-func save_progress() -> void:
+func save_progress() -> bool:
 	if slot_index>=0 and latest.get("slot") is Dictionary:
-		SaveStore.save_slot(slot_index,RuleSchema.new().normalize(latest.slot))
+		return SaveStore.save_slot(slot_index,RuleSchema.new().normalize(latest.slot))
+	return false
 func close() -> void:
 	_closing = true
 	if local_host!=null and local_host.get_ref()!=null and local_host.get_ref().service.sessions.has("owner"):

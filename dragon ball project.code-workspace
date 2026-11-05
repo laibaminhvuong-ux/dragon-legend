@@ -2,7 +2,7 @@
   "folders": [
     {
       "name": "dragon ball project",
-      "path": "."
+      "path": "\\\\wsl.localhost\\Ubuntu\\home\\laptop_usd\\dragon-ball"
     }
   ],
   "settings": {
@@ -36,7 +36,19 @@
           "kind": "test",
           "isDefault": true
         },
-        "problemMatcher": []
+        "problemMatcher": [],
+        "windows": {
+          "command": "wsl.exe",
+          "args": [
+            "-d",
+            "Ubuntu",
+            "--cd",
+            "/home/laptop_usd/dragon-ball",
+            "bash",
+            "tools/godot_test.sh",
+            "--check-data"
+          ]
+        }
       },
       {
         "label": "Dragon Legend: verify generated data",
@@ -49,7 +61,19 @@
         "options": {
           "cwd": "${workspaceFolder}"
         },
-        "problemMatcher": []
+        "problemMatcher": [],
+        "windows": {
+          "command": "wsl.exe",
+          "args": [
+            "-d",
+            "Ubuntu",
+            "--cd",
+            "/home/laptop_usd/dragon-ball",
+            "node",
+            "tools/export_godot_data.mjs",
+            "--check"
+          ]
+        }
       }
     ]
   }

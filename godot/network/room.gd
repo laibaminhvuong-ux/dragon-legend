@@ -6,6 +6,7 @@ var saved: Dictionary
 var members: Dictionary = {}
 var worlds: Dictionary = {}
 var time := 0.0
+var transfer_serial := 0
 class Sink extends RefCounted:
 	var room: WeakRef
 	var member: String
@@ -61,7 +62,7 @@ func add(identity: String,name: String,fighter_slot: Dictionary) -> Dictionary:
 	game.player.id = "friend:"+identity.left(12)
 	var story := RuleStory.new(game,sink)
 	var party_story := PartyStory.new(self,identity)
-	members[identity] = {"game":game,"story":story,"sink":sink,"party":party_story,"name":profile.name,"input":CoopCodec.intents({}),"events":[],"active":false,"sequence":-1}
+	members[identity] = {"game":game,"story":story,"sink":sink,"party":party_story,"name":profile.name,"input":CoopCodec.intents({}),"events":[],"active":false,"sequence":-1,"zeniRevision":0,"nextZeniAt":0.0}
 	attach(identity)
 	return {"ok":true,"id":game.player.id}
 func attach(identity: String) -> void:
@@ -107,6 +108,47 @@ func event(identity: String,type: String,payload: Dictionary) -> void:
 	for id: String in members:
 		if id!=identity and (type not in ["attack","damage","beam","avatarStrike"] or members[id].game.zone.id!=members[identity].game.zone.id): continue
 		if members[id].events.size()<96: members[id].events.append({"name":type,"data":CoopCodec.json_value(payload)})
+## Room-wide roster includes connected members in other maps and members in menus.
+func player_list() -> Array:
+	var out := []
+	for member: Dictionary in members.values():
+		out.append({"id":str(member.game.player.id),"name":str(member.name)})
+	return out
+func _private_event(identity: String,name: String,payload: Dictionary) -> void:
+	# Transfer notices take priority over older presentation events; revision saves do not rely on this queue.
+	var queue: Array = members[identity].events
+	while queue.size()>=96: queue.pop_front()
+	queue.append({"name":name,"data":CoopCodec.json_value(payload)})
+func give_zeni(identity: String,target_player_id: String,amount: Variant) -> Variant:
+	if not members.has(identity): return "Join a server to send zeni"
+	var sender: Dictionary = members[identity]
+	if target_player_id==sender.game.player.id: return "Choose another player to send zeni to."
+	var target_identity := ""
+	for id: String in members:
+		if members[id].game.player.id==target_player_id: target_identity = id; break
+	if target_identity=="": return "That player is no longer connected to this server."
+	var receiver: Dictionary = members[target_identity]
+	var staged := RuleZeniTransfer.plan(sender.game.slot.get("zeni"),receiver.game.slot.get("zeni"),amount)
+	if not staged.ok: return staged.error
+	if time<float(sender.nextZeniAt): return "Wait a second before sending zeni again."
+	# Prepare both saved slot copies before touching either balance. No yield or callback in this commit.
+	var sender_slot: Dictionary = sender.game.to_save().duplicate(true)
+	var receiver_slot: Dictionary = receiver.game.to_save().duplicate(true)
+	sender_slot.zeni = staged.sender; receiver_slot.zeni = staged.receiver
+	sender.game.slot.zeni = staged.sender; receiver.game.slot.zeni = staged.receiver
+	saved.members[identity].slot = sender_slot; saved.members[target_identity].slot = receiver_slot
+	sender.zeniRevision += 1; receiver.zeniRevision += 1
+	sender.nextZeniAt = time+RuleZeniTransfer.COOLDOWN
+	transfer_serial += 1
+	var receipt := {"transfer_id":"%s:%d" % [saved.code,transfer_serial],"from_id":str(sender.game.player.id),"to_id":str(receiver.game.player.id),"from_name":str(sender.name),"to_name":str(receiver.name),"amount":staged.amount}
+	var number := RuleZeniTransfer.format_amount(int(staged.amount))
+	_private_event(identity,"notify",{"text":"Sent %s zeni to %s" % [number,receiver.name]})
+	_private_event(target_identity,"notify",{"text":"%s sent you %s zeni" % [sender.name,number]})
+	_private_event(identity,"zeniTransfer",receipt)
+	_private_event(target_identity,"zeniTransfer",receipt)
+	# Stats observers run only after both wallets/saved slots and the private receipts are committed.
+	sender.game.emit("stats",sender.game.hud()); receiver.game.emit("stats",receiver.game.hud())
+	return null
 func input_for(identity: String,raw: Dictionary,sequence: int) -> void:
 	if not members.has(identity) or sequence<=members[identity].sequence: return
 	var next := CoopCodec.intents(raw)
@@ -122,6 +164,7 @@ func command(identity: String,name: String,args: Array) -> Variant:
 	var value: Variant = args[0] if not args.is_empty() else ""
 	match name:
 		"enter": m.active = true; return null
+		"give_zeni": return give_zeni(identity,args[0],args[1]) if args.size()==2 and args[0] is String else "Choose a player and a whole zeni amount."
 		"set_style": return g.set_style(value) if args.size()==1 and value is String else "Invalid style command."
 		"form": return g.select_form(str(value))
 		"path": return g.choose_form_path(str(value))
@@ -188,7 +231,7 @@ func snapshot(identity: String) -> Dictionary:
 	for b: Dictionary in g.combat.projectiles:
 		var shot: Dictionary = b.duplicate(); shot.erase("owner"); shots.append(CoopCodec.json_value(shot))
 	var events: Array = m.events.duplicate(); m.events.clear()
-	return {"type":"snapshot","code":saved.code,"time":time,"map":g.zone.id,"self":g.player.id,"slot":CoopCodec.json_value(g.to_save()),"player":CoopCodec.json_value(g.player),"enemies":CoopCodec.json_value(g.combat.enemies),"projectiles":shots,"friends":friends,"combat":CoopCodec.json_value(g.combat.snapshot()),"events":events,"count":members.size()}
+	return {"type":"snapshot","code":saved.code,"time":time,"map":g.zone.id,"self":g.player.id,"slot":CoopCodec.json_value(g.to_save()),"player":CoopCodec.json_value(g.player),"enemies":CoopCodec.json_value(g.combat.enemies),"projectiles":shots,"friends":friends,"players":player_list(),"zeniRevision":int(m.zeniRevision),"combat":CoopCodec.json_value(g.combat.snapshot()),"events":events,"count":members.size()}
 func checkpoint() -> Dictionary:
 	for id: String in members: saved.members[id].slot = members[id].game.to_save().duplicate(true)
 	saved.worlds = {}
