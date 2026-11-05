@@ -103,7 +103,7 @@ func _settings() -> void:
 		sl.value_changed.connect(func(v: float) -> void: Settings.set_value(key, v); val.text = "%.2f" % v)
 		row.add_child(sl); row.add_child(val)
 		_box.add_child(row)
-	for s: Array in [["invertY", "Invert look"], ["showFps", "Show FPS"], ["voices", "Character voices"], ["fullscreen", "Fullscreen"]]:
+	for s: Array in [["invertY", "Invert look"], ["showFps", "Show FPS"], ["voices", "Character voices"], ["fullscreen", "Fullscreen"], ["vsync", "VSync (lock to display)"]]:
 		var cb := CheckButton.new(); cb.text = s[1]; cb.button_pressed = bool(Settings.get_value(s[0]))
 		var key: String = s[0]
 		cb.toggled.connect(func(on: bool) -> void:

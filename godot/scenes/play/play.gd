@@ -148,13 +148,22 @@ func intents() -> Dictionary:
 	return it
 
 ## One fixed 1/60 s simulation step.
+## Dev timing (microseconds summed per section; main prints averages with --shot).
+var prof: Dictionary = {}
+var prof_frames := 0
+func _t(name: String, since: int) -> void:
+	prof[name] = int(prof.get(name, 0)) + Time.get_ticks_usec() - since
+
 func step(dt: float) -> void:
 	if is_frozen():
 		return
 	var it := intents()
 	prev_pos = game.player.pos
+	var t0 := Time.get_ticks_usec()
 	game.update(dt, it)
+	_t("rules", t0); t0 = Time.get_ticks_usec()
 	story.update(dt, it)
+	_t("story", t0)
 	if tutorial.update(dt, it, game.player) != null:
 		tutorial_step_done.emit()
 		save_now()
@@ -236,6 +245,7 @@ var _rift_fx: Node3D
 var _rift_overlay: CanvasLayer
 var _rift_env: Dictionary = {}   # the world's fog before corruption, to restore it
 var _rift_amount := 0.0
+var _rift_envnode: WorldEnvironment
 
 ## Corrupted timeline while a Rift mission is active: purple fog and screen tint, shards drifting round the
 ## fighter, rift tears in the sky. Eases in and out.
@@ -243,10 +253,13 @@ func _rift_view(pos: Vector3, frame_dt: float) -> void:
 	var m: Dictionary = game.active_rift_mission() if game.has_method("active_rift_mission") else {}
 	var want := 1.0 if m.get("corrupted", false) else 0.0
 	_rift_amount = move_toward(_rift_amount, want, frame_dt * 0.6)
-	var env_node: WorldEnvironment = null
-	for n in world.find_children("*", "WorldEnvironment", true, false):
-		env_node = n
-		break
+	if want == 0.0 and _rift_amount == 0.0 and _rift_fx == null:
+		return   # no mission: nothing to do (and no searching the world every frame)
+	if _rift_envnode == null:
+		for n in world.find_children("*", "WorldEnvironment", true, false):
+			_rift_envnode = n
+			break
+	var env_node: WorldEnvironment = _rift_envnode
 	if env_node != null and env_node.environment != null:
 		var e := env_node.environment
 		if _rift_env.is_empty():
@@ -386,9 +399,16 @@ func render(frame_dt: float, alpha: float) -> void:
 		tutorial.look(absf(look.x) + absf(look.y))
 	if _look_signature() != _look_key:
 		_build_player()
+	prof_frames += 1
+	var t1 := Time.get_ticks_usec()
+	if world.has_meta("towns"):
+		(world.get_meta("towns") as TownStream).update_around(pos)
+	_t("town_stream", t1); t1 = Time.get_ticks_usec()
 	_building_view(pos)
+	_t("building_view", t1); t1 = Time.get_ticks_usec()
 	_boost_view(pos, frame_dt)
 	_rift_view(pos, frame_dt)
+	_t("rift_view", t1); t1 = Time.get_ticks_usec()
 	player.visible = float(p.health) > 0.0
 	player.position = pos
 	player.rotation.y = float(p.yaw)
@@ -400,6 +420,7 @@ func render(frame_dt: float, alpha: float) -> void:
 		"charging": p.charging, "kaioken": p.kaioken, "dashing": p.dashing, "blocking": p.blocking,
 		"boosting": p.get("boosting", false), "boostLaunch": float(p.get("boostLaunch", 0.0)),
 		"attackSerial": p.attackSerial, "attackKind": p.attackKind, "hurt": float(p.get("hurtUntil", 0.0)) > float(game.combat.get("clock")) if game.combat.get("clock") != null else false})
+	_t("player", t1); t1 = Time.get_ticks_usec()
 	var target: Variant = null
 	for e: Dictionary in game.combat.enemies:
 		if e.id == p.lockTarget and float(e.health) > 0.0:
@@ -416,10 +437,13 @@ func render(frame_dt: float, alpha: float) -> void:
 			if n.get("boss", false) and Vector2(float(n.x) - pos.x, float(n.z) - pos.z).length() < 45.0:
 				villain = true
 		Music.play("battle" if villain else game.current_region())
+	_t("camera_music", t1); t1 = Time.get_ticks_usec()
 	if combat_view != null:
 		combat_view.call("update_view", anim_dt)
+	_t("combat_view", t1); t1 = Time.get_ticks_usec()
 	if story_view != null:
 		story_view.call("update_view", anim_dt, pos)
+	_t("story_view", t1)
 
 func shutdown() -> void:
 	if Events.travel.is_connected(_on_travel):

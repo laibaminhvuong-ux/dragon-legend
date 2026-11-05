@@ -17,7 +17,11 @@ static func has_builder(type: String) -> bool:
 static func build(zone: RefCounted) -> Node3D:
 	var root := Node3D.new()
 	root.name = "Landmarks"
+	var towns: Array = []
 	for l: Dictionary in zone.landmarks:
+		if str(l.type) == "town":   # towns and hamlets stream in like chunks (TownStream)
+			towns.append(l)
+			continue
 		if not has_builder(l.type):
 			push_warning("Landmarks: no builder for '%s'" % l.type)
 			continue
@@ -43,6 +47,10 @@ static func build(zone: RefCounted) -> Node3D:
 			body.add_child(shape)
 			body.position = Vector3(l.x, zone.height_at(l.x, l.z), l.z)
 			root.add_child(body)
+	if not towns.is_empty():
+		var stream := TownStream.create(zone, towns)
+		root.add_child(stream)
+		root.set_meta("towns", stream)
 	return root
 
 class Builder extends RefCounted:

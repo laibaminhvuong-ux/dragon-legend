@@ -17,6 +17,8 @@ const SCHEMA := {
 	"showFps": {"default": false, "type": "bool"},
 	"voices": {"default": true, "type": "bool"},
 	"fullscreen": {"default": false, "type": "bool"},
+	# off by default (perf, 2026-11-05): VSync locks the game to the display's refresh, and the user's display runs at 30 Hz
+	"vsync": {"default": false, "type": "bool"},
 	# overrides on top of Controls' defaults: { action: [ "key:<physical keycode>" | "mouse:<button>" ] }
 	"bindings": {"default": {}, "type": "dict"},
 }
@@ -25,6 +27,15 @@ var _values: Dictionary = {}
 
 func _ready() -> void:
 	load_file()
+	apply_display()
+
+## VSync on: lock to the display. Off: up to 120 fps (keeps laptops cool) — smoother input on a slow display.
+func apply_display() -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	var on := bool(get_value("vsync"))
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if on else DisplayServer.VSYNC_DISABLED)
+	Engine.max_fps = 0 if on else 120
 
 func load_file() -> void:
 	var saved: Variant = null
@@ -60,6 +71,8 @@ func set_value(key: String, value: Variant) -> Variant:
 	_values[key] = sanitize(key, value)
 	_save()
 	changed.emit(key, _values[key])
+	if key == "vsync":
+		apply_display()
 	return _values[key]
 
 func reset() -> void:
@@ -67,6 +80,7 @@ func reset() -> void:
 		_values[k] = SCHEMA[k].default.duplicate(true) if SCHEMA[k].default is Dictionary else SCHEMA[k].default
 		changed.emit(k, _values[k])
 	_save()
+	apply_display()
 
 func _save() -> void:
 	var f := FileAccess.open(path, FileAccess.WRITE)

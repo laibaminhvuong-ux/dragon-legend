@@ -39,6 +39,8 @@ static func _hollow(n: Node3D, w: float, d: float, h: float, wall: Material, flo
 	_box(n, Vector3(w - t * 2.0, 0.12, d - t * 2.0), _mat(0xeae4d6, {"rough": 0.9}), Vector3(0, h - 0.06, 0))   # ceiling
 	var lamp := OmniLight3D.new()   # a warm light inside so rooms aren't pitch dark under the ceiling
 	lamp.light_color = Color(1.0, 0.88, 0.7); lamp.light_energy = 0.9; lamp.omni_range = maxf(w, d) * 0.8
+	lamp.distance_fade_enabled = true   # only lit when you're near (hundreds of houses otherwise light every frame)
+	lamp.distance_fade_begin = 22.0; lamp.distance_fade_length = 6.0
 	lamp.position = Vector3(0, h - 0.6, 0)
 	n.add_child(lamp)
 	if furnish and w > 4.0 and d > 4.0:
@@ -51,10 +53,14 @@ static func _hollow(n: Node3D, w: float, d: float, h: float, wall: Material, flo
 		_box(n, Vector3(1.1, 0.15, 1.9), _mat(0xf0eee6), Vector3(w * 0.5 - t - 0.75, 0.52, -d * 0.5 + t + 1.1))
 		_box(n, Vector3(0.6, 1.8, 1.4), wood, Vector3(-w * 0.5 + t + 0.35, 0.9, d * 0.18))
 
+static var _mat_lock := Mutex.new()   # towns build on a worker thread (TownStream)
 static func _mat(color: int, o := {}) -> StandardMaterial3D:
 	var key := "%x:%s" % [color, str(o)]
+	_mat_lock.lock()
 	if _mats.has(key):
-		return _mats[key]
+		var hit: StandardMaterial3D = _mats[key]
+		_mat_lock.unlock()
+		return hit
 	var m := StandardMaterial3D.new()
 	m.albedo_color = Color.hex((color << 8) | 0xff)
 	m.roughness = float(o.get("rough", 0.65))
@@ -64,6 +70,7 @@ static func _mat(color: int, o := {}) -> StandardMaterial3D:
 		m.emission = Color.hex((int(o.emissive) << 8) | 0xff)
 		m.emission_energy_multiplier = float(o.get("glow", 1.0))
 	_mats[key] = m
+	_mat_lock.unlock()
 	return m
 
 static func build(g: Node3D, zone: RefCounted, l: Dictionary) -> void:
@@ -194,6 +201,8 @@ static func _dome_house(n: Node3D, b: Dictionary) -> void:
 	_box(n, Vector3(r * 1.5, 0.1, r * 1.5), _mat(0xc8b890, {"rough": 0.8}), Vector3(0, 0.05, 0))
 	var lamp := OmniLight3D.new()
 	lamp.light_color = Color(1.0, 0.88, 0.7); lamp.light_energy = 0.9; lamp.omni_range = r * 1.8
+	lamp.distance_fade_enabled = true   # only lit when you're near (hundreds of houses otherwise light every frame)
+	lamp.distance_fade_begin = 22.0; lamp.distance_fade_length = 6.0
 	lamp.position = Vector3(0, 2.8, 0)
 	n.add_child(lamp)
 	var wood := _mat(0x7a5232, {"rough": 0.8})

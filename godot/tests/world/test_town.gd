@@ -31,6 +31,9 @@ func test_every_style_draws() -> void:
 	for id: String in TOWNS:
 		var zone := RuleZone.new(id)
 		var root := WorldLandmarks.build(zone)
+		ok(root.has_meta("towns"), "%s: towns stream in like chunks" % id)
+		(root.get_meta("towns") as TownStream).update_around(Vector3(zone.spawn.x, 0, zone.spawn.z))   # standing in town builds it
+		(root.get_meta("towns") as TownStream).flush()   # far parts build on a worker thread
 		var meshes := root.find_children("*", "MeshInstance3D", true, false)
 		ok(meshes.size() >= 4 and meshes.size() < 60, "%s merged into %d meshes" % [id, meshes.size()])
 		var verts := 0
@@ -38,3 +41,29 @@ func test_every_style_draws() -> void:
 			verts += (m as MeshInstance3D).mesh.get_faces().size()
 		ok(verts > 3000, "%s still has its buildings (%d triangle corners)" % [id, verts])
 		root.free()
+
+func test_towns_load_near_and_unload_far() -> void:
+	var zone := RulePlanet.new("earth")
+	var root := WorldLandmarks.build(zone)
+	var stream: TownStream = root.get_meta("towns")
+	eq(stream.built_count(), 0, "nothing built before the player is placed")
+	var far := Vector3(-1500, 0, -1500)
+	stream.update_around(far)
+	stream.flush()
+	var near_far := stream.built_count()
+	ok(near_far < stream.towns.size(), "only towns near the player are built (%d of %d)" % [near_far, stream.towns.size()])
+	var t: Dictionary = stream.towns[0]
+	stream.update_around(Vector3(float(t.x), 0, float(t.z)))
+	stream.flush()
+	ok(stream.built.has(0), "walking to a town builds it")
+	stream.update_around(Vector3(float(t.x) + 400.0, 0, float(t.z)))
+	stream.flush()
+	stream.update_around(Vector3(float(t.x) + 3000.0, 0, float(t.z) + 3000.0))
+	ok(not stream.built.has(0), "walking away frees it")
+	# a town further off builds on a worker thread and appears once done
+	var before := stream.built_count()
+	stream.update_around(Vector3(float(t.x) + 450.0, 0, float(t.z)))
+	ok(stream.built_count() == before, "nothing built synchronously in passing")
+	stream.flush()
+	ok(stream.built.has(0), "the worker thread built it")
+	root.free()

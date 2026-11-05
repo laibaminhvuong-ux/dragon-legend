@@ -28,7 +28,10 @@ static func build_zone(zone: RuleZone, quality := "high") -> Node3D:
 	root.add_child(grass)
 	root.set_meta("grass", grass)
 	root.add_child(load("res://world/props.gd").build(zone, quality))
-	root.add_child(load("res://world/landmarks.gd").build(zone))
+	var marks: Node3D = load("res://world/landmarks.gd").build(zone)
+	root.add_child(marks)
+	if marks.has_meta("towns"):
+		root.set_meta("towns", marks.get_meta("towns"))   # towns stream in like chunks; play feeds it the player position
 	var water: Node3D = load("res://world/water.gd").build(zone)
 	if water != null:
 		root.add_child(water)

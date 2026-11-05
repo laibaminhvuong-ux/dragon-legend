@@ -29,6 +29,8 @@ func _ready() -> void:
 	ui = CanvasLayer.new()
 	ui.name = "UI"
 	add_child(ui)
+	if _args.has("shot"):
+		RenderingServer.viewport_set_measure_render_time(get_viewport().get_viewport_rid(), true)
 	if _args.has("smoke"):
 		return
 	if _args.has("play"):
@@ -323,8 +325,15 @@ func _dev_walk(secs: float) -> void:
 	await get_tree().create_timer(secs).timeout
 	if play != null: play.forced = {}
 
+var _worst := 0.0   # dev: longest frame after loading (printed with --shot)
+var _hitches := 0
 func _process(delta: float) -> void:
 	_frames += 1
+	if _frames > 120:
+		_worst = maxf(_worst, delta)
+		if delta > 0.05:
+			_hitches += 1
+			if _args.has("shot"): print("hitch at frame %d: %.0f ms" % [_frames, delta * 1000.0])
 	var steps := Clock.advance(delta)
 	if play != null:
 		var used := play_ui.handle_input() if play_ui != null else false
@@ -357,7 +366,18 @@ func _process(delta: float) -> void:
 		if out.ends_with(".webp"): img.save_webp(out, true, 0.86)   # website images
 		elif out.ends_with(".jpg"): img.save_jpg(out, 0.88)
 		else: img.save_png(out)
-		print("shot fps %d" % Engine.get_frames_per_second())
+		var vrid := get_viewport().get_viewport_rid()
+		print("WORST frame %.1f ms · hitches over 50 ms: %d" % [_worst * 1000.0, _hitches])
+		print("RENDER gpu %.2f ms · cpu %.2f ms" % [RenderingServer.viewport_get_measured_render_time_gpu(vrid), RenderingServer.viewport_get_measured_render_time_cpu(vrid)])
+		if play != null and play.prof_frames > 0:
+			var parts: PackedStringArray = []
+			for k: String in play.prof:
+				parts.append("%s %.2f" % [k, float(play.prof[k]) / play.prof_frames / 1000.0])
+			print("PROF ms/frame: ", " · ".join(parts), " (enemies %d)" % play.game.combat.enemies.size())
+		print("shot fps %d · draws %d · objects %d · tris %dk · nodes %d · lights %d · frame %.1f ms" % [Engine.get_frames_per_second(),
+			Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME),
+			Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME) / 1000, Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
+			get_tree().root.find_children("*", "Light3D", true, false).size(), Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0])
 		get_tree().quit(0)
 
 func _notification(what: int) -> void:
