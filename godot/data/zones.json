@@ -3287,6 +3287,447 @@
       "z": -67.5
     }
   },
+  "mt_paozu": {
+    "name": "Mt. Paozu",
+    "planet": "Earth",
+    "saga": "Origins",
+    "terrain": {
+      "size": 420,
+      "hills": {
+        "amp": 9,
+        "scale": 110
+      },
+      "flatSpawn": 90,
+      "spawn": {
+        "x": 0,
+        "z": -70
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 34,
+        "azimuth": 205
+      },
+      "trees": "broadleaf",
+      "treeCount": 260,
+      "bushes": 260
+    },
+    "landmarks": [
+      {
+        "type": "paozuhut",
+        "name": "Grandpa Gohin's Hut",
+        "x": 0,
+        "z": 10,
+        "collide": 3.5,
+        "flatten": 18
+      }
+    ],
+    "travelPoint": {
+      "x": 16,
+      "z": -70
+    }
+  },
+  "fire_mountain": {
+    "name": "Fire Mountain",
+    "planet": "Earth",
+    "saga": "Origins",
+    "terrain": {
+      "size": 420,
+      "hills": {
+        "amp": 4,
+        "scale": 140
+      },
+      "flatSpawn": 90,
+      "spawn": {
+        "x": 0,
+        "z": -70
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 40,
+        "azimuth": 230
+      },
+      "tints": {
+        "dirt": [
+          1.12,
+          0.95,
+          0.8
+        ],
+        "rock": [
+          1.1,
+          0.92,
+          0.78
+        ]
+      },
+      "trees": "dead",
+      "treeCount": 10,
+      "rocks": 420,
+      "bushes": 60,
+      "grass": 0.12
+    },
+    "landmarks": [
+      {
+        "type": "firecastle",
+        "name": "The Ox-Lord's Castle",
+        "x": 0,
+        "z": 40,
+        "collide": 14,
+        "flatten": 36
+      }
+    ],
+    "travelPoint": {
+      "x": 16,
+      "z": -70
+    }
+  },
+  "pilav_castle": {
+    "name": "Emperor Pilav's Castle",
+    "planet": "Earth",
+    "saga": "Origins",
+    "terrain": {
+      "size": 420,
+      "hills": {
+        "amp": 4,
+        "scale": 140
+      },
+      "flatSpawn": 90,
+      "spawn": {
+        "x": 0,
+        "z": -70
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 40,
+        "azimuth": 230
+      },
+      "tints": {
+        "dirt": [
+          1.12,
+          0.95,
+          0.8
+        ],
+        "rock": [
+          1.1,
+          0.92,
+          0.78
+        ]
+      },
+      "trees": "dead",
+      "treeCount": 40,
+      "rocks": 420,
+      "bushes": 60,
+      "grass": 0.12
+    },
+    "landmarks": [
+      {
+        "type": "pilavcastle",
+        "name": "Pilav's Castle",
+        "x": 0,
+        "z": 40,
+        "collide": 16,
+        "flatten": 40
+      }
+    ],
+    "travelPoint": {
+      "x": 16,
+      "z": -70
+    }
+  },
+  "muscle_tower": {
+    "name": "Muscle Tower",
+    "planet": "Earth",
+    "saga": "Origins",
+    "terrain": {
+      "size": 420,
+      "hills": {
+        "amp": 4,
+        "scale": 140
+      },
+      "flatSpawn": 90,
+      "spawn": {
+        "x": 0,
+        "z": -70
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 18,
+        "azimuth": 200,
+        "turbidity": 2.2
+      },
+      "snowLine": -50,
+      "fog": [
+        14082798,
+        0.0012
+      ],
+      "trees": "none",
+      "rocks": 160,
+      "bushes": 0,
+      "grass": 0,
+      "tints": {
+        "rock": [
+          0.85,
+          0.92,
+          1.05
+        ]
+      }
+    },
+    "landmarks": [
+      {
+        "type": "muscletower",
+        "name": "Muscle Tower",
+        "x": 0,
+        "z": 40,
+        "collide": 9,
+        "flatten": 30
+      }
+    ],
+    "travelPoint": {
+      "x": 16,
+      "z": -70
+    }
+  },
+  "baaba_palace": {
+    "name": "Fortuneteller Baaba's Palace",
+    "planet": "Earth",
+    "saga": "Origins",
+    "terrain": {
+      "size": 420,
+      "hills": {
+        "amp": 4,
+        "scale": 140
+      },
+      "flatSpawn": 90,
+      "spawn": {
+        "x": 0,
+        "z": -70
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 34,
+        "azimuth": 205
+      },
+      "trees": "broadleaf",
+      "treeCount": 40
+    },
+    "landmarks": [
+      {
+        "type": "baabapalace",
+        "name": "Baaba's Palace",
+        "x": 0,
+        "z": 40,
+        "collide": 12,
+        "flatten": 46
+      }
+    ],
+    "travelPoint": {
+      "x": 16,
+      "z": -70
+    }
+  },
+  "korrin_tower": {
+    "name": "Korrin Tower",
+    "planet": "Earth",
+    "saga": "Origins",
+    "terrain": {
+      "size": 420,
+      "hills": {
+        "amp": 4,
+        "scale": 140
+      },
+      "flatSpawn": 90,
+      "spawn": {
+        "x": 0,
+        "z": -70
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 34,
+        "azimuth": 205
+      },
+      "trees": "broadleaf",
+      "treeCount": 220
+    },
+    "landmarks": [
+      {
+        "type": "korrintower",
+        "name": "Korrin Tower",
+        "x": 0,
+        "z": 30,
+        "collide": 4,
+        "flatten": 20
+      }
+    ],
+    "travelPoint": {
+      "x": 16,
+      "z": -70
+    },
+    "portals": [
+      {
+        "zone": "kamu_lookout",
+        "x": 0,
+        "z": 30,
+        "y": 430,
+        "r": 40
+      }
+    ]
+  },
+  "piccor_castle": {
+    "name": "King Piccor's Castle",
+    "planet": "Earth",
+    "saga": "Origins",
+    "terrain": {
+      "size": 420,
+      "hills": {
+        "amp": 4,
+        "scale": 140
+      },
+      "flatSpawn": 90,
+      "spawn": {
+        "x": 0,
+        "z": -70
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 40,
+        "azimuth": 230
+      },
+      "tints": {
+        "dirt": [
+          1.12,
+          0.95,
+          0.8
+        ],
+        "rock": [
+          1.1,
+          0.92,
+          0.78
+        ]
+      },
+      "trees": "dead",
+      "treeCount": 40,
+      "rocks": 420,
+      "bushes": 60,
+      "grass": 0.12
+    },
+    "landmarks": [
+      {
+        "type": "piccorcastle",
+        "name": "King Piccor's Castle",
+        "x": 0,
+        "z": 45,
+        "collide": 15,
+        "flatten": 42
+      }
+    ],
+    "travelPoint": {
+      "x": 16,
+      "z": -70
+    }
+  },
+  "tournament_island": {
+    "name": "Tournament Island",
+    "planet": "Earth",
+    "saga": "Origins",
+    "terrain": {
+      "size": 420,
+      "hills": {
+        "amp": 4,
+        "scale": 140
+      },
+      "flatSpawn": 90,
+      "spawn": {
+        "x": 0,
+        "z": -70
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 34,
+        "azimuth": 205
+      },
+      "trees": "broadleaf",
+      "treeCount": 30
+    },
+    "landmarks": [
+      {
+        "type": "budokai",
+        "name": "World Tournament Arena",
+        "x": 0,
+        "z": 20,
+        "flatten": 40
+      }
+    ],
+    "travelPoint": {
+      "x": 16,
+      "z": -70
+    }
+  },
+  "kamu_lookout": {
+    "name": "Kamu's Lookout",
+    "planet": "Earth",
+    "saga": "Origins",
+    "terrain": {
+      "size": 300,
+      "ground": "white",
+      "hills": {
+        "amp": 0,
+        "scale": 50
+      },
+      "flatSpawn": 140,
+      "spawn": {
+        "x": 0,
+        "z": -18
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 34,
+        "azimuth": 205
+      },
+      "trees": "broadleaf",
+      "treeCount": 0,
+      "bushes": 0,
+      "rocks": 0,
+      "stones": 0
+    },
+    "landmarks": [
+      {
+        "type": "lookout",
+        "name": "Kamu's Lookout",
+        "x": 0,
+        "z": 0,
+        "flatten": 40
+      }
+    ],
+    "travelPoint": {
+      "x": 10,
+      "z": -18
+    },
+    "portals": [
+      {
+        "zone": "korrin_tower",
+        "x": 0,
+        "z": 0,
+        "y": -40,
+        "r": 400
+      }
+    ]
+  },
   "interior_home": {
     "name": "House",
     "planet": "Interior",

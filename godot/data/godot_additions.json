@@ -1,11 +1,20 @@
 {
   "zones": [
+    "baaba_palace",
+    "fire_mountain",
     "interior_hangar",
     "interior_home",
     "interior_lab",
     "interior_temple",
     "interior_tower",
-    "snake_way"
+    "kamu_lookout",
+    "korrin_tower",
+    "mt_paozu",
+    "muscle_tower",
+    "piccor_castle",
+    "pilav_castle",
+    "snake_way",
+    "tournament_island"
   ],
   "note": "Zones changed for the Godot game only; JS parity skips them."
 }

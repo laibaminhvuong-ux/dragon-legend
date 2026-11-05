@@ -152,6 +152,25 @@ static func face(f: Fighter, race_id: String, skin: Color) -> void:
 ## (head centre about (0, 0.06, 0), radius about 0.105, +Z is the face).
 static func costume(f: Fighter, id: String) -> void:
 	match id:
+		"powerpole":   # kid Gokan: the red Power Pole strapped diagonally across the back
+			f.add_piece("DEF-spine.003", Transform3D.IDENTITY, _mesh("powerpole", func(g: Geo) -> void:
+				g.cylinder(Transform3D(Basis.from_euler(Vector3(0, 0, 0.55)), Vector3(0, 1.25, -0.16)), 0.022, 0.022, 1.3, 10)
+				for e in [-0.6, 0.6]:
+					g.cylinder(Transform3D(Basis.from_euler(Vector3(0, 0, 0.55)), Vector3(sin(0.55) * -e, 1.25 + cos(0.55) * e, -0.16)), 0.026, 0.026, 0.08, 10)), material(Color.hex(0xc8322aff), 0.5))
+		"oxhelmet":   # the Ox-Lord: a big horned helmet
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("oxhelmet", func(g: Geo) -> void:
+				g.cap(Transform3D(Basis.from_scale(Vector3(1.1, 1.0, 1.15)), Vector3(0, 0.06, -0.01)), 0.12, PI * 0.42, PI * 0.6)
+				for s in [1, -1]:
+					g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.08, 0.05, 0.0), Vector3(s * 0.14, 0.16, 0.02)], Vector3(s * 0.1, 0.12, 0.0)), 0.03, 0.006, 12, 8)), material(Color.hex(0x7a6a5aff), 0.4, 0.5))
+		"witchhat":   # Fortuneteller Baaba: a tall witch's hat (her crystal ball floats beside her: Parts piece on the hand)
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("witchhat", func(g: Geo) -> void:
+				g.cylinder(Transform3D(Basis.IDENTITY, Vector3(0, 0.13, 0)), 0.2, 0.2, 0.012, 24)
+				g.tube(_offset([Vector3(0, 0, 0), Vector3(0, 0.14, -0.02), Vector3(0.02, 0.26, -0.08), Vector3(0.06, 0.3, -0.16)], Vector3(0, 0.13, 0)), 0.1, 0.008, 18, 14)), material(Color.hex(0x2a2a3aff), 0.7))
+			f.add_piece("DEF-hand.L", Transform3D.IDENTITY, _mesh("crystalball", func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.IDENTITY, Vector3(0.8, 1.55, 0.05)), 0.14, 14, 18)), material(Color.hex(0x9fe0ffff), 0.05, 0.3))
+		"braid":   # Mercenary Tau: one long braid down the back
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("braid", func(g: Geo) -> void:
+				g.tube(_offset([Vector3(0, 0, 0), Vector3(0, -0.08, -0.06), Vector3(0, -0.24, -0.08), Vector3(0, -0.42, -0.06)], Vector3(0, 0.08, -0.11)), 0.03, 0.014, 20, 8)), material(Color.hex(0x141414ff), 0.8))
 		"yemmo":   # King Yemmo: a thick black beard round the jaw and a tall judge's hat with a gold plate
 			var black := material(Color.hex(0x161212ff), 0.85)
 			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("yemmo_beard", func(g: Geo) -> void:

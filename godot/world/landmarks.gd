@@ -8,7 +8,8 @@ extends RefCounted
 const BUILDERS := ["pod", "crater", "crashpod", "farmhouse", "kamehouse", "snakehead", "kingkaihouse", "car",
 	"namekhouse", "gurutower", "friezaship", "capsuleship", "timemachine", "yardrathut", "capsulecorp", "dome",
 	"labdoor", "ruin", "husk", "palace", "htcdoor", "htcroom", "cellarena", "budokai", "babidiship", "zsword",
-	"crystals", "pyramid", "stands", "bunker", "pillar", "zenobox", "hangar", "radartower", "checkin", "town", "kaiplanet", "interior"]
+	"crystals", "pyramid", "stands", "bunker", "pillar", "zenobox", "hangar", "radartower", "checkin", "town", "kaiplanet", "interior",
+	"paozuhut", "firecastle", "pilavcastle", "muscletower", "baabapalace", "korrintower", "piccorcastle", "lookout"]
 
 static func has_builder(type: String) -> bool:
 	return type in BUILDERS
@@ -232,6 +233,112 @@ class Builder extends RefCounted:
 					box(fw * 0.45, fh * 0.5, fd * 0.45, mat(0x9a7a4a, {"rough": 0.9}), x + (i - 1) * fw * 0.3, fh * 0.25 + (fh * 0.5 if i == 1 else 0.0), z)
 			_:
 				box(fw, fh, fd, wood, x, fh * 0.5, z)
+
+	# --- childhood arcs (2026-11-05) ---
+	## Grandpa Gohin's little round hut on Mt. Paozu, with a woodpile and a stone path.
+	func _paozuhut() -> void:
+		var wall := mat(0xd8c49a, {"rough": 0.85}); var roof := mat(0x6a8a3a, {"rough": 0.9}); var wood := mat(0x7a5232, {"rough": 0.9})
+		cyl(3.2, 3.4, 3.0, wall, 0, 1.5, 0)
+		cone(4.2, 2.6, roof, 0, 4.3, 0, null, 18)
+		box(1.4, 2.2, 0.2, wood, 0, 1.1, 3.3)
+		for i in 5:
+			cyl(0.22, 0.22, 2.4, wood, 4.8, 0.25 + (i % 3) * 0.45, -1.0 + (i / 3) * 0.5, null, 8).rotation.x = PI / 2
+		for i in 6:
+			cyl(0.7, 0.7, 0.1, mat(0xa09a90), 0, 0.05, 5.0 + i * 1.6, null, 10)
+
+	## The Ox-Lord's castle on Fire Mountain: a big pagoda castle wreathed in flames.
+	func _firecastle() -> void:
+		var stone := mat(0x8a7a6a, {"rough": 0.9}); var red := mat(0xb03a2a, {"rough": 0.6}); var roof := mat(0x3a3a4a, {"rough": 0.5})
+		box(30, 6, 26, stone, 0, 3, 0)
+		box(20, 8, 16, red, 0, 10, 0)
+		box(26, 1.2, 22, roof, 0, 14.4, 0)
+		box(12, 6, 10, red, 0, 18, 0)
+		cone(10, 6, roof, 0, 24, 0, null, 4).rotation.y = PI / 4
+		var flame := mat(0xff7a1a, {"emissive": 0xff5a0a, "glow": 3.0, "rough": 0.4})
+		for i in 14:
+			var a := float(i) / 14.0 * TAU
+			cone(1.6 + float(i % 3) * 0.6, 5.0 + float(i % 4) * 2.0, flame, sin(a) * 15.5, 6.0 + float(i % 4), cos(a) * 13.5, null, 8)
+		var light := OmniLight3D.new(); light.light_color = Color(1.0, 0.5, 0.15); light.light_energy = 3.0; light.omni_range = 60.0
+		light.position = Vector3(0, 12, 0); g.add_child(light)
+
+	## Emperor Pilav's castle in the desert: onion domes and a walled keep.
+	func _pilavcastle() -> void:
+		var wall := mat(0xd8c08a, {"rough": 0.8}); var dome_m := mat(0x3a8a6a, {"rough": 0.4, "metal": 0.2}); var gold := mat(0xd8a733, {"metal": 0.7, "rough": 0.3})
+		box(34, 7, 30, wall, 0, 3.5, 0)
+		box(20, 10, 18, wall, 0, 12, 0)
+		for p in [Vector2(-15, -13), Vector2(15, -13), Vector2(-15, 13), Vector2(15, 13)]:
+			cyl(2.6, 2.8, 16, wall, p.x, 8, p.y, null, 16)
+			sphere(3.2, dome_m, p.x, 17.5, p.y, null, 18)
+			cone(0.6, 3.0, gold, p.x, 21.5, p.y, null, 8)
+		sphere(8, dome_m, 0, 18.5, 0, null, 28)
+		cone(1.0, 5.0, gold, 0, 28.5, 0, null, 8)
+		box(4, 5, 0.4, mat(0x5a3a22), 0, 2.5, 15.1)
+
+	## Muscle Tower: a tall red Red Ribbon tower in the snow, with ribbed floors.
+	func _muscletower() -> void:
+		var red := mat(0xb02a2a, {"rough": 0.6}); var trim := mat(0xd8d8d8, {"rough": 0.5}); var dark := mat(0x2a2a30)
+		for i in 6:
+			var r := 8.0 - i * 0.7
+			cyl(r, r + 0.4, 7.0, red, 0, 3.5 + i * 7.0, 0, null, 8)
+			cyl(r + 0.6, r + 0.6, 0.6, trim, 0, 7.0 + i * 7.0, 0, null, 8)
+		cone(4.5, 6.0, red, 0, 45.0, 0, null, 8)
+		box(3.0, 4.0, 0.3, dark, 0, 2.0, 8.3)
+		box(6, 2.2, 0.3, mat(0xf4f4f4), 0, 30, 6.2)   # the ribbon sign
+		box(5, 1.2, 0.35, red, 0, 30, 6.3)
+
+	## Fortuneteller Baaba's palace: a pink palace on a lake with a fighting ring over the water.
+	func _baabapalace() -> void:
+		var pink := mat(0xe89ab8, {"rough": 0.6}); var white := mat(0xf4f0ea, {"rough": 0.7}); var gold := mat(0xd8a733, {"metal": 0.6, "rough": 0.3})
+		cyl(24, 24, 0.3, mat(0x4a9ad8, {"rough": 0.05, "metal": 0.2}), 0, 0.1, 0, null, 40)
+		box(16, 7, 12, pink, 0, 3.5, -10)
+		sphere(5.5, pink, 0, 9.0, -10, null, 24)
+		cone(0.6, 3.0, gold, 0, 15.0, -10, null, 8)
+		box(14, 1.0, 14, white, 0, 1.5, 8)   # the ring over the water
+		for p in [Vector2(-7, 1), Vector2(7, 1), Vector2(-7, 15), Vector2(7, 15)]:
+			cyl(0.5, 0.5, 2.0, white, p.x, 0.6, p.y, null, 8)
+		box(2.5, 0.4, 6, white, 0, 1.2, -1.5)   # bridge to the palace
+
+	## Korrin Tower: a white pillar rising hundreds of metres into the clouds, with Korrin's house at the top.
+	func _korrintower() -> void:
+		var white := mat(0xf0ece2, {"rough": 0.6}); var trim := mat(0xc84a3a, {"rough": 0.6})
+		cyl(3.2, 3.6, 400.0, white, 0, 200.0, 0, null, 16)
+		for i in 20:
+			cyl(3.5, 3.5, 0.6, trim, 0, 20.0 + i * 20.0, 0, null, 16)
+		# Korrin's house: a wide vase-shaped room on top
+		cyl(9.0, 4.0, 10.0, white, 0, 405.0, 0, null, 24)
+		cyl(9.6, 9.6, 1.0, trim, 0, 410.5, 0, null, 24)
+		dome(7.0, white, 0, 411.0, 0)
+		var base := cyl(7.0, 9.0, 4.0, mat(0xd8d2c4, {"rough": 0.8}), 0, 2.0, 0, null, 16)
+		base.name = "Base"
+
+	## Kamu's Lookout: a white platform floating in the sky with the palace, palm trees and a garden.
+	func _lookout() -> void:
+		var tile := mat(0xf4f2ec, {"rough": 0.4}); var white := mat(0xf8f6f0, {"rough": 0.6}); var green := mat(0x4a9a3a, {"rough": 0.9})
+		cyl(40, 40, 1.0, tile, 0, -0.5, 0, null, 48)
+		sphere(40, mat(0xd8d2c4, {"rough": 0.7}), 0, -1.0, 0, null, 40, true).rotation.x = PI   # the dome underneath
+		box(16, 7, 12, white, 0, 3.5, 14)
+		sphere(5.0, white, -6, 8.0, 14, null, 20); sphere(5.0, white, 6, 8.0, 14, null, 20)
+		dome(6.5, white, 0, 7.0, 14)
+		for p in [Vector2(-22, -10), Vector2(-18, -20), Vector2(22, -10), Vector2(18, -22), Vector2(-26, 6), Vector2(26, 8)]:
+			cyl(0.35, 0.5, 8.0, mat(0x8a6a48), p.x, 4.0, p.y, null, 8)
+			for k in 5:
+				var a := float(k) / 5.0 * TAU
+				var leaf := box(4.0, 0.2, 1.2, green, p.x + sin(a) * 1.8, 8.0, p.y + cos(a) * 1.8)
+				leaf.rotation = Vector3(0.35, a, 0)
+		box(10, 0.3, 10, green, -12, 0.05, -2)   # garden
+
+	## King Piccor's castle: a dark spiked fortress on a crag.
+	func _piccorcastle() -> void:
+		var dark := mat(0x3a3448, {"rough": 0.8}); var purple := mat(0x6a3a8a, {"rough": 0.5}); var stone := mat(0x5a5560, {"rough": 0.95})
+		cyl(22, 28, 8, stone, 0, 4, 0, null, 10)
+		box(28, 12, 22, dark, 0, 14, 0)
+		for p in [Vector2(-13, -10), Vector2(13, -10), Vector2(-13, 10), Vector2(13, 10)]:
+			cyl(2.4, 3.0, 26, dark, p.x, 13, p.y, null, 10)
+			cone(3.2, 8, purple, p.x, 30, p.y, null, 10)
+		cone(8, 16, purple, 0, 28, 0, null, 6)
+		box(5, 7, 0.4, mat(0x1a1420), 0, 3.5, 11.2)
+		var light := OmniLight3D.new(); light.light_color = Color(0.7, 0.4, 1.0); light.light_energy = 1.5; light.omni_range = 50.0
+		light.position = Vector3(0, 30, 0); g.add_child(light)
 
 	func _kamehouse() -> void:
 		var walls := mat(0xf2a6b8); var roof := mat(0xc8322a, {"rough": 0.5}); var trim := mat(0xf6f0e6)

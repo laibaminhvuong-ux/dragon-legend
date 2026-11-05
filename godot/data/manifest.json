@@ -45,7 +45,7 @@
     "web/src/game/zones.js": "c38525cfada5f1496007b9e0555d13926ef1ec944abbc238832901109696e0e4",
     "tools/fighting_styles.mjs": "3fe9a62f1f9aa477f68fffd3688a500f9b5f5f0caf96681904030b3c8fd07907",
     "tools/skill_presentation.mjs": "447b6907ff183affbc451f0cfc6ea987c0e928256f7a3c5f988cc01a5636b322",
-    "tools/godot_additions.mjs": "f293408a5c5b2448ff394ace3c502a100f2624b023a39a8caa03d53fcfca82fc",
+    "tools/godot_additions.mjs": "f2579d3978f6b8880d54eca67750540e2e0a4f530bd2f83522cb0d50208a1e84",
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
   "files": {
@@ -146,16 +146,16 @@
       "entries": 5
     },
     "zones.json": {
-      "sha256": "bcfae9858a1ed09282cc8d57732d57763bab491575397532cabee879e5335769",
-      "bytes": 61827,
+      "sha256": "4fad0b22caa617ee2d12038db430328a25df7a60e04f552c526f7a85222bd8d9",
+      "bytes": 69459,
       "kind": "object",
-      "entries": 46
+      "entries": 55
     },
     "zone_order.json": {
-      "sha256": "85c7fc8d248020b3b662086813e8845aa9c44a877daf798f6d7dfc7542357e33",
-      "bytes": 715,
+      "sha256": "d0e45202ec130866a7d24e94a432d15ead8ab851c13822e6e51c8defc1c22306",
+      "bytes": 880,
       "kind": "array",
-      "entries": 41
+      "entries": 50
     },
     "stats.json": {
       "sha256": "554a12822f1e9f5b697ddeb0452d54af4998de54cdd8a46faa09da8b1b9fd13f",
@@ -266,8 +266,8 @@
       "entries": 4
     },
     "planets.json": {
-      "sha256": "4a52e7eba0ee16f3a8b1d3e2e6134ee666be9cef065de2fc2b287456ad005ca9",
-      "bytes": 8143,
+      "sha256": "7239a54569d6aa6c31bf308e626b070729c9d4bdea71ffe532a71d4c24be1e2d",
+      "bytes": 9182,
       "kind": "object",
       "entries": 9
     },
@@ -284,8 +284,8 @@
       "entries": 5
     },
     "godot_additions.json": {
-      "sha256": "480e87fa5de3276a7f3dd2a7837e07963709e16d2d8e8743b8b39cde4bbbe5b2",
-      "bytes": 220,
+      "sha256": "88713e68a97699e73f377c2d04b68376a860e97a1c833c19c28678ea2d8a3a19",
+      "bytes": 403,
       "kind": "object",
       "entries": 2
     },

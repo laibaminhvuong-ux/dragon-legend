@@ -128,6 +128,62 @@
         "z": -1300,
         "radius": 160,
         "blend": 90
+      },
+      {
+        "zone": "mt_paozu",
+        "x": 1280,
+        "z": -560,
+        "radius": 170,
+        "blend": 80
+      },
+      {
+        "zone": "fire_mountain",
+        "x": -1300,
+        "z": -680,
+        "radius": 160,
+        "blend": 80
+      },
+      {
+        "zone": "pilav_castle",
+        "x": 525,
+        "z": 600,
+        "radius": 170,
+        "blend": 80
+      },
+      {
+        "zone": "muscle_tower",
+        "x": 650,
+        "z": 1290,
+        "radius": 160,
+        "blend": 80
+      },
+      {
+        "zone": "baaba_palace",
+        "x": -1320,
+        "z": 650,
+        "radius": 150,
+        "blend": 80
+      },
+      {
+        "zone": "korrin_tower",
+        "x": -550,
+        "z": 900,
+        "radius": 150,
+        "blend": 80
+      },
+      {
+        "zone": "piccor_castle",
+        "x": 920,
+        "z": -800,
+        "radius": 170,
+        "blend": 80
+      },
+      {
+        "zone": "tournament_island",
+        "x": -150,
+        "z": -575,
+        "radius": 150,
+        "blend": 80
       }
     ]
   },

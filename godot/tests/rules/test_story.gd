@@ -9,7 +9,7 @@ func test_complete_main_story_and_side_quests_through_real_travel() -> void:
 			main_count += 1
 	eq(main_count,41)
 	# every story area unlocks through the story; open-world towns unlock when you find them
-	var story_areas: Array = RuleTables.table("zones").keys().filter(func(z: String) -> bool: return RuleTables.table("zones")[z].get("kind","") not in ["town","interior"])
+	var story_areas: Array = RuleTables.table("zones").keys().filter(func(z: String) -> bool: return RuleTables.table("zones")[z].get("kind","") not in ["town","interior"] and RuleTables.table("zones")[z].get("saga","") != "Origins")   # Origins areas unlock with the childhood quests (Codex)
 	eq(s.slot.story.unlocked.size(),story_areas.size())
 	for q: Dictionary in s.story.quests:
 		if not q.get("main",false) and not q.has("path") and not q.id.begins_with("Form_") and (not q.has("races") or "Saiyan" in q.races):

@@ -147,6 +147,47 @@ function interiors(zones) {
   return ids;
 }
 
+// User request 2026-11-05: Gokan's childhood arcs (docs/superpowers/specs/2026-11-05-childhood-arcs-design.md).
+// New story areas on the Earth map (regions) plus Kamu's Lookout, a small sky map reached by flying above Korrin Tower.
+function childhoodPlaces(zones) {
+  const area = (id, name, from, landmarks, {size = 420, flat = 90, spawn = {x: 0, z: -70}, biome = {}, terrain = {}} = {}) => {
+    zones[id] = {
+      name, planet: 'Earth', saga: 'Origins',
+      terrain: {size, hills: {amp: 4, scale: 140}, flatSpawn: flat, spawn, ...terrain},
+      biome: {...structuredClone(zones[from].biome), ...biome},
+      landmarks, travelPoint: {x: 16, z: spawn.z},
+    };
+    return id;
+  };
+  const ids = [
+    area('mt_paozu', 'Mt. Paozu', 'earth_plains', [{type: 'paozuhut', name: "Grandpa Gohin's Hut", x: 0, z: 10, collide: 3.5, flatten: 18}],
+      {biome: {treeCount: 260, bushes: 260}, terrain: {hills: {amp: 9, scale: 110}}}),
+    area('fire_mountain', 'Fire Mountain', 'gizard_wasteland', [{type: 'firecastle', name: "The Ox-Lord's Castle", x: 0, z: 40, collide: 14, flatten: 36}],
+      {biome: {treeCount: 10}}),
+    area('pilav_castle', "Emperor Pilav's Castle", 'gizard_wasteland', [{type: 'pilavcastle', name: "Pilav's Castle", x: 0, z: 40, collide: 16, flatten: 40}]),
+    area('muscle_tower', 'Muscle Tower', 'broly_glacier', [{type: 'muscletower', name: 'Muscle Tower', x: 0, z: 40, collide: 9, flatten: 30}]),
+    area('baaba_palace', "Fortuneteller Baaba's Palace", 'earth_plains', [{type: 'baabapalace', name: "Baaba's Palace", x: 0, z: 40, collide: 12, flatten: 46}],
+      {biome: {treeCount: 40}}),
+    area('korrin_tower', 'Korrin Tower', 'earth_plains', [{type: 'korrintower', name: 'Korrin Tower', x: 0, z: 30, collide: 4, flatten: 20}],
+      {biome: {treeCount: 220}}),
+    area('piccor_castle', "King Piccor's Castle", 'gizard_wasteland', [{type: 'piccorcastle', name: "King Piccor's Castle", x: 0, z: 45, collide: 15, flatten: 42}]),
+    area('tournament_island', 'Tournament Island', 'earth_plains', [{type: 'budokai', name: 'World Tournament Arena', x: 0, z: 20, flatten: 40}],
+      {biome: {treeCount: 30}}),
+  ];
+  // Kamu's Lookout: a small map in the sky (white cloud floor), reached by flying up past Korrin Tower's top
+  zones.kamu_lookout = {
+    name: "Kamu's Lookout", planet: 'Earth', saga: 'Origins',
+    terrain: {size: 300, ground: 'white', hills: {amp: 0, scale: 50}, flatSpawn: 140, spawn: {x: 0, z: -18}},
+    biome: {...structuredClone(zones.earth_plains.biome), treeCount: 0, bushes: 0, rocks: 0, stones: 0},
+    landmarks: [{type: 'lookout', name: "Kamu's Lookout", x: 0, z: 0, flatten: 40}],
+    travelPoint: {x: 10, z: -18},
+    portals: [{zone: 'korrin_tower', x: 0, z: 0, y: -40, r: 400}],   // step off the edge: back down to the tower
+  };
+  zones.korrin_tower.portals = [{zone: 'kamu_lookout', x: 0, z: 30, y: 430, r: 40}];   // fly up past the tower's top
+  ids.push('kamu_lookout');
+  return ids;
+}
+
 export function applyGodotAdditions(tables) {
   const zones = structuredClone(tables.zones);
   const npcs = structuredClone(tables.npcs);
@@ -155,7 +196,9 @@ export function applyGodotAdditions(tables) {
   const races = structuredClone(tables.races);
   const zoneOrder = [...tables.zone_order];
   const world = openWorld(zones, zoneOrder);
-  const changed = [...checkInStation(zones, npcs), ...interiors(zones)];
+  const childhood = childhoodPlaces(zones);
+  for (const id of childhood) if (!zoneOrder.includes(id)) zoneOrder.push(id);
+  const changed = [...checkInStation(zones, npcs), ...interiors(zones), ...childhood];
   // giant, seated behind the desk: red skin, black beard, judge's hat (Parts.costume "yemmo")
   Object.assign(characters.king_yemma, {scale: 4.2, look: {race: 'Human', skin: 0, skinHex: 0xc8463c, face: 'Fierce', hair: 'None',
     hairColor: 0, build: 'Muscular', outfit: 'CraneGi', outfitTint: 2, costume: 'yemmo'}});
@@ -175,6 +218,9 @@ export function applyGodotAdditions(tables) {
   for (const [id, c] of Object.entries(characters)) if (c.look && c.look.faceSeed == null) c.look.faceSeed = id;
   const fighting_styles = fightingStyles(tables.combat);
   for (const [id, character] of Object.entries(characters)) character.style = fighting_styles.npc_assignments[id] ?? 'turtle';
+  for (const [zone, x, z, radius] of [['mt_paozu', 1280, -560, 170], ['fire_mountain', -1300, -680, 160], ['pilav_castle', 525, 600, 170],
+    ['muscle_tower', 650, 1290, 160], ['baaba_palace', -1320, 650, 150], ['korrin_tower', -550, 900, 150], ['piccor_castle', 920, -800, 170],
+    ['tournament_island', -150, -575, 150]]) world.planets.earth.regions.push({zone, x, z, radius, blend: 80});
   return {
     ...tables, zones, npcs, characters, appearance, races, zone_order: zoneOrder, planets: world.planets,
     fighting_styles, schema:{...tables.schema, version:7, slots:10},
