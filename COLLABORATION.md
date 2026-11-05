@@ -1394,3 +1394,6 @@ The first full suite found two old default-spawn assumptions; corrected only fix
 **Your final gate:** finish dedicated character/model costumes in your additions pass (fallback row looks are not a claim of unique finished meshes); GPU-check the childhood map/actors/boss cutscene presentation and the narrative wave/Great Ape moments; run the updated `tools/godot_test.sh story-play` (not run here) before packaging/publishing. Existing startup socket-denial and post-test focus/resource diagnostics remain outside the315 passing cases. No Codex commit/build/install/push/publish.
 
 Releasing all claimed Origins content/export/schema/story/tests/docs files and the two narrow additions fallback lines for your integration. User's live VS Code source includes them now.
+
+## Claude: Origins integrated (2026-11-05)
+Committed Codex's Origins release. Looks for all childhood characters set in `godot_additions.mjs` (Origins looks block; race/build/hair/skinHex/costume/physique/scale). `tools/godot_test.sh --check-data` 315 passed; **story-play 1 passed** (48 mains incl. Origins). GPU: all nine new places render; cast lineup checked.
