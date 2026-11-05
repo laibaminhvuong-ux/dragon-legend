@@ -173,6 +173,11 @@ func _slow_update() -> void:
 	var frozen := play.is_frozen()
 	_prompt.visible = inter is Dictionary and not frozen
 	_prompt.text = "[%s] %s · %s" % [UiKit.key_name("interact"), inter.action, inter.name] if inter is Dictionary else ""
+	var ui_node: Node = get_parent()
+	if not inter is Dictionary and not frozen and ui_node != null and ui_node.has_method("near_board") and ui_node.near_board():
+		_prompt.visible = true
+		_prompt.text = "[%s] Mission Board · Rift Patrol" % UiKit.key_name("interact")
+	_rift_panel(frozen)
 	_actions.text = "%s Melee · %s Ki blast · %s %s · %s Guard · %s Charge · %s Lock-on · %s Flight · %s Run %s · %s Dash/Boost · %s Kaiyoken · %s Base form · %s Style: %s · %s Menu" % [
 		UiKit.key_name("melee"), UiKit.key_name("ki_blast"), UiKit.key_name("beam"), str(c.get("techniqueName", "Energy Wave")), UiKit.key_name("block"),
 		UiKit.key_name("charge"), UiKit.key_name("lock_on"), UiKit.key_name("flight"), UiKit.key_name("sprint"), "ON" if play.fast_mode else "off", UiKit.key_name("dash"), UiKit.key_name("kaioken"), UiKit.key_name("base"),
@@ -274,3 +279,35 @@ class Reticle extends Control:
 			for a in 4:
 				var d := Vector2.from_angle(a * PI / 2.0 + PI / 4.0)
 				draw_line(m + d * 10.0, m + d * 14.0, c, 2.0, true)
+
+# ----------------------------------------------------------------------------------------- Rift Patrol tracker
+var _rift_label: Label
+## The active Rift mission: name, timer, objectives with progress, allies' health (top centre).
+func _rift_panel(frozen: bool) -> void:
+	var g: Variant = play.game
+	var m: Dictionary = g.active_rift_mission() if g != null and g.has_method("active_rift_mission") else {}
+	var show: bool = not m.is_empty() and str(m.get("status", "")) == "active" and not frozen
+	if _rift_label == null:
+		_rift_label = UiKit.label("", "HeaderMedium")
+		_rift_label.anchor_left = 0.5; _rift_label.anchor_right = 0.5
+		_rift_label.offset_left = -260; _rift_label.offset_right = 260; _rift_label.offset_top = 132
+		_rift_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_rift_label.add_theme_color_override("font_color", Color(0.85, 0.75, 1.0))
+		_rift_label.add_theme_color_override("font_outline_color", Color(0.05, 0.02, 0.1))
+		_rift_label.add_theme_constant_override("outline_size", 8)
+		add_child(_rift_label)
+	_rift_label.visible = show
+	if not show:
+		return
+	var t := float(m.get("timer", 0.0))
+	var lines: PackedStringArray = ["RIFT · %s · %d:%02d%s" % [str(m.name), int(t) / 60, int(t) % 60, "  (★ under 4:00)" if t <= 240.0 else ""]]
+	for o: Dictionary in m.get("objectives", []):
+		if o.has("count"):
+			lines.append("%s  %d / %d" % [str(o.text), int(o.get("progress", 0)), int(o.count)])
+		else:
+			lines.append(str(o.text))
+	var allies: Variant = g.combat.get("allies")
+	if allies is Array:
+		for a: Dictionary in allies:
+			lines.append("Ally %s  %d%%" % [str(a.name), roundi(100.0 * float(a.health) / maxf(1.0, float(a.maxHealth)))])
+	_rift_label.text = "\n".join(lines)

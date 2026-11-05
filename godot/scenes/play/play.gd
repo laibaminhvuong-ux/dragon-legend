@@ -49,6 +49,11 @@ func start(index: int, gi: GameInput, q := "medium") -> bool:
 	tutorial = RuleTutorialRules.new(game.slot)
 	scenes = RuleCutsceneRules.new(game.slot)
 	Events.travel.connect(_on_travel)
+	Events.rift_mission_started.connect(_on_rift_started)
+	Events.rift_mission_complete.connect(_on_rift_complete)
+	Events.rift_mission_failed.connect(_on_rift_failed)
+	Events.rift_boss_phase.connect(_on_rift_phase)
+	Events.rift_ally_down.connect(_on_rift_ally_down)
 	Events.enemy_defeated.connect(_on_enemy_defeated)
 	Music.play(game.current_region())
 	world = WorldView.build_zone(game.zone, quality)
@@ -226,6 +231,102 @@ func travel(zone_id: String) -> void:
 	SaveStore.save_slot(slot_index, slot)
 	travel_requested.emit(zone_id)
 
+# ------------------------------------------------------------------------------------------- Rift Patrol presentation
+var _rift_fx: Node3D
+var _rift_overlay: CanvasLayer
+var _rift_env: Dictionary = {}   # the world's fog before corruption, to restore it
+var _rift_amount := 0.0
+
+## Corrupted timeline while a Rift mission is active: purple fog and screen tint, shards drifting round the
+## fighter, rift tears in the sky. Eases in and out.
+func _rift_view(pos: Vector3, frame_dt: float) -> void:
+	var m: Dictionary = game.active_rift_mission() if game.has_method("active_rift_mission") else {}
+	var want := 1.0 if m.get("corrupted", false) else 0.0
+	_rift_amount = move_toward(_rift_amount, want, frame_dt * 0.6)
+	var env_node: WorldEnvironment = null
+	for n in world.find_children("*", "WorldEnvironment", true, false):
+		env_node = n
+		break
+	if env_node != null and env_node.environment != null:
+		var e := env_node.environment
+		if _rift_env.is_empty():
+			_rift_env = {"fog": e.fog_enabled, "color": e.fog_light_color, "density": e.fog_density}
+		e.fog_enabled = _rift_env.fog or _rift_amount > 0.01
+		e.fog_light_color = (_rift_env.color as Color).lerp(Color(0.42, 0.18, 0.62), _rift_amount)
+		e.fog_density = lerpf(float(_rift_env.density), maxf(float(_rift_env.density), 0.004), _rift_amount)
+	if _rift_amount > 0.01 and _rift_fx == null:
+		_rift_fx = _make_rift_fx()
+		add_child(_rift_fx)
+		_rift_overlay = CanvasLayer.new()
+		_rift_overlay.layer = -1
+		var tint := ColorRect.new()
+		tint.set_anchors_preset(Control.PRESET_FULL_RECT)
+		tint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		tint.color = Color(0.35, 0.1, 0.55, 0.0)
+		tint.name = "Tint"
+		_rift_overlay.add_child(tint)
+		add_child(_rift_overlay)
+	if _rift_fx != null:
+		_rift_fx.visible = _rift_amount > 0.01
+		_rift_fx.position = pos
+		(_rift_overlay.get_node("Tint") as ColorRect).color.a = 0.12 * _rift_amount
+		for c in _rift_fx.get_children():
+			if c is Node3D and c.has_meta("orbit"):
+				c.rotation.y += frame_dt * float(c.get_meta("orbit"))
+
+func _make_rift_fx() -> Node3D:
+	var root := Node3D.new()
+	root.name = "RiftCorruption"
+	var shard_m := StandardMaterial3D.new()
+	shard_m.albedo_color = Color(0.7, 0.5, 1.0); shard_m.emission_enabled = true; shard_m.emission = Color(0.6, 0.3, 1.0)
+	shard_m.emission_energy_multiplier = 2.2
+	for ring in 3:
+		var holder := Node3D.new()
+		holder.set_meta("orbit", 0.25 + ring * 0.12)
+		root.add_child(holder)
+		for i in 10:
+			var a := float(i) / 10.0 * TAU + ring
+			var mi := MeshInstance3D.new()
+			var bm := BoxMesh.new(); bm.size = Vector3(0.25, 0.9, 0.25)
+			mi.mesh = bm; mi.material_override = shard_m
+			mi.position = Vector3(sin(a) * (14.0 + ring * 10.0), 3.0 + ring * 4.0 + float(i % 3) * 2.0, cos(a) * (14.0 + ring * 10.0))
+			mi.rotation = Vector3(float(i), float(i) * 0.7, 0.4)
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			holder.add_child(mi)
+	# rift tears hanging in the sky
+	var tear_m := StandardMaterial3D.new()
+	tear_m.albedo_color = Color(0.9, 0.6, 1.0); tear_m.emission_enabled = true; tear_m.emission = Color(0.8, 0.3, 1.0)
+	tear_m.emission_energy_multiplier = 3.0; tear_m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	for i in 5:
+		var a := float(i) / 5.0 * TAU + 0.4
+		var mi := MeshInstance3D.new()
+		var qm := QuadMesh.new(); qm.size = Vector2(3.0, 26.0)
+		mi.mesh = qm; mi.material_override = tear_m
+		mi.position = Vector3(sin(a) * 120.0, 60.0 + float(i % 2) * 20.0, cos(a) * 120.0)
+		mi.rotation = Vector3(0, a + PI, 0.5 - float(i) * 0.25)
+		root.add_child(mi)
+	return root
+
+func _on_rift_started(d: Dictionary) -> void:
+	Events.emit_named("notify", {"text": "RIFT MISSION · %s — fix the timeline!" % str(d.get("name", game.active_rift_mission().get("name", "")))})
+
+func _on_rift_complete(d: Dictionary) -> void:
+	var r: Dictionary = d.get("rewards", {}) if d.get("rewards") is Dictionary else {}
+	var cards: Array = r.get("cards", []) if r.get("cards") is Array else []
+	Events.emit_named("notify", {"text": "Mission clear! %s  +%s zeni%s" % [RiftBoard.stars(int(d.get("stars", 1))), str(r.get("zeni", 0)),
+		("  · New Hero Card!" if not cards.is_empty() else "")]})
+	Burst.spawn(self, game.player.pos + Vector3.UP, Color(1.0, 0.85, 0.4), 4.0)
+
+func _on_rift_failed(d: Dictionary) -> void:
+	Events.emit_named("notify", {"text": "Mission failed: %s. Try again from the Mission Board." % str(d.get("reason", "the timeline collapsed"))})
+
+func _on_rift_phase(d: Dictionary) -> void:
+	Events.emit_named("notify", {"text": "%s — %s!" % [str(d.get("character", d.get("id", "Boss"))).capitalize(), str(d.get("name", "Phase"))]})
+	Burst.spawn(self, RuleRuntime.vector(d.get("pos", game.player.pos)) + Vector3.UP * 1.5, Color(0.7, 0.3, 1.0), 5.0)
+
+func _on_rift_ally_down(d: Dictionary) -> void:
+	Events.emit_named("notify", {"text": "%s is down!" % str(d.get("name", "Your ally"))})
+
 var _boost_serial := 0
 var _trail_t := 0.0
 ## Rocket boost: a blast and dust on launch, a glowing trail while boosting, and a wider camera for speed.
@@ -287,6 +388,7 @@ func render(frame_dt: float, alpha: float) -> void:
 		_build_player()
 	_building_view(pos)
 	_boost_view(pos, frame_dt)
+	_rift_view(pos, frame_dt)
 	player.visible = float(p.health) > 0.0
 	player.position = pos
 	player.rotation.y = float(p.yaw)

@@ -194,3 +194,19 @@ func test_zeni_tab_explains_solo_and_lists_friends_online() -> void:
 	ok(texts.any(func(t: String) -> bool: return t.contains("Join a server")), "solo: explains how to send zeni")
 	eq(RpgMenu._thousands(1234567), "1,234,567", "amounts read with commas")
 	_done(u)
+
+func test_rift_board_lists_missions_and_cards() -> void:
+	var u := _setup()
+	u.rift.open()
+	ok(u.rift.is_open and u.play.is_frozen(), "board open, game paused")
+	var texts := u.rift._list.find_children("*", "Label", true, false).map(func(l: Label) -> String: return l.text)
+	ok(texts.any(func(t: String) -> bool: return t.contains("Arc 1")), "missions grouped by arc")
+	ok(texts.any(func(t: String) -> bool: return t.contains("☆☆☆")), "star ratings shown")
+	u.rift.open("Hero Cards")
+	texts = u.rift._list.find_children("*", "Label", true, false).map(func(l: Label) -> String: return l.text)
+	ok(texts.any(func(t: String) -> bool: return t.contains("Collection: 0 / 30")), "card collection")
+	u.rift.launch("rp01_dark_crystal")   # not unlocked on a fresh fighter: refused, board stays
+	u.rift.close()
+	ok(not u.play.is_frozen(), "closes")
+	ok(not u.near_board(), "no board prompt outside the Nexus")
+	_done(u)

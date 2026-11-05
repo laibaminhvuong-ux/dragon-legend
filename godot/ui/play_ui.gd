@@ -9,6 +9,7 @@ var hud: Hud
 var rpg: RpgMenu
 var forms: FormPicker
 var styles: StylePicker
+var rift: RiftBoard
 var map: WorldMap
 var radar: DragonRadar
 var tutorial: TutorialPanel
@@ -47,6 +48,14 @@ func _init(p: PlaySession, gi: GameInput) -> void:
 		input.capture = false)
 	styles.closed.connect(func() -> void:
 		play.freeze("styles", false)
+		input.capture = not play.paused)
+	rift = RiftBoard.new(p)
+	add_child(rift)
+	rift.opened.connect(func() -> void:
+		play.freeze("rift", true)
+		input.capture = false)
+	rift.closed.connect(func() -> void:
+		play.freeze("rift", false)
 		input.capture = not play.paused)
 	map = WorldMap.new(p)
 	add_child(map)
@@ -103,6 +112,12 @@ func handle_input() -> bool:
 		elif input.pressed("interact") or (input.last_device == "gamepad" and input.pressed("jump")):
 			forms.activate()
 		return true
+	if rift.is_open:
+		if input.pressed("pause") or input.pressed("menu") or (input.last_device == "gamepad" and input.pressed("dash")):
+			rift.close()
+		elif input.pressed("interact") or (input.last_device == "gamepad" and input.pressed("jump")):
+			rift.activate()
+		return true
 	if styles.is_open:
 		if input.pressed("pause") or input.pressed("menu") or input.pressed("style") or (input.last_device == "gamepad" and input.pressed("dash")):
 			styles.close()
@@ -120,6 +135,9 @@ func handle_input() -> bool:
 		return true
 	if input.pressed("map"):
 		map.open()
+		return true
+	if input.pressed("interact") and near_board():
+		rift.open()
 		return true
 	if input.pressed("style"):
 		styles.open()
@@ -139,3 +157,11 @@ func refresh(dt: float) -> void:
 	hud.update_hud(dt)
 	radar.refresh(play.story, play.game.player.pos, play.follow.yaw, dt, play.is_frozen())
 	tutorial.refresh(dt, rpg.is_open or play.paused or cutscene.active)
+
+## The Time Nexus Mission Board terminal (world (0, 30) on the hub map) is within reach.
+const BOARD := Vector2(0.0, 30.0)
+func near_board() -> bool:
+	if play.game == null or str(play.game.zone.id) != "time_nexus":
+		return false
+	var p: Vector3 = play.game.player.pos
+	return Vector2(p.x, p.z).distance_to(BOARD) < 9.0

@@ -47,7 +47,7 @@
     "tools/skill_presentation.mjs": "447b6907ff183affbc451f0cfc6ea987c0e928256f7a3c5f988cc01a5636b322",
     "tools/rift_patrol.mjs": "2b19a29e7e0ee9b7757ec9974abcb2797c92c6d6b14a644178acd5b9081314c1",
     "tools/origins.mjs": "53193315419770fe6a6308fe9183180f3acdf2437facc73f7e7fff97554faeb4",
-    "tools/godot_additions.mjs": "3477a44b73810b74ab381e32051d15398a9452289be0c81a356862e39a9b6b60",
+    "tools/godot_additions.mjs": "41b216c1c190f79d838f4af12163d3be0b8eb90a8a75d56d142e49419101788c",
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
   "files": {
@@ -148,8 +148,8 @@
       "entries": 5
     },
     "zones.json": {
-      "sha256": "af0c4107e0cb05a5eb1cc3afe5299b225a14625ae6126900810aae94e671fe1b",
-      "bytes": 71341,
+      "sha256": "ed1fa776326b7707d9ca1a5973fca36c7e624341c001f6c6e212566674802de8",
+      "bytes": 71638,
       "kind": "object",
       "entries": 57
     },
@@ -304,8 +304,8 @@
       "entries": 5
     },
     "godot_additions.json": {
-      "sha256": "3a17838b3374ccee3615b2192d0c4da45c87c0859cdd94d7c7b96d9e277db945",
-      "bytes": 421,
+      "sha256": "de65b61b938370215b8b49969716797e529cbfc55444a6d33aa1b1c26c8158c3",
+      "bytes": 440,
       "kind": "object",
       "entries": 2
     },

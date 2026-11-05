@@ -35,6 +35,11 @@ func _ready() -> void:
 		var i := int(_args.play)
 		if not (SaveStore.load_slot(i) is Dictionary):
 			SaveStore.create_slot(i, RuleSchema.new().default_look("Saiyan"))
+		if _args.has("rift"):   # dev: --rift=<mission id> unlocks Rift Patrol, starts in the Nexus and launches the mission
+			var dr: Dictionary = SaveStore.load_slot(i)
+			dr.zone = "time_nexus"; dr.position = null; dr.level = 2000
+			dr.quests["m34_super_hero"] = {"status": "done", "step": 0, "completions": 1}
+			SaveStore.save_slot(i, dr)
 		if _args.has("zone") or _args.has("forms"):
 			var dev: Dictionary = SaveStore.load_slot(i)
 			if _args.has("zone"):
@@ -50,6 +55,8 @@ func _ready() -> void:
 		go_menu()
 	if _args.has("noui") or _args.has("walk"):
 		_dev_shot_setup()
+	if _args.has("rift"):
+		_dev_rift()
 	match str(_args.get("screen", "")):   # GPU checks of each screen
 		"creator": open_creator(2)
 		"server":   # dev: the co-op Server screen over the title menu
@@ -266,9 +273,19 @@ func _end_play() -> void:
 		play.queue_free()
 		play = null
 
+## Dev: launch a Rift mission from the Nexus (recordings of the corrupted arena, allies and bosses).
+func _dev_rift() -> void:
+	while play == null or play_ui == null:
+		await get_tree().process_frame
+	if str(play.game.zone.id) != "time_nexus":
+		return
+	await get_tree().create_timer(1.0).timeout
+	print("RIFT launch: ", play.game.start_rift_mission(str(_args.rift)))
+
 func _dev_shot_setup() -> void:
 	while play == null or play_ui == null:
 		await get_tree().process_frame
+
 	if _args.has("noui"):
 		play_ui.visible = false
 	if _args.has("style"):   # dev: --style=<id> picks the fighting style (GPU recordings of the combos)

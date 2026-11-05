@@ -162,7 +162,7 @@ func update_view(dt: float) -> void:
 		_reactions[id].left -= dt
 		if _reactions[id].left<=0: _reactions.erase(id)
 	var seen := {}
-	for e: Dictionary in combat.enemies:
+	for e: Dictionary in _fighters():
 		var id := str(e.id)
 		seen[id] = true
 		var v: Dictionary = views.get(id, {})
@@ -179,7 +179,9 @@ func update_view(dt: float) -> void:
 			var f := Fighter.create(elook)
 			f.scale = Vector3.ONE * float(e.get("scale", 1.0))
 			add_child(f)
-			var tag := _label("%s · Lv. %d" % [e.name, int(e.level)], Color("#ffd17c") if e.get("boss", false) else Color("#f3d9d9"))
+			var ally: bool = str(e.get("kind", "")) == "ally"
+			var tag := _label(("Ally · %s" % e.name) if ally else "%s · Lv. %d" % [e.name, int(e.get("level", 1))],
+				Color("#8cff9c") if ally else (Color("#ffd17c") if e.get("boss", false) else Color("#f3d9d9")))
 			add_child(tag)
 			var bar := MeshInstance3D.new(); bar.mesh = _bar_mesh; bar.material_override = _bar_mat
 			bar.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -203,7 +205,7 @@ func update_view(dt: float) -> void:
 			"attackKind": e.attackKind, "hurt": float(e.get("hurtUntil", 0.0)) > combat.clock})
 		var height := 2.2 * float(e.get("scale", 1.0))
 		(v.tag as Label3D).position = pos + Vector3(0, height + 0.3, 0)
-		(v.tag as Label3D).modulate = Color("#ff6655") if float(e.get("windup", 0.0)) > 0.0 else (Color("#ffd17c") if e.get("boss", false) else Color("#f3d9d9"))
+		(v.tag as Label3D).modulate = Color("#8cff9c") if str(e.get("kind", "")) == "ally" else (Color("#ff6655") if float(e.get("windup", 0.0)) > 0.0 else (Color("#ffd17c") if e.get("boss", false) else Color("#f3d9d9")))
 		var bar: MeshInstance3D = v.bar
 		bar.position = pos + Vector3(0, height, 0)
 		bar.set_instance_shader_parameter("fill", clampf(float(e.health) / maxf(1.0, float(e.maxHealth)), 0.0, 1.0))
@@ -295,8 +297,20 @@ func _build_avatar(A: Dictionary) -> Node3D:
 	return root
 
 # Presentation signals carry no gameplay commands and never mutate entities.
+## Enemies plus Rift Patrol allies (heroes fighting beside you): both are drawn and animated the same way.
+func _fighters() -> Array:
+	var out: Array = combat.enemies.duplicate()
+	var allies: Variant = combat.get("allies")
+	if allies is Array:
+		out.append_array(allies)
+	return out
+
 func _entity(id: String) -> Dictionary:
 	if id=="player": return combat.p
+	var allies: Variant = combat.get("allies")
+	if allies is Array:
+		for a: Dictionary in allies:
+			if str(a.id)==id: return a
 	for e: Dictionary in combat.enemies:
 		if e.id==id: return e
 	return {}

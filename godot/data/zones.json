@@ -2179,9 +2179,14 @@
     },
     "biome": {
       "sky": {
-        "type": "physical",
-        "elevation": 36,
-        "azimuth": 240
+        "type": "gradient",
+        "top": 1707806,
+        "horizon": 5909050,
+        "bottom": 985616,
+        "elevation": 25,
+        "azimuth": 240,
+        "sunColor": 16751226,
+        "stars": true
       },
       "tints": {
         "dirt": [
@@ -2194,7 +2199,11 @@
       "treeCount": 20,
       "rocks": 300,
       "bushes": 40,
-      "grass": 0.1
+      "grass": 0.1,
+      "fog": [
+        3807782,
+        0.0016
+      ]
     },
     "landmarks": [
       {
@@ -2203,6 +2212,12 @@
         "z": 20,
         "name": "Echo Prison",
         "flatten": 65
+      },
+      {
+        "type": "echoprison",
+        "name": "Echo Prison",
+        "x": 0,
+        "z": 20
       }
     ],
     "travelPoint": {

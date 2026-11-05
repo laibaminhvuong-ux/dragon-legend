@@ -9,7 +9,7 @@ const BUILDERS := ["pod", "crater", "crashpod", "farmhouse", "kamehouse", "snake
 	"namekhouse", "gurutower", "friezaship", "capsuleship", "timemachine", "yardrathut", "capsulecorp", "dome",
 	"labdoor", "ruin", "husk", "palace", "htcdoor", "htcroom", "cellarena", "budokai", "babidiship", "zsword",
 	"crystals", "pyramid", "stands", "bunker", "pillar", "zenobox", "hangar", "radartower", "checkin", "town", "kaiplanet", "interior",
-	"paozuhut", "firecastle", "pilavcastle", "muscletower", "baabapalace", "korrintower", "piccorcastle", "lookout", "nexus"]
+	"paozuhut", "firecastle", "pilavcastle", "muscletower", "baabapalace", "korrintower", "piccorcastle", "lookout", "nexus", "echoprison"]
 
 static func has_builder(type: String) -> bool:
 	return type in BUILDERS
@@ -370,6 +370,36 @@ class Builder extends RefCounted:
 			shard.rotation = Vector3(float(i) * 0.7, float(i) * 1.3, float(i) * 0.4)
 		var light := OmniLight3D.new(); light.light_color = Color(0.7, 0.6, 1.0); light.light_energy = 2.0; light.omni_range = 90.0
 		light.position = Vector3(0, 20, 0); g.add_child(light)
+
+	## Echo Prison (Rift Patrol): a ring wall with watchtowers and searchlights round the arena, and cell blocks with
+	## bars where fighters stolen from every era are held.
+	func _echoprison() -> void:
+		var wall := mat(0x4a4248, {"rough": 0.9}); var iron := mat(0x2a2a30, {"metal": 0.7, "rough": 0.35})
+		var glow := mat(0xff5a3a, {"emissive": 0xff3a1a, "glow": 2.0})
+		for i in 32:   # the ring wall
+			var a := float(i) / 32.0 * TAU
+			var seg := box(17.0, 12.0, 2.5, wall, sin(a) * 85.0, 6.0, cos(a) * 85.0)
+			seg.rotation.y = a
+		for i in 6:   # watchtowers with searchlights
+			var a := float(i) / 6.0 * TAU + 0.2
+			var x := sin(a) * 85.0; var z := cos(a) * 85.0
+			cyl(3.0, 3.6, 22.0, wall, x, 11.0, z, null, 10)
+			box(8.0, 3.0, 8.0, iron, x, 23.5, z)
+			cyl(0.9, 0.6, 1.4, glow, x - sin(a) * 4.2, 23.0, z - cos(a) * 4.2, null, 10).rotation.x = 1.2
+			var spot := SpotLight3D.new(); spot.light_color = Color(1.0, 0.55, 0.4); spot.light_energy = 4.0; spot.spot_range = 90.0
+			spot.spot_angle = 18.0; spot.position = Vector3(x, 24.0, z); g.add_child(spot)
+			spot.look_at_from_position(spot.position, Vector3(0, 0, 0), Vector3.UP)
+		for side in [-1.0, 1.0]:   # cell blocks: rows of barred cells
+			for k in 6:
+				var cx: float = side * 62.0; var cz: float = -40.0 + k * 14.0
+				box(10.0, 6.0, 12.0, wall, cx, 3.0, cz)
+				for b in 7:
+					cyl(0.08, 0.08, 4.6, iron, cx - side * 5.05, 2.4, cz - 4.5 + b * 1.5, null, 6)
+		for i in 10:   # chains hanging from the wall
+			var a := float(i) / 10.0 * TAU + 0.15
+			for k in 8:
+				var link := torus(0.35, 0.09, iron, sin(a) * 82.5, 11.0 - k * 0.6, cos(a) * 82.5)
+				link.rotation = Vector3(0, a, PI / 2 if k % 2 == 0 else 0.0)
 
 	## King Piccor's castle: a dark spiked fortress on a crag.
 	func _piccorcastle() -> void:

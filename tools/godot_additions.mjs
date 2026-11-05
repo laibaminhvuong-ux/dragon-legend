@@ -199,6 +199,14 @@ function timeNexus(zones) {
     landmarks: [{type: 'nexus', name: 'Time Nexus', x: 0, z: 10}],
     travelPoint: {x: 14, z: -40}, spawnYaw: 0,
   };
+  // Echo Prison (Codex's Rift map): Warden Morrigath's prison world, walls and cell blocks round the arena
+  if (zones.echo_prison) {
+    zones.echo_prison.landmarks = [...zones.echo_prison.landmarks, {type: 'echoprison', name: 'Echo Prison', x: 0, z: 20}];
+    zones.echo_prison.biome = {...zones.echo_prison.biome,
+      sky: {type: 'gradient', top: 0x1a0f1e, horizon: 0x5a2a3a, bottom: 0x0f0a10, elevation: 25, azimuth: 240, sunColor: 0xff9a7a, stars: true},
+      fog: [0x3a1a26, 0.0016]};
+    return ['time_nexus', 'echo_prison'];
+  }
   return ['time_nexus'];
 }
 
