@@ -7,7 +7,7 @@ extends Control
 signal opened
 signal closed
 
-const TABS := ["Quests", "Character", "Accessories", "Stats", "Forms", "Techniques"]
+const TABS := ["Quests", "Character", "Accessories", "Stats", "Forms", "Techniques", "Zeni"]
 const PATHS := {
 	"beast": ["Beast", "Unleash your potential through Gohan and Piccolo training."],
 	"instinct": ["Ultra Instinct", "Sign/Omen -> Perfected Ultra Instinct -> True Ultra Instinct, with Moro-era mastery training."],
@@ -205,6 +205,7 @@ func open_tab(tab: String) -> void:
 		"Stats": _tab_stats(slot)
 		"Forms": _tab_forms(slot, race)
 		"Techniques": _tab_techniques()
+		"Zeni": _tab_zeni(slot)
 	if tab in ["Forms", "Techniques"]:
 		_kaioken(slot, tab)
 	_box.add_child(UiKit.button("Continue", close))
@@ -270,6 +271,46 @@ func _tab_accessories(slot: Dictionary) -> void:
 		v.add_child(b)
 		if not available:
 			v.add_child(UiKit.label("Unlock quest: %s" % after, "Muted"))
+
+## Send zeni to another player in your server (Codex's host-checked give_zeni; solo explains how).
+var _zeni_to := ""
+func _tab_zeni(slot: Dictionary) -> void:
+	_box.add_child(UiKit.label("Your zeni: %s" % _thousands(int(slot.get("zeni", 0))), "HeaderMedium"))
+	var people: Array = play.game.zeni_recipients()
+	if people.is_empty():
+		_box.add_child(UiKit.label("Join a server with friends to send them zeni. Everyone in the room shows up here, even on other maps.", "Muted", true))
+		return
+	if not people.any(func(r: Dictionary) -> bool: return str(r.id) == _zeni_to):
+		_zeni_to = str(people[0].id)
+	_picker("Send to", people.map(func(r: Dictionary) -> Array: return [str(r.id), str(r.name)]), _zeni_to, func(v: Variant) -> void: _zeni_to = str(v))
+	var row := HBoxContainer.new()
+	row.add_child(UiKit.label("Amount"))
+	var amount := LineEdit.new()
+	amount.placeholder_text = "e.g. 5000"
+	amount.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(amount)
+	for quick in [100, 1000, 10000]:
+		row.add_child(UiKit.button(_thousands(quick), func() -> void: amount.text = str(quick)))
+	_box.add_child(row)
+	_box.add_child(UiKit.button("Send zeni", func() -> void:
+		var digits := amount.text.strip_edges().replace(",", "").replace(" ", "")
+		if not digits.is_valid_int() or int(digits) <= 0:
+			Events.emit_named("notify", {"text": "Type a whole amount of zeni to send."})
+			return
+		if int(digits) > int(slot.get("zeni", 0)):
+			Events.emit_named("notify", {"text": "You don't have that much zeni."})
+			return
+		_tell(play.game.give_zeni(_zeni_to, int(digits)))
+		amount.text = "", true))
+	_box.add_child(UiKit.label("Your friend gets it right away and both of you are saved. One send per second.", "Muted", true))
+
+static func _thousands(n: int) -> String:
+	var s := str(absi(n))
+	var out := ""
+	while s.length() > 3:
+		out = "," + s.substr(s.length() - 3) + out
+		s = s.substr(0, s.length() - 3)
+	return ("-" if n < 0 else "") + s + out
 
 func _tab_stats(slot: Dictionary) -> void:
 	var prog := play.game.progression

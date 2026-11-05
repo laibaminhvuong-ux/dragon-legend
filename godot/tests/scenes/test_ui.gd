@@ -186,3 +186,11 @@ func test_body_and_face_can_change_in_the_fighter_menu() -> void:
 	ok(g.slot.appearance.female and str(g.slot.appearance.hair) == "Long", "saved on the fighter")
 	eq(g.customize_appearance({"faceSeed": "face:42"}), null, "new face")
 	_done(u)
+
+func test_zeni_tab_explains_solo_and_lists_friends_online() -> void:
+	var u := _setup()
+	u.rpg.open_tab("Zeni")
+	var texts := u.rpg._box.find_children("*", "Label", true, false).map(func(l: Label) -> String: return l.text)
+	ok(texts.any(func(t: String) -> bool: return t.contains("Join a server")), "solo: explains how to send zeni")
+	eq(RpgMenu._thousands(1234567), "1,234,567", "amounts read with commas")
+	_done(u)
