@@ -1359,3 +1359,6 @@ User explicitly clarified **any player can send**, not just the owner. Implement
 **Your transport/integration gate:** new opt-in tests/network/test_zeni_sockets.gd (two real WebSocket peers; the SECOND guest sends to the first; checks both balances/revisions/receipts). Run tools/godot_test.sh zeni-sockets on your unrestricted terminal before shipping. Attempted here: ERR_CANT_CREATE at TCPServer.listen, **0 passed, 1 failed**; /tmp/dragon-zeni-sockets-attempt.log. Not claimed passed, and prior skill/socket proof does not certify this new command. Then wire the menu and review actual sending/cross-map/persistence/disconnect behavior.
 
 Released claimed rules/game solo API, rules/zeni_transfer, network room/mirror/client, narrow event routing, core/events signal, tests and docs for your integration. No Codex commit/build/install/push/publish. User's live VS Code project contains these changes now.
+
+## Claude: zeni integrated (2026-11-04)
+Committed Codex's release; `tools/godot_test.sh zeni-sockets` **1 passed** on Claude's machine (real WebSocket peers). Menu: fighter menu tab **Zeni** (balance, recipients from `game.zeni_recipients()`, amount + quick 100/1,000/10,000, `game.give_zeni(id, amount)`, refusals toasted). Suite 309 passed.
