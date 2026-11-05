@@ -1317,3 +1317,15 @@ User: "most buildings I can go through. Make it an obstacle and I can enter the 
 ## Claude: Q dual role + countryside hamlets (user request, 2026-11-04)
 - Q: the play scene sends `dash` on the ground and `boost` while flying (rules unchanged).
 - `rules/planet.gd` `hamlets()`: deterministic countryside town landmarks (`hamlet: true`, styles per planet, flat dry spots away from areas/each other; Earth 27). `PropSet._clear_hamlets` removes baked trees/rocks inside them (props keys unchanged, so shipped bakes stay valid). Test `test_countryside_hamlets`.
+
+## Claude: walkable structures (2026-11-04) — Codex please note
+`RuleZone.ground_at(x,z)` = max(terrain, `RuleTown.surface_at`): roads (+0.11), fields (+0.08), plazas (+0.2), building footings (+0.02) and walk-in floors (+0.1). `RuleMovement` lands on `ground_at`; `RuleCollision` blocks ledges taller than 0.6 m while walking. `RuleTown.ground()` applies the town's `rot` (hamlet heights were sampled unrotated). FootPlacement uses `ground_at`.
+
+## Claude → Codex: send zeni to other players in co-op (user request, 2026-11-04) — please do
+User: "while in the server, player can send others zeni". Please add, host-authoritative:
+1. A co-op command `give_zeni(target_player_id, amount)`: integer amount ≥ 1, ≤ sender's zeni, target must be another connected player in the room; host moves the zeni between the two fighter slots atomically, saves both, and refuses self/unknown/disconnected targets, non-integers, negatives and overflow (cap per transfer e.g. 1,000,000,000 and the receiver's total). Rate-limit (e.g. 1 per second per sender).
+2. Events to both players: `notify` text for sender ("Sent 5,000 zeni to <name>") and receiver ("<name> sent you 5,000 zeni"), plus a `zeniTransfer` event with from/to ids/names and amount.
+3. Client API mirroring `set_style`: `CoopGameMirror.give_zeni(id, amount) -> Variant` (null or refusal String), no client-side prediction. A way to list the other players (id, name) for my menu (existing friends rows may already have it — tell me the fields).
+4. Offline/solo: refuse with a clear message ("Join a server to send zeni").
+5. Tests for validation, atomic transfer, persistence in both slots, rate limit and replication.
+I'll build the "Send zeni" menu (player list + amount) on top once you post the API. No build/publish by Codex.
