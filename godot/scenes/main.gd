@@ -111,6 +111,8 @@ func _ready() -> void:
 					play.forced = {"move_x": sin(r + PI), "move_z": cos(r + PI)}
 					await get_tree().create_timer(float(_args.get("walkfor", 2.4))).timeout
 					play.forced = {}
+					if _args.has("turn"):   # look around inside (the camera must stay in the room)
+						play.follow.set_yaw(play.follow.yaw + float(_args.turn))
 		"boost":   # dev: rocket boost from the ground, then steer (recordings)
 			await get_tree().create_timer(1.5).timeout
 			if play != null:

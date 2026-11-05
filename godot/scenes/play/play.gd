@@ -255,6 +255,11 @@ func _building_view(pos: Vector3) -> void:
 	else:
 		RenderingServer.global_shader_parameter_set(&"inside_building", Vector4(float(inside.x), float(inside.z),
 			maxf(float(inside.hw), float(inside.hd)) * 1.5 + 1.0, game.zone.height_at(float(inside.x), float(inside.z))))
+	follow.room = {}
+	if not inside.is_empty():
+		var k := 0.78 if inside.get("round", false) else 1.0
+		follow.room = {"x": inside.x, "z": inside.z, "rot": inside.rot, "hw": float(inside.hw) * k, "hd": float(inside.hd) * k,
+			"ceil": game.zone.height_at(float(inside.x), float(inside.z)) + float(inside.h) - 0.5}
 	var interior := str(game.zone.def.get("kind", "")) == "interior"
 	follow.max_distance = 6.0 if interior else (5.0 if not inside.is_empty() else INF)
 	if interior and not follow.bounds.has_area():

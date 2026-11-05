@@ -127,7 +127,7 @@ func hamlets(planet_id: String) -> Array:
 			lo = minf(lo, hh); hi = maxf(hi, hh)
 			if water is Dictionary and hh < float(water.level) + 1.5:
 				dry = false
-		if not dry or hi - lo > radius * 0.3 or not is_finite(h0):
+		if not dry or hi - lo > radius * 0.14 or not is_finite(h0):
 			continue
 		var style: String = styles[floori(r.next_float() * styles.size())]
 		if planet_id == "earth" and z > float(_base.get("northFrom", 1e9)):

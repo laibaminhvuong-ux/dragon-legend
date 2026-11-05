@@ -17,18 +17,10 @@ static func ensure_globals() -> void:
 	_globals_ready = true
 	RenderingServer.global_shader_parameter_add(&"inside_building", RenderingServer.GLOBAL_VAR_TYPE_VEC4, Vector4.ZERO)
 
-## Walls/roofs of walk-in buildings: cut away above waist height while you're inside that building.
-static func _cut(color: int, rough := 0.75) -> ShaderMaterial:
-	var key := "%x:%.2f" % [color, rough]
-	if _cut_mats.has(key):
-		return _cut_mats[key]
-	ensure_globals()
-	var m := ShaderMaterial.new()
-	m.shader = CUTAWAY
-	m.set_shader_parameter("albedo", Color.hex((color << 8) | 0xff))
-	m.set_shader_parameter("roughness", rough)
-	_cut_mats[key] = m
-	return m
+## Walls/roofs of walk-in buildings: solid, ordinary materials (user request 2026-11-04: walls stay visible inside;
+## the camera stops at walls instead, FollowCamera).
+static func _cut(color: int, rough := 0.75) -> Material:
+	return _mat(color, {"rough": rough})
 
 ## Four walls with a doorway in the front (+z) wall, a floor and simple furniture (RuleTown.WALL / DOOR match).
 static func _hollow(n: Node3D, w: float, d: float, h: float, wall: Material, floor_color: int, furnish := true) -> void:
@@ -44,6 +36,11 @@ static func _hollow(n: Node3D, w: float, d: float, h: float, wall: Material, flo
 	if h > dh:
 		_box(n, Vector3(dw, h - dh, t), wall, Vector3(0, dh + (h - dh) * 0.5, d * 0.5 - t * 0.5))
 	_box(n, Vector3(w - t * 2.0, 0.1, d - t * 2.0), _mat(floor_color, {"rough": 0.8}), Vector3(0, 0.05, 0))
+	_box(n, Vector3(w - t * 2.0, 0.12, d - t * 2.0), _mat(0xeae4d6, {"rough": 0.9}), Vector3(0, h - 0.06, 0))   # ceiling
+	var lamp := OmniLight3D.new()   # a warm light inside so rooms aren't pitch dark under the ceiling
+	lamp.light_color = Color(1.0, 0.88, 0.7); lamp.light_energy = 0.9; lamp.omni_range = maxf(w, d) * 0.8
+	lamp.position = Vector3(0, h - 0.6, 0)
+	n.add_child(lamp)
 	if furnish and w > 4.0 and d > 4.0:
 		var wood := _mat(0x7a5232, {"rough": 0.8})
 		_box(n, Vector3(1.4, 0.08, 0.9), wood, Vector3(-w * 0.18, 0.75, -d * 0.12))
@@ -83,6 +80,7 @@ static func build(g: Node3D, zone: RefCounted, l: Dictionary) -> void:
 		n.position = Vector3(b.x, _ground(zone, l, b.x, b.z) - base_y, b.z)
 		n.rotation.y = float(b.rot)
 		g.add_child(n)
+		_foundation(n, zone, l, b)
 		match str(b.kind):
 			"tower": _tower(n, b)
 			"office": _office(n, b)
@@ -102,6 +100,24 @@ static func build(g: Node3D, zone: RefCounted, l: Dictionary) -> void:
 			holder.add_child(c)
 	g.add_child(holder)
 	MeshMerge.merge(holder, 2600.0)
+
+## A stone footing from the building's floor down to the lowest ground under its footprint, so buildings on a
+## slope stand on the ground instead of floating (user report, 2026-11-04).
+static func _foundation(n: Node3D, zone: RefCounted, l: Dictionary, b: Dictionary) -> void:
+	if str(b.kind) in ["field", "plaza", "pier", "boat", "bonfire", "fountain", "lamp"]:
+		return
+	var w := float(b.w); var d := float(b.d)
+	if str(b.kind) == "lighthouse": w = 4.8; d = 4.8
+	if str(b.kind) == "windmill": w = 6.0; d = 6.0
+	var r := float(b.rot)
+	var low := INF
+	for cx in [-0.5, 0.0, 0.5]:
+		for cz in [-0.5, 0.0, 0.5]:
+			var lx: float = float(b.x) + float(cx) * w * cos(r) + float(cz) * d * sin(r)
+			var lz: float = float(b.z) - float(cx) * w * sin(r) + float(cz) * d * cos(r)
+			low = minf(low, _ground(zone, l, lx, lz))
+	var drop := _ground(zone, l, float(b.x), float(b.z)) - low + 0.6
+	_box(n, Vector3(w + 0.3, drop + 0.15, d + 0.3), _mat(0x8f8a80, {"rough": 0.95}), Vector3(0, 0.1 - (drop + 0.15) * 0.5, 0))
 
 ## Ground height under a town-local point (towns are flattened, but the edges follow the land).
 static func _ground(zone: RefCounted, l: Dictionary, x: float, z: float) -> float:
@@ -173,7 +189,12 @@ static func _dome_house(n: Node3D, b: Dictionary) -> void:
 		p.rotation.y = a
 	_box(n, Vector3(RuleTown.DOOR + 0.2, 1.0, 0.3), wall, Vector3(0, 2.9, r))
 	_dome(n, r, wall, Vector3(0, 3.4, 0), 0.85)
+	_cyl(n, r, r, 0.12, _mat(0xeae4d6, {"rough": 0.9}), Vector3(0, 3.35, 0), 24)   # ceiling under the dome
 	_box(n, Vector3(r * 1.5, 0.1, r * 1.5), _mat(0xc8b890, {"rough": 0.8}), Vector3(0, 0.05, 0))
+	var lamp := OmniLight3D.new()
+	lamp.light_color = Color(1.0, 0.88, 0.7); lamp.light_energy = 0.9; lamp.omni_range = r * 1.8
+	lamp.position = Vector3(0, 2.8, 0)
+	n.add_child(lamp)
 	var wood := _mat(0x7a5232, {"rough": 0.8})
 	_cyl(n, 0.7, 0.7, 0.08, wood, Vector3(0, 0.75, -r * 0.2), 16)
 	_cyl(n, 0.08, 0.08, 0.72, wood, Vector3(0, 0.36, -r * 0.2), 6)
@@ -259,7 +280,7 @@ static func _road(g: Node3D, zone: RefCounted, l: Dictionary, base_y: float, rd:
 		var p0 := a.lerp(b, float(i) / steps); var p1 := a.lerp(b, float(i + 1) / steps)
 		var mid := (p0 + p1) * 0.5
 		var y := _ground(zone, l, mid.x, mid.y) - base_y + 0.06
-		var piece := _box(g, Vector3(float(rd.w), 0.1, p0.distance_to(p1) + 0.4), m, Vector3(mid.x, y, mid.y))
+		var piece := _box(g, Vector3(float(rd.w), 0.6, p0.distance_to(p1) + 0.4), m, Vector3(mid.x, y - 0.25, mid.y))
 		piece.rotation.y = atan2(b.x - a.x, b.y - a.y)
 		piece.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
@@ -279,9 +300,19 @@ static func _extra(g: Node3D, zone: RefCounted, l: Dictionary, base_y: float, e:
 			var bulb := SphereMesh.new(); bulb.radius = 0.45; bulb.height = 0.9
 			_put(g, bulb, _mat(0xfff0c8, {"emissive": 0xffd890, "glow": 1.5}), Vector3(e.x, y + 5.2, e.z))
 		"field":
-			var f := _box(g, Vector3(float(e.w), 0.12, float(e.d)), _mat(0x8aa63a if int(e.w) % 2 == 0 else 0xc8b04a, {"rough": 1.0}), Vector3(e.x, y + 0.08, e.z))
-			f.rotation.y = float(e.rot)
-			f.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			var fm := _mat(0x8aa63a if int(e.w) % 2 == 0 else 0xc8b04a, {"rough": 1.0})
+			var fr := float(e.rot)
+			var nx := maxi(1, int(float(e.w) / 6.0)); var nz := maxi(1, int(float(e.d) / 6.0))
+			for i in nx:
+				for k in nz:   # tiles that each sit on the ground under them
+					var lx := (float(i) + 0.5) / nx * float(e.w) - float(e.w) * 0.5
+					var lz := (float(k) + 0.5) / nz * float(e.d) - float(e.d) * 0.5
+					var tx := float(e.x) + lx * cos(fr) + lz * sin(fr)
+					var tz := float(e.z) - lx * sin(fr) + lz * cos(fr)
+					var ty := _ground(zone, l, tx, tz) - base_y
+					var f := _box(g, Vector3(float(e.w) / nx + 0.05, 0.5, float(e.d) / nz + 0.05), fm, Vector3(tx, ty - 0.17, tz))
+					f.rotation.y = fr
+					f.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		"bonfire":
 			_cyl(g, 1.2, 1.4, 0.5, _mat(0x4a3a2a), Vector3(e.x, y + 0.25, e.z), 10)
 			var fire := CylinderMesh.new(); fire.top_radius = 0.0; fire.bottom_radius = 0.9; fire.height = 1.8
