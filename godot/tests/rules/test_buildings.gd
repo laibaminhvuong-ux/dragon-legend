@@ -89,3 +89,29 @@ func test_countryside_hamlets() -> void:
 	var props: RefCounted = p.props()
 	for h: Dictionary in hs.slice(0, 5):
 		ok(props.trees.filter(func(t: Dictionary) -> bool: return Vector2(float(t.x) - float(h.x), float(t.z) - float(h.z)).length() < float(h.radius) * 0.9).is_empty(), "no trees inside %s" % h.name)
+
+func test_you_stand_on_roads_and_floors() -> void:
+	var l := _town()
+	var z := FlatZone.new([l])
+	var lay := RuleTown.layout(l)
+	var rd: Dictionary = lay.roads[0]
+	var mid := Vector2(rd.x1, rd.z1).lerp(Vector2(rd.x2, rd.z2), 0.3)
+	near(RuleTown.surface_at(z, l, mid.x, mid.y), RuleTown.ROAD_TOP, 1e-4, "a road's top is above the ground")
+	var b := _house(l)
+	near(RuleTown.surface_at(z, l, float(b.x), float(b.z)), RuleTown.FLOOR_TOP, 1e-4, "inside a house you stand on its floor")
+	eq(RuleTown.surface_at(z, l, 500.0, 500.0), -INF, "open ground: just the terrain")
+	var g := RuleGame.new()
+	var land: RefCounted = g.zone
+	var t: Dictionary = {}
+	for m: Dictionary in land.landmarks:
+		if m.get("type") == "town":
+			t = m
+			break
+	var r0: Dictionary = RuleTown.layout(t).roads[0]
+	var p := Vector2(r0.x1, r0.z1).lerp(Vector2(r0.x2, r0.z2), 0.5)
+	var rr := float(t.get("rot", 0.0))
+	var wx := float(t.x) + p.x * cos(rr) + p.y * sin(rr); var wz := float(t.z) - p.x * sin(rr) + p.y * cos(rr)
+	g.player.pos = Vector3(wx, land.height_at(wx, wz) + 1.0, wz)
+	for i in 60:
+		g.update(1.0 / 60.0, RuleGame.empty_intents())
+	ok(float(g.player.pos.y) > land.height_at(wx, wz) + 0.05, "the player stands on the road, not in it")

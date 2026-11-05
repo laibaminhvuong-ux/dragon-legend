@@ -40,7 +40,7 @@ func _process_modification() -> void:
 		var world := sk.global_transform*a
 		# Keep the foot bone's rest clearance above the sole.
 		var clearance := sk.get_bone_global_rest(foot).origin.y*sk.global_transform.basis.get_scale().y
-		var ground := terrain.height_at(world.x,world.z)+maxf(0.03,clearance)
+		var ground: float = (terrain.ground_at(world.x,world.z) if terrain.has_method("ground_at") else terrain.height_at(world.x,world.z))+maxf(0.03,clearance)
 		world.y += clampf(ground-world.y,-0.16,0.22)
 		var target := sk.global_transform.affine_inverse()*world
 		var desired_knee := knee_target(h,target,Vector3.BACK,h.distance_to(k),k.distance_to(a))

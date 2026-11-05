@@ -116,7 +116,7 @@ func step(entity: Dictionary,it: Dictionary,dt: float,zone: RefCounted) -> void:
 		entity.vel.z = 0.0
 	entity.pos.x = x
 	entity.pos.z = z
-	var floor_y: float = zone.height_at(x,z)
+	var floor_y: float = zone.ground_at(x,z) if zone.has_method("ground_at") else zone.height_at(x,z)
 	if entity.pos.y<=floor_y:
 		entity.pos.y = floor_y
 		if entity.vel.y<0:

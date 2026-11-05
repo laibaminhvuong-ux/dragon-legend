@@ -268,3 +268,74 @@ static func inside(l: Dictionary, x: float, z: float) -> Dictionary:
 		if absf(lx) < float(f.hw) * k and absf(lz) < float(f.hd) * k:
 			return f
 	return {}
+
+# ------------------------------------------------------------------------------------------ walkable surfaces
+## Ground under a town-local point (towns may be rotated: l.rot, like the view's town node).
+static func ground(zone: RefCounted, l: Dictionary, x: float, z: float) -> float:
+	var r := float(l.get("rot", 0.0))
+	return zone.height_at(float(l.x) + x * cos(r) + z * sin(r), float(l.z) - x * sin(r) + z * cos(r))
+
+const ROAD_TOP := 0.11
+const FIELD_TOP := 0.08
+const PLINTH_TOP := 0.02
+const FLOOR_TOP := 0.1
+const NO_STRUCTURE := ["field", "plaza", "pier", "boat", "bonfire", "fountain", "lamp"]
+
+## The top of whatever you stand on at a world point in this town (road, field, plaza, a building's footing or
+## floor), or -INF where there is only terrain. Matches what world/town.gd draws, so feet stay on top of it.
+static func surface_at(zone: RefCounted, l: Dictionary, wx: float, wz: float) -> float:
+	var lr := float(l.get("rot", 0.0))
+	var dx := wx - float(l.x); var dz := wz - float(l.z)
+	var x := dx * cos(lr) - dz * sin(lr)
+	var z := dx * sin(lr) + dz * cos(lr)
+	if Vector2(x, z).length() > float(l.get("radius", 120.0)) * 1.3 + 30.0:
+		return -INF
+	var lay := layout(l)
+	var best := -INF
+	for b: Dictionary in lay.buildings:
+		if str(b.kind) in NO_STRUCTURE:
+			continue
+		var w := float(b.w); var d := float(b.d)
+		if str(b.kind) == "lighthouse": w = 4.8; d = 4.8
+		if str(b.kind) == "windmill": w = 6.0; d = 6.0
+		var r := float(b.rot)
+		var bx := x - float(b.x); var bz := z - float(b.z)
+		var u := bx * cos(r) - bz * sin(r); var v := bx * sin(r) + bz * cos(r)
+		if absf(u) < w * 0.5 + 0.15 and absf(v) < d * 0.5 + 0.15:
+			var g0 := ground(zone, l, float(b.x), float(b.z))
+			var inner := str(b.kind) in WALK_IN and absf(u) < w * 0.5 - WALL and absf(v) < d * 0.5 - WALL
+			best = maxf(best, g0 + (FLOOR_TOP if inner else PLINTH_TOP))
+	for rd: Dictionary in lay.roads:
+		var a := Vector2(rd.x1, rd.z1); var e := Vector2(rd.x2, rd.z2)
+		var length := a.distance_to(e)
+		if length < 0.01:
+			continue
+		var t := (Vector2(x, z) - a).dot(e - a) / (length * length)
+		var tol := 0.2 / length
+		if t < -tol or t > 1.0 + tol:
+			continue
+		var tc := clampf(t, 0.0, 1.0)
+		if Vector2(x, z).distance_to(a.lerp(e, tc)) > float(rd.w) * 0.5:
+			continue
+		var steps := maxi(1, int(length / 8.0))
+		var i := clampi(int(floor(tc * steps)), 0, steps - 1)
+		var mid := a.lerp(e, (float(i) + 0.5) / steps)
+		best = maxf(best, ground(zone, l, mid.x, mid.y) + ROAD_TOP)
+	for ex: Dictionary in lay.extras:
+		match str(ex.kind):
+			"plaza":
+				if Vector2(x - float(ex.x), z - float(ex.z)).length() < float(ex.r):
+					best = maxf(best, ground(zone, l, float(ex.x), float(ex.z)) + 0.2)
+			"field":
+				var fr := float(ex.rot)
+				var fx := x - float(ex.x); var fz := z - float(ex.z)
+				var fu := fx * cos(fr) - fz * sin(fr); var fv := fx * sin(fr) + fz * cos(fr)
+				var fw := float(ex.w); var fd := float(ex.d)
+				if absf(fu) < fw * 0.5 and absf(fv) < fd * 0.5:
+					var nx := maxi(1, int(fw / 6.0)); var nz := maxi(1, int(fd / 6.0))
+					var i := clampi(int(floor((fu + fw * 0.5) / fw * nx)), 0, nx - 1)
+					var k := clampi(int(floor((fv + fd * 0.5) / fd * nz)), 0, nz - 1)
+					var lx := (float(i) + 0.5) / nx * fw - fw * 0.5
+					var lz := (float(k) + 0.5) / nz * fd - fd * 0.5
+					best = maxf(best, ground(zone, l, float(ex.x) + lx * cos(fr) + lz * sin(fr), float(ex.z) - lx * sin(fr) + lz * cos(fr)) + FIELD_TOP)
+	return best

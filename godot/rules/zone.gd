@@ -272,6 +272,19 @@ func inside_building(x: float, z: float) -> Dictionary:
 				return f
 	return {}
 
+## What you stand on at a point: the terrain, or a town's road, field, plaza, building footing or floor on top of
+## it (user request 2026-11-04: walk ON roads and floors, step up onto them).
+func ground_at(x: float, z: float) -> float:
+	var h: float = height_at(x, z)
+	for l: Dictionary in landmarks:
+		if str(l.get("type", "")) != "town":
+			continue
+		var reach := float(l.get("radius", 120.0)) * float(l.get("scale", 1.0)) * 1.3 + 30.0
+		if absf(x - float(l.x)) > reach or absf(z - float(l.z)) > reach:
+			continue
+		h = maxf(h, RuleTown.surface_at(self, l, x, z))
+	return h
+
 ## Interior maps have a ceiling (feet height above which you can't fly), else INF.
 func ceiling() -> float:
 	return float(def.get("ceiling", INF))

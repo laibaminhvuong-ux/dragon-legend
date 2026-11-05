@@ -9,6 +9,14 @@ static func resolve(entity: Dictionary,zone: RefCounted,previous: Vector3) -> vo
 			entity.pos.y = maxf(previous.y,zone.height_at(previous.x,previous.z))
 			entity.vel.x = 0.0
 			entity.vel.z = 0.0
+	# structures (footings, floors) step up at most a stair's height; a taller ledge blocks like a wall
+	if not entity.flying and entity.onGround and zone.has_method("ground_at"):
+		var top: float = zone.ground_at(entity.pos.x,entity.pos.z)
+		if top-previous.y>0.6 and top-zone.height_at(entity.pos.x,entity.pos.z)>0.3:
+			entity.pos.x = previous.x
+			entity.pos.z = previous.z
+			entity.vel.x = 0.0
+			entity.vel.z = 0.0
 	if zone.has_method("ceiling") and entity.pos.y>zone.ceiling():   # interiors: no flying through the roof
 		entity.pos.y = zone.ceiling()
 		entity.vel.y = minf(0.0,entity.vel.y)

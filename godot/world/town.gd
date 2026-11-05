@@ -117,11 +117,12 @@ static func _foundation(n: Node3D, zone: RefCounted, l: Dictionary, b: Dictionar
 			var lz: float = float(b.z) - float(cx) * w * sin(r) + float(cz) * d * cos(r)
 			low = minf(low, _ground(zone, l, lx, lz))
 	var drop := _ground(zone, l, float(b.x), float(b.z)) - low + 0.6
-	_box(n, Vector3(w + 0.3, drop + 0.15, d + 0.3), _mat(0x8f8a80, {"rough": 0.95}), Vector3(0, 0.1 - (drop + 0.15) * 0.5, 0))
+	var hh := drop + 0.2   # top at +0.02: a low step round the building (RuleTown.surface_at matches)
+	_box(n, Vector3(w + 0.3, hh, d + 0.3), _mat(0x8f8a80, {"rough": 0.95}), Vector3(0, 0.02 - hh * 0.5, 0))
 
 ## Ground height under a town-local point (towns are flattened, but the edges follow the land).
 static func _ground(zone: RefCounted, l: Dictionary, x: float, z: float) -> float:
-	return zone.height_at(float(l.x) + x, float(l.z) + z)
+	return RuleTown.ground(zone, l, x, z)
 
 static func _put(p: Node3D, mesh: Mesh, m: Material, pos: Vector3, rot_y := 0.0) -> MeshInstance3D:
 	var mi := MeshInstance3D.new()
