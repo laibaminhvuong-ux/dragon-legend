@@ -1,0 +1,272 @@
+{
+  "rp01_dark_crystal_hero": {
+    "id": "rp01_dark_crystal_hero",
+    "name": "Gokan · A Crystal at the Landing",
+    "character": "goku",
+    "rarity": "rare",
+    "effect": {
+      "ki_regen": 0.02
+    }
+  },
+  "rp01_dark_crystal_prismatic": {
+    "id": "rp01_dark_crystal_prismatic",
+    "name": "A Crystal at the Landing · Prismatic",
+    "character": "raditz",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp02_shattered_landing_hero": {
+    "id": "rp02_shattered_landing_hero",
+    "name": "Gokan · The Shattered Landing",
+    "character": "goku",
+    "rarity": "rare",
+    "effect": {
+      "damage": 0.02
+    }
+  },
+  "rp02_shattered_landing_prismatic": {
+    "id": "rp02_shattered_landing_prismatic",
+    "name": "The Shattered Landing · Prismatic",
+    "character": "vegeta",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp03_nameck_storm_hero": {
+    "id": "rp03_nameck_storm_hero",
+    "name": "Gohin · Storm over Nameck",
+    "character": "gohan",
+    "rarity": "rare",
+    "effect": {
+      "health": 0.02
+    }
+  },
+  "rp03_nameck_storm_prismatic": {
+    "id": "rp03_nameck_storm_prismatic",
+    "name": "Storm over Nameck · Prismatic",
+    "character": "dodoria",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp04_shard_emperor_hero": {
+    "id": "rp04_shard_emperor_hero",
+    "name": "Gokan · The Shard Emperor",
+    "character": "goku",
+    "rarity": "rare",
+    "effect": {
+      "ally_health": 0.03
+    }
+  },
+  "rp04_shard_emperor_prismatic": {
+    "id": "rp04_shard_emperor_prismatic",
+    "name": "The Shard Emperor · Prismatic",
+    "character": "frieza",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp05_vael_hero": {
+    "id": "rp05_vael_hero",
+    "name": "Gokan · Vael’s Stolen Hour",
+    "character": "goku",
+    "rarity": "rare",
+    "effect": {
+      "ki_regen": 0.02
+    }
+  },
+  "rp05_vael_prismatic": {
+    "id": "rp05_vael_prismatic",
+    "name": "Vael’s Stolen Hour · Prismatic",
+    "character": "vael",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp06_echo_breakout_hero": {
+    "id": "rp06_echo_breakout_hero",
+    "name": "Future Tronks · Breakout from Echo Prison",
+    "character": "trunks",
+    "rarity": "rare",
+    "effect": {
+      "damage": 0.02
+    }
+  },
+  "rp06_echo_breakout_prismatic": {
+    "id": "rp06_echo_breakout_prismatic",
+    "name": "Breakout from Echo Prison · Prismatic",
+    "character": "hollow_piccor",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp07_cyborg_riot_hero": {
+    "id": "rp07_cyborg_riot_hero",
+    "name": "Cyborg 16 · Cyborg Riot",
+    "character": "android_16",
+    "rarity": "rare",
+    "effect": {
+      "health": 0.02
+    }
+  },
+  "rp07_cyborg_riot_prismatic": {
+    "id": "rp07_cyborg_riot_prismatic",
+    "name": "Cyborg Riot · Prismatic",
+    "character": "android_18",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp08_prison_tournament_hero": {
+    "id": "rp08_prison_tournament_hero",
+    "name": "Gohin · The Prison-Yard Tournament",
+    "character": "gohan",
+    "rarity": "rare",
+    "effect": {
+      "ally_health": 0.03
+    }
+  },
+  "rp08_prison_tournament_prismatic": {
+    "id": "rp08_prison_tournament_prismatic",
+    "name": "The Prison-Yard Tournament · Prismatic",
+    "character": "hollow_vegara",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp09_morrigath_hero": {
+    "id": "rp09_morrigath_hero",
+    "name": "Gokan · Morrigath’s Last Chain",
+    "character": "goku",
+    "rarity": "rare",
+    "effect": {
+      "ki_regen": 0.02
+    }
+  },
+  "rp09_morrigath_prismatic": {
+    "id": "rp09_morrigath_prismatic",
+    "name": "Morrigath’s Last Chain · Prismatic",
+    "character": "morrigath",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp10_hollow_games_hero": {
+    "id": "rp10_hollow_games_hero",
+    "name": "Gohin · The Hollow Games",
+    "character": "gohan",
+    "rarity": "rare",
+    "effect": {
+      "damage": 0.02
+    }
+  },
+  "rp10_hollow_games_prismatic": {
+    "id": "rp10_hollow_games_prismatic",
+    "name": "The Hollow Games · Prismatic",
+    "character": "hollow_piccor",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp11_crown_rampage_hero": {
+    "id": "rp11_crown_rampage_hero",
+    "name": "Gokan · The Crown’s Rampage",
+    "character": "goku",
+    "rarity": "rare",
+    "effect": {
+      "health": 0.02
+    }
+  },
+  "rp11_crown_rampage_prismatic": {
+    "id": "rp11_crown_rampage_prismatic",
+    "name": "The Crown’s Rampage · Prismatic",
+    "character": "fat_buu",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp12_arena_of_night_hero": {
+    "id": "rp12_arena_of_night_hero",
+    "name": "Gokan · Arena of Night",
+    "character": "goku",
+    "rarity": "rare",
+    "effect": {
+      "ally_health": 0.03
+    }
+  },
+  "rp12_arena_of_night_prismatic": {
+    "id": "rp12_arena_of_night_prismatic",
+    "name": "Arena of Night · Prismatic",
+    "character": "hollow_piccor",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp13_nyxara_hero": {
+    "id": "rp13_nyxara_hero",
+    "name": "Vegara · The Obsidian Crown",
+    "character": "vegeta",
+    "rarity": "rare",
+    "effect": {
+      "ki_regen": 0.02
+    }
+  },
+  "rp13_nyxara_prismatic": {
+    "id": "rp13_nyxara_prismatic",
+    "name": "The Obsidian Crown · Prismatic",
+    "character": "nyxara",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp14_remnants_hero": {
+    "id": "rp14_remnants_hero",
+    "name": "Gokan · Remnants of the Unwound",
+    "character": "goku",
+    "rarity": "rare",
+    "effect": {
+      "damage": 0.02
+    }
+  },
+  "rp14_remnants_prismatic": {
+    "id": "rp14_remnants_prismatic",
+    "name": "Remnants of the Unwound · Prismatic",
+    "character": "nyxara",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  },
+  "rp15_zero_origin_hero": {
+    "id": "rp15_zero_origin_hero",
+    "name": "Gokan · The End of Time",
+    "character": "goku",
+    "rarity": "rare",
+    "effect": {
+      "health": 0.02
+    }
+  },
+  "rp15_zero_origin_prismatic": {
+    "id": "rp15_zero_origin_prismatic",
+    "name": "The End of Time · Prismatic",
+    "character": "zero_origin",
+    "rarity": "legendary",
+    "effect": {
+      "cosmetic": "rift_prismatic"
+    }
+  }
+}

@@ -15,6 +15,7 @@ var mastery := RuleMastery.new()
 var movement := RuleMovement.new()
 var kaioken: RefCounted
 var combat: RefCounted
+var rift: RuleRiftPatrol
 ## The loaded map for an area: its planet's map (shared by every area on it) or the area itself.
 static func get_zone(id: String) -> RuleZone:
 	var key: String = id if RuleTables.table("zones").has(id) else "earth_plains"
@@ -55,6 +56,8 @@ func _init(index: int = 0,saved: Dictionary = {},bus: Object = null) -> void:
 	refresh_derived(true)
 	kaioken = RuleKaioken.new(self)
 	combat = RuleCombat.new(self,events)
+	rift = RuleRiftPatrol.new(self,simulates_rift())
+	if rift.active():combat.sync()
 func emit(event: String,payload: Dictionary = {}) -> void:
 	RuleRuntime.emit(events,event,payload)
 ## User tuning (2026-11-03): every Ki cost is this much of the classic game's, and a form costs
@@ -94,8 +97,9 @@ func refresh_derived(fill_up: bool = false) -> void:
 	var hp_fraction: float = player.health/player.maxHealth if player.maxHealth>0 else 1.0
 	for key: String in ["maxHealth","maxKi","kiCostScale","runSpeed","strength","kiPower","powerLevel"]:
 		player[key] = d[key]
+	player.maxHealth *= 1+RuleHeroCards.bonus(slot,"health")
 	player.kiCostScale *= KI_COST_EASE
-	player.health = d.maxHealth if fill_up else RuleRuntime.js_round(d.maxHealth*hp_fraction)
+	player.health = player.maxHealth if fill_up else RuleRuntime.js_round(player.maxHealth*hp_fraction)
 	player.ki = d.maxKi if fill_up else minf(player.ki,d.maxKi)
 	emit("stats",hud())
 func add_form_mastery(amount: float) -> Array:
@@ -195,8 +199,11 @@ func update(dt: float,intents: Dictionary = {}) -> void:
 		add_form_mastery(mastery.tuning.perSecond*dt)
 	# Ki refills by itself only in base form (user tuning 2026-11-03); in a form only charging refills it.
 	if not player.dashing and not player.charging and player.form=="" and player.health>0:
+		var previous_ki: float = player.ki
 		RuleKi.regen_ki(player,dt)
+		player.ki = minf(player.maxKi,player.ki+(player.ki-previous_ki)*RuleHeroCards.bonus(slot,"ki_regen"))
 	player.stun = maxf(0,player.stun-dt)
+	if rift!=null and not rift.managed: rift.update(dt)
 func hud() -> Dictionary:
 	var form_name: String = forms.forms.get(player.form,{}).get("name",player.form) if player.form!="" else "Base"
 	if player.kaioken>0:
@@ -268,6 +275,7 @@ func leave_building() -> Variant:
 	return leaving_to
 
 func to_save() -> Dictionary:
+	if rift!=null: rift.save_for(self)
 	if leaving_to!="":
 		slot.zone = leaving_to
 		slot.position = leaving_position
@@ -277,3 +285,23 @@ func to_save() -> Dictionary:
 	slot.zone = current_region()
 	slot.playedAt = int(Time.get_unix_time_from_system()*1000)
 	return slot
+
+func rift_missions() -> Array: return rift.catalogue()
+func start_rift_mission(id: String) -> Variant:
+	if combat.party!=null and combat.party.get_ref()!=null:return combat.party.get_ref().rift_request(player.id,"rift_start",[id])
+	return rift.start(id)
+func active_rift_mission() -> Dictionary: return rift.snapshot()
+func enter_rift_hub() -> Variant:
+	if combat.party!=null and combat.party.get_ref()!=null:return combat.party.get_ref().rift_request(player.id,"rift_hub",[])
+	return rift.enter_hub()
+func abandon_rift_mission() -> Variant:
+	if combat.party!=null and combat.party.get_ref()!=null:return combat.party.get_ref().rift_request(player.id,"rift_abandon",[])
+	return rift.abandon()
+func hero_cards() -> Array: return RuleHeroCards.catalogue(slot)
+func equip_hero_card(id: String,index: Variant) -> Variant:
+	if rift.active():return "Change Hero Cards between missions."
+	var error: Variant=RuleHeroCards.equip(slot,id,index)
+	if error==null:refresh_derived()
+	return error
+
+func simulates_rift() -> bool:return true

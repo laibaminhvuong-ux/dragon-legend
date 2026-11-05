@@ -102,7 +102,7 @@ func accept_snapshot(data: Dictionary) -> void:
 			_saved_zeni_revision = revision; _zeni_save_failed = false; _save = 0
 		elif not _zeni_save_failed:
 			_zeni_save_failed = true
-			failed.emit("Your server zeni changed, but saving this fighter failed. Retrying with the next update.")
+			failed.emit("Your server fighter changed, but saving this fighter failed. Retrying with the next update.")
 	elif _save>=5:
 		save_progress(); _save = 0
 	frame.emit(data)

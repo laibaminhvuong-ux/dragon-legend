@@ -10,6 +10,7 @@ var events: Object
 var p: Dictionary
 var zone: RuleZone
 var enemies: Array = []
+var allies: Array = []
 var projectiles: Array = []
 var c: Dictionary = RuleTables.table("combat")
 var a: Dictionary = RuleTables.table("avatar")
@@ -52,6 +53,7 @@ func _init(owner_game: RefCounted,bus: Object = null) -> void:
 	technique = game.slot.loadout.get("technique","EnergyWave")
 	# three trainees near each area's start (on a planet map: every area, with its own key and level)
 	for area: String in zone.region_ids():
+		if RuleTables.table("zones").get(area,{}).get("saga","")=="Rift Patrol":continue
 		var base: Dictionary = camp_in(zone,area)
 		for i in 3:
 			spawn({"key":"patrol_"+area,"name":"Hostile Trainee","level":rpg.ZONE_LEVELS.get(area,1),"look":game.schema.default_look("Human").merged({"outfitTint":3},true),
@@ -132,7 +134,7 @@ func notify(text: String) -> void:
 func move_def(id: String) -> Dictionary:
 	return c.starterMove if id=="EnergyWave" else moves.get(id,{})
 func spawn(definition: Dictionary,index: int = 0) -> Dictionary:
-	var health: float = (c.enemyHealth+(definition.level-1)*c.healthPerLevel)*(c.bossHealth if definition.get("boss",false) else 1)
+	var health: float = (c.enemyHealth+(definition.level-1)*c.healthPerLevel)*(c.bossHealth if definition.get("boss",false) else 1)*float(definition.get("healthScale",1))
 	var position: Vector3 = zone.free_position({"x":definition.x,"z":definition.z})
 	var enemy: Dictionary = definition.duplicate(true)
 	enemy.merge({"id":"enemy:%s:%d" % [definition.key,index],"kind":"enemy","style":RuleStyles.normalize(definition.get("style",RuleStyles.npc_style(str(definition.key)))),"pos":position,"home":position,"vel":Vector3.ZERO,"health":health,"maxHealth":health,
@@ -146,12 +148,14 @@ func set_story(story: RefCounted) -> void:
 	sync()
 func sync() -> void:
 	var definitions: Dictionary = {}
-	if _story!=null and _story.get_ref()!=null:
+	if game.rift!=null and game.rift.active():
+		for d: Dictionary in game.rift.encounters():definitions[str(d.get("uid",d.key))]=d
+	elif _story!=null and _story.get_ref()!=null:
 		for d: Dictionary in _story.get_ref().encounters():
 			definitions[str(d.get("uid",d.key))] = d
 	for i in range(enemies.size()-1,-1,-1):
 		var e: Dictionary = enemies[i]
-		if (String(e.key).begins_with("patrol_") and not e.has("uid")) or definitions.has(str(e.get("uid",e.key))):
+		if (String(e.key).begins_with("patrol_") and not e.has("uid") and (game.rift==null or not game.rift.active())) or definitions.has(str(e.get("uid",e.key))):
 			continue
 		enemies.remove_at(i)
 		game.entities.erase(e)
@@ -208,7 +212,7 @@ func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = fa
 	var style_tuning := RuleStyles.get_style(hit_context.style)
 	var melee_hit: bool = hit_context.get("move_id")=="Melee"
 	var guard_cost: float = c.guardCost*(float(style_tuning.guard_pressure) if melee_hit else 1.0)
-	var amount: float = damage
+	var amount: float = damage*(1+RuleHeroCards.bonus(game.slot,"damage") if source==p else 1)
 	if target.blocking and target.ki>=guard_cost and not finisher:
 		target.ki -= guard_cost
 		amount *= c.guardDamage
@@ -237,6 +241,10 @@ func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = fa
 			p.egoBoost = minf(c.egoMaxBonus,p.get("egoBoost",0)+forms.forms.UltraEgo.damageGrowth)
 	if target.health>0:
 		return
+	if target.get("kind")=="ally":
+		target.health=0.0
+		emit("riftAllyDown",{"id":target.id,"character":target.character})
+		return
 	if target==p:
 		p.flying = false
 		p.dashing = false
@@ -252,6 +260,10 @@ func hit(target: Dictionary,damage: float,source: Dictionary,finisher: bool = fa
 		target.deadUntil = clock+(c.bossRespawn if target.boss else c.enemyRespawn)
 		if p.lockTarget==target.id:
 			p.lockTarget = null
+		if str(target.key).begins_with("rift:"):
+			if game.rift!=null:game.rift.enemy_defeated(target.key)
+			emit("enemyDefeated",{"id":target.id,"enemy":target.key,"zone":zone.id,"xp":0,"zeni":0})
+			return
 		var xp: int = maxi(10,RuleRuntime.js_round(game.progression.xp_to_next(int(target.level))*rpg.RPG.killXp))
 		var zeni: float = target.level*rpg.RPG.zeniPerLevel
 		game.add_form_mastery(game.mastery.tuning.perKill)
@@ -406,7 +418,7 @@ func update(dt: float,it: Dictionary) -> void:
 		sync()
 	if p.health<=0:
 		avatar.remaining = 0.0
-		if respawn_at>0 and clock>=respawn_at:
+		if respawn_at>0 and clock>=respawn_at and (game.rift==null or not game.rift.active()):
 			respawn_at = 0
 			game.refresh_derived(true)
 			p.pos = Vector3(zone.spawn.x,zone.height_at(zone.spawn.x,zone.spawn.z),zone.spawn.z)
@@ -501,7 +513,9 @@ func update(dt: float,it: Dictionary) -> void:
 			projectiles.remove_at(i)
 	for e: Dictionary in enemies:
 		var victim: Dictionary = party.get_ref().nearest_player(zone.id,e.pos,p) if party!=null and party.get_ref()!=null else p
+		if game.rift!=null and game.rift.active():victim=game.rift.target(e,victim)
 		if e.health<=0:
+			if str(e.key).begins_with("rift:"):continue
 			if clock>=e.deadUntil and victim.pos.distance_to(e.home)>c.respawnSafeRange:
 				e.health = e.maxHealth
 				e.pos = e.home
@@ -543,7 +557,7 @@ func update(dt: float,it: Dictionary) -> void:
 				var npc_move := RuleStyles.move(e.style,(int(e.attackSerial)-1)%4+1)
 				var npc_context := npc_move.merged({"presentation_version":1,"move_id":"Melee","actor_id":e.id,"action_sequence":e.attackSerial,"started_at":clock,"seed":absi((str(e.id)+str(e.attackSerial)).hash()),"color":0xffdca0,"origin":e.pos+Vector3.UP,"direction":(victim.pos-e.pos).normalized(),"target_id":victim.id,"socket":npc_move.socket,"pose":"melee_combo","charge":0.0},true)
 				emit("attack",skill_packet(npc_context,"release",{"id":e.id,"kind":"melee","pos":e.pos,"combo":npc_move.combo_step}))
-				hit(victim,(c.enemyDamage+(e.level-1)*c.enemyDamagePerLevel)*(c.bossDamage if e.boss else 1),e,false,npc_context)
+				hit(victim,(c.enemyDamage+(e.level-1)*c.enemyDamagePerLevel)*(c.bossDamage if e.boss else 1)*float(e.get("damageMultiplier",e.get("damageScale",1))),e,false,npc_context)
 		elif not returning and distance<c.enemyRange and e.cooldown==0 and e.stun==0:
 			e.windup = c.enemyWindup
 			e.cooldown = c.enemyCooldown

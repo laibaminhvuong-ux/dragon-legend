@@ -1,0 +1,2277 @@
+{
+  "unlock_quest": "m34_super_hero",
+  "hub": "time_nexus",
+  "arcs": [
+    {
+      "id": 1,
+      "name": "The Fractured Timeline"
+    },
+    {
+      "id": 2,
+      "name": "Prison of Echoes"
+    },
+    {
+      "id": 3,
+      "name": "The Dark Crown War"
+    },
+    {
+      "id": 4,
+      "name": "The End of Time"
+    }
+  ],
+  "missions": [
+    {
+      "id": "rp01_dark_crystal",
+      "arc": 1,
+      "name": "A Crystal at the Landing",
+      "zone": "earth_plains",
+      "level": 2000,
+      "after": [],
+      "corrupted": true,
+      "arena": "A Crystal at the Landing",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "raditz",
+              "x": 0,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "goku",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        },
+        {
+          "character": "piccolo",
+          "id": "rift_ally_1",
+          "x": 8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Radix",
+          "count": 1
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp01_dark_crystal_hero",
+        "three_star_card": "rp01_dark_crystal_prismatic"
+      }
+    },
+    {
+      "id": "rp02_shattered_landing",
+      "arc": 1,
+      "name": "The Shattered Landing",
+      "zone": "gizard_wasteland",
+      "level": 2000,
+      "after": [
+        "rp01_dark_crystal"
+      ],
+      "corrupted": true,
+      "arena": "The Shattered Landing",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "nappa",
+              "x": -8,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            },
+            {
+              "character": "vegeta",
+              "x": 8,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "goku",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Nappo and Vegara",
+          "count": 2
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp02_shattered_landing_hero",
+        "three_star_card": "rp02_shattered_landing_prismatic"
+      }
+    },
+    {
+      "id": "rp03_nameck_storm",
+      "arc": 1,
+      "name": "Storm over Nameck",
+      "zone": "namek",
+      "level": 2000,
+      "after": [
+        "rp02_shattered_landing"
+      ],
+      "corrupted": true,
+      "arena": "Storm over Nameck",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "zarbon",
+              "x": -8,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            },
+            {
+              "character": "dodoria",
+              "x": 8,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "gohan",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": true
+        },
+        {
+          "character": "krillin",
+          "id": "rift_ally_1",
+          "x": 8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Zarvon and Dodorra",
+          "count": 2
+        },
+        {
+          "type": "protect",
+          "text": "Keep Gohin standing",
+          "ally": "rift_ally_0"
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp03_nameck_storm_hero",
+        "three_star_card": "rp03_nameck_storm_prismatic"
+      }
+    },
+    {
+      "id": "rp04_shard_emperor",
+      "arc": 1,
+      "name": "The Shard Emperor",
+      "zone": "namek",
+      "level": 2000,
+      "after": [
+        "rp03_nameck_storm"
+      ],
+      "corrupted": true,
+      "arena": "The Shard Emperor",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "frieza",
+              "x": 0,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "goku",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        },
+        {
+          "character": "vegeta",
+          "id": "rift_ally_1",
+          "x": 8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Frigor",
+          "count": 1
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp04_shard_emperor_hero",
+        "three_star_card": "rp04_shard_emperor_prismatic"
+      }
+    },
+    {
+      "id": "rp05_vael",
+      "arc": 1,
+      "name": "Vael’s Stolen Hour",
+      "zone": "yardrat",
+      "level": 2000,
+      "after": [
+        "rp04_shard_emperor"
+      ],
+      "corrupted": true,
+      "arena": "Vael’s Stolen Hour",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "vael",
+              "x": 0,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "goku",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Vael the Unwound",
+          "count": 1
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp05_vael_hero",
+        "three_star_card": "rp05_vael_prismatic"
+      }
+    },
+    {
+      "id": "rp06_echo_breakout",
+      "arc": 2,
+      "name": "Breakout from Echo Prison",
+      "zone": "echo_prison",
+      "level": 2000,
+      "after": [
+        "rp05_vael"
+      ],
+      "corrupted": true,
+      "arena": "Breakout from Echo Prison",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "hollow_piccor",
+              "x": 0,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "trunks",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": true
+        },
+        {
+          "character": "piccolo",
+          "id": "rift_ally_1",
+          "x": 8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Hollow Piccor",
+          "count": 1
+        },
+        {
+          "type": "protect",
+          "text": "Keep Future Tronks standing",
+          "ally": "rift_ally_0"
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp06_echo_breakout_hero",
+        "three_star_card": "rp06_echo_breakout_prismatic"
+      }
+    },
+    {
+      "id": "rp07_cyborg_riot",
+      "arc": 2,
+      "name": "Cyborg Riot",
+      "zone": "echo_prison",
+      "level": 2000,
+      "after": [
+        "rp06_echo_breakout"
+      ],
+      "corrupted": true,
+      "arena": "Cyborg Riot",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "android_17",
+              "x": -8,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            },
+            {
+              "character": "android_18",
+              "x": 8,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "android_16",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Cyborg 17 and Cyborg 18",
+          "count": 2
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp07_cyborg_riot_hero",
+        "three_star_card": "rp07_cyborg_riot_prismatic"
+      }
+    },
+    {
+      "id": "rp08_prison_tournament",
+      "arc": 2,
+      "name": "The Prison-Yard Tournament",
+      "zone": "echo_prison",
+      "level": 2000,
+      "after": [
+        "rp07_cyborg_riot"
+      ],
+      "corrupted": true,
+      "arena": "The Prison-Yard Tournament",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "hollow_gokan",
+              "x": -8,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            },
+            {
+              "character": "hollow_vegara",
+              "x": 8,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "gohan",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        },
+        {
+          "character": "vegeta",
+          "id": "rift_ally_1",
+          "x": 8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Hollow Gokan and Hollow Vegara",
+          "count": 2
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp08_prison_tournament_hero",
+        "three_star_card": "rp08_prison_tournament_prismatic"
+      }
+    },
+    {
+      "id": "rp09_morrigath",
+      "arc": 2,
+      "name": "Morrigath’s Last Chain",
+      "zone": "echo_prison",
+      "level": 2000,
+      "after": [
+        "rp08_prison_tournament"
+      ],
+      "corrupted": true,
+      "arena": "Morrigath’s Last Chain",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "morrigath",
+              "x": 0,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "goku",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": true
+        },
+        {
+          "character": "trunks",
+          "id": "rift_ally_1",
+          "x": 8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Warden Morrigath",
+          "count": 1
+        },
+        {
+          "type": "protect",
+          "text": "Keep Gokan standing",
+          "ally": "rift_ally_0"
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp09_morrigath_hero",
+        "three_star_card": "rp09_morrigath_prismatic"
+      }
+    },
+    {
+      "id": "rp10_hollow_games",
+      "arc": 3,
+      "name": "The Hollow Games",
+      "zone": "cell_games",
+      "level": 2000,
+      "after": [
+        "rp09_morrigath"
+      ],
+      "corrupted": true,
+      "arena": "The Hollow Games",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "hollow_gokan",
+              "x": -8,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            },
+            {
+              "character": "hollow_piccor",
+              "x": 8,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "gohan",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Hollow Gokan and Hollow Piccor",
+          "count": 2
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp10_hollow_games_hero",
+        "three_star_card": "rp10_hollow_games_prismatic"
+      }
+    },
+    {
+      "id": "rp11_crown_rampage",
+      "arc": 3,
+      "name": "The Crown’s Rampage",
+      "zone": "papaya_island",
+      "level": 2000,
+      "after": [
+        "rp10_hollow_games"
+      ],
+      "corrupted": true,
+      "arena": "The Crown’s Rampage",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "hollow_vegara",
+              "x": -8,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            },
+            {
+              "character": "fat_buu",
+              "x": 8,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "goku",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": true
+        },
+        {
+          "character": "vegeta",
+          "id": "rift_ally_1",
+          "x": 8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Hollow Vegara and Majinn Boo",
+          "count": 2
+        },
+        {
+          "type": "protect",
+          "text": "Keep Gokan standing",
+          "ally": "rift_ally_0"
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp11_crown_rampage_hero",
+        "three_star_card": "rp11_crown_rampage_prismatic"
+      }
+    },
+    {
+      "id": "rp12_arena_of_night",
+      "arc": 3,
+      "name": "Arena of Night",
+      "zone": "world_of_void",
+      "level": 2000,
+      "after": [
+        "rp11_crown_rampage"
+      ],
+      "corrupted": true,
+      "arena": "Arena of Night",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "hollow_gokan",
+              "x": -16,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            },
+            {
+              "character": "hollow_vegara",
+              "x": 0,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            },
+            {
+              "character": "hollow_piccor",
+              "x": 16,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "goku",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        },
+        {
+          "character": "jiren",
+          "id": "rift_ally_1",
+          "x": 8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Hollow Gokan and Hollow Vegara and Hollow Piccor",
+          "count": 3
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp12_arena_of_night_hero",
+        "three_star_card": "rp12_arena_of_night_prismatic"
+      }
+    },
+    {
+      "id": "rp13_nyxara",
+      "arc": 3,
+      "name": "The Obsidian Crown",
+      "zone": "kai_world",
+      "level": 2000,
+      "after": [
+        "rp12_arena_of_night"
+      ],
+      "corrupted": true,
+      "arena": "The Obsidian Crown",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "nyxara",
+              "x": 0,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "vegeta",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        },
+        {
+          "character": "piccolo",
+          "id": "rift_ally_1",
+          "x": 8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Empress Nyxara",
+          "count": 1
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp13_nyxara_hero",
+        "three_star_card": "rp13_nyxara_prismatic"
+      }
+    },
+    {
+      "id": "rp14_remnants",
+      "arc": 4,
+      "name": "Remnants of the Unwound",
+      "zone": "time_nexus",
+      "level": 2000,
+      "after": [
+        "rp13_nyxara"
+      ],
+      "corrupted": true,
+      "arena": "Remnants of the Unwound",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "vael",
+              "x": -16,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            },
+            {
+              "character": "morrigath",
+              "x": 0,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            },
+            {
+              "character": "nyxara",
+              "x": 16,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 1.5,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "goku",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": true
+        },
+        {
+          "character": "vegeta",
+          "id": "rift_ally_1",
+          "x": 8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Vael the Unwound and Warden Morrigath and Empress Nyxara",
+          "count": 3
+        },
+        {
+          "type": "protect",
+          "text": "Keep Gokan standing",
+          "ally": "rift_ally_0"
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp14_remnants_hero",
+        "three_star_card": "rp14_remnants_prismatic"
+      }
+    },
+    {
+      "id": "rp15_zero_origin",
+      "arc": 4,
+      "name": "The End of Time",
+      "zone": "time_nexus",
+      "level": 2000,
+      "after": [
+        "rp14_remnants"
+      ],
+      "corrupted": true,
+      "arena": "The End of Time",
+      "spawn": {
+        "x": 0,
+        "z": -50
+      },
+      "waves": [
+        {
+          "spawns": [
+            {
+              "character": "shardling",
+              "x": -18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": -6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 6,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            },
+            {
+              "character": "shardling",
+              "x": 18,
+              "z": -15,
+              "level": 2000,
+              "healthScale": 0.45,
+              "damageScale": 0.55
+            }
+          ]
+        },
+        {
+          "spawns": [
+            {
+              "character": "zero_origin",
+              "x": 0,
+              "z": 10,
+              "level": 2000,
+              "healthScale": 3,
+              "damageScale": 0.85,
+              "boss": true,
+              "phases": [
+                {
+                  "at": 1,
+                  "name": "Breach",
+                  "damage": 1,
+                  "speed": 1
+                },
+                {
+                  "at": 0.66,
+                  "name": "Fracture",
+                  "damage": 1.2,
+                  "speed": 1.1
+                },
+                {
+                  "at": 0.33,
+                  "name": "Collapse",
+                  "damage": 1.4,
+                  "speed": 1.2
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "allies": [
+        {
+          "character": "goku",
+          "id": "rift_ally_0",
+          "x": -8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        },
+        {
+          "character": "piccolo",
+          "id": "rift_ally_1",
+          "x": 8,
+          "z": -42,
+          "health": 32000,
+          "damage": 1800,
+          "cooldown": 1.1,
+          "protect": false
+        }
+      ],
+      "objectives": [
+        {
+          "type": "defeat",
+          "text": "Defeat the corrupted patrol",
+          "count": 4
+        },
+        {
+          "type": "defeat",
+          "text": "Defeat Zero-Origin",
+          "count": 1
+        }
+      ],
+      "stars": {
+        "time": 240,
+        "no_ally_down": true
+      },
+      "rewards": {
+        "xp": 500000,
+        "zeni": 15000,
+        "first_zeni": 35000,
+        "card": "rp15_zero_origin_hero",
+        "three_star_card": "rp15_zero_origin_prismatic"
+      }
+    }
+  ]
+}

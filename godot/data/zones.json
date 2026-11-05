@@ -2104,6 +2104,113 @@
       "z": -16
     }
   },
+  "time_nexus": {
+    "name": "Time Nexus",
+    "planet": "Time Nexus",
+    "saga": "Rift Patrol",
+    "terrain": {
+      "size": 240,
+      "spawn": {
+        "x": 0,
+        "z": -40
+      },
+      "platform": {
+        "radius": 70,
+        "height": 0
+      },
+      "killY": -60,
+      "ground": "stone"
+    },
+    "biome": {
+      "sky": {
+        "type": "gradient",
+        "top": 1314872,
+        "horizon": 6961832,
+        "bottom": 657432,
+        "elevation": 60,
+        "azimuth": 200,
+        "sunColor": 13154559,
+        "stars": true
+      },
+      "fog": [
+        1708080,
+        0.0008
+      ],
+      "trees": "none",
+      "treeCount": 0,
+      "rocks": 0,
+      "bushes": 0,
+      "stones": 0,
+      "grass": 0,
+      "clouds": false,
+      "sun": {
+        "intensity": 3
+      }
+    },
+    "landmarks": [
+      {
+        "type": "nexus",
+        "name": "Time Nexus",
+        "x": 0,
+        "z": 10
+      }
+    ],
+    "travelPoint": {
+      "x": 14,
+      "z": -40
+    },
+    "spawnYaw": 0
+  },
+  "echo_prison": {
+    "name": "Echo Prison",
+    "planet": "Echo Prison",
+    "saga": "Rift Patrol",
+    "terrain": {
+      "size": 400,
+      "hills": {
+        "amp": 0,
+        "scale": 100
+      },
+      "flatSpawn": 190,
+      "spawn": {
+        "x": 0,
+        "z": -60
+      }
+    },
+    "biome": {
+      "sky": {
+        "type": "physical",
+        "elevation": 36,
+        "azimuth": 240
+      },
+      "tints": {
+        "dirt": [
+          1.08,
+          0.96,
+          0.82
+        ]
+      },
+      "trees": "dead",
+      "treeCount": 20,
+      "rocks": 300,
+      "bushes": 40,
+      "grass": 0.1
+    },
+    "landmarks": [
+      {
+        "type": "cellarena",
+        "x": 0,
+        "z": 20,
+        "name": "Echo Prison",
+        "flatten": 65
+      }
+    ],
+    "travelPoint": {
+      "x": 30,
+      "z": -60
+    },
+    "kind": "rift"
+  },
   "amber_city": {
     "name": "Amber City",
     "planet": "Earth",
@@ -3937,62 +4044,5 @@
     ],
     "ceiling": 10.9,
     "spawnYaw": 3.141592653589793
-  },
-  "time_nexus": {
-    "name": "Time Nexus",
-    "planet": "Time Nexus",
-    "saga": "Rift Patrol",
-    "terrain": {
-      "size": 240,
-      "spawn": {
-        "x": 0,
-        "z": -40
-      },
-      "platform": {
-        "radius": 70,
-        "height": 0
-      },
-      "killY": -60,
-      "ground": "stone"
-    },
-    "biome": {
-      "sky": {
-        "type": "gradient",
-        "top": 1314872,
-        "horizon": 6961832,
-        "bottom": 657432,
-        "elevation": 60,
-        "azimuth": 200,
-        "sunColor": 13154559,
-        "stars": true
-      },
-      "fog": [
-        1708080,
-        0.0008
-      ],
-      "trees": "none",
-      "treeCount": 0,
-      "rocks": 0,
-      "bushes": 0,
-      "stones": 0,
-      "grass": 0,
-      "clouds": false,
-      "sun": {
-        "intensity": 3
-      }
-    },
-    "landmarks": [
-      {
-        "type": "nexus",
-        "name": "Time Nexus",
-        "x": 0,
-        "z": 10
-      }
-    ],
-    "travelPoint": {
-      "x": 14,
-      "z": -40
-    },
-    "spawnYaw": 0
   }
 }

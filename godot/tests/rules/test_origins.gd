@@ -113,7 +113,7 @@ func test_legacy_v7_fighters_keep_progress_and_origins_is_optional() -> void:
 	var before := slot.duplicate(true)
 	var migrated := schema.migrate({"version":7,"slots":[slot],"lastSlot":0})
 	var result: Dictionary = migrated.slots[0]
-	eq(migrated.version,8)
+	eq(migrated.version,RuleSchema.SCHEMA_VERSION)
 	eq(result.story.flags.originsRequired,false)
 	for key: String in ["zone","position","level","xp","zeni","quests","forms","formMastery","appearance","loadout","style"]:
 		eq(result[key],before[key],"preserve "+key)

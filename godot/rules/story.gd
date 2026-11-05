@@ -172,6 +172,7 @@ func story_quests() -> Array:
 func tasks_here() -> Array:
 	return story_quests().filter(func(q: Dictionary) -> bool: return quest_place(q)==here()).map(func(q: Dictionary) -> String: return q.title)
 func travel_options() -> Array:
+	if game().rift!=null and game().rift.active():return []
 	if not tasks_here().is_empty():
 		return []
 	var next: Array = []
@@ -228,6 +229,7 @@ func track_quest(id: String) -> bool:
 	return true
 func npcs() -> Array:
 	var out: Array = []
+	if game().rift!=null and game().rift.active():return out
 	for n: Dictionary in npc_defs:
 		if not visible(n):
 			continue
@@ -252,6 +254,8 @@ func npcs() -> Array:
 	var guide: Variant = travel_guide()
 	if guide!=null:
 		out.append(guide)
+	var recruiter: Variant = rift_recruiter()
+	if recruiter!=null:out.append(recruiter)
 	return out
 func travel_to(id: String) -> bool:
 	var guide: Variant = travel_guide()
@@ -345,6 +349,7 @@ func use_item(id: String) -> bool:
 	emit("notify",{"text":"Used %s." % item.name})
 	return true
 func accept_quest(id: String) -> bool:
+	if game().rift!=null and game().rift.active():return false
 	var q: Dictionary = quest.get(id,{})
 	var n: Dictionary = npc.get(q.get("giver",""),{})
 	if player.health<=0 or q.is_empty() or n.is_empty() or not visible(n) or not can_accept(q):
@@ -361,6 +366,9 @@ func abandon_quest(id: String) -> bool:
 	emit("notify",{"text":"Quest abandoned. Speak to its giver to start again."})
 	return true
 func enemy_defeated(enemy: String,defeated_zone: String = "") -> void:
+	if game().rift!=null and game().rift.active():
+		game().rift.enemy_defeated(enemy)
+		return
 	if defeated_zone!="" and defeated_zone!=zone.id and not zone.has_region(defeated_zone):
 		return
 	for q: Dictionary in active_quests():
@@ -376,6 +384,7 @@ func enemy_defeated(enemy: String,defeated_zone: String = "") -> void:
 ## 2026-11-03). Each row has a unique "uid"; every kill of the key counts.
 const GROUP_MIN := 10
 func encounters() -> Array:
+	if game().rift!=null and game().rift.active():return game().rift.encounters()
 	var out: Array = []
 	for q: Dictionary in active_quests():
 		var s: Dictionary = step_of(q)
@@ -574,6 +583,12 @@ func journal() -> Dictionary:
 func priority(q: Dictionary) -> int:
 	return 0 if is_main(q) else 1 if q.id.begins_with("Form_") else 3 if q.get("repeat",false) else 2
 func interact(choose: bool = false) -> Variant:
+	if game().rift!=null and game().rift.active():return null
+	var recruiter: Variant=rift_recruiter()
+	if recruiter!=null and distance(recruiter)<TALK_RANGE and player.health>0:
+		say("Archivist Tem","The timelines are fracturing. Join Rift Patrol at the Time Nexus; your allies are waiting.","riftPatrol")
+		game().enter_rift_hub()
+		return "rift"
 	if player.health<=0:
 		return null
 	var near: Variant = interaction()
@@ -631,6 +646,7 @@ func interact(choose: bool = false) -> Variant:
 		return "ambient"
 	return null
 func update(dt: float,intents: Dictionary = {}) -> void:
+	if game().rift!=null and game().rift.active():return
 	if player.health<=0 or not is_finite(dt) or dt<=0:
 		return
 	if zone is RulePlanet:   # entering an area on the planet map for the first time discovers it
@@ -727,3 +743,13 @@ func travel_level(zone_id: String) -> int:
 		if q.get("origins",false) and (is_active(q.id) or (is_main(q) and can_accept(q))) and quest_place(q)==zone_id:
 			need = mini(need,int(q.level))
 	return need
+
+func rift_recruiter() -> Variant:
+	if game().rift==null or not game().rift.available() or game().rift.active():return null
+	var c: Dictionary=characters.archivist_tem
+	var base: Variant=travel_guide()
+	if base==null:
+		var tp: Variant=zone.region_travel_point(here())
+		base=tp if tp!=null else zone.region_spawn(here())
+	var p: Dictionary=RuleRuntime.position(zone.free_position({"x":float(base.x)+5,"z":float(base.z)}))
+	return p.merged({"id":"rift_recruiter","name":c.name,"look":c.look,"style":c.style,"scale":1,"rot":0,"boss":false,"main":false,"marker":"!","rift":true},true)

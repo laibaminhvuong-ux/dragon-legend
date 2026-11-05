@@ -2424,5 +2424,184 @@
     "style": "crane",
     "origins": true,
     "scale": 1.05
+  },
+  "vael": {
+    "name": "Vael the Unwound",
+    "look": {
+      "race": "Human",
+      "skin": 3,
+      "face": "Cold",
+      "hair": "Swept",
+      "hairColor": 5,
+      "build": "Slim",
+      "outfit": "AngelRobe",
+      "outfitTint": 1,
+      "faceSeed": "vael",
+      "skinHex": 14210272,
+      "costume": "vael",
+      "physique": "hitto"
+    },
+    "style": "speedster",
+    "rift": true,
+    "scale": 1.05
+  },
+  "shardling": {
+    "name": "Shardling",
+    "look": {
+      "race": "Majin",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "FrostArmor",
+      "outfitTint": 1,
+      "faceSeed": "shardling",
+      "skinHex": 7002352,
+      "sculpt": {
+        "head_w": 1.15
+      }
+    },
+    "scale": 0.7,
+    "style": "speedster",
+    "rift": true
+  },
+  "morrigath": {
+    "name": "Warden Morrigath",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 4,
+      "build": "Muscular",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3,
+      "faceSeed": "morrigath",
+      "skinHex": 9076880,
+      "costume": "morrigath",
+      "physique": "recume"
+    },
+    "scale": 1.5,
+    "style": "brawler",
+    "rift": true
+  },
+  "nyxara": {
+    "name": "Empress Nyxara",
+    "look": {
+      "race": "FrostDemon",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "Short",
+      "hairColor": 3,
+      "build": "Tall",
+      "outfit": "AngelRobe",
+      "outfitTint": 2,
+      "female": true,
+      "faceSeed": "nyxara",
+      "skinHex": 2761792,
+      "costume": "nyxara"
+    },
+    "style": "crane",
+    "rift": true,
+    "scale": 1.15
+  },
+  "hollow_gokan": {
+    "name": "Hollow Gokan",
+    "look": {
+      "race": "Saiyan",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "Spiky",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "TurtleGi",
+      "outfitTint": 3,
+      "faceSeed": "hollow_gokan",
+      "skinHex": 3814472,
+      "costume": "hollow",
+      "physique": "gokan"
+    },
+    "style": "turtle",
+    "rift": true,
+    "scale": 1
+  },
+  "hollow_vegara": {
+    "name": "Hollow Vegara",
+    "look": {
+      "race": "Saiyan",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "LongSpiky",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3,
+      "faceSeed": "hollow_vegara",
+      "skinHex": 3814472,
+      "costume": "hollow",
+      "physique": "vegara"
+    },
+    "scale": 0.95,
+    "style": "brawler",
+    "rift": true
+  },
+  "hollow_piccor": {
+    "name": "Hollow Piccor",
+    "look": {
+      "race": "Namekian",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "NamekRobe",
+      "outfitTint": 3,
+      "faceSeed": "hollow_piccor",
+      "skinHex": 2767402,
+      "costume": "hollow",
+      "physique": "piccor"
+    },
+    "style": "crane",
+    "rift": true,
+    "scale": 1
+  },
+  "zero_origin": {
+    "name": "Zero-Origin",
+    "look": {
+      "race": "Human",
+      "skin": 2,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "AngelRobe",
+      "outfitTint": 4,
+      "faceSeed": "zero_origin",
+      "skinHex": 16051416,
+      "costume": "zero",
+      "physique": "cyborg16"
+    },
+    "scale": 2.4,
+    "style": "brawler",
+    "rift": true
+  },
+  "archivist_tem": {
+    "name": "Archivist Tem",
+    "look": {
+      "race": "Human",
+      "skin": 2,
+      "face": "Calm",
+      "hair": "Long",
+      "hairColor": 5,
+      "build": "Slim",
+      "outfit": "AngelRobe",
+      "outfitTint": 1,
+      "faceSeed": "archivist_tem",
+      "female": true
+    },
+    "style": "crane",
+    "rift": true,
+    "scale": 1
   }
 }

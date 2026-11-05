@@ -14,6 +14,7 @@ func test_v1_to_v6_import_match_js_with_godot_style_migration() -> void:
 		for slot: Variant in expected.slots:
 			if slot is Dictionary:
 				slot.style = "turtle"
+				slot.rift = {"results":{},"cards":[],"equipped":["","",""]}
 				slot.story.flags.originsRequired = false
 		expected.slots = _pad(expected.slots)
 		eq(_json_value(rules.migrate(row.input)),expected,"migrate version %d" % row.version)

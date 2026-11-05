@@ -14,13 +14,13 @@ try{
  assert.equal(tables.characters.goku.name,'Gokan');assert.equal(tables.schema.version,6);assert.equal(tables.narrative.talk_range,4.5);assert.ok(tables.narrative.talk_replies.shenron);assert.ok(tables.forms.UITrue);assert.ok(tables.form_looks.SSJ4);
  ok('all loaded story, dragon, form, appearance and renamed content exported');
  const exportedSchema=JSON.parse(await fs.readFile(path.join(temp,'schema.json'),'utf8'));
- assert.equal(exportedSchema.version,8);assert.equal(exportedSchema.slots,10);assert.equal(manifest.schema_version,8);
+ assert.equal(exportedSchema.version,9);assert.equal(exportedSchema.slots,10);assert.equal(manifest.schema_version,9);
  const styles=JSON.parse(await fs.readFile(path.join(temp,'fighting_styles.json'),'utf8'));
  assert.deepEqual(styles.order,['turtle','brawler','speedster','crane']);
  for(const profile of Object.values(styles.styles)){assert.equal(profile.combo.length,4);assert.ok(profile.chain_window>0);assert.ok(profile.combo.every(move=>move.id.startsWith(profile.id+'_')));}
  const exportedCharacters=JSON.parse(await fs.readFile(path.join(temp,'characters.json'),'utf8'));
  assert.equal(exportedCharacters.nappa.style,'brawler');assert.equal(exportedCharacters.hit.style,'speedster');assert.equal(exportedCharacters.tien.style,'crane');
- ok('Godot save v8 and four fighting styles exported while classic v6 fixtures remain intact');
+ ok('Godot save v9 and four fighting styles exported while classic v6 fixtures remain intact');
  const origins=JSON.parse(await fs.readFile(path.join(temp,'origins.json'),'utf8'));
  const quests=JSON.parse(await fs.readFile(path.join(temp,'quests.json'),'utf8'));
  const npcs=JSON.parse(await fs.readFile(path.join(temp,'npcs.json'),'utf8'));
@@ -50,6 +50,20 @@ try{
  for(const id of Object.keys(tables.moves)){const row=presentation.skills[id];assert.ok(row);assert.ok(presentation.sockets.includes(row.socket));assert.ok(row.phases.prepare.audio);assert.ok(row.phases.impact.audio);assert.ok(Number.isFinite(row.hold_min)&&row.hold_min>=0);assert.ok(row.release_window>0);assert.ok(row.recovery>0);assert.equal(row.recovery,row.phases.recovery.duration);}
  assert.equal(presentation.skills.GodKi.availability,'passive');assert.equal(presentation.skills.FusionDance.availability,'not_castable');
  assert.equal(presentation.skills.SpiritBomb.delivery,'instant_ray');ok('every skill has an explicit presentation and availability contract');
+ const rift=JSON.parse(await fs.readFile(path.join(temp,'rift_missions.json'),'utf8'));
+ const cards=JSON.parse(await fs.readFile(path.join(temp,'hero_cards.json'),'utf8'));
+ assert.equal(rift.missions.length,15);assert.equal(rift.arcs.length,4);assert.equal(Object.keys(cards).length,30);
+ assert.equal(rift.unlock_quest,tables.quests.filter(q=>q.main).at(-1).id);
+ for(const [i,m]of rift.missions.entries()){
+  assert.ok(zones[m.zone],m.zone);assert.deepEqual(m.after,i?[rift.missions[i-1].id]:[]);
+  assert.ok(m.allies.length>=1&&m.allies.length<=2);assert.equal(m.waves.length,2);
+  for(const row of [...m.allies,...m.waves.flatMap(w=>w.spawns)])assert.ok(exportedCharacters[row.character],row.character);
+  assert.equal(m.objectives[0].count,m.waves[0].spawns.length);assert.equal(m.objectives[1].count,m.waves[1].spawns.length);
+  assert.ok(cards[m.rewards.card]);assert.ok(cards[m.rewards.three_star_card]);
+ }
+ for(const c of Object.values(cards)){assert.ok(exportedCharacters[c.character]);for(const [key,value]of Object.entries(c.effect)){assert.ok(['health','damage','ki_regen','ally_health','cosmetic'].includes(key));if(key!=='cosmetic')assert.ok(value>0&&value<=.03);}}
+ ok('15 sequential Rift missions, 30 bounded Hero Cards and original villain references validated');
+
 
  for(const [file,meta] of Object.entries(manifest.files)){const raw=await fs.readFile(path.join(temp,file));assert.equal(raw.byteLength,meta.bytes);assert.equal(createHash('sha256').update(raw).digest('hex'),meta.sha256);JSON.parse(raw);}
  assert.ok(Object.keys(manifest.sources).length>20);ok('manifest hashes every generated table and records source hashes');

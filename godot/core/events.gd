@@ -18,6 +18,11 @@ signal damage(d: Dictionary)
 signal beam(d: Dictionary)
 signal avatar_strike(d: Dictionary)
 signal zeni_transfer(d: Dictionary)
+signal rift_mission_started(d: Dictionary)
+signal rift_mission_complete(d: Dictionary)
+signal rift_mission_failed(d: Dictionary)
+signal rift_boss_phase(d: Dictionary)
+signal rift_ally_down(d: Dictionary)
 
 ## Emits a JS-style event: name as in the JS game, payload the same object it sends.
 func emit_named(name: String, payload: Variant = null) -> void:
@@ -38,4 +43,9 @@ func emit_named(name: String, payload: Variant = null) -> void:
 		"discovered", "teleport": area_event.emit(name, d)   # open world: a new area found / same-planet travel
 		"avatarStrike": avatar_strike.emit(d)
 		"zeniTransfer": zeni_transfer.emit(d)
+		"riftMissionStarted": rift_mission_started.emit(d)
+		"riftMissionComplete": rift_mission_complete.emit(d)
+		"riftMissionFailed": rift_mission_failed.emit(d)
+		"riftBossPhase": rift_boss_phase.emit(d)
+		"riftAllyDown": rift_ally_down.emit(d)
 		_: push_warning("Events: unknown event '%s'" % name)

@@ -7,6 +7,7 @@ var members: Dictionary = {}
 var worlds: Dictionary = {}
 var time := 0.0
 var transfer_serial := 0
+var rift_run: RuleRiftPatrol
 class Sink extends RefCounted:
 	var room: WeakRef
 	var member: String
@@ -30,6 +31,9 @@ class PartyStory extends RefCounted:
 	func enemy_defeated(enemy: String,zone_id: String) -> void:
 		var r: CoopRoom = room.get_ref()
 		if r==null or not r.members.has(member): return
+		if r.rift_run!=null and r.rift_run.active():
+			r.rift_run.enemy_defeated(enemy)
+			return
 		var source: RuleGame = r.members[member].game
 		for id: String in r.members:
 			var m: Dictionary = r.members[id]
@@ -43,11 +47,13 @@ class PartyStory extends RefCounted:
 						break
 func _init(data: Dictionary) -> void: saved = data
 func add(identity: String,name: String,fighter_slot: Dictionary) -> Dictionary:
+	if rift_run!=null and rift_run.active():return {"error":"A Rift mission is active. Join after the patrol returns."}
 	if members.has(identity): return {"error":"This fighter is already connected to this server."}
 	if members.size()>=LIMIT: return {"error":"This private server is full (8 players)."}
 	# Private friend servers explicitly allow importing the chosen offline fighter.
 	# Progress is authoritative only after import; this is not a ranked/anti-cheat economy.
 	var imported: Dictionary = RuleSchema.new().normalize(fighter_slot.duplicate(true))
+	imported.rift.erase("pending") # A private offline run cannot become a solo encounter inside this room.
 	# Arrive with the owner while retaining the chosen fighter's progression.
 	if not members.is_empty():
 		var owner: RuleGame = members.values()[0].game
@@ -85,6 +91,7 @@ func attach(identity: String) -> void:
 	game.combat.set_story(m.party)
 func remove(identity: String) -> void:
 	if not members.has(identity): return
+	if rift_run!=null and rift_run.active():rift_run.finish(false,"A patrol member disconnected.")
 	saved.members[identity].slot = members[identity].game.to_save().duplicate(true)
 	members.erase(identity)
 	saved.members.erase(identity)
@@ -106,8 +113,9 @@ func event(identity: String,type: String,payload: Dictionary) -> void:
 	if type=="travel":
 		members[identity].travel = str(payload.get("zone","")); return
 	for id: String in members:
-		if id!=identity and (type not in ["attack","damage","beam","avatarStrike"] or members[id].game.zone.id!=members[identity].game.zone.id): continue
-		if members[id].events.size()<96: members[id].events.append({"name":type,"data":CoopCodec.json_value(payload)})
+		if id!=identity and (type not in ["attack","damage","beam","avatarStrike","riftBossPhase","riftAllyDown","riftMissionFailed"] or members[id].game.zone.id!=members[identity].game.zone.id): continue
+		if type in ["riftMissionStarted","riftMissionComplete","riftMissionFailed"]:_private_event(id,type,payload)
+		elif members[id].events.size()<96: members[id].events.append({"name":type,"data":CoopCodec.json_value(payload)})
 ## Room-wide roster includes connected members in other maps and members in menus.
 func player_list() -> Array:
 	var out := []
@@ -162,8 +170,20 @@ func command(identity: String,name: String,args: Array) -> Variant:
 	var story: RuleStory = m.story
 	if args.size()>2: return "Invalid command."
 	var value: Variant = args[0] if not args.is_empty() else ""
+	if rift_run!=null and rift_run.active() and name in ["travel","talk","accept"]:return "Finish or abandon the room Rift mission first."
 	match name:
 		"enter": m.active = true; return null
+		"rift_start":return start_rift(identity,value) if value is String and args.size()==1 else "Invalid Rift mission."
+		"rift_hub":return rift_hub(identity)
+		"rift_abandon":
+			if identity!=members.keys()[0]:return "Only the server owner can end a room mission."
+			return rift_run.abandon() if rift_run!=null else "No Rift mission is active."
+		"hero_card":
+			if args.size()!=2 or not args[0] is String:return "Invalid Hero Card command."
+			var card_error: Variant=g.equip_hero_card(args[0],args[1])
+			if card_error==null:
+				saved.members[identity].slot=g.to_save().duplicate(true);m.zeniRevision+=1
+			return card_error
 		"give_zeni": return give_zeni(identity,args[0],args[1]) if args.size()==2 and args[0] is String else "Choose a player and a whole zeni amount."
 		"set_style": return g.set_style(value) if args.size()==1 and value is String else "Invalid style command."
 		"form": return g.select_form(str(value))
@@ -217,6 +237,7 @@ func step(dt: float) -> void:
 				m.game.player.id = "friend:"+id.left(12)
 				m.story = RuleStory.new(m.game,m.sink)
 				attach(id)
+	if rift_run!=null and rift_run.active():rift_run.update(dt)
 func snapshot(identity: String) -> Dictionary:
 	var m: Dictionary = members[identity]
 	var g: RuleGame = m.game
@@ -231,7 +252,7 @@ func snapshot(identity: String) -> Dictionary:
 	for b: Dictionary in g.combat.projectiles:
 		var shot: Dictionary = b.duplicate(); shot.erase("owner"); shots.append(CoopCodec.json_value(shot))
 	var events: Array = m.events.duplicate(); m.events.clear()
-	return {"type":"snapshot","code":saved.code,"time":time,"map":g.zone.id,"self":g.player.id,"slot":CoopCodec.json_value(g.to_save()),"player":CoopCodec.json_value(g.player),"enemies":CoopCodec.json_value(g.combat.enemies),"projectiles":shots,"friends":friends,"players":player_list(),"zeniRevision":int(m.zeniRevision),"combat":CoopCodec.json_value(g.combat.snapshot()),"events":events,"count":members.size()}
+	return {"type":"snapshot","code":saved.code,"time":time,"map":g.zone.id,"self":g.player.id,"slot":CoopCodec.json_value(g.to_save()),"player":CoopCodec.json_value(g.player),"enemies":CoopCodec.json_value(g.combat.enemies),"allies":CoopCodec.json_value(g.combat.allies),"rift":CoopCodec.json_value(g.active_rift_mission()),"projectiles":shots,"friends":friends,"players":player_list(),"zeniRevision":int(m.zeniRevision),"combat":CoopCodec.json_value(g.combat.snapshot()),"events":events,"count":members.size()}
 func checkpoint() -> Dictionary:
 	for id: String in members: saved.members[id].slot = members[id].game.to_save().duplicate(true)
 	saved.worlds = {}
@@ -239,3 +260,71 @@ func checkpoint() -> Dictionary:
 		saved.worlds[map] = {}
 		for e: Dictionary in worlds[map].enemies: saved.worlds[map][str(e.id)] = {"health":e.health,"pos":CoopCodec.json_value(e.pos)}
 	return saved
+
+func rift_players() -> Array:
+	var out: Array=[]
+	for m: Dictionary in members.values():
+		if m.active:out.append(m.game)
+	return out
+func rift_checkpoint() -> void:
+	for id: String in members:
+		saved.members[id].slot=members[id].game.to_save().duplicate(true)
+		members[id].zeniRevision+=1 # Same durable fighter revision as wallet settlements.
+func _rift_owner(identity: String) -> Variant:
+	if identity!=members.keys()[0]:return "Only the server owner can launch the room patrol."
+	if rift_run!=null and rift_run.active():return "A Rift mission is already active."
+	for m: Dictionary in members.values():
+		if not m.active or m.game.player.health<=0:return "Every connected fighter must be in-game and standing."
+		if not m.game.rift.available():return "Every patrol member must finish the adult main story."
+	return null
+func _rift_rebuild(zone_id: String,pending: String="") -> void:
+	for id: String in members:
+		var m: Dictionary=members[id]
+		var slot: Dictionary=m.game.to_save().duplicate(true)
+		slot.zone=zone_id;slot.position=null
+		if pending!="":slot.rift.pending=pending
+		else:slot.rift.erase("pending")
+		m.game=RuleGame.new(-1,slot,m.sink)
+		m.game.player.id="friend:"+id.left(12)
+		m.story=RuleStory.new(m.game,m.sink)
+	# One clean authoritative mission world; old maps keep their own saved ambient state.
+	var first: RuleGame=members.values()[0].game
+	var previous_world: Dictionary=worlds.get(first.zone.id,{})
+	worlds[first.zone.id]={"enemies":first.combat.enemies,"projectiles":[]}
+	rift_run=first.rift if pending!="" else null
+	if rift_run!=null:
+		rift_run.managed=true;rift_run.room=weakref(self)
+		if not previous_world.is_empty():rift_run.ambient=previous_world.enemies.duplicate()
+	for id: String in members:
+		var m: Dictionary=members[id]
+		if rift_run!=null:m.game.rift=rift_run;m.game.combat.allies=rift_run.allies
+		attach(id)
+	if rift_run!=null:
+		var bonus:=0.0
+		for g: RuleGame in rift_players():bonus+=RuleHeroCards.bonus(g.slot,"ally_health")
+		for i: int in rift_run.allies.size():
+			var a: Dictionary=rift_run.allies[i]
+			a.maxHealth=float(rift_run.mission.allies[i].health)*(1+minf(.09,bonus));a.health=a.maxHealth
+func rift_hub(identity: String) -> Variant:
+	var error: Variant=_rift_owner(identity)
+	if error!=null:return error
+	_rift_rebuild("time_nexus")
+	for m: Dictionary in members.values():
+		m.game.slot.story.flags.riftPatrol=true
+		if "time_nexus" not in m.game.slot.story.unlocked:m.game.slot.story.unlocked.append("time_nexus")
+	rift_checkpoint()
+	return null
+func start_rift(identity: String,id: String) -> Variant:
+	var error: Variant=_rift_owner(identity)
+	if error!=null:return error
+	for m: Dictionary in members.values():
+		if m.game.current_region()!="time_nexus":return "Bring the patrol to the Time Nexus first."
+		if not m.game.rift.unlocked(id):return "That mission is locked for a patrol member."
+	var mission: Dictionary=members[identity].game.rift.find(id)
+	_rift_rebuild(mission.zone,id)
+	return null
+
+func rift_request(player_id: String,name: String,args: Array) -> Variant:
+	for id: String in members:
+		if members[id].game.player.id==player_id:return command(id,name,args)
+	return "This patrol member is no longer connected."

@@ -37,3 +37,13 @@ class KaiokenMirror extends RuleKaioken:
 	func select(rank: int) -> Variant: game.send("kaioken_rank",[rank]); return null
 	func snapshot() -> Dictionary: return remote if not remote.is_empty() else super.snapshot()
 	func multiplier() -> float: return float(remote.get("multiplier",1))
+
+func start_rift_mission(id: String) -> Variant:send("rift_start",[id]);return null
+func enter_rift_hub() -> Variant:send("rift_hub");return null
+func abandon_rift_mission() -> Variant:send("rift_abandon");return null
+func equip_hero_card(id: String,index: Variant) -> Variant:send("hero_card",[id,index]);return null
+func active_rift_mission() -> Dictionary:
+	var client: Variant=connection.get_ref() if connection!=null else null
+	return client.latest.get("rift",{}) if client!=null else {}
+
+func simulates_rift() -> bool:return false

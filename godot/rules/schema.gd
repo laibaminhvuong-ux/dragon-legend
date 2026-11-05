@@ -2,7 +2,7 @@ class_name RuleSchema
 extends RefCounted
 # Saved dictionaries retain JS camelCase keys. Only rule method names use snake_case.
 const Tables = preload("res://rules/tables.gd")
-const SCHEMA_VERSION := 8
+const SCHEMA_VERSION := 9
 ## Character slots per profile (user request 2026-11-03: 10; the classic game and old codes have 3).
 const SLOT_COUNT := 10
 const CODE_PREFIX := "DL1:"
@@ -101,6 +101,7 @@ func new_slot(look: Dictionary, now: int = -1) -> Dictionary:
 	var slot: Dictionary = {"race":race,"style":RuleStyles.DEFAULT,"appearance":style,"level":1,"xp":0,"statPoints":0,"stats":allocation,"zeni":stats.STARTING_ZENI,
 		"outfits":[style.get("outfit", "TurtleGi")],"forms":[],"moves":[],"loadout":{"technique":"EnergyWave","formPath":null,"accessory":"None","kaiokenRank":2},
 		"formMastery":{},"quests":{},"story":{},"zone":"mt_paozu","position":null,"createdAt":now,"playedAt":now,"playTime":0}
+	RuleHeroCards.normalize(slot)
 	_ensure_story(slot)
 	slot.story.flags.originsRequired = true
 	if slot.zone not in slot.story.unlocked:
@@ -180,6 +181,7 @@ func normalize(input: Dictionary) -> Dictionary:
 	for key: String in s.formMastery:
 		if not _number(s.formMastery[key]) or s.formMastery[key] < 0:
 			s.formMastery[key] = 0
+	RuleHeroCards.normalize(s)
 	_ensure_story(s)
 	if s.get("race") in ["Saiyan","HalfSaiyan"]:
 		for ids: Array in [["HSSJ","SSJ"],["HSSJ2","SSJ2"]]:
