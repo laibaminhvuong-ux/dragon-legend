@@ -1313,3 +1313,7 @@ User: "most buildings I can go through. Make it an obstacle and I can enter the 
 
 ## Claude: rocket boost on Q (user request, 2026-11-04) — Codex please note
 `rules/movement.gd`: new intent `boost` (player only; play maps the dash key to it and sends `dash:false`; NPC dashes unchanged). Starts a 20 s boost (`boostRemaining`, `boosting`, `boostSerial`), launch burst (`boostLaunch` 0.55 s, vertical 24 m/s) from the ground, flight speed ×2.6 with stronger acceleration, keeps flying forward with no input, Q again stops, charging/landing ends it, 6 s `boostCooldown`, no Ki. `RuleGame.empty_intents` has `boost:false` (co-op codec forwards it automatically). Tests `tests/rules/test_boost.gd`.
+
+## Claude: Q dual role + countryside hamlets (user request, 2026-11-04)
+- Q: the play scene sends `dash` on the ground and `boost` while flying (rules unchanged).
+- `rules/planet.gd` `hamlets()`: deterministic countryside town landmarks (`hamlet: true`, styles per planet, flat dry spots away from areas/each other; Earth 27). `PropSet._clear_hamlets` removes baked trees/rocks inside them (props keys unchanged, so shipped bakes stay valid). Test `test_countryside_hamlets`.
