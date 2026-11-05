@@ -220,6 +220,18 @@ func _tab_character(slot: Dictionary, race: Dictionary) -> void:
 			var c := Color.hex((int(values[i]) << 8) | 0xff)
 			out.append([i, "#" + c.to_html(false), _swatch(c)])
 		return out
+	_picker("Body", [[false, "Male"], [true, "Female"]], bool(a.get("female", false)), func(v: Variant) -> void:
+		var change := {"female": v}
+		var hairs: Array = race.get("hairStyles", [])
+		if v and str(a.get("hair", "")) in ["Spiky", "Wild", "Swept", "LongSpiky", "Short", "Bowl"] and hairs.has("Long"):
+			change.hair = "Long"
+		elif not v and str(a.get("hair", "")) in ["Long", "Bun"] and not hairs.is_empty():
+			change.hair = hairs[0]
+		_tell(play.game.customize_appearance(change)); open_tab("Character"))
+	var face_row := HBoxContainer.new()
+	face_row.add_child(UiKit.label("Face shape"))
+	face_row.add_child(UiKit.button("New face", func() -> void: _tell(play.game.customize_appearance({"faceSeed": "face:%d" % randi()}))))
+	_box.add_child(face_row)
 	_picker("Build", Data.appearance.BUILDS.map(func(x: Dictionary) -> Array: return [x.id, x.name]), a.get("build"), func(v: Variant) -> void: apply.call("build", v))
 	_picker("Face", Data.appearance.FACES.map(func(x: Dictionary) -> Array: return [x.id, x.name]), a.get("face"), func(v: Variant) -> void: apply.call("face", v))
 	_picker("Hair", (race.get("hairStyles", []) as Array).map(func(x: String) -> Array: return [x, x]), a.get("hair"), func(v: Variant) -> void: apply.call("hair", v))

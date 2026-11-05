@@ -137,8 +137,8 @@ func customize_appearance(changes: Dictionary) -> Variant:
 	next.merge(changes,true)
 	if next.race!=slot.race:
 		return "Choose a new character slot to change race."
-	if next.outfit not in slot.outfits or not schema.outfit_allowed(next.outfit,slot.race):
-		return "You do not own that outfit."
+	if changes.has("outfit") and (next.outfit not in slot.outfits or not schema.outfit_allowed(next.outfit,slot.race)):
+		return "You do not own that outfit."   # only when changing outfits: other edits keep whatever you wear
 	var checked: Dictionary = next.duplicate()
 	checked.outfit = "TurtleGi"
 	var error: Variant = schema.validate_look(checked)
@@ -219,6 +219,11 @@ func spend_stat_point(stat: String,amount: Variant = 1) -> Variant:
 	if error==null:
 		refresh_derived()
 	return error
+## Transfers are a room command; solo play never changes either wallet.
+func give_zeni(_target_player_id: String,_amount: Variant) -> Variant:
+	return "Join a server to send zeni"
+func zeni_recipients() -> Array:
+	return []
 func add_zeni(amount: float) -> void:
 	slot.zeni = maxf(0,slot.zeni+floor(amount))
 	emit("stats",hud())

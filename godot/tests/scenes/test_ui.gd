@@ -177,3 +177,12 @@ func test_style_key_opens_the_style_picker() -> void:
 	u.styles.pick_number(4)
 	eq(str(u.play.game.player.style), "crane", "number keys pick")
 	_done(u)
+
+func test_body_and_face_can_change_in_the_fighter_menu() -> void:
+	var u := _setup()
+	var g := u.play.game
+	g.slot.appearance.outfit = "AngelRobe"   # an outfit the creator wouldn't offer must not block other edits
+	eq(g.customize_appearance({"female": true, "hair": "Long"}), null, "switch to female")
+	ok(g.slot.appearance.female and str(g.slot.appearance.hair) == "Long", "saved on the fighter")
+	eq(g.customize_appearance({"faceSeed": "face:42"}), null, "new face")
+	_done(u)
