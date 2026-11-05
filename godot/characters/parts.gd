@@ -152,6 +152,46 @@ static func face(f: Fighter, race_id: String, skin: Color) -> void:
 ## (head centre about (0, 0.06, 0), radius about 0.105, +Z is the face).
 static func costume(f: Fighter, id: String) -> void:
 	match id:
+		"vael":   # Vael the Unwound: a pale porcelain mask and a mantle of floating clock shards
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("vael_mask", func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 1.15, 0.45)), Vector3(0, 0.05, 0.085)), 0.085, 10, 16)), material(Color.hex(0xf2eee6ff), 0.25))
+			f.add_piece("DEF-spine.003", Transform3D.IDENTITY, _mesh("vael_shards", func(g: Geo) -> void:
+				for i in 9:
+					var a := -1.1 + float(i) / 8.0 * 2.2
+					g.box(Transform3D(Basis.from_euler(Vector3(0.3, a, 0.4 * sin(float(i)))), Vector3(sin(a) * 0.26, 1.48 + 0.04 * float(i % 3), -0.12 + cos(a) * -0.06)),
+						Vector3(0.05, 0.22, 0.02))), material(Color.hex(0x8af0ffff), 0.15, 0.4))
+		"morrigath":   # Warden Morrigath: a cage helm and heavy chains over the shoulders
+			var iron := material(Color.hex(0x4a4a52ff), 0.4, 0.8)
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("cagehelm", func(g: Geo) -> void:
+				for i in 8:
+					var a := float(i) / 8.0 * TAU
+					g.cylinder(Transform3D(Basis.IDENTITY, Vector3(sin(a) * 0.12, 0.06, cos(a) * 0.12 - 0.005)), 0.008, 0.008, 0.26, 6)
+				g.torus(Transform3D(Basis.IDENTITY, Vector3(0, 0.18, -0.005)), 0.12, 0.012)
+				g.torus(Transform3D(Basis.IDENTITY, Vector3(0, -0.05, -0.005)), 0.12, 0.012)), iron)
+			f.add_piece("DEF-spine.003", Transform3D.IDENTITY, _mesh("chains", func(g: Geo) -> void:
+				for s in [1.0, -1.0]:
+					for k in 7:
+						g.torus(Transform3D(Basis.from_euler(Vector3(0, 0, PI / 2 if k % 2 == 0 else 0.0)), Vector3(s * (0.2 - k * 0.03), 1.45 - k * 0.05, 0.12 - k * 0.005)), 0.025, 0.008)), iron)
+		"nyxara":   # Empress Nyxara: an obsidian crown and a long night-black cloak
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("nyx_crown", func(g: Geo) -> void:
+				g.cylinder(Transform3D(Basis.IDENTITY, Vector3(0, 0.15, -0.005)), 0.115, 0.11, 0.04, 20)
+				for i in 7:
+					var a := -1.2 + float(i) / 6.0 * 2.4
+					g.spike(Vector3(sin(a) * 0.11, 0.17, cos(a) * 0.11), 0.07 + 0.04 * float(i == 3), 0.018, Vector3(sin(a) * 0.15, 1, cos(a) * 0.15))), material(Color.hex(0x1a1428ff), 0.15, 0.6))
+			f.cape = f.add_piece("DEF-spine.003", Transform3D(Basis.from_euler(Vector3(0.06, 0, 0)), Vector3(0, 1.47, -0.155)), _mesh("nyx_cape", func(g: Geo) -> void:
+				g.sheet(Transform3D.IDENTITY, 0.62, 1.3)), material(Color.hex(0x24123aff), 0.7, 0.0, true))
+		"zero":   # Zero-Origin: a faceless head of light inside a halo
+			var light := material(Color.hex(0xfff8e8ff), 0.1)
+			light.emission_enabled = true; light.emission = Color.hex(0xfff0c8ff); light.emission_energy_multiplier = 2.5
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("zero_halo", func(g: Geo) -> void:
+				g.torus(Transform3D(Basis.from_euler(Vector3(PI / 2, 0, 0)), Vector3(0, 0.08, -0.12)), 0.17, 0.012)
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.02, 1.05, 1.02)), Vector3(0, 0.055, 0.0)), 0.112, 12, 18)), light)
+		"hollow":   # Hollow Kings: shadow copies with burning red eyes
+			var eyes := material(Color.hex(0xff2020ff), 0.2)
+			eyes.emission_enabled = true; eyes.emission = Color.hex(0xff1010ff); eyes.emission_energy_multiplier = 3.0
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("hollow_eyes", func(g: Geo) -> void:
+				for s in [1.0, -1.0]:
+					g.sphere(Transform3D(Basis.from_scale(Vector3(1.3, 0.6, 0.5)), Vector3(s * 0.038, 0.06, 0.1)), 0.016, 6, 10)), eyes)
 		"powerpole":   # kid Gokan: the red Power Pole strapped diagonally across the back
 			f.add_piece("DEF-spine.003", Transform3D.IDENTITY, _mesh("powerpole", func(g: Geo) -> void:
 				g.cylinder(Transform3D(Basis.from_euler(Vector3(0, 0, 0.55)), Vector3(0, 1.25, -0.16)), 0.022, 0.022, 1.3, 10)

@@ -188,6 +188,20 @@ function childhoodPlaces(zones) {
   return ids;
 }
 
+// User request 2026-11-05: Rift Patrol post-game (docs/superpowers/specs/2026-11-05-rift-patrol-design.md).
+// The Time Nexus: a floating sanctum outside time, the hub for timeline missions (reached through Rift Patrol only).
+function timeNexus(zones) {
+  zones.time_nexus = {
+    name: 'Time Nexus', planet: 'Time Nexus', saga: 'Rift Patrol',
+    terrain: {size: 240, spawn: {x: 0, z: -40}, platform: {radius: 70, height: 0}, killY: -60, ground: 'stone'},
+    biome: {sky: {type: 'gradient', top: 0x141038, horizon: 0x6a3aa8, bottom: 0x0a0818, elevation: 60, azimuth: 200, sunColor: 0xc8b8ff, stars: true},
+      fog: [0x1a1030, 0.0008], trees: 'none', treeCount: 0, rocks: 0, bushes: 0, stones: 0, grass: 0, clouds: false, sun: {intensity: 3.0}},
+    landmarks: [{type: 'nexus', name: 'Time Nexus', x: 0, z: 10}],
+    travelPoint: {x: 14, z: -40}, spawnYaw: 0,
+  };
+  return ['time_nexus'];
+}
+
 export function applyGodotAdditions(tables) {
   const zones = structuredClone(tables.zones);
   const npcs = structuredClone(tables.npcs);
@@ -198,7 +212,7 @@ export function applyGodotAdditions(tables) {
   const world = openWorld(zones, zoneOrder);
   const childhood = childhoodPlaces(zones);
   for (const id of childhood) if (!zoneOrder.includes(id)) zoneOrder.push(id);
-  const changed = [...checkInStation(zones, npcs), ...interiors(zones), ...childhood];
+  const changed = [...checkInStation(zones, npcs), ...interiors(zones), ...childhood, ...timeNexus(zones)];
   // giant, seated behind the desk: red skin, black beard, judge's hat (Parts.costume "yemmo")
   Object.assign(characters.king_yemma, {scale: 4.2, look: {race: 'Human', skin: 0, skinHex: 0xc8463c, face: 'Fierce', hair: 'None',
     hairColor: 0, build: 'Muscular', outfit: 'CraneGi', outfitTint: 2, costume: 'yemmo'}});
@@ -253,6 +267,18 @@ export function applyGodotAdditions(tables) {
     baaba_mummy: [{race: 'Human', build: 'Muscular', hair: 'None', skinHex: 0xe4dcc4, outfit: 'TurtleGi', outfitTint: 4, physique: 'recume'}, 1.4],
     baaba_devil: [{race: 'Majin', build: 'Average', outfit: 'FrostArmor', outfitTint: 5, skinHex: 0x5a8ad0}, 1.05],
   };
+  // Rift Patrol villains (Claude, 2026-11-05; rows come from Codex): all-original designs
+  Object.assign(origins, {
+    vael: [{race: 'Human', build: 'Slim', hair: 'Swept', hairColor: 5, skinHex: 0xd8d4e0, outfit: 'AngelRobe', outfitTint: 1, costume: 'vael', physique: 'hitto'}, 1.05],
+    shardling: [{race: 'Majin', build: 'Short', skinHex: 0x6ad8f0, outfit: 'FrostArmor', outfitTint: 1, sculpt: {head_w: 1.15}}, 0.7],
+    morrigath: [{race: 'Human', build: 'Muscular', hair: 'None', skinHex: 0x8a8090, outfit: 'SaiyanArmor', outfitTint: 3, costume: 'morrigath', physique: 'recume'}, 1.5],
+    nyxara: [{race: 'FrostDemon', build: 'Tall', female: true, skinHex: 0x2a2440, outfit: 'AngelRobe', outfitTint: 2, costume: 'nyxara'}, 1.15],
+    hollow_gokan: [{race: 'Saiyan', build: 'Muscular', hair: 'Spiky', hairColor: 0, skinHex: 0x3a3448, outfit: 'TurtleGi', outfitTint: 3, costume: 'hollow', physique: 'gokan'}, 1.0],
+    hollow_vegara: [{race: 'Saiyan', build: 'Average', hair: 'LongSpiky', hairColor: 0, skinHex: 0x3a3448, outfit: 'SaiyanArmor', outfitTint: 3, costume: 'hollow', physique: 'vegara'}, 0.95],
+    hollow_piccor: [{race: 'Namekian', build: 'Tall', skinHex: 0x2a3a2a, outfit: 'NamekRobe', outfitTint: 3, costume: 'hollow', physique: 'piccor'}, 1.0],
+    zero_origin: [{race: 'Human', build: 'Tall', hair: 'None', skinHex: 0xf4ecd8, outfit: 'AngelRobe', outfitTint: 4, costume: 'zero', physique: 'cyborg16'}, 2.4],
+    archivist_tem: [{race: 'Human', build: 'Slim', hair: 'Long', female: true, hairColor: 5, outfit: 'AngelRobe', outfitTint: 1}, 1.0],
+  });
   for (const [id, [look, scale]] of Object.entries(origins)) {
     if (!characters[id]) continue;
     characters[id].look = {...characters[id].look, ...look};

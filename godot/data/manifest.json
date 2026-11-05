@@ -46,7 +46,7 @@
     "tools/fighting_styles.mjs": "3fe9a62f1f9aa477f68fffd3688a500f9b5f5f0caf96681904030b3c8fd07907",
     "tools/skill_presentation.mjs": "447b6907ff183affbc451f0cfc6ea987c0e928256f7a3c5f988cc01a5636b322",
     "tools/origins.mjs": "53193315419770fe6a6308fe9183180f3acdf2437facc73f7e7fff97554faeb4",
-    "tools/godot_additions.mjs": "d5e006d9f2b331356c7f755ca54ca01858b5313215fc298fdb6df50fe1d2acf1",
+    "tools/godot_additions.mjs": "3477a44b73810b74ab381e32051d15398a9452289be0c81a356862e39a9b6b60",
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
   "files": {
@@ -147,10 +147,10 @@
       "entries": 5
     },
     "zones.json": {
-      "sha256": "4fad0b22caa617ee2d12038db430328a25df7a60e04f552c526f7a85222bd8d9",
-      "bytes": 69459,
+      "sha256": "4062c3e7c777264172ba6a5b70e5067570a5d177067cac96bacd6ae318b1babd",
+      "bytes": 70482,
       "kind": "object",
-      "entries": 55
+      "entries": 56
     },
     "zone_order.json": {
       "sha256": "d0e45202ec130866a7d24e94a432d15ead8ab851c13822e6e51c8defc1c22306",
@@ -291,8 +291,8 @@
       "entries": 5
     },
     "godot_additions.json": {
-      "sha256": "88713e68a97699e73f377c2d04b68376a860e97a1c833c19c28678ea2d8a3a19",
-      "bytes": 403,
+      "sha256": "3a17838b3374ccee3615b2192d0c4da45c87c0859cdd94d7c7b96d9e277db945",
+      "bytes": 421,
       "kind": "object",
       "entries": 2
     },

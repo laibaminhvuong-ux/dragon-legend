@@ -9,7 +9,7 @@ const BUILDERS := ["pod", "crater", "crashpod", "farmhouse", "kamehouse", "snake
 	"namekhouse", "gurutower", "friezaship", "capsuleship", "timemachine", "yardrathut", "capsulecorp", "dome",
 	"labdoor", "ruin", "husk", "palace", "htcdoor", "htcroom", "cellarena", "budokai", "babidiship", "zsword",
 	"crystals", "pyramid", "stands", "bunker", "pillar", "zenobox", "hangar", "radartower", "checkin", "town", "kaiplanet", "interior",
-	"paozuhut", "firecastle", "pilavcastle", "muscletower", "baabapalace", "korrintower", "piccorcastle", "lookout"]
+	"paozuhut", "firecastle", "pilavcastle", "muscletower", "baabapalace", "korrintower", "piccorcastle", "lookout", "nexus"]
 
 static func has_builder(type: String) -> bool:
 	return type in BUILDERS
@@ -326,6 +326,50 @@ class Builder extends RefCounted:
 				var leaf := box(4.0, 0.2, 1.2, green, p.x + sin(a) * 1.8, 8.0, p.y + cos(a) * 1.8)
 				leaf.rotation = Vector3(0.35, a, 0)
 		box(10, 0.3, 10, green, -12, 0.05, -2)   # garden
+
+	## The Time Nexus (Rift Patrol hub): a sanctum outside time. Rune pillars round the platform, a huge clock ring
+	## floating overhead, the Mission Board terminal on a dais, and the rift gate that missions launch through.
+	func _nexus() -> void:
+		var stone := mat(0x2a2840, {"rough": 0.6, "metal": 0.2}); var trim := mat(0xd8c890, {"metal": 0.8, "rough": 0.25})
+		var glow := mat(0x9a7aff, {"emissive": 0x7a5aff, "glow": 2.4, "rough": 0.3})
+		var cyan := mat(0x7ae8ff, {"emissive": 0x40c8ff, "glow": 2.0, "rough": 0.2})
+		# rings inlaid in the floor
+		for r in [20.0, 38.0, 60.0]:
+			torus(r, 0.25, glow, 0, 0.05, 0)
+		# rune pillars round the edge
+		for i in 12:
+			var a := float(i) / 12.0 * TAU
+			var x := sin(a) * 64.0; var z := cos(a) * 64.0
+			cyl(1.6, 2.0, 14.0, stone, x, 7.0, z, null, 8)
+			box(0.3, 9.0, 0.6, glow, x - sin(a) * 1.7, 7.0, z - cos(a) * 1.7).rotation.y = a
+			cyl(2.3, 2.3, 0.8, trim, x, 14.2, z, null, 8)
+		# the great clock ring overhead (hour marks and two hands)
+		var ring := Node3D.new(); ring.position = Vector3(0, 46, 0); g.add_child(ring)
+		torus(34.0, 1.0, trim, 0, 0, 0, ring)
+		torus(30.0, 0.35, glow, 0, 0, 0, ring)
+		for h in 12:
+			var a := float(h) / 12.0 * TAU
+			box(0.8, 0.8, 3.6, trim, sin(a) * 31.5, 0, cos(a) * 31.5, ring).rotation.y = a
+		box(1.0, 0.5, 22.0, trim, 0, 0.3, 11.0, ring)
+		box(1.4, 0.5, 15.0, trim, 0, 0.6, -7.5, ring).rotation.y = 2.1
+		ring.set_meta("spin", 0.05)
+		# the Mission Board: a dais with a glowing tilted screen
+		cyl(7.0, 8.0, 1.2, stone, 0, 0.6, 18.0, null, 32)
+		box(7.5, 4.2, 0.4, cyan, 0, 4.3, 22.0).rotation.x = -0.25
+		box(8.2, 4.8, 0.3, trim, 0, 4.3, 22.25).rotation.x = -0.25
+		# the rift gate: a vertical ring with a swirling disc, behind the board
+		var gate := Node3D.new(); gate.position = Vector3(0, 9.5, 46.0); g.add_child(gate)
+		var gr := torus(8.0, 0.9, trim, 0, 0, 0, gate); gr.rotation.x = PI / 2
+		var disc := cyl(7.2, 7.2, 0.2, mat(0x5a2aa8, {"emissive": 0x8a4aff, "glow": 2.6, "rough": 0.1}), 0, 0, 0, gate, 40); disc.rotation.x = PI / 2
+		disc.set_meta("spin_z", 0.8)
+		# drifting time shards
+		for i in 26:
+			var a := float(i) * 2.399
+			var r := 18.0 + float(i % 7) * 7.0
+			var shard := box(0.6, 1.8, 0.6, cyan if i % 3 == 0 else glow, sin(a) * r, 18.0 + float(i % 5) * 6.0, cos(a) * r)
+			shard.rotation = Vector3(float(i) * 0.7, float(i) * 1.3, float(i) * 0.4)
+		var light := OmniLight3D.new(); light.light_color = Color(0.7, 0.6, 1.0); light.light_energy = 2.0; light.omni_range = 90.0
+		light.position = Vector3(0, 20, 0); g.add_child(light)
 
 	## King Piccor's castle: a dark spiked fortress on a crag.
 	func _piccorcastle() -> void:
