@@ -2,7 +2,7 @@ class_name RuleSchema
 extends RefCounted
 # Saved dictionaries retain JS camelCase keys. Only rule method names use snake_case.
 const Tables = preload("res://rules/tables.gd")
-const SCHEMA_VERSION := 7
+const SCHEMA_VERSION := 8
 ## Character slots per profile (user request 2026-11-03: 10; the classic game and old codes have 3).
 const SLOT_COUNT := 10
 const CODE_PREFIX := "DL1:"
@@ -100,8 +100,11 @@ func new_slot(look: Dictionary, now: int = -1) -> Dictionary:
 		allocation[stat] = 0
 	var slot: Dictionary = {"race":race,"style":RuleStyles.DEFAULT,"appearance":style,"level":1,"xp":0,"statPoints":0,"stats":allocation,"zeni":stats.STARTING_ZENI,
 		"outfits":[style.get("outfit", "TurtleGi")],"forms":[],"moves":[],"loadout":{"technique":"EnergyWave","formPath":null,"accessory":"None","kaiokenRank":2},
-		"formMastery":{},"quests":{},"story":{},"zone":"earth_plains","position":null,"createdAt":now,"playedAt":now,"playTime":0}
+		"formMastery":{},"quests":{},"story":{},"zone":"mt_paozu","position":null,"createdAt":now,"playedAt":now,"playTime":0}
 	_ensure_story(slot)
+	slot.story.flags.originsRequired = true
+	if slot.zone not in slot.story.unlocked:
+		slot.story.unlocked.append(slot.zone)
 	return slot
 
 func _ensure_story(slot: Dictionary) -> void:
@@ -121,6 +124,9 @@ func _ensure_story(slot: Dictionary) -> void:
 		s.items = {}
 	if not s.get("flags") is Dictionary:
 		s.flags = {}
+	# Missing marker means an existing fighter: Origins stays optional without moving or resetting them.
+	if not s.flags.get("originsRequired") is bool:
+		s.flags.originsRequired = false
 	for q: Dictionary in quests:
 		var saved: Variant = slot.quests.get(q.id)
 		if saved is Dictionary and (saved.get("status") == "done" or float(saved.get("completions", 0)) > 0):

@@ -1736,5 +1736,601 @@
       "faceSeed": "training_guide"
     },
     "style": "turtle"
+  },
+  "goku_kid": {
+    "name": "Young Gokan",
+    "look": {
+      "race": "HalfSaiyan",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "Short",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 2,
+      "faceSeed": "goku_kid"
+    },
+    "scale": 0.65,
+    "style": "turtle",
+    "origins": true
+  },
+  "krillin_kid": {
+    "name": "Young Krilan",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 0,
+      "faceSeed": "krillin_kid"
+    },
+    "scale": 0.65,
+    "style": "turtle",
+    "origins": true
+  },
+  "bulma_young": {
+    "name": "Young Bulna",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Ponytail",
+      "hairColor": 2,
+      "build": "Slim",
+      "outfit": "CapsuleCorp",
+      "outfitTint": 4,
+      "female": true,
+      "faceSeed": "bulma_young"
+    },
+    "style": "speedster",
+    "origins": true
+  },
+  "oolong": {
+    "name": "Ulong",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 0,
+      "faceSeed": "oolong"
+    },
+    "scale": 0.85,
+    "style": "speedster",
+    "origins": true
+  },
+  "puar": {
+    "name": "Puir",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 0,
+      "faceSeed": "puar"
+    },
+    "scale": 0.85,
+    "style": "speedster",
+    "origins": true
+  },
+  "yamcha_young": {
+    "name": "Young Yamcho",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "LongSpiky",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "TurtleGi",
+      "outfitTint": 0,
+      "faceSeed": "yamcha_young"
+    },
+    "style": "speedster",
+    "origins": true
+  },
+  "ox_king": {
+    "name": "Ox-Lord",
+    "look": {
+      "race": "Saiyan",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3,
+      "faceSeed": "ox_king"
+    },
+    "scale": 1.9,
+    "style": "brawler",
+    "origins": true
+  },
+  "pilaf": {
+    "name": "Emperor Pilav",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 0,
+      "faceSeed": "pilaf"
+    },
+    "scale": 0.65,
+    "style": "crane",
+    "origins": true
+  },
+  "shu": {
+    "name": "Shoo",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "LongSpiky",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "TurtleGi",
+      "outfitTint": 0,
+      "faceSeed": "shu"
+    },
+    "style": "speedster",
+    "origins": true
+  },
+  "jackie_chun": {
+    "name": "Jackie Chung",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 5,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 6,
+      "faceSeed": "jackie_chun"
+    },
+    "scale": 0.8,
+    "style": "turtle",
+    "origins": true
+  },
+  "giran": {
+    "name": "Gyran",
+    "look": {
+      "race": "Saiyan",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3,
+      "faceSeed": "giran"
+    },
+    "scale": 1.2,
+    "style": "brawler",
+    "origins": true
+  },
+  "nam": {
+    "name": "Namu",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "CraneGi",
+      "outfitTint": 6,
+      "faceSeed": "nam"
+    },
+    "style": "crane",
+    "origins": true
+  },
+  "silver": {
+    "name": "Colonel Silvar",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "LongSpiky",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "TurtleGi",
+      "outfitTint": 0,
+      "faceSeed": "silver"
+    },
+    "style": "brawler",
+    "origins": true
+  },
+  "white": {
+    "name": "General Whyte",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "Wild",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "CraneGi",
+      "outfitTint": 4,
+      "faceSeed": "white"
+    },
+    "style": "brawler",
+    "origins": true
+  },
+  "murasaki": {
+    "name": "Murasake",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "LongSpiky",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "TurtleGi",
+      "outfitTint": 0,
+      "faceSeed": "murasaki"
+    },
+    "style": "speedster",
+    "origins": true
+  },
+  "android_8": {
+    "name": "Cyborg 8",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "Short",
+      "hairColor": 4,
+      "build": "Tall",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 6,
+      "faceSeed": "android_8"
+    },
+    "scale": 1.5,
+    "style": "brawler",
+    "origins": true
+  },
+  "blue": {
+    "name": "General Bleu",
+    "look": {
+      "race": "HalfSaiyan",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "Short",
+      "hairColor": 2,
+      "build": "Average",
+      "outfit": "CapsuleCorp",
+      "outfitTint": 1,
+      "faceSeed": "blue"
+    },
+    "style": "crane",
+    "origins": true
+  },
+  "tao": {
+    "name": "Mercenary Tau",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "CraneGi",
+      "outfitTint": 6,
+      "faceSeed": "tao"
+    },
+    "style": "crane",
+    "origins": true
+  },
+  "red": {
+    "name": "Commander Rudd",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 0,
+      "faceSeed": "red"
+    },
+    "scale": 0.85,
+    "style": "brawler",
+    "origins": true
+  },
+  "baba": {
+    "name": "Fortuneteller Baaba",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 5,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 6,
+      "faceSeed": "baba",
+      "female": true
+    },
+    "scale": 0.8,
+    "style": "crane",
+    "origins": true
+  },
+  "grandpa_gohan": {
+    "name": "Grandpa Gohin",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 5,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 6,
+      "faceSeed": "grandpa_gohan"
+    },
+    "scale": 0.8,
+    "style": "turtle",
+    "origins": true
+  },
+  "tien_young": {
+    "name": "Young Tenzo",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "CraneGi",
+      "outfitTint": 6,
+      "faceSeed": "tien_young"
+    },
+    "style": "crane",
+    "origins": true
+  },
+  "chiaotzu": {
+    "name": "Chaozo",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 0,
+      "faceSeed": "chiaotzu"
+    },
+    "scale": 0.65,
+    "style": "crane",
+    "origins": true
+  },
+  "tambourine": {
+    "name": "Tamburin",
+    "look": {
+      "race": "Namekian",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "NamekRobe",
+      "outfitTint": 2,
+      "faceSeed": "tambourine"
+    },
+    "style": "speedster",
+    "origins": true
+  },
+  "cymbal": {
+    "name": "Cymbel",
+    "look": {
+      "race": "Namekian",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "NamekRobe",
+      "outfitTint": 2,
+      "faceSeed": "cymbal"
+    },
+    "style": "brawler",
+    "origins": true
+  },
+  "drum": {
+    "name": "Drumm",
+    "look": {
+      "race": "Namekian",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "NamekRobe",
+      "outfitTint": 2,
+      "faceSeed": "drum"
+    },
+    "style": "brawler",
+    "origins": true
+  },
+  "king_piccolo": {
+    "name": "King Piccor",
+    "look": {
+      "race": "Namekian",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "NamekRobe",
+      "outfitTint": 2,
+      "faceSeed": "king_piccolo"
+    },
+    "style": "brawler",
+    "origins": true,
+    "scale": 1.4
+  },
+  "korin": {
+    "name": "Korrin",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "None",
+      "hairColor": 5,
+      "build": "Short",
+      "outfit": "TurtleGi",
+      "outfitTint": 6,
+      "faceSeed": "korin"
+    },
+    "scale": 0.8,
+    "style": "speedster",
+    "origins": true
+  },
+  "yajirobe": {
+    "name": "Yajirobi",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "Wild",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "CraneGi",
+      "outfitTint": 4,
+      "faceSeed": "yajirobe"
+    },
+    "style": "brawler",
+    "origins": true
+  },
+  "piccolo_jr": {
+    "name": "Piccor Jr.",
+    "look": {
+      "race": "Namekian",
+      "skin": 0,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Tall",
+      "outfit": "NamekRobe",
+      "outfitTint": 2,
+      "faceSeed": "piccolo_jr"
+    },
+    "style": "crane",
+    "origins": true
+  },
+  "pilav_robot": {
+    "name": "Pilav Battle Walker",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Calm",
+      "hair": "Short",
+      "hairColor": 4,
+      "build": "Tall",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 6,
+      "faceSeed": "pilav_robot"
+    },
+    "scale": 1.25,
+    "style": "brawler",
+    "origins": true
+  },
+  "baaba_fangs": {
+    "name": "Fangor",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "LongSpiky",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "TurtleGi",
+      "outfitTint": 0,
+      "faceSeed": "baaba_fangs"
+    },
+    "style": "speedster",
+    "origins": true
+  },
+  "baaba_invisible": {
+    "name": "Veilor",
+    "look": {
+      "race": "Human",
+      "skin": 1,
+      "face": "Smirk",
+      "hair": "LongSpiky",
+      "hairColor": 0,
+      "build": "Average",
+      "outfit": "TurtleGi",
+      "outfitTint": 0,
+      "faceSeed": "baaba_invisible"
+    },
+    "style": "speedster",
+    "origins": true
+  },
+  "baaba_mummy": {
+    "name": "Mummor",
+    "look": {
+      "race": "Saiyan",
+      "skin": 1,
+      "face": "Fierce",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "SaiyanArmor",
+      "outfitTint": 3,
+      "faceSeed": "baaba_mummy"
+    },
+    "scale": 1.2,
+    "style": "brawler",
+    "origins": true
+  },
+  "baaba_devil": {
+    "name": "Devilon",
+    "look": {
+      "race": "Majin",
+      "skin": 1,
+      "face": "Cold",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "FrostArmor",
+      "outfitTint": 3,
+      "faceSeed": "baaba_devil"
+    },
+    "scale": 1.3,
+    "style": "crane",
+    "origins": true
+  },
+  "tao_cyborg": {
+    "name": "Cyborg Tau",
+    "look": {
+      "race": "Human",
+      "skin": 0,
+      "face": "Determined",
+      "hair": "None",
+      "hairColor": 0,
+      "build": "Muscular",
+      "outfit": "CraneGi",
+      "outfitTint": 6,
+      "faceSeed": "tao_cyborg"
+    },
+    "style": "crane",
+    "origins": true
   }
 }

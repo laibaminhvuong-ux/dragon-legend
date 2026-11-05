@@ -71,6 +71,14 @@ func at(step: Dictionary) -> Dictionary:
 ## The area the player stands in: the loaded area, or on a planet map the area around them.
 func here() -> String:
 	return game().current_region() if zone is RulePlanet else zone.id
+## Only new fighters must finish childhood before the adult campaign.
+func is_main(q: Dictionary) -> bool:
+	return q.get("main",false) and (not q.get("origins",false) or state.flags.get("originsRequired",false))
+func required_after(q: Dictionary) -> Array:
+	var required: Array = q.get("after",[]).duplicate()
+	if q.id=="m01_arrival" and not state.flags.get("originsRequired",false):
+		required.erase("k07_piccor_jr")
+	return required
 func can_accept(q: Dictionary) -> bool:
 	if q.get("legacy",false) or q.get("automatic",false) or is_active(q.id) or (is_done(q.id) and not q.get("repeat",false)) or slot.level<q.get("level",1):
 		return false
@@ -78,7 +86,7 @@ func can_accept(q: Dictionary) -> bool:
 		return false
 	if q.has("races") and slot.race not in q.races:
 		return false
-	for id: String in q.get("after",[]):
+	for id: String in required_after(q):
 		if not is_done(id):
 			return false
 	return true
@@ -91,6 +99,7 @@ func advance(q: Dictionary,quiet: bool = false) -> void:
 	s.step += 1
 	s.t = 0.0
 	s.count = 0
+	s.collected = []
 	if s.step>=q.steps.size():
 		complete(q)
 		return
@@ -159,7 +168,7 @@ func quest_place(q: Dictionary) -> Variant:
 	var s: Dictionary = step_of(q)
 	return npc.get(s.npc,{}).get("zone") if s.type=="talk" else s.get("zone")
 func story_quests() -> Array:
-	return quests.filter(func(q: Dictionary) -> bool: return q.get("main",false) and not q.get("legacy",false) and not q.get("automatic",false) and (is_active(q.id) or can_accept(q)))
+	return quests.filter(func(q: Dictionary) -> bool: return is_main(q) and not q.get("legacy",false) and not q.get("automatic",false) and (is_active(q.id) or can_accept(q)))
 func tasks_here() -> Array:
 	return story_quests().filter(func(q: Dictionary) -> bool: return quest_place(q)==here()).map(func(q: Dictionary) -> String: return q.title)
 func travel_options() -> Array:
@@ -171,14 +180,14 @@ func travel_options() -> Array:
 		if z!=null and z!=here() and z not in next:
 			next.append(z)
 	for q: Dictionary in quests:
-		if not q.get("main",false) or q.get("legacy",false) or q.get("automatic",false) or is_done(q.id) or is_active(q.id):
+		if not is_main(q) or q.get("legacy",false) or q.get("automatic",false) or is_done(q.id) or is_active(q.id):
 			continue
 		if q.has("races") and slot.race not in q.races:
 			continue
 		if q.has("path") and not game().forms.has_form_path(slot,q.path):
 			continue
 		var after_done: bool = true
-		for id: String in q.get("after",[]):
+		for id: String in required_after(q):
 			after_done = after_done and is_done(id)
 		if not after_done:
 			continue
@@ -234,7 +243,7 @@ func npcs() -> Array:
 			if q.giver==n.id and can_accept(q):
 				if marker==null:
 					marker = "!"
-				if q.get("main",false) and marker=="!":
+				if is_main(q) and marker=="!":
 					main = true
 		var c: Dictionary = characters[n.who]
 		var row: Dictionary = {"id":n.id,"name":c.name,"style":c.get("style","turtle"),"look":c.get("look"),"dragon":c.get("dragon"),"scale":c.get("scale",1),"rot":n.get("rot",0),"boss":n.get("boss",false),"marker":marker,"main":main,"sit":n.get("sit",false)}
@@ -377,7 +386,7 @@ func encounters() -> Array:
 		var c: Dictionary = characters[n.who] if not n.is_empty() else {}
 		var name: String = c.get("name",s.enemy.replace("_"," ")) if not s.enemy.begins_with("patrol_") else "Hostile Trainee"
 		var look: Variant = c.get("look") if not s.enemy.begins_with("patrol_") else game().schema.default_look("Human").merged({"outfitTint":3},true)
-		var row := {"key":s.enemy,"style":c.get("style","turtle"),"questId":q.id,"step":slot.quests[q.id].step,"name":name,"look":look,"scale":c.get("scale",1),"level":q.get("level",1)}
+		var row := {"key":s.enemy,"style":c.get("style","turtle"),"questId":q.id,"step":slot.quests[q.id].step,"name":name,"look":look,"scale":c.get("scale",1),"level":s.get("enemyLevel",q.get("level",1))}
 		if count<=1:
 			if s.enemy.begins_with("patrol_"):
 				continue
@@ -493,7 +502,7 @@ func navigation() -> Variant:
 		tracked_id = ""
 		state.flags.erase("trackedQuest")
 	var order: Array = active_quests()
-	order.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return (10 if a.id==tracked_id else 1 if a.get("main",false) else 0)>(10 if b.id==tracked_id else 1 if b.get("main",false) else 0))
+	order.sort_custom(func(a: Dictionary,b: Dictionary) -> bool: return (10 if a.id==tracked_id else 1 if is_main(a) else 0)>(10 if b.id==tracked_id else 1 if is_main(b) else 0))
 	if not order.is_empty():
 		var q: Dictionary = order[0]
 		var step: Dictionary = step_of(q)
@@ -525,7 +534,7 @@ func navigation() -> Variant:
 			out.y = out.get("y",zone.height_at(out.x,out.z))
 		return out
 	for q: Dictionary in quests:
-		if q.get("main",false) and can_accept(q):
+		if is_main(q) and can_accept(q):
 			var n: Dictionary = npc[q.giver]
 			if zone.has_region(n.zone) and visible(n):
 				var out: Dictionary = npc_pos(n).duplicate()
@@ -549,21 +558,21 @@ func tracker() -> Array:
 	var out: Array = []
 	for q: Dictionary in active_quests():
 		var t: Variant = step_target(step_of(q))
-		out.append({"id":q.id,"title":q.title,"saga":q.get("saga"),"main":q.get("main",false),"tracked":q.id==tracked_id,"objective":step_of(q).text,"progress":progress_text(q),"where":worlds.get(t.get("zone"),{}).get("name") if t!=null and t.get("zone")!=null else null})
+		out.append({"id":q.id,"title":q.title,"saga":q.get("saga"),"main":is_main(q),"tracked":q.id==tracked_id,"objective":step_of(q).text,"progress":progress_text(q),"where":worlds.get(t.get("zone"),{}).get("name") if t!=null and t.get("zone")!=null else null})
 	return out
 func next_main() -> Variant:
 	for q: Dictionary in quests:
-		if q.get("main",false) and can_accept(q):
+		if is_main(q) and can_accept(q):
 			var n: Dictionary = npc[q.giver]
 			return {"title":q.title,"saga":q.get("saga"),"giver":characters[n.who].name,"zone":worlds[n.zone].name}
 	for q: Dictionary in quests:
-		if q.get("main",false) and not is_done(q.id) and not is_active(q.id):
+		if is_main(q) and not is_done(q.id) and not is_active(q.id):
 			return {"title":q.title,"level":q.get("level",1),"locked":slot.level<q.get("level",1)}
 	return null
 func journal() -> Dictionary:
 	return {"done":quests.filter(func(q: Dictionary) -> bool: return is_done(q.id)).map(func(q: Dictionary) -> String: return q.id),"unlocked":state.unlocked.duplicate(),"visited":state.visited.duplicate(),"moves":slot.moves.duplicate(),"forms":slot.forms.duplicate(),"items":state.items.duplicate()}
 func priority(q: Dictionary) -> int:
-	return 0 if q.get("main",false) else 1 if q.id.begins_with("Form_") else 3 if q.get("repeat",false) else 2
+	return 0 if is_main(q) else 1 if q.id.begins_with("Form_") else 3 if q.get("repeat",false) else 2
 func interact(choose: bool = false) -> Variant:
 	if player.health<=0:
 		return null
@@ -611,7 +620,7 @@ func interact(choose: bool = false) -> Variant:
 			if q.giver!=n.id or is_done(q.id) or is_active(q.id) or (q.has("races") and slot.race not in q.races):
 				continue
 			var after_done: bool = true
-			for id: String in q.get("after",[]):
+			for id: String in required_after(q):
 				after_done = after_done and is_done(id)
 			if after_done:
 				if slot.level<q.get("level",1):
@@ -711,4 +720,10 @@ func _check_portals() -> void:
 ## The level you need to travel to an area (user request 2026-11-03): the area's own level (rpg ZONE_LEVELS);
 ## open-world towns have none. Walking or flying between areas on the same planet map is never gated.
 func travel_level(zone_id: String) -> int:
-	return int(RuleTables.table("rpg").get("ZONE_LEVELS",{}).get(zone_id,0))
+	var need: int = int(RuleTables.table("rpg").get("ZONE_LEVELS",{}).get(zone_id,0))
+	# Reused adult areas (especially Lv1900 Red Ribbon) must also admit their childhood story.
+	# Only the current Origins destination gets this transport exception; patrol/difficulty data stay intact.
+	for q: Dictionary in quests:
+		if q.get("origins",false) and (is_active(q.id) or (is_main(q) and can_accept(q))) and quest_place(q)==zone_id:
+			need = mini(need,int(q.level))
+	return need

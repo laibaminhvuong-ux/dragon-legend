@@ -1463,5 +1463,503 @@
     "zone": "planet_cereal",
     "x": 5,
     "z": 3
+  },
+  {
+    "id": "goku_kid",
+    "who": "goku_kid",
+    "zone": "mt_paozu",
+    "x": -4,
+    "z": -65,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "bulma_young",
+    "who": "bulma_young",
+    "zone": "mt_paozu",
+    "x": 4,
+    "z": -65,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "oolong",
+    "who": "oolong",
+    "zone": "mt_paozu",
+    "x": -38,
+    "z": -30,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "yamcha_young",
+    "who": "yamcha_young",
+    "zone": "pilav_castle",
+    "x": -52,
+    "z": -45,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "puar",
+    "who": "puar",
+    "zone": "pilav_castle",
+    "x": -42,
+    "z": -45,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "ox_king",
+    "who": "ox_king",
+    "zone": "fire_mountain",
+    "x": -28,
+    "z": -20,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "origins_roshi",
+    "who": "roshi",
+    "zone": "kame_island",
+    "x": -20,
+    "z": 0,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "krillin_kid",
+    "who": "krillin_kid",
+    "zone": "kame_island",
+    "x": 20,
+    "z": 0,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "pilaf",
+    "who": "pilaf",
+    "zone": "pilav_castle",
+    "x": -24,
+    "z": -10,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "origins_mai",
+    "who": "mai",
+    "zone": "pilav_castle",
+    "x": -10,
+    "z": -10,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "shu",
+    "who": "shu",
+    "zone": "pilav_castle",
+    "x": 6,
+    "z": -10,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "android_8",
+    "who": "android_8",
+    "zone": "muscle_tower",
+    "x": -32,
+    "z": -20,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "korin",
+    "who": "korin",
+    "zone": "korrin_tower",
+    "x": -12,
+    "z": -30,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "yajirobe",
+    "who": "yajirobe",
+    "zone": "korrin_tower",
+    "x": 12,
+    "z": -30,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "baba",
+    "who": "baba",
+    "zone": "baaba_palace",
+    "x": -35,
+    "z": -30,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "origins_kamu",
+    "who": "kami",
+    "zone": "kamu_lookout",
+    "x": -20,
+    "z": -12,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "origins_popo",
+    "who": "mr_popo",
+    "zone": "kamu_lookout",
+    "x": 20,
+    "z": -12,
+    "rot": 0,
+    "origins": true
+  },
+  {
+    "id": "pilav_robot",
+    "who": "pilav_robot",
+    "zone": "pilav_castle",
+    "x": 24,
+    "z": -30,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k01_emperor_pilav",
+    "afterStep": [
+      "k01_emperor_pilav",
+      16
+    ]
+  },
+  {
+    "id": "giran",
+    "who": "giran",
+    "zone": "tournament_island",
+    "x": -24,
+    "z": 0,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k02_world_tournament_21",
+    "afterStep": [
+      "k02_world_tournament_21",
+      8
+    ]
+  },
+  {
+    "id": "nam",
+    "who": "nam",
+    "zone": "tournament_island",
+    "x": 0,
+    "z": 0,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k02_world_tournament_21",
+    "afterStep": [
+      "k02_world_tournament_21",
+      9
+    ]
+  },
+  {
+    "id": "jackie_chun",
+    "who": "jackie_chun",
+    "zone": "tournament_island",
+    "x": 24,
+    "z": 0,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k02_world_tournament_21",
+    "afterStep": [
+      "k02_world_tournament_21",
+      10
+    ]
+  },
+  {
+    "id": "silver",
+    "who": "silver",
+    "zone": "red_ribbon",
+    "x": -38,
+    "z": -30,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k03_red_ribbon",
+    "afterStep": [
+      "k03_red_ribbon",
+      1
+    ]
+  },
+  {
+    "id": "murasaki",
+    "who": "murasaki",
+    "zone": "muscle_tower",
+    "x": 26,
+    "z": -25,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k03_red_ribbon",
+    "afterStep": [
+      "k03_red_ribbon",
+      3
+    ]
+  },
+  {
+    "id": "white",
+    "who": "white",
+    "zone": "muscle_tower",
+    "x": 0,
+    "z": -5,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k03_red_ribbon",
+    "afterStep": [
+      "k03_red_ribbon",
+      5
+    ]
+  },
+  {
+    "id": "blue",
+    "who": "blue",
+    "zone": "red_ribbon",
+    "x": 0,
+    "z": -25,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k03_red_ribbon",
+    "afterStep": [
+      "k03_red_ribbon",
+      8
+    ]
+  },
+  {
+    "id": "tao",
+    "who": "tao",
+    "zone": "korrin_tower",
+    "x": 32,
+    "z": -20,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k03_red_ribbon",
+    "afterStep": [
+      "k03_red_ribbon",
+      15
+    ]
+  },
+  {
+    "id": "red",
+    "who": "red",
+    "zone": "red_ribbon",
+    "x": 32,
+    "z": -15,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k03_red_ribbon",
+    "afterStep": [
+      "k03_red_ribbon",
+      17
+    ]
+  },
+  {
+    "id": "baaba_fangs",
+    "who": "baaba_fangs",
+    "zone": "baaba_palace",
+    "x": -24,
+    "z": -5,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k04_fortuneteller_baaba",
+    "afterStep": [
+      "k04_fortuneteller_baaba",
+      0
+    ]
+  },
+  {
+    "id": "baaba_invisible",
+    "who": "baaba_invisible",
+    "zone": "baaba_palace",
+    "x": 0,
+    "z": -10,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k04_fortuneteller_baaba",
+    "afterStep": [
+      "k04_fortuneteller_baaba",
+      1
+    ]
+  },
+  {
+    "id": "baaba_mummy",
+    "who": "baaba_mummy",
+    "zone": "baaba_palace",
+    "x": 24,
+    "z": -5,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k04_fortuneteller_baaba",
+    "afterStep": [
+      "k04_fortuneteller_baaba",
+      2
+    ]
+  },
+  {
+    "id": "baaba_devil",
+    "who": "baaba_devil",
+    "zone": "baaba_palace",
+    "x": 24,
+    "z": 22,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k04_fortuneteller_baaba",
+    "afterStep": [
+      "k04_fortuneteller_baaba",
+      3
+    ]
+  },
+  {
+    "id": "grandpa_gohan",
+    "who": "grandpa_gohan",
+    "zone": "baaba_palace",
+    "x": -24,
+    "z": 22,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k04_fortuneteller_baaba",
+    "afterStep": [
+      "k04_fortuneteller_baaba",
+      4
+    ]
+  },
+  {
+    "id": "chiaotzu",
+    "who": "chiaotzu",
+    "zone": "tournament_island",
+    "x": -24,
+    "z": 0,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k05_world_tournament_22",
+    "afterStep": [
+      "k05_world_tournament_22",
+      1
+    ]
+  },
+  {
+    "id": "tao_cyborg",
+    "who": "tao_cyborg",
+    "zone": "tournament_island",
+    "x": 24,
+    "z": 0,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k05_world_tournament_22",
+    "afterStep": [
+      "k05_world_tournament_22",
+      2
+    ]
+  },
+  {
+    "id": "tien_young",
+    "who": "tien_young",
+    "zone": "tournament_island",
+    "x": 0,
+    "z": 15,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k05_world_tournament_22",
+    "afterStep": [
+      "k05_world_tournament_22",
+      3
+    ]
+  },
+  {
+    "id": "tambourine",
+    "who": "tambourine",
+    "zone": "tournament_island",
+    "x": 30,
+    "z": -25,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k06_king_piccor",
+    "afterStep": [
+      "k06_king_piccor",
+      1
+    ]
+  },
+  {
+    "id": "cymbal",
+    "who": "cymbal",
+    "zone": "korrin_tower",
+    "x": -32,
+    "z": -10,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k06_king_piccor",
+    "afterStep": [
+      "k06_king_piccor",
+      4
+    ]
+  },
+  {
+    "id": "drum",
+    "who": "drum",
+    "zone": "piccor_castle",
+    "x": -28,
+    "z": -20,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k06_king_piccor",
+    "afterStep": [
+      "k06_king_piccor",
+      10
+    ]
+  },
+  {
+    "id": "king_piccolo",
+    "who": "king_piccolo",
+    "zone": "piccor_castle",
+    "x": 24,
+    "z": -15,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k06_king_piccor",
+    "afterStep": [
+      "k06_king_piccor",
+      11
+    ]
+  },
+  {
+    "id": "piccolo_jr",
+    "who": "piccolo_jr",
+    "zone": "tournament_island",
+    "x": 0,
+    "z": 5,
+    "rot": 0,
+    "origins": true,
+    "boss": true,
+    "before": "k07_piccor_jr",
+    "afterStep": [
+      "k07_piccor_jr",
+      7
+    ]
   }
 ]

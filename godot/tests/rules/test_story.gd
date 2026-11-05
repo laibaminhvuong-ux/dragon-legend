@@ -4,7 +4,7 @@ func test_complete_main_story_and_side_quests_through_real_travel() -> void:
 	ok(s.story.waypoint().text.contains("Gokan"))
 	var main_count: int = 0
 	for q: Dictionary in s.story.quests:
-		if q.get("main",false):
+		if s.story.is_main(q):
 			play(s,q)
 			main_count += 1
 	eq(main_count,41)
@@ -25,7 +25,7 @@ func test_complete_main_story_and_side_quests_through_real_travel() -> void:
 	eq(copy.story,s.slot.story)
 func test_accept_abandon_distance_death_and_shop_validation() -> void:
 	var s := Session.new()
-	var q: Dictionary = s.story.quests[0]
+	var q: Dictionary = s.story.quest.m01_arrival
 	s.game.player.pos = Vector3(100,100,100)
 	ok(not s.story.accept_quest(q.id))
 	s.at(s.story.npc_pos(s.story.npc[q.giver]))
@@ -95,7 +95,7 @@ func test_every_race_form_quests_and_endgame_paths() -> void:
 					ok(branch.story.is_done(q.id),race+" "+path+" "+q.id)
 func test_real_combat_death_credits_current_quest_once() -> void:
 	var s := Session.new()
-	var q: Dictionary = s.story.quests[0]
+	var q: Dictionary = s.story.quest.m01_arrival
 	play(s,q)
 	# Find a single-boss step and isolate its current objective.
 	for candidate: Dictionary in s.story.quests:

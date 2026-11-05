@@ -1104,5 +1104,427 @@
         "It's over. Panna's safe. We... actually did it."
       ]
     ]
+  },
+  "pilav_robot": {
+    "before": [
+      [
+        "pilav_robot",
+        "Castle defence engaged. The emperor's wish comes first!"
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "pilav_robot",
+        "The walker is broken. The courtyard gate is open!"
+      ],
+      [
+        "pilaf",
+        "The glass prison will hold you until moonrise."
+      ],
+      [
+        "you",
+        "We need to recover the last orb and get everyone outside."
+      ]
+    ]
+  },
+  "giran": {
+    "before": [
+      [
+        "giran",
+        "My binding gum will hold you outside the ring!"
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "giran",
+        "You broke free? I surrender this match."
+      ]
+    ]
+  },
+  "nam": {
+    "before": [
+      [
+        "nam",
+        "My village needs water. I cannot afford to fall here."
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "nam",
+        "You fought with honour. There must be another way to help my village."
+      ]
+    ]
+  },
+  "jackie_chun": {
+    "before": [
+      [
+        "jackie_chun",
+        "A student's greatest danger is believing there is nothing left to learn."
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "jackie_chun",
+        "The final is settled. Let this be the beginning of your training, never the end."
+      ]
+    ]
+  },
+  "silver": {
+    "before": [
+      [
+        "silver",
+        "Those orbs belong to Red Ribbon. Hand over the radar!"
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "silver",
+        "A whole patrol beaten by travellers? Headquarters won't believe this."
+      ]
+    ]
+  },
+  "murasaki": {
+    "before": [
+      [
+        "murasaki",
+        "Which shadow is real? Catch me before my next trick!"
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "murasaki",
+        "You read every feint. Even my brothers couldn't fool you."
+      ]
+    ]
+  },
+  "white": {
+    "before": [
+      [
+        "white",
+        "This tower belongs to me. Cyborg 8, destroy the intruders!"
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "white",
+        "He refused my order? Then the whole tower has turned against me!"
+      ]
+    ]
+  },
+  "blue": {
+    "before": [
+      [
+        "blue",
+        "Don't move. One glance and your muscles belong to me."
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "blue",
+        "You broke my concentration. The radar is beyond my reach."
+      ]
+    ]
+  },
+  "tao": {
+    "before": [
+      [
+        "tao",
+        "One finger was enough for my other targets. Will you be different?"
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "tao",
+        "The tower changed your timing. You saw the strike before I moved."
+      ]
+    ]
+  },
+  "red": {
+    "before": [
+      [
+        "red",
+        "The army, the towers, the weapons—all for my wish!"
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "red",
+        "Without the troops and the radar, my operation is finished."
+      ]
+    ]
+  },
+  "baaba_fangs": {
+    "before": [
+      [
+        "baaba_fangs",
+        "First bout! Try to catch me before the bell."
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "baaba_fangs",
+        "Too quick for these wings. The next fighter is waiting."
+      ]
+    ]
+  },
+  "baaba_invisible": {
+    "before": [
+      [
+        "baaba_invisible",
+        "Fight what you cannot see!"
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "baaba_invisible",
+        "The dust gave my footsteps away. Clever."
+      ]
+    ]
+  },
+  "baaba_mummy": {
+    "before": [
+      [
+        "baaba_mummy",
+        "One grip and this bout is over."
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "baaba_mummy",
+        "You slipped my guard and broke through. I yield."
+      ]
+    ]
+  },
+  "baaba_devil": {
+    "before": [
+      [
+        "baaba_devil",
+        "Every cruel thought becomes a weakness. Show me your heart!"
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "baaba_devil",
+        "No malice to turn against you? Then my trick has failed."
+      ]
+    ]
+  },
+  "grandpa_gohan": {
+    "before": [
+      [
+        "grandpa_gohan",
+        "A familiar stance. Let us see whether you remember your lessons."
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "grandpa_gohan",
+        "Very good. Come closer, child; I have waited a long time to see you."
+      ]
+    ]
+  },
+  "chiaotzu": {
+    "before": [
+      [
+        "chiaotzu",
+        "You cannot win if you cannot move."
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "chiaotzu",
+        "You found the rhythm between my techniques."
+      ]
+    ]
+  },
+  "tao_cyborg": {
+    "before": [
+      [
+        "tao_cyborg",
+        "A rebuilt body, a hidden blade, and a debt to settle!"
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "tao_cyborg",
+        "Metal cannot repair a fighter's judgment. I rushed the same mistake."
+      ]
+    ]
+  },
+  "tien_young": {
+    "before": [
+      [
+        "tien_young",
+        "The Crane School raised me to win at any cost. Make me prove it."
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "tien_young",
+        "You trusted the rules when I did not. I choose to be a martial artist."
+      ]
+    ]
+  },
+  "tambourine": {
+    "before": [
+      [
+        "tambourine",
+        "Every name on this tournament list is a target."
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "tambourine",
+        "The list is lost—but the king already has his next command."
+      ]
+    ]
+  },
+  "cymbal": {
+    "before": [
+      [
+        "cymbal",
+        "The king wants the orbs. No one passes this tower!"
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "cymbal",
+        "The sanctuary is beyond my reach."
+      ]
+    ]
+  },
+  "drum": {
+    "before": [
+      [
+        "drum",
+        "You will not take one more step toward the king."
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "drum",
+        "My guard is broken. The castle has no shield left."
+      ]
+    ]
+  },
+  "king_piccolo": {
+    "before": [
+      [
+        "king_piccolo",
+        "The world will remember fear. Your little rebellion ends here!"
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "king_piccolo",
+        "My reign ends—but an heir will carry my will."
+      ]
+    ]
+  },
+  "piccolo_jr": {
+    "before": [
+      [
+        "piccolo_jr",
+        "My father's defeat brought me here. Today I settle that legacy."
+      ],
+      [
+        "you",
+        "I am ready. Let us begin."
+      ]
+    ],
+    "after": [
+      [
+        "piccolo_jr",
+        "You could have ended my life. Why spare an enemy? I will find my own answer."
+      ]
+    ]
   }
 }

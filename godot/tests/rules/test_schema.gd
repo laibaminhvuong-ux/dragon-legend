@@ -12,7 +12,9 @@ func test_v1_to_v6_import_match_js_with_godot_style_migration() -> void:
 		var expected: Dictionary = row.expected.duplicate(true)
 		expected.version = float(Schema.SCHEMA_VERSION)
 		for slot: Variant in expected.slots:
-			if slot is Dictionary: slot.style = "turtle"
+			if slot is Dictionary:
+				slot.style = "turtle"
+				slot.story.flags.originsRequired = false
 		expected.slots = _pad(expected.slots)
 		eq(_json_value(rules.migrate(row.input)),expected,"migrate version %d" % row.version)
 		var result: Dictionary = rules.import_code(row.code)
@@ -32,7 +34,9 @@ func test_new_slots_defaults_validation_and_independent_state() -> void:
 		eq(slot.race,race)
 		eq(slot.appearance.kiColorHex,null)
 		eq(slot.loadout.kaiokenRank,2)
-		eq(slot.story.unlocked,Tables.table("start_zones"))
+		eq(slot.story.unlocked,Tables.table("start_zones")+["mt_paozu"])
+		eq(slot.zone,"mt_paozu")
+		eq(slot.story.flags.originsRequired,true)
 		eq(slot.createdAt,1000)
 		eq(_json_value(rules.normalize(slot)),_json_value(slot))
 	var first: Dictionary = rules.new_slot(rules.default_look())

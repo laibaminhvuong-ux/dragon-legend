@@ -10,7 +10,11 @@ func _step(g: RuleGame, it: Dictionary, frames: int) -> void:
 		g.update(DT, full)
 
 func test_boost_launches_and_flies_fast_for_twenty_seconds() -> void:
-	var g := RuleGame.new()
+	# Test the speed/timer on the original clear route; the Origins spawn faces the hut.
+	var schema := RuleSchema.new()
+	var slot := schema.new_slot(schema.default_look())
+	slot.zone = "earth_plains"
+	var g := RuleGame.new(0, slot)
 	var y0: float = g.player.pos.y
 	_step(g, {"boost": true}, 1)
 	ok(g.player.boosting and g.player.flying, "Q launches into a boost")
@@ -26,7 +30,11 @@ func test_boost_launches_and_flies_fast_for_twenty_seconds() -> void:
 	ok(g.player.flying, "then you're simply flying")
 
 func test_q_again_ends_the_boost_and_cooldown_applies() -> void:
-	var g := RuleGame.new()
+	# Test the speed/timer on the original clear route; the Origins spawn faces the hut.
+	var schema := RuleSchema.new()
+	var slot := schema.new_slot(schema.default_look())
+	slot.zone = "earth_plains"
+	var g := RuleGame.new(0, slot)
 	_step(g, {"boost": true}, 1)
 	_step(g, {}, 20)
 	_step(g, {"boost": true}, 1)
@@ -38,7 +46,11 @@ func test_q_again_ends_the_boost_and_cooldown_applies() -> void:
 	ok(g.player.boosting, "boost again after the cooldown")
 
 func test_boost_is_free() -> void:
-	var g := RuleGame.new()
+	# Test the speed/timer on the original clear route; the Origins spawn faces the hut.
+	var schema := RuleSchema.new()
+	var slot := schema.new_slot(schema.default_look())
+	slot.zone = "earth_plains"
+	var g := RuleGame.new(0, slot)
 	var ki: float = g.player.ki
 	_step(g, {"boost": true}, 1)
 	_step(g, {"move_z": 1.0}, 300)

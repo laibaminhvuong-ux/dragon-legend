@@ -152,9 +152,12 @@ func test_shift_toggles_running_and_fast_flight() -> void:
 
 func test_style_moves_and_reactions_reach_the_fighters() -> void:
 	var p := _session()
+	var e: Dictionary = p.game.combat.enemies[0]
+	# A distant Plains trainee is culled when a new fighter starts in Mt. Paozu.
+	e.pos = p.game.player.pos + Vector3(0, 0, 3)
+	e.home = e.pos
 	p.render(DT, 1.0)
 	var cv: Node = p.combat_view
-	var e: Dictionary = p.game.combat.enemies[0]
 	var player_fighter: Fighter = p.get_node("Player")
 	p.game.player.attackSerial = int(p.game.player.get("attackSerial", 0)) + 1
 	Events.emit_named("attack", {"id": "player", "kind": "melee", "phase": "release", "style": "brawler", "move": "brawler_hammer_fist",

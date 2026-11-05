@@ -28,7 +28,11 @@
   "item_names": {
     "dragon_ball": "a Dragon Orb",
     "namek_ball": "a Nameckian Dragon Orb",
-    "supplies": "a supply crate"
+    "supplies": "a supply crate",
+    "origins_ball": "childhood Dragon Orb",
+    "origins_milk": "milk delivery",
+    "origins_keepsake": "four-star keepsake",
+    "origins_divine_water": "Ultra Divine Water"
   },
   "ambient": {
     "goku_plains": "Hey! Want to spar later? I'm starving though.",

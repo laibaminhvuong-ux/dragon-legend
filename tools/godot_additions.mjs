@@ -217,13 +217,13 @@ export function applyGodotAdditions(tables) {
   // Every character's own face (FaceShape): seeded by the character id, so identical looks still differ
   for (const [id, c] of Object.entries(characters)) if (c.look && c.look.faceSeed == null) c.look.faceSeed = id;
   const fighting_styles = fightingStyles(tables.combat);
-  for (const [id, character] of Object.entries(characters)) character.style = fighting_styles.npc_assignments[id] ?? 'turtle';
+  for (const [id, character] of Object.entries(characters)) character.style = fighting_styles.npc_assignments[id] ?? character.style ?? 'turtle';
   for (const [zone, x, z, radius] of [['mt_paozu', 1280, -560, 170], ['fire_mountain', -1300, -680, 160], ['pilav_castle', 525, 600, 170],
     ['muscle_tower', 650, 1290, 160], ['baaba_palace', -1320, 650, 150], ['korrin_tower', -550, 900, 150], ['piccor_castle', 920, -800, 170],
     ['tournament_island', -150, -575, 150]]) world.planets.earth.regions.push({zone, x, z, radius, blend: 80});
   return {
     ...tables, zones, npcs, characters, appearance, races, zone_order: zoneOrder, planets: world.planets,
-    fighting_styles, schema:{...tables.schema, version:7, slots:10},
+    fighting_styles, schema:{...tables.schema, version:Math.max(7,tables.schema.version), slots:10},
     skill_presentation: skillPresentation(tables.moves,tables.combat.starterMove),
     godot_additions: {zones: [...new Set(changed)].sort(), note: 'Zones changed for the Godot game only; JS parity skips them.'},
   };

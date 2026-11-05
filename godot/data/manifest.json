@@ -1,6 +1,6 @@
 {
   "format_version": 1,
-  "schema_version": 7,
+  "schema_version": 8,
   "source": "web/src (evaluated exports; installed content and display names)",
   "sources": {
     "web/src/data/accessories.js": "7f9a1566c51a4834ec6585c85d149d2e060c90b4ef7e828024222a43aca88268",
@@ -45,33 +45,34 @@
     "web/src/game/zones.js": "c38525cfada5f1496007b9e0555d13926ef1ec944abbc238832901109696e0e4",
     "tools/fighting_styles.mjs": "3fe9a62f1f9aa477f68fffd3688a500f9b5f5f0caf96681904030b3c8fd07907",
     "tools/skill_presentation.mjs": "447b6907ff183affbc451f0cfc6ea987c0e928256f7a3c5f988cc01a5636b322",
-    "tools/godot_additions.mjs": "f2579d3978f6b8880d54eca67750540e2e0a4f530bd2f83522cb0d50208a1e84",
+    "tools/origins.mjs": "53193315419770fe6a6308fe9183180f3acdf2437facc73f7e7fff97554faeb4",
+    "tools/godot_additions.mjs": "4692783583f84cc57f7e10ca703ca054da9943aee17cba91296d1326914da930",
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
   "files": {
     "narrative.json": {
-      "sha256": "577d3502af036024b86cf2b8a125a14d22c57dae3d39c10801f79716043f0056",
-      "bytes": 3209,
+      "sha256": "faf56875227809643cb76b2122e14e1725bfeee9dc1f19b0cb03b120b54a178a",
+      "bytes": 3386,
       "kind": "object",
       "entries": 5
     },
     "quests.json": {
-      "sha256": "4a7520fd6c53bc3c0dbd6ed4cb32e1ee3f20a4aaed267ae9b94bc9daeb65b7b3",
-      "bytes": 111799,
+      "sha256": "4a063ba82598a0ddacf2ddc937f7dc90234b8cea0721dc8a66e458cdcb3afeb8",
+      "bytes": 137398,
       "kind": "array",
-      "entries": 127
+      "entries": 134
     },
     "npcs.json": {
-      "sha256": "790b137628b9e340a9511b8f1e474618de4e449c683c12d3d812ac2245ca40d8",
-      "bytes": 24997,
+      "sha256": "2a70e07f5eb8bb9734d77178a31d994314a2fc16b009ece0c3c7fd454649ed49",
+      "bytes": 33421,
       "kind": "array",
-      "entries": 168
+      "entries": 208
     },
     "characters.json": {
-      "sha256": "a5b70d3869b99ea6a003bf8e83faedc177521d2d7be36f554e09371cc34dbdf0",
-      "bytes": 35284,
+      "sha256": "dfd7e0b9c1484fe57a5531ba46d7bb2c6c65aa9f8abe2edd7bb3222f98f44068",
+      "bytes": 47390,
       "kind": "object",
-      "entries": 108
+      "entries": 144
     },
     "links.json": {
       "sha256": "8f8480e2c850ef3239b7c7fe9d97af608afb1c2255b467117e8cd82182832ca1",
@@ -182,10 +183,10 @@
       "entries": 11
     },
     "cutscenes.json": {
-      "sha256": "e443248289cc3c56317fc691d15f683b4cfe94bda9ec74d62be230b2c0a213da",
-      "bytes": 22115,
+      "sha256": "54b1868b7eddb12dc6e96f9697bf3ef82a4869f6e8a37804a19a33e33563691f",
+      "bytes": 30073,
       "kind": "object",
-      "entries": 51
+      "entries": 74
     },
     "form_looks.json": {
       "sha256": "851ec725634136aefe7999524d85af9d8946f5e3cc7cf281ccb500b97e98b933",
@@ -224,8 +225,8 @@
       "entries": 14
     },
     "rpg.json": {
-      "sha256": "fb24ee7734a729544947e3afebc0e615837e51b81cf18a8bc470ca5b9d9f46de",
-      "bytes": 855,
+      "sha256": "5dca6154eba7cce2525e64120e31b8e8750c87e25e7d758a93a1c68a91bdfff2",
+      "bytes": 1065,
       "kind": "object",
       "entries": 3
     },
@@ -260,10 +261,16 @@
       "entries": 14
     },
     "schema.json": {
-      "sha256": "ea13d352ccf61ff1d24557708e73d27f6e8b9fe3c5c0655f4bad75d7a9775070",
+      "sha256": "06539ddb1ffeb7aab93c78fbd231a3baadc6f3a0a6400dae025676bdd701017e",
       "bytes": 92,
       "kind": "object",
       "entries": 4
+    },
+    "origins.json": {
+      "sha256": "7947d18b216cf410d67a7a1d823a19d7c2d9e3cd31e1bc5494e882fe244d56a8",
+      "bytes": 940,
+      "kind": "object",
+      "entries": 6
     },
     "planets.json": {
       "sha256": "7239a54569d6aa6c31bf308e626b070729c9d4bdea71ffe532a71d4c24be1e2d",

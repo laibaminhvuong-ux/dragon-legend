@@ -77,7 +77,7 @@ func grind(level: int) -> void:
 		p.game.add_xp(p.game.progression.xp_to_next(int(p.game.slot.level)))
 
 func play_quest(q: Dictionary) -> void:
-	for id: String in q.get("after", []):
+	for id: String in p.story.required_after(q):
 		if not p.story.is_done(id):
 			play_quest(p.story.quest[id])
 	if q.get("automatic", false):
@@ -157,9 +157,9 @@ func test_whole_main_story_through_the_play_scene() -> void:
 		if q.get("main", false):
 			play_quest(q)
 			mains += 1
-	eq(mains, 41, "every main quest played")
+	eq(mains, 48, "every main quest played")
 	# every story area unlocks (open-world towns unlock when found); planets are one map each, so fewer builds
-	var story_areas: Array = (RuleTables.table("zones") as Dictionary).keys().filter(func(z: String) -> bool: return RuleTables.table("zones")[z].get("kind", "") not in ["town", "interior"] and RuleTables.table("zones")[z].get("saga", "") != "Origins")
+	var story_areas: Array = (RuleTables.table("zones") as Dictionary).keys().filter(func(z: String) -> bool: return RuleTables.table("zones")[z].get("kind", "") not in ["town", "interior"])
 	eq((p.game.slot.story.unlocked as Array).size(), story_areas.size(), "every story area unlocked")
 	ok(worlds.size() >= 10, "%d maps built and played in (%d travels)" % [worlds.size(), travels])
 	p.save_now()

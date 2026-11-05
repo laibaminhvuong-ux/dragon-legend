@@ -1,5 +1,943 @@
 [
   {
+    "id": "k01_emperor_pilav",
+    "main": true,
+    "origins": true,
+    "line": "Origins",
+    "saga": "Origins",
+    "chapter": 1,
+    "title": "Origins I: Emperor Pilav",
+    "giver": "goku_kid",
+    "level": 1,
+    "after": [],
+    "offer": "A girl with a radar is looking for seven Dragon Orbs. Come meet her! Grandpa always said to help people.",
+    "done": "Puir cut my tail and the giant ape disappeared. I don't remember it! The others are safe. Let's ask Master Roshu to train us.",
+    "steps": [
+      {
+        "type": "talk",
+        "npc": "bulma_young",
+        "text": "Speak with Young Bulna",
+        "reply": "My radar found your grandfather's four-star orb. Keep it with you; help me find the other six!"
+      },
+      {
+        "type": "collect",
+        "zone": "mt_paozu",
+        "item": "origins_ball",
+        "spots": [
+          {
+            "x": -26,
+            "z": -48
+          },
+          {
+            "x": 28,
+            "z": -24
+          }
+        ],
+        "text": "Follow the radar: recover two loose Dragon Orbs"
+      },
+      {
+        "type": "talk",
+        "npc": "oolong",
+        "text": "Speak with Ulong",
+        "reply": "All right, you saw through my disguise! Take my orb. I'll come along, but no more monsters!"
+      },
+      {
+        "type": "travel",
+        "zone": "pilav_castle",
+        "text": "Follow the desert road to Pilav country"
+      },
+      {
+        "type": "talk",
+        "npc": "yamcha_young",
+        "text": "Speak with Young Yamcho",
+        "reply": "I thought you were easy travellers to rob. You can fight! Puir and I will guide you through the desert."
+      },
+      {
+        "type": "talk",
+        "npc": "puar",
+        "text": "Speak with Puir",
+        "reply": "Our orb is yours if we travel together. The radar points toward Fire Mountain."
+      },
+      {
+        "type": "travel",
+        "zone": "fire_mountain",
+        "text": "Find the burning castle at Fire Mountain"
+      },
+      {
+        "type": "talk",
+        "npc": "ox_king",
+        "text": "Speak with Ox-Lord",
+        "reply": "My castle is trapped in flame. Master Roshu is my old teacher. Please find him at Kame House!"
+      },
+      {
+        "type": "travel",
+        "zone": "kame_island",
+        "text": "Ask Master Roshu for help"
+      },
+      {
+        "type": "talk",
+        "npc": "origins_roshi",
+        "text": "Speak with Master Roshu",
+        "reply": "No fan? Then a focused wave will do. Stand back when I visit the mountain!"
+      },
+      {
+        "type": "travel",
+        "zone": "fire_mountain",
+        "text": "Return to the Ox-Lord with Roshu’s promise"
+      },
+      {
+        "type": "reach",
+        "zone": "fire_mountain",
+        "x": 0,
+        "z": -25,
+        "r": 7,
+        "text": "Stand clear and witness Roshu’s wave extinguish the castle fire"
+      },
+      {
+        "type": "talk",
+        "npc": "ox_king",
+        "text": "Speak with Ox-Lord",
+        "reply": "That wave put out the fire—and the castle! Here is the orb from my treasury. Pilav took the last one."
+      },
+      {
+        "type": "travel",
+        "zone": "pilav_castle",
+        "text": "Infiltrate Pilav’s Castle"
+      },
+      {
+        "type": "talk",
+        "npc": "origins_mai",
+        "text": "Speak with Future Mae",
+        "reply": "The emperor has your radar trail. Shoo, seal the courtyard!"
+      },
+      {
+        "type": "talk",
+        "npc": "shu",
+        "text": "Speak with Shoo",
+        "reply": "Nobody escapes Pilav's battle walker. Not even a kid with a stick!"
+      },
+      {
+        "type": "defeat",
+        "enemy": "pilav_robot",
+        "zone": "pilav_castle",
+        "x": 24,
+        "z": -30,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 2,
+        "text": "Defeat Pilav’s battle walker"
+      },
+      {
+        "type": "talk",
+        "npc": "pilaf",
+        "text": "Speak with Emperor Pilav",
+        "reply": "My machine! I still have the last orb. Into the glass prison with you!"
+      },
+      {
+        "type": "collect",
+        "zone": "pilav_castle",
+        "item": "origins_ball",
+        "spots": [
+          {
+            "x": 30,
+            "z": -5
+          }
+        ],
+        "text": "Recover the last orb before Pilav can wish"
+      },
+      {
+        "type": "reach",
+        "zone": "pilav_castle",
+        "x": 38,
+        "z": -42,
+        "r": 7,
+        "text": "Escape the glass prison under the full moon"
+      },
+      {
+        "type": "talk",
+        "npc": "puar",
+        "text": "Speak with Puir",
+        "reply": "Gokan looked at the moon and became a Great Ape! I cut his tail while Yamcho distracted him. He's small again. Everyone is safe."
+      },
+      {
+        "type": "talk",
+        "npc": "bulma_young",
+        "text": "Speak with Young Bulna",
+        "reply": "The orbs have scattered after Ulong spoiled Pilav's wish. This adventure is over, but your training is just beginning."
+      }
+    ],
+    "rewards": {
+      "xp": 100,
+      "zeni": 120,
+      "restore": true,
+      "unlock": [
+        "kame_island"
+      ],
+      "items": {
+        "origins_radar": 1
+      }
+    }
+  },
+  {
+    "id": "k02_world_tournament_21",
+    "main": true,
+    "origins": true,
+    "line": "Origins",
+    "saga": "Origins",
+    "chapter": 2,
+    "title": "Origins II: The 21st World Tournament",
+    "giver": "origins_roshi",
+    "level": 2,
+    "after": [
+      "k01_emperor_pilav"
+    ],
+    "offer": "Krilan has come to learn too. Deliver milk, move your feet, and make honest effort before entering the tournament.",
+    "done": "A fine final! Jackie Chung showed that there is always someone stronger. Keep training, and travel with a clear heart.",
+    "steps": [
+      {
+        "type": "talk",
+        "npc": "krillin_kid",
+        "text": "Speak with Young Krilan",
+        "reply": "A training partner! Let's finish these deliveries before breakfast."
+      },
+      {
+        "type": "collect",
+        "zone": "kame_island",
+        "item": "origins_milk",
+        "spots": [
+          {
+            "x": -30,
+            "z": -20
+          },
+          {
+            "x": 30,
+            "z": -25
+          },
+          {
+            "x": 24,
+            "z": 28
+          }
+        ],
+        "text": "Deliver three milk bottles around the island"
+      },
+      {
+        "type": "train",
+        "zone": "kame_island",
+        "x": 0,
+        "z": -35,
+        "r": 55,
+        "mode": "move",
+        "seconds": 12,
+        "text": "Run the Turtle School delivery circuit (12 s)"
+      },
+      {
+        "type": "reach",
+        "zone": "kame_island",
+        "x": -25,
+        "z": 25,
+        "r": 7,
+        "text": "Find the heavy training rock"
+      },
+      {
+        "type": "train",
+        "zone": "kame_island",
+        "x": 0,
+        "z": -35,
+        "r": 55,
+        "mode": "charge",
+        "seconds": 8,
+        "text": "Gather strength to shift the training rock (8 s)"
+      },
+      {
+        "type": "talk",
+        "npc": "origins_roshi",
+        "text": "Speak with Master Roshu",
+        "reply": "The rock moved! We train body and spirit together. Now test your effort in the ring."
+      },
+      {
+        "type": "travel",
+        "zone": "tournament_island",
+        "text": "Enter the 21st World Tournament"
+      },
+      {
+        "type": "reach",
+        "zone": "tournament_island",
+        "x": 0,
+        "z": -35,
+        "r": 7,
+        "text": "Complete the tournament preliminaries at the registration line"
+      },
+      {
+        "type": "defeat",
+        "enemy": "giran",
+        "zone": "tournament_island",
+        "x": -24,
+        "z": 0,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 3,
+        "text": "Win the quarterfinal against Gyran"
+      },
+      {
+        "type": "defeat",
+        "enemy": "nam",
+        "zone": "tournament_island",
+        "x": 0,
+        "z": 0,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 3,
+        "text": "Win the semifinal against Namu"
+      },
+      {
+        "type": "defeat",
+        "enemy": "jackie_chun",
+        "zone": "tournament_island",
+        "x": 24,
+        "z": 0,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 4,
+        "text": "Face Jackie Chung in the final"
+      },
+      {
+        "type": "travel",
+        "zone": "kame_island",
+        "text": "Return to Kame House after the final"
+      },
+      {
+        "type": "talk",
+        "npc": "krillin_kid",
+        "text": "Speak with Young Krilan",
+        "reply": "Jackie Chung was amazing. We don't have to win every time to grow stronger. Let's keep going!"
+      }
+    ],
+    "rewards": {
+      "xp": 600,
+      "zeni": 180,
+      "restore": true
+    }
+  },
+  {
+    "id": "k03_red_ribbon",
+    "main": true,
+    "origins": true,
+    "line": "Origins",
+    "saga": "Origins",
+    "chapter": 3,
+    "title": "Origins III: The Red Ribbon Army",
+    "giver": "bulma_young",
+    "level": 4,
+    "after": [
+      "k02_world_tournament_21"
+    ],
+    "offer": "The Red Ribbon Army is taking Dragon Orbs from villages. Follow the radar, protect the people, and stop their commanders.",
+    "done": "The army has fallen. Cyborg 8 chose kindness, and Korrin taught patience. Baaba may know where the final orb is hidden.",
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "red_ribbon",
+        "text": "Investigate the Red Ribbon patrols"
+      },
+      {
+        "type": "defeat",
+        "enemy": "silver",
+        "zone": "red_ribbon",
+        "x": -38,
+        "z": -30,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 4,
+        "text": "Defeat Colonel Silvar and free the patrol road"
+      },
+      {
+        "type": "travel",
+        "zone": "muscle_tower",
+        "text": "Rescue the snow village at Muscle Tower"
+      },
+      {
+        "type": "defeat",
+        "enemy": "murasaki",
+        "zone": "muscle_tower",
+        "x": 26,
+        "z": -25,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 4,
+        "text": "See through Murasake’s ninja tricks"
+      },
+      {
+        "type": "talk",
+        "npc": "android_8",
+        "text": "Speak with Cyborg 8",
+        "reply": "I won't hurt innocent people. I'll help you rescue the village instead."
+      },
+      {
+        "type": "defeat",
+        "enemy": "white",
+        "zone": "muscle_tower",
+        "x": 0,
+        "z": -5,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 5,
+        "text": "Defeat General Whyte"
+      },
+      {
+        "type": "talk",
+        "npc": "android_8",
+        "text": "Speak with Cyborg 8",
+        "reply": "The villagers are free. Being strong should mean protecting them. I'll stay here to help rebuild."
+      },
+      {
+        "type": "travel",
+        "zone": "red_ribbon",
+        "text": "Track General Bleu’s next operation"
+      },
+      {
+        "type": "defeat",
+        "enemy": "blue",
+        "zone": "red_ribbon",
+        "x": 0,
+        "z": -25,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 5,
+        "text": "Defeat General Bleu"
+      },
+      {
+        "type": "travel",
+        "zone": "korrin_tower",
+        "text": "Find the sanctuary beneath Korrin Tower"
+      },
+      {
+        "type": "talk",
+        "npc": "yajirobe",
+        "text": "Speak with Yajirobi",
+        "reply": "Tau passed through here. Don't rush him. The tower's guardian can teach you how to read an opponent."
+      },
+      {
+        "type": "reach",
+        "zone": "korrin_tower",
+        "x": 0,
+        "z": -15,
+        "r": 7,
+        "text": "Reach the foot of Korrin Tower"
+      },
+      {
+        "type": "train",
+        "zone": "korrin_tower",
+        "x": 0,
+        "z": -35,
+        "r": 55,
+        "mode": "fly",
+        "seconds": 10,
+        "text": "Climb through the tower approach by flying upward (10 s)"
+      },
+      {
+        "type": "talk",
+        "npc": "korin",
+        "text": "Speak with Korrin",
+        "reply": "You chased strength so hard you forgot to watch. Follow the hand, read the breath, and move at the right moment."
+      },
+      {
+        "type": "train",
+        "zone": "korrin_tower",
+        "x": 0,
+        "z": -35,
+        "r": 55,
+        "mode": "still",
+        "seconds": 8,
+        "text": "Watch Korrin quietly and learn patience (8 s)"
+      },
+      {
+        "type": "defeat",
+        "enemy": "tao",
+        "zone": "korrin_tower",
+        "x": 32,
+        "z": -20,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 6,
+        "text": "Defeat Mercenary Tau after Korrin’s training"
+      },
+      {
+        "type": "travel",
+        "zone": "red_ribbon",
+        "text": "Storm Red Ribbon headquarters"
+      },
+      {
+        "type": "defeat",
+        "enemy": "red",
+        "zone": "red_ribbon",
+        "x": 32,
+        "z": -15,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 6,
+        "text": "Defeat Commander Rudd and end the Red Ribbon operation"
+      },
+      {
+        "type": "travel",
+        "zone": "mt_paozu",
+        "text": "Bring the recovered radar records to Bulna"
+      },
+      {
+        "type": "talk",
+        "npc": "goku_kid",
+        "text": "Speak with Young Gokan",
+        "reply": "We stopped them! Baaba can find the missing orb, even when the radar can't. Let's visit her palace."
+      }
+    ],
+    "rewards": {
+      "xp": 900,
+      "zeni": 300,
+      "restore": true,
+      "unlock": [
+        "baaba_palace"
+      ]
+    }
+  },
+  {
+    "id": "k04_fortuneteller_baaba",
+    "main": true,
+    "origins": true,
+    "line": "Origins",
+    "saga": "Origins",
+    "chapter": 4,
+    "title": "Origins IV: Fortuneteller Baaba",
+    "giver": "baba",
+    "level": 6,
+    "after": [
+      "k03_red_ribbon"
+    ],
+    "offer": "No fortune without a fee! Win against my five fighters, and I shall show you the missing orb.",
+    "done": "Your grandfather is proud. Take that memory with you; strength is nothing without the people you protect.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "baaba_fangs",
+        "zone": "baaba_palace",
+        "x": -24,
+        "z": -5,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 6,
+        "text": "Defeat Fangor, the first of Baaba’s five fighters"
+      },
+      {
+        "type": "defeat",
+        "enemy": "baaba_invisible",
+        "zone": "baaba_palace",
+        "x": 0,
+        "z": -10,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 6,
+        "text": "Read the dust trail and defeat the invisible Veilor"
+      },
+      {
+        "type": "defeat",
+        "enemy": "baaba_mummy",
+        "zone": "baaba_palace",
+        "x": 24,
+        "z": -5,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 6,
+        "text": "Break through Mummor’s heavy guard"
+      },
+      {
+        "type": "defeat",
+        "enemy": "baaba_devil",
+        "zone": "baaba_palace",
+        "x": 24,
+        "z": 22,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 7,
+        "text": "Resist Devilon’s tricks and win the fourth bout"
+      },
+      {
+        "type": "defeat",
+        "enemy": "grandpa_gohan",
+        "zone": "baaba_palace",
+        "x": -24,
+        "z": 22,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 7,
+        "text": "Face Baaba’s mysterious masked fifth fighter"
+      },
+      {
+        "type": "talk",
+        "npc": "grandpa_gohan",
+        "text": "Speak with Grandpa Gohin",
+        "reply": "Gokan, it's me. You have good friends now. Never stop learning, and remember that tail can be a weakness."
+      },
+      {
+        "type": "talk",
+        "npc": "baba",
+        "text": "Speak with Fortuneteller Baaba",
+        "reply": "A reunion is worth more than my fee. I can see the missing orb beyond the old village road."
+      },
+      {
+        "type": "travel",
+        "zone": "mt_paozu",
+        "text": "Follow Baaba’s vision to the mountain village"
+      },
+      {
+        "type": "collect",
+        "zone": "mt_paozu",
+        "item": "origins_keepsake",
+        "spots": [
+          {
+            "x": 32,
+            "z": 15
+          }
+        ],
+        "text": "Recover the four-star keepsake from Baaba’s vision"
+      },
+      {
+        "type": "talk",
+        "npc": "goku_kid",
+        "text": "Speak with Young Gokan",
+        "reply": "Grandpa said he was proud of us. I'll keep this orb safe. The next tournament is waiting!"
+      }
+    ],
+    "rewards": {
+      "xp": 650,
+      "zeni": 400,
+      "restore": true,
+      "unlock": [
+        "tournament_island"
+      ]
+    }
+  },
+  {
+    "id": "k05_world_tournament_22",
+    "main": true,
+    "origins": true,
+    "line": "Origins",
+    "saga": "Origins",
+    "chapter": 5,
+    "title": "Origins V: The 22nd World Tournament",
+    "giver": "krillin_kid",
+    "level": 7,
+    "after": [
+      "k04_fortuneteller_baaba"
+    ],
+    "offer": "The Crane School has arrived. Tenzo and Chaozo have tricks we have never seen, and an old enemy is back with a metal body.",
+    "done": "The Crane students have chosen their own path. Victory is sweeter when a rival can become a friend.",
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "tournament_island",
+        "text": "Register for the 22nd World Tournament"
+      },
+      {
+        "type": "defeat",
+        "enemy": "chiaotzu",
+        "zone": "tournament_island",
+        "x": -24,
+        "z": 0,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 7,
+        "text": "Overcome Chaozo’s Crane School techniques"
+      },
+      {
+        "type": "defeat",
+        "enemy": "tao_cyborg",
+        "zone": "tournament_island",
+        "x": 24,
+        "z": 0,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 8,
+        "text": "Stop Cyborg Tau’s revenge in the exhibition bout"
+      },
+      {
+        "type": "defeat",
+        "enemy": "tien_young",
+        "zone": "tournament_island",
+        "x": 0,
+        "z": 15,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 8,
+        "text": "Face Tenzo in the tournament final"
+      },
+      {
+        "type": "talk",
+        "npc": "tien_young",
+        "text": "Speak with Young Tenzo",
+        "reply": "I won't be an assassin. You fought fairly, even when we didn't. From now on, I choose my own way."
+      },
+      {
+        "type": "travel",
+        "zone": "kame_island",
+        "text": "Tell Roshu what the Crane students decided"
+      },
+      {
+        "type": "talk",
+        "npc": "origins_roshi",
+        "text": "Speak with Master Roshu",
+        "reply": "That choice is worth more than a trophy. Rest now; your next test may not have rules or a referee."
+      }
+    ],
+    "rewards": {
+      "xp": 850,
+      "zeni": 500,
+      "restore": true
+    }
+  },
+  {
+    "id": "k06_king_piccor",
+    "main": true,
+    "origins": true,
+    "line": "Origins",
+    "saga": "Origins",
+    "chapter": 6,
+    "title": "Origins VI: King Piccor",
+    "giver": "origins_roshi",
+    "level": 8,
+    "after": [
+      "k05_world_tournament_22"
+    ],
+    "offer": "Tournament fighters are being hunted. Find the attacker, warn our friends, and stop King Piccor before his army spreads.",
+    "done": "King Piccor has fallen, but his final act left an heir. Kamu asks you to train at the Lookout before that day comes.",
+    "steps": [
+      {
+        "type": "travel",
+        "zone": "tournament_island",
+        "text": "Return to the tournament grounds and find the attacker"
+      },
+      {
+        "type": "defeat",
+        "enemy": "tambourine",
+        "zone": "tournament_island",
+        "x": 30,
+        "z": -25,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 8,
+        "text": "Stop Tamburin’s attacks on the tournament fighters"
+      },
+      {
+        "type": "travel",
+        "zone": "korrin_tower",
+        "text": "Seek Korrin’s advice against King Piccor"
+      },
+      {
+        "type": "talk",
+        "npc": "yajirobe",
+        "text": "Speak with Yajirobi",
+        "reply": "I met one of his creatures on the road. I'll guard the tower while you speak to Korrin."
+      },
+      {
+        "type": "defeat",
+        "enemy": "cymbal",
+        "zone": "korrin_tower",
+        "x": -32,
+        "z": -10,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 8,
+        "text": "Defeat Cymbel before he reaches the sanctuary"
+      },
+      {
+        "type": "talk",
+        "npc": "korin",
+        "text": "Speak with Korrin",
+        "reply": "The Ultra Divine Water tests your resolve. It is no shortcut. Take only what your heart can endure."
+      },
+      {
+        "type": "collect",
+        "zone": "korrin_tower",
+        "item": "origins_divine_water",
+        "spots": [
+          {
+            "x": 20,
+            "z": 15
+          }
+        ],
+        "text": "Find Korrin’s Ultra Divine Water"
+      },
+      {
+        "type": "train",
+        "zone": "korrin_tower",
+        "x": 0,
+        "z": -35,
+        "r": 55,
+        "mode": "charge",
+        "seconds": 12,
+        "text": "Steady your Ki after the water’s trial (12 s)"
+      },
+      {
+        "type": "talk",
+        "npc": "yajirobe",
+        "text": "Speak with Yajirobi",
+        "reply": "You're still standing! Take the road to the castle. I'll keep everyone safe behind you."
+      },
+      {
+        "type": "travel",
+        "zone": "piccor_castle",
+        "text": "Confront King Piccor at his castle"
+      },
+      {
+        "type": "defeat",
+        "enemy": "drum",
+        "zone": "piccor_castle",
+        "x": -28,
+        "z": -20,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 9,
+        "text": "Break through Drumm’s guard"
+      },
+      {
+        "type": "defeat",
+        "enemy": "king_piccolo",
+        "zone": "piccor_castle",
+        "x": 24,
+        "z": -15,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 10,
+        "text": "Defeat King Piccor"
+      },
+      {
+        "type": "travel",
+        "zone": "korrin_tower",
+        "text": "Return to Korrin with news of the victory"
+      },
+      {
+        "type": "talk",
+        "npc": "korin",
+        "text": "Speak with Korrin",
+        "reply": "His heir will return. Fly above the tower when you're ready; Kamu and Mr. Pobo will prepare you."
+      }
+    ],
+    "rewards": {
+      "xp": 1050,
+      "zeni": 650,
+      "restore": true,
+      "unlock": [
+        "kamu_lookout"
+      ]
+    }
+  },
+  {
+    "id": "k07_piccor_jr",
+    "main": true,
+    "origins": true,
+    "line": "Origins",
+    "saga": "Origins",
+    "chapter": 7,
+    "title": "Origins VII: The 23rd World Tournament",
+    "giver": "origins_kamu",
+    "level": 9,
+    "after": [
+      "k06_king_piccor"
+    ],
+    "offer": "Piccor’s heir is training too. Mr. Pobo will teach stillness, movement and control before you return to the tournament.",
+    "done": "You have carried the lessons of childhood into a new age. Meet the grown Gokan in the Earth Plains to begin the next story.",
+    "steps": [
+      {
+        "type": "talk",
+        "npc": "origins_popo",
+        "text": "Speak with Mr. Pobo",
+        "reply": "A quiet heart moves without wasted effort. Begin with stillness, then let every step have a purpose."
+      },
+      {
+        "type": "train",
+        "zone": "kamu_lookout",
+        "x": 0,
+        "z": -35,
+        "r": 55,
+        "mode": "still",
+        "seconds": 10,
+        "text": "Practise stillness at Kamu’s Lookout (10 s)"
+      },
+      {
+        "type": "train",
+        "zone": "kamu_lookout",
+        "x": 0,
+        "z": -35,
+        "r": 55,
+        "mode": "move",
+        "seconds": 12,
+        "text": "Follow Mr. Pobo’s movement drill (12 s)"
+      },
+      {
+        "type": "train",
+        "zone": "kamu_lookout",
+        "x": 0,
+        "z": -35,
+        "r": 55,
+        "mode": "charge",
+        "seconds": 10,
+        "text": "Control your breathing and Ki at the Lookout (10 s)"
+      },
+      {
+        "type": "talk",
+        "npc": "origins_kamu",
+        "text": "Speak with Kamu",
+        "reply": "You are ready to face him. Win without hatred; the life you save may change the future."
+      },
+      {
+        "type": "travel",
+        "zone": "tournament_island",
+        "text": "Return for the 23rd World Tournament"
+      },
+      {
+        "type": "reach",
+        "zone": "tournament_island",
+        "x": 0,
+        "z": -35,
+        "r": 7,
+        "text": "Pass the final tournament registration"
+      },
+      {
+        "type": "defeat",
+        "enemy": "piccolo_jr",
+        "zone": "tournament_island",
+        "x": 0,
+        "z": 5,
+        "r": 9,
+        "count": 1,
+        "enemyLevel": 10,
+        "text": "Face Piccor Jr. in the 23rd Tournament final"
+      },
+      {
+        "type": "talk",
+        "npc": "piccolo_jr",
+        "text": "Speak with Piccor Jr.",
+        "reply": "You won, and you still offered mercy. I won't forget this. Next time, I'll be stronger."
+      },
+      {
+        "type": "travel",
+        "zone": "earth_plains",
+        "text": "Begin the adult journey in the Earth Plains"
+      },
+      {
+        "type": "talk",
+        "npc": "goku_plains",
+        "text": "Speak with Gokan",
+        "reply": "Those old adventures taught me why we fight. A new journey is beginning. Come talk to me when you're ready."
+      }
+    ],
+    "rewards": {
+      "xp": 1250,
+      "zeni": 800,
+      "restore": true,
+      "unlock": [
+        "earth_plains"
+      ]
+    }
+  },
+  {
     "id": "m01_arrival",
     "saga": "Saiyar Saga",
     "title": "A Saiyar Arrives",
@@ -26,7 +964,10 @@
     "rewards": {
       "xp": 14264,
       "zeni": 100
-    }
+    },
+    "after": [
+      "k07_piccor_jr"
+    ]
   },
   {
     "id": "m02_raditz",

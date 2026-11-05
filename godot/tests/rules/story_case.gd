@@ -5,10 +5,12 @@ class Session extends RefCounted:
 	var game: RuleGame
 	var story: RefCounted
 	var bus := Recorder.new()
-	func _init(race: String = "Saiyan") -> void:
+	func _init(race: String = "Saiyan",origins: bool = false) -> void:
 		var schema := RuleSchema.new()
 		slot = schema.new_slot(schema.default_look(race),1000)
-		enter("earth_plains")
+		slot.story.flags.originsRequired = origins
+		if not origins: slot.story.unlocked.erase("mt_paozu")
+		enter("mt_paozu" if origins else "earth_plains")
 	func enter(id: String) -> void:
 		slot.zone = id
 		slot.position = null
@@ -47,7 +49,7 @@ func grind(s: Session,level: int) -> void:
 	while s.slot.level<level:
 		s.game.add_xp(s.game.progression.xp_to_next(int(s.slot.level)))
 func play(s: Session,q: Dictionary) -> void:
-	for id: String in q.get("after",[]):
+	for id: String in s.story.required_after(q):
 		if not s.story.is_done(id):
 			play(s,s.story.quest[id])
 	if q.get("automatic",false):
