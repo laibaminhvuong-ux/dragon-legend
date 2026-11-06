@@ -8,6 +8,13 @@ extends Node3D
 const BASE := preload("res://assets/characters/ual/AnimationLibrary_Godot_Standard.gltf")
 const OUTFIT_SHADER := preload("res://characters/shaders/outfit.gdshader")
 const HAIR_SHADER := preload("res://characters/shaders/hair.gdshader")
+# Anime look (preview, user request 2026-11-06): cel shading + ink outline, per fighter with look.anime = true
+const OUTFIT_TOON := preload("res://characters/shaders/outfit_toon.gdshader")
+const HAIR_TOON := preload("res://characters/shaders/hair_toon.gdshader")
+const OUTLINE := preload("res://characters/shaders/outline.gdshader")
+static var _toon_hair: ShaderMaterial
+static var _outline_mat: ShaderMaterial
+static var _toon_mats: Dictionary = {}   # StandardMaterial3D -> its cel-shaded copy
 const FACES := {"Calm": 0, "Fierce": 1, "Smirk": 2, "Determined": 3, "Cold": 4}
 const BASE_EYES := {"FrostDemon": 0xb4142a, "Majin": 0x1a1a1a}
 static var _hair_material: ShaderMaterial
@@ -110,6 +117,7 @@ func _build() -> void:
 		hair = add_piece("DEF-head", Hair.HEAD_SPACE, Hair.mesh(hair_base), hair_material())
 		_set_hair(hair_color, 0.0)
 	anim = AnimController.new(self)
+	_toonify()
 	feet = FootPlacement.new()
 	feet.name = "FootPlacement"
 	skeleton.add_child(feet)
@@ -239,6 +247,45 @@ func _set_skin(c: Color, metal: float) -> void:
 		var mi: MeshInstance3D = sp[0]
 		var m: StandardMaterial3D = mi.material_override
 		mi.material_override = Parts.material(Color(c.r * sp[1], c.g * sp[1], c.b * sp[1]), m.roughness, metal)
+		if is_anime(): mi.material_override = _toon_copy(mi.material_override)
+
+func is_anime() -> bool:
+	return bool(look.get("anime", false))
+
+static func outline_material() -> ShaderMaterial:
+	if _outline_mat == null:
+		_outline_mat = ShaderMaterial.new()
+		_outline_mat.shader = OUTLINE
+	return _outline_mat
+
+## Anime look: the body and hair switch to the cel shaders, every plain piece (belt, bands, tail, armour...) gets a
+## cel-shaded copy of its material; the body gets the ink outline (pieces are open shells, a hull would show). Effects (auras, glows) are left alone.
+func _toonify() -> void:
+	if not is_anime():
+		return
+	material.shader = OUTFIT_TOON
+	material.next_pass = outline_material()
+	if _toon_hair == null:
+		_toon_hair = ShaderMaterial.new()
+		_toon_hair.shader = HAIR_TOON   # no outline: hair is an open shell, the hull would show inside it
+	for mi: MeshInstance3D in find_children("*", "MeshInstance3D", true, false):
+		var m: Material = mi.material_override
+		if m == _hair_material:
+			mi.material_override = _toon_hair
+		elif m is StandardMaterial3D:
+			mi.material_override = _toon_copy(m)
+
+static func _toon_copy(m: StandardMaterial3D) -> StandardMaterial3D:
+	if _toon_mats.values().has(m) or m.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED or m.shading_mode == BaseMaterial3D.SHADING_MODE_UNSHADED:
+		return m
+	if not _toon_mats.has(m):
+		var t: StandardMaterial3D = m.duplicate()
+		t.diffuse_mode = BaseMaterial3D.DIFFUSE_TOON
+		t.specular_mode = BaseMaterial3D.SPECULAR_TOON
+		t.roughness = maxf(t.roughness, 0.7)
+		t.metallic_specular = 0.2
+		_toon_mats[m] = t
+	return _toon_mats[m]
 
 func _set_eyes(hex: int) -> void:
 	material.set_shader_parameter("eye_color", Parts.hx(hex))
@@ -292,6 +339,7 @@ func set_form(id: String) -> void:
 		_set_skin(skin.lerp(Parts.hx(F.flush[0]), float(F.flush[1])), 0.0)
 	if F.get("dome") != null and dome != null:
 		dome.material_override = Parts.material(Parts.hx(F.dome), 0.15, 0.1)
+	_toonify()
 	var sc := base_scale
 	if F.get("scale") != null: sc = base_scale * float(F.scale)
 	if F.get("bulk") is Array: sc = base_scale * Vector3(float(F.bulk[0]), float(F.bulk[1]), float(F.bulk[2]))

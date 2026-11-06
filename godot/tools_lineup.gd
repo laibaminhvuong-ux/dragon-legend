@@ -455,8 +455,53 @@ func _ages(out: String) -> void:
 	_paint(null, Color(0.3, 0.33, 0.4))
 	await _shot(out + "_ages.png")
 
+## Anime look preview: the same fighters with the current look (left of each pair) and the anime look (right),
+## front and three-quarter, real colours, plus a close-up of the face.
+func _anime(out: String) -> void:
+	env.environment.background_color = Color(0.3, 0.33, 0.4)
+	for view in [["front", 0.0], ["three_quarter", 0.6]]:
+		stage = Node3D.new()
+		vp.add_child(stage)
+		var i := 0
+		for r: String in ["Saiyan", "Namekian", "FrostDemon"]:
+			for anime in [false, true]:
+				var l := _look(r)
+				l.faceSeed = "anime_" + r
+				l.face = "Determined"
+				l.anime = anime
+				var f := Fighter.create(l)
+				f.position = Vector3((i - 2.5) * 0.95, 0, 0)
+				f.rotation.y = float(view[1])
+				stage.add_child(f)
+				for k in 10:
+					f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true})
+				var label := Label3D.new()
+				label.text = "anime" if anime else "now"
+				label.font_size = 40; label.pixel_size = 0.004
+				label.position = f.position + Vector3(0, -0.12, 0.3)
+				label.modulate = Color(0.95, 0.95, 0.95)
+				stage.add_child(label)
+				i += 1
+		cam.size = 2.35
+		vp.size = Vector2i(roundi(1150 * (6 * 0.95 + 0.3) / cam.size), 1150)
+		cam.position = Vector3(0, cam.size * 0.5 - 0.2, 8)
+		await _shot("%s_anime_%s.png" % [out, view[0]])
+		# close-up of the first pair's heads
+		var keep_size := cam.size
+		cam.size = 0.75
+		vp.size = Vector2i(1600, 1000)
+		cam.position = Vector3((-2.5 + 0.5) * 0.95, 1.55, 8)
+		await _shot("%s_anime_%s_face.png" % [out, view[0]])
+		cam.size = keep_size
+		stage.free()
+		stage = null
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--anime" in OS.get_cmdline_user_args():
+		await _anime(out)
+		quit()
+		return
 	if "--ages" in OS.get_cmdline_user_args():
 		await _ages(out)
 		quit()
