@@ -496,8 +496,55 @@ func _anime(out: String) -> void:
 		stage.free()
 		stage = null
 
+## New CC0 bodies (Universal Base Characters) beside the current mannequin: same look, "now" vs "new body",
+## plus the anime look on the new body; front and three-quarter, and a head close-up.
+func _hero(out: String) -> void:
+	env.environment.background_color = Color(0.3, 0.33, 0.4)
+	var looks: Array = []
+	for r: String in ["Saiyan", "Namekian"]:
+		for v in [["now", {}], ["new body", {"body": "hero"}], ["new + anime", {"body": "hero", "anime": true}]]:
+			var l := _look(r)
+			l.faceSeed = "hero_" + r
+			l.face = "Determined"
+			l.merge(v[1], true)
+			looks.append([v[0], l])
+	var fem := _look("Human"); fem.female = true; fem.hair = "Bun"; fem.faceSeed = "hero_f"
+	looks.append(["now (female)", fem.duplicate()])
+	var fem2 := fem.duplicate(); fem2.body = "hero"
+	looks.append(["new body (female)", fem2])
+	for view in [["front", 0.0], ["three_quarter", 0.6]]:
+		stage = Node3D.new()
+		vp.add_child(stage)
+		for i in looks.size():
+			var f := Fighter.create(looks[i][1])
+			f.position = Vector3((i - (looks.size() - 1) / 2.0) * 0.95, 0, 0)
+			f.rotation.y = float(view[1])
+			stage.add_child(f)
+			for k in 10:
+				f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true})
+			var label := Label3D.new()
+			label.text = looks[i][0]
+			label.font_size = 32; label.pixel_size = 0.004
+			label.position = f.position + Vector3(0, -0.12, 0.3)
+			label.modulate = Color(0.95, 0.95, 0.95)
+			stage.add_child(label)
+		cam.size = 2.35
+		vp.size = Vector2i(roundi(1150 * (looks.size() * 0.95 + 0.3) / cam.size), 1150)
+		cam.position = Vector3(0, cam.size * 0.5 - 0.2, 8)
+		await _shot("%s_hero_%s.png" % [out, view[0]])
+		cam.size = 0.8
+		vp.size = Vector2i(2400, 900)
+		cam.position = Vector3((0 - (looks.size() - 1) / 2.0 + 1.0) * 0.95, 1.55, 8)
+		await _shot("%s_hero_%s_face.png" % [out, view[0]])
+		stage.free()
+		stage = null
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--hero" in OS.get_cmdline_user_args():
+		await _hero(out)
+		quit()
+		return
 	if "--anime" in OS.get_cmdline_user_args():
 		await _anime(out)
 		quit()

@@ -52,6 +52,7 @@ var _form_nodes: Array[Node] = []
 var sculpt: Dictionary = {}       # BodySculpt profile for this look
 var face_params: Dictionary = {}  # FaceShape: this character's own face
 var _head_xform := Transform3D.IDENTITY
+var _joint_shift: Dictionary = {}   # HeroBody: how far each joint moved from the original mannequin
 
 static func create(l: Dictionary) -> Fighter:
 	var f := Fighter.new()
@@ -66,6 +67,9 @@ func _build() -> void:
 	skeleton = body.find_children("*", "Skeleton3D", true, false)[0]
 	anim_player = body.find_children("*", "AnimationPlayer", true, false)[0]
 	body_mesh = body.find_children("*", "MeshInstance3D", true, false)[0]
+	var hero_kind := hero_body_kind()
+	if hero_kind != "":   # new CC0 body (HeroBody), worn on our rig
+		_joint_shift = HeroBody.wear(hero_kind, skeleton, body_mesh)
 	body_mesh.mesh = BodyRegions.dressed_mesh(body_mesh)
 	face_params = FaceShape.params(FaceShape.seed_for(look))
 	if str(look.get("age", "")) == "child":
@@ -92,6 +96,8 @@ func _build() -> void:
 	match str(look.get("age", "")):
 		"child": eyes_v.x *= 1.45   # big round eyes
 		"teen": eyes_v.x *= 1.18
+	if hero_body_kind() != "":   # the new head's eye sockets sit a little lower and closer together
+		eyes_v.x *= 1.15; eyes_v.y -= 0.004; eyes_v.w -= 0.005
 	material.set_shader_parameter("face_eyes", eyes_v)
 	var brows_v: Vector4 = face_params.brows
 	if look.get("female", false):
@@ -231,6 +237,8 @@ func add_piece(bone: String, frame: Transform3D, mesh: Mesh, mat: Material) -> M
 	var i := skeleton.find_bone(bone)
 	if bone == "DEF-head":
 		frame = _head_xform * frame
+	if _joint_shift.has(bone):   # pieces are placed for the original mannequin: follow the new body's joint
+		frame.origin += _joint_shift[bone]
 	mi.transform = skeleton.get_bone_global_rest(i).affine_inverse() * frame
 	_attachment(bone).add_child(mi)
 	return mi
@@ -248,6 +256,14 @@ func _set_skin(c: Color, metal: float) -> void:
 		var m: StandardMaterial3D = mi.material_override
 		mi.material_override = Parts.material(Color(c.r * sp[1], c.g * sp[1], c.b * sp[1]), m.roughness, metal)
 		if is_anime(): mi.material_override = _toon_copy(mi.material_override)
+
+## Which Universal Base Characters body this look wears ("" = the original mannequin). Preview: look.body = "hero".
+func hero_body_kind() -> String:
+	if str(look.get("body", "")) != "hero":
+		return ""
+	var age := str(look.get("age", ""))
+	var base := "teen" if age == "child" or age == "teen" else "hero"
+	return base + ("_female" if look.get("female", false) else "_male")
 
 func is_anime() -> bool:
 	return bool(look.get("anime", false))

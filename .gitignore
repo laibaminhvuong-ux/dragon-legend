@@ -11,3 +11,6 @@ godot/.godot/
 godot/.import/
 .superpowers/
 build/
+
+# Quaternius source packs (~140 MB, CC0): baked into godot/assets/characters/ubc by godot/tools_bake_bodies.gd
+art/quaternius/

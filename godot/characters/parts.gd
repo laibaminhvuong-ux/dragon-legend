@@ -74,7 +74,8 @@ static func dress(f: Fighter, parts: Dictionary, race_id: String, skin: Color) -
 			for s in [1, -1]:
 				var h := SphereMesh.new(); h.radius = 0.07; h.height = 0.07; h.is_hemisphere = true
 				g.add_primitive(h, Transform3D(Basis.from_scale(Vector3(1.4, 0.6, 1.2)), Vector3(s * 0.17, 1.47, -0.02)))), material(hx(parts.cape), 0.8))
-	face(f, race_id, skin)
+	if f.hero_body_kind() == "":   # the Universal Base Characters heads have their own nose and ears
+		face(f, race_id, skin)
 	match race_id:
 		"Saiyan":
 			f.add_piece("DEF-hips", Transform3D.IDENTITY, _mesh("saiyan_tail", func(g: Geo) -> void:
