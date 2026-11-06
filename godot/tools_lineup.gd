@@ -571,8 +571,47 @@ func _pro(out: String) -> void:
 	cam.position = Vector3(0, cam.size * 0.5 - 0.3, 8)
 	await _shot(out + "_pro.png")
 
+## Face close-ups of the cast on the new bodies: man, woman, teen, child, Namekian, Frost Demon; every expression.
+func _manga(out: String) -> void:
+	env.environment.background_color = Color(0.3, 0.33, 0.4)
+	stage = Node3D.new()
+	vp.add_child(stage)
+	var looks: Array = []
+	for fc: String in ["Calm", "Fierce", "Smirk", "Determined", "Cold"]:
+		var l := _look("Saiyan"); l.face = fc; l.faceSeed = "manga"; looks.append(l)
+	var w := _look("Human"); w.female = true; w.hair = "Long"; w.faceSeed = "manga_w"; looks.append(w)
+	var t := _look("Human"); t.age = "teen"; t.faceSeed = "manga_t"; looks.append(t)
+	var k := _look("Saiyan"); k.age = "child"; k.faceSeed = "manga_k"; looks.append(k)
+	var n := _look("Namekian"); n.faceSeed = "manga_n"; looks.append(n)
+	var fd := _look("FrostDemon"); fd.faceSeed = "manga_f"; fd.face = "Cold"; looks.append(fd)
+	for i in looks.size():
+		var f := Fighter.create(looks[i])
+		f.position = Vector3((i - (looks.size() - 1) / 2.0) * 0.36, 0, 0)
+		stage.add_child(f)
+		for j in 10:
+			f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true})
+		# line the heads up at the same height for the close-up
+		var head := f.skeleton.get_bone_global_pose(f.skeleton.find_bone("DEF-head")).origin * f.body.scale
+		f.position.y = 1.62 - head.y
+	cam.size = 0.42
+	vp.size = Vector2i(roundi(700 * (looks.size() * 0.36) / 0.42), 700)
+	cam.position = Vector3(0, 1.7, 8)
+	await _shot(out + "_manga.png")
+	if OS.get_cmdline_user_args().has("--zoom"):   # one big head (the child) to inspect
+		cam.size = 0.2
+		vp.size = Vector2i(1000, 1000)
+		cam.position = Vector3((7 - (looks.size() - 1) / 2.0) * 0.36, 1.6, 8)
+		await _shot(out + "_manga_zoom.png")
+		for fi: Fighter in stage.find_children("*", "Fighter", true, false):
+			fi.body_mesh.material_override = neutral
+		await _shot(out + "_manga_zoom_grey.png")
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--manga" in OS.get_cmdline_user_args():
+		await _manga(out)
+		quit()
+		return
 	if "--pro" in OS.get_cmdline_user_args():
 		await _pro(out)
 		quit()

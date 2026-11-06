@@ -167,8 +167,13 @@ static func _dress(src: Dictionary, shift: Dictionary, head_to_old: Transform3D)
 		var verts: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
 		var bones: PackedInt32Array = arr[Mesh.ARRAY_BONES]
 		var weights: PackedFloat32Array = arr[Mesh.ARRAY_WEIGHTS]
+		var normals: PackedVector3Array = arr[Mesh.ARRAY_NORMAL]
 		var per := bones.size() / maxi(1, verts.size())
 		var rest := PackedFloat32Array(); rest.resize(verts.size() * 4)
+		# mapped position per vertex, then averaged over vertices at the same spot (UV seams split vertices whose
+		# weights differ slightly; without this the painted face breaks along the seams)
+		var mapped := PackedVector3Array(); mapped.resize(verts.size())
+		var sums := {}
 		for i in verts.size():
 			var v := verts[i]
 			var acc := Vector3.ZERO
@@ -181,10 +186,42 @@ static func _dress(src: Dictionary, shift: Dictionary, head_to_old: Transform3D)
 				var m: Vector3 = head_to_old * v if b == "DEF-head" else v - (shift.get(b, Vector3.ZERO) as Vector3)
 				acc += m * w
 				wsum += w
-			var p := acc / wsum if wsum > 0.0 else v
+			mapped[i] = acc / wsum if wsum > 0.0 else v
+			var key := Vector3i((v * 2000.0).round())
+			var e: Array = sums.get(key, [Vector3.ZERO, 0])
+			sums[key] = [(e[0] as Vector3) + mapped[i], int(e[1]) + 1]
+		for i in verts.size():
+			var v := verts[i]
+			var e: Array = sums[Vector3i((v * 2000.0).round())]
+			var p: Vector3 = (e[0] as Vector3) / float(e[1])
+			# manga face (user request 2026-11-06): press the realistic nose and lips most of the way back into a
+			# smooth face, so the painted features read like a drawn face
+			var flat := _flatten(p)
+			var fw := _face_weight(p)
+			if flat > 0.0:
+				p.z -= flat
+				verts[i] = v - Vector3(0, 0, flat / head_to_old.basis.get_scale().z)   # (packed arrays need a whole-element write)
+			if fw > 0.0 and i < normals.size():   # light the pressed area like a smooth face (no nose/lip shading)
+				var smooth := Vector3(p.x * 6.0, 0.15, 1.0).normalized()
+				normals[i] = normals[i].lerp(smooth, fw).normalized()   # fully smooth in the middle: no seam crease
 			rest[i * 4] = p.x; rest[i * 4 + 1] = p.y; rest[i * 4 + 2] = p.z; rest[i * 4 + 3] = 1.0
 		arr[Mesh.ARRAY_CUSTOM0] = rest
+		arr[Mesh.ARRAY_VERTEX] = verts
+		arr[Mesh.ARRAY_NORMAL] = normals
 		var fmt: int = (mesh.surface_get_format(s) & ~Mesh.ARRAY_FLAG_COMPRESS_ATTRIBUTES) | Mesh.ARRAY_FORMAT_CUSTOM0 \
 			| (Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT)
 		out.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr, [], {}, fmt)
 	return out
+
+## How far (mannequin space, metres) to push a face point back: the nose and lips keep a quarter of how far they stand
+## out of a smooth face surface (measured on the new heads: nose tip ~3 cm, lips ~1 cm proud of the cheeks).
+static func _face_weight(p: Vector3) -> float:
+	return smoothstep(1.612, 1.628, p.y) * (1.0 - smoothstep(1.69, 1.706, p.y)) * (1.0 - smoothstep(0.024, 0.04, absf(p.x))) * smoothstep(0.06, 0.08, p.z)
+
+static func _flatten(p: Vector3) -> float:
+	var ax := absf(p.x)
+	var w := _face_weight(p)
+	if w <= 0.0:
+		return 0.0
+	var face := 0.098 - 10.0 * ax * ax
+	return maxf(0.0, p.z - face) * 0.85 * w
