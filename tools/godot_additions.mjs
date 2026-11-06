@@ -174,14 +174,18 @@ function childhoodPlaces(zones) {
     area('tournament_island', 'Tournament Island', 'earth_plains', [{type: 'budokai', name: 'World Tournament Arena', x: 0, z: 20, flatten: 40}],
       {biome: {treeCount: 30}}),
   ];
-  // Kamu's Lookout: a small map in the sky (white cloud floor), reached by flying up past Korrin Tower's top
+  // Kamu's Lookout: a floating platform in the sky, reached by flying up past Korrin Tower's top. There is nothing
+  // around it (user report 2026-11-05, "can't leave the Lookout": it used to sit on a white floor, so the drop back
+  // down never happened); step off the edge and you fall to Korrin Tower.
   zones.kamu_lookout = {
     name: "Kamu's Lookout", planet: 'Earth', saga: 'Origins',
-    terrain: {size: 300, ground: 'white', hills: {amp: 0, scale: 50}, flatSpawn: 140, spawn: {x: 0, z: -18}},
+    terrain: {size: 300, ground: 'white', platform: {radius: 40, height: 0}, killY: -300, spawn: {x: 0, z: -18}},
     biome: {...structuredClone(zones.earth_plains.biome), treeCount: 0, bushes: 0, rocks: 0, stones: 0},
     landmarks: [{type: 'lookout', name: "Kamu's Lookout", x: 0, z: 0, flatten: 40}],
     travelPoint: {x: 10, z: -18},
-    portals: [{zone: 'korrin_tower', x: 0, z: 0, y: -40, r: 400}],   // step off the edge: back down to the tower
+    // falling past ~75 m below the edge lands you at Korrin Tower (the sphere's top is 70 m under the platform, so
+    // standing anywhere on it never triggers it); killY respawns you on top if the tower isn't open yet
+    portals: [{zone: 'korrin_tower', x: 0, z: 0, y: -400, r: 330}],
   };
   zones.korrin_tower.portals = [{zone: 'kamu_lookout', x: 0, z: 30, y: 430, r: 40}];   // fly up past the tower's top
   ids.push('kamu_lookout');

@@ -3805,11 +3805,11 @@
     "terrain": {
       "size": 300,
       "ground": "white",
-      "hills": {
-        "amp": 0,
-        "scale": 50
+      "platform": {
+        "radius": 40,
+        "height": 0
       },
-      "flatSpawn": 140,
+      "killY": -300,
       "spawn": {
         "x": 0,
         "z": -18
@@ -3845,8 +3845,8 @@
         "zone": "korrin_tower",
         "x": 0,
         "z": 0,
-        "y": -40,
-        "r": 400
+        "y": -400,
+        "r": 330
       }
     ]
   },
