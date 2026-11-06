@@ -502,16 +502,22 @@ func _hero(out: String) -> void:
 	env.environment.background_color = Color(0.3, 0.33, 0.4)
 	var looks: Array = []
 	for r: String in ["Saiyan", "Namekian"]:
-		for v in [["now", {}], ["new body", {"body": "hero"}], ["new + anime", {"body": "hero", "anime": true}]]:
+		for v in [["before", {"body": "classic"}], ["new body", {}], ["new + anime", {"anime": true}]]:
 			var l := _look(r)
 			l.faceSeed = "hero_" + r
 			l.face = "Determined"
 			l.merge(v[1], true)
 			looks.append([v[0], l])
 	var fem := _look("Human"); fem.female = true; fem.hair = "Bun"; fem.faceSeed = "hero_f"
-	looks.append(["now (female)", fem.duplicate()])
-	var fem2 := fem.duplicate(); fem2.body = "hero"
-	looks.append(["new body (female)", fem2])
+	var fem0 := fem.duplicate(); fem0.body = "classic"
+	looks.append(["before (female)", fem0])
+	looks.append(["new (female)", fem])
+	var kid := _look("Saiyan"); kid.age = "child"; kid.faceSeed = "hero_kid"
+	var kid0 := kid.duplicate(); kid0.body = "classic"
+	looks.append(["before (child)", kid0])
+	looks.append(["new (child)", kid])
+	var teen := _look("Human"); teen.age = "teen"; teen.faceSeed = "hero_teen"
+	looks.append(["new (teen)", teen])
 	for view in [["front", 0.0], ["three_quarter", 0.6]]:
 		stage = Node3D.new()
 		vp.add_child(stage)
@@ -539,8 +545,38 @@ func _hero(out: String) -> void:
 		stage.free()
 		stage = null
 
+## Converted Pro animation clips (tools_bake_anims.gd) on the new body, each frozen at 40% of its length.
+func _pro(out: String) -> void:
+	env.environment.background_color = Color(0.3, 0.33, 0.4)
+	stage = Node3D.new()
+	vp.add_child(stage)
+	var clips := ["Idle", "pro/Hit_Stomach", "pro/Hit_Shoulder_L", "pro/Kick", "pro/Dodge_Left", "pro/Celebration", "pro/BackFlip", "pro/PunchKick_Enter", "pro/Spell_Double_Shoot_Loop", "pro/Death02"]
+	for i in clips.size():
+		var l := _look("Saiyan"); l.faceSeed = "pro"
+		var f := Fighter.create(l)
+		f.position = Vector3((i - (clips.size() - 1) / 2.0) * 1.15, 0, 0)
+		f.rotation.y = 0.5
+		stage.add_child(f)
+		f.anim.tree.active = false
+		f.anim_player.play(clips[i])
+		f.anim_player.seek(f.anim_player.current_animation_length * 0.4, true)
+		var label := Label3D.new()
+		label.text = clips[i].trim_prefix("pro/")
+		label.font_size = 30; label.pixel_size = 0.004
+		label.position = f.position + Vector3(0, -0.12, 0.3)
+		label.modulate = Color(0.95, 0.95, 0.95)
+		stage.add_child(label)
+	cam.size = 2.6
+	vp.size = Vector2i(roundi(1150 * (clips.size() * 1.15 + 0.3) / cam.size), 1150)
+	cam.position = Vector3(0, cam.size * 0.5 - 0.3, 8)
+	await _shot(out + "_pro.png")
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--pro" in OS.get_cmdline_user_args():
+		await _pro(out)
+		quit()
+		return
 	if "--hero" in OS.get_cmdline_user_args():
 		await _hero(out)
 		quit()

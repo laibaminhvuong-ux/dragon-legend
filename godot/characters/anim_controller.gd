@@ -8,6 +8,7 @@ extends RefCounted
 # PoseModifier layers flight, power-up, dash, block and kick poses on top. One-shots always end: a timer
 # returns the controller to its base state even if a new state cuts in.
 
+const PRO_HITS := ["pro/Hit_Stomach", "pro/Hit_Shoulder_L", "pro/Hit_Shoulder_R"]
 const ATTACKS := {"jab": "Punch_Jab", "cross": "Punch_Cross", "hook": "Punch_Enter", "uppercut": "Punch_Cross", "palm_strike": "Push", "ki": "Spell_Simple_Shoot", "beam": "Spell_Simple_Shoot", "ultimate":"Spell_Simple_Shoot", "utility":"Spell_Simple_Shoot", "avatar":"Spell_Simple_Shoot"}
 const KICK_TIME := 0.5
 const UPPER := ["DEF-spine.002", "DEF-spine.003", "DEF-neck", "DEF-head", "DEF-shoulder", "DEF-upper_arm", "DEF-forearm", "DEF-hand", "DEF-f_", "DEF-thumb"]
@@ -82,13 +83,15 @@ func _init(f: Fighter) -> void:
 	shot_pick.xfade_time = 0.1   # one strike flows into the next instead of snapping
 	var shots := ["Punch_Jab", "Punch_Cross", "Punch_Enter", "Push", "Spell_Simple_Shoot", "Hit_Chest", "Hit_Head"]
 	if player.has_animation("Jump_Land"): shots.append("Jump_Land")
+	for extra: String in PRO_HITS:   # more hit reactions from the Pro library (when loaded)
+		if player.has_animation(extra): shots.append(extra)
 	for i in shots.size():
-		shot_pick.add_input(shots[i])
+		shot_pick.add_input(shots[i].replace("/", "_"))   # input and node names can't hold "/"
 		var a := AnimationNodeAnimation.new(); a.animation = shots[i]
-		_bt.add_node("s_" + shots[i], a, Vector2(300, 200 + 100 * i))
+		_bt.add_node("s_" + shots[i].replace("/", "_"), a, Vector2(300, 200 + 100 * i))   # node names can't hold "/"
 	_bt.add_node("pick", shot_pick, Vector2(500, 200))
 	for i in shots.size():
-		_bt.connect_node("pick", i, "s_" + shots[i])
+		_bt.connect_node("pick", i, "s_" + shots[i].replace("/", "_"))
 	var os := AnimationNodeOneShot.new()
 	os.fadein_time = 0.1; os.fadeout_time = 0.22
 	for b: String in _upper_tracks(f.skeleton):
@@ -125,6 +128,16 @@ func _init(f: Fighter) -> void:
 	mod = PoseModifier.new()
 	mod.name = "Poses"
 	f.skeleton.add_child(mod)
+
+## Which flinch to play: a hit from the side twists that shoulder back; a hit from the front alternates between the
+## chest, the stomach and the head so repeated hits don't look the same (Pro clips when loaded).
+func _hit_clip(side: float, serial: int) -> String:
+	if absf(side) > 0.5:
+		var clip := "pro/Hit_Shoulder_R" if side > 0.0 else "pro/Hit_Shoulder_L"
+		return clip if player.has_animation(clip) else "Hit_Head"
+	var front := ["Hit_Chest", "pro/Hit_Stomach", "Hit_Head"]
+	var pick: String = front[posmod(serial, 3)]
+	return pick if player.has_animation(pick) else "Hit_Chest"
 
 static func _upper_tracks(sk: Skeleton3D) -> Array:
 	var out := []
@@ -216,7 +229,7 @@ func update(dt: float, anim: Dictionary) -> void:
 			if reaction in ["stagger", "knockback", "launch"]:
 				_play_move("react_" + reaction)
 			else:
-				_play_shot("Hit_Head" if absf(float(anim.get("hitSide",0)))>0.5 else "Hit_Chest")
+				_play_shot(_hit_clip(float(anim.get("hitSide", 0)), reaction_serial))
 			mod.heavy_hit = clampf(float(anim.get("hitWeight",0.4)),0.15,1.0)
 			mod.hit_side = clampf(float(anim.get("hitSide",0)),-1,1)
 			_age = 10.0
@@ -316,7 +329,7 @@ func _play_shot(anim_name: String) -> void:
 	one_shot = anim_name
 	var a := player.get_animation(anim_name) if player.has_animation(anim_name) else null
 	one_shot_left = (a.length if a != null else 0.5) + 0.05
-	tree.set("parameters/pick/transition_request", anim_name)
+	tree.set("parameters/pick/transition_request", anim_name.replace("/", "_"))
 	tree.set("parameters/shot/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
 
 ## Seconds into the current move clip (frozen during hit-stop).

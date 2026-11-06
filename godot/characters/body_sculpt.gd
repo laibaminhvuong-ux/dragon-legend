@@ -47,8 +47,13 @@ static func sculpted(base: ArrayMesh, p: Dictionary) -> ArrayMesh:
 		var arr: Array = base.surface_get_arrays(s)
 		var verts: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
 		var norms := smooth_normals(verts, arr[Mesh.ARRAY_NORMAL])
+		var rest: Variant = arr[Mesh.ARRAY_CUSTOM0]   # mannequin-space position (HeroBody bodies differ from it)
 		for i in verts.size():
-			verts[i] = shape(verts[i], norms[i], p)
+			if rest is PackedFloat32Array:
+				var r := Vector3(rest[i * 4], rest[i * 4 + 1], rest[i * 4 + 2])
+				verts[i] += shape(r, norms[i], p) - r   # the mannequin's sculpt, as a displacement
+			else:
+				verts[i] = shape(verts[i], norms[i], p)
 		arr[Mesh.ARRAY_VERTEX] = verts
 		out.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr, [], {}, base.surface_get_format(s) & ~Mesh.ARRAY_FLAG_COMPRESS_ATTRIBUTES)
 		out.surface_set_material(s, base.surface_get_material(s))

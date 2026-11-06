@@ -10,7 +10,7 @@ func _initialize() -> void:
 		var d := HeroBody.extract(src + HeroBody.SOURCES[kind])
 		ResourceSaver.save(d.mesh, HeroBody.DIR + kind + ".res")
 		var f := FileAccess.open(HeroBody.DIR + kind + ".json", FileAccess.WRITE)
-		f.store_string(JSON.stringify({"joints": d.joints, "binds": d.binds}))
+		f.store_string(JSON.stringify({"joints": d.joints, "binds": d.binds, "eyes": d.eyes}))
 		f.close()
 		print("baked ", kind)
 	quit()

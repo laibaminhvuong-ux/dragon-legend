@@ -10,6 +10,7 @@ extends SkeletonModifier3D
 # the frame of the parent body part, so a knee bends with its thigh however the body is tilted.
 
 var fly := 0.0
+var hips_shift := Vector3.ZERO   # HeroBody: the new body's hips rest offset (animations key the mannequin's hips)
 var fast := 0.0
 var climb := 0.0
 var charge := 0.0
@@ -214,6 +215,8 @@ func _process_modification() -> void:
 		body.x += dash_back*0.7*dash
 	# apply, parents first
 	var hips := _bone("DEF-hips")
+	if hips_shift != Vector3.ZERO and hips >= 0:
+		sk.set_bone_pose_position(hips, sk.get_bone_pose_position(hips) + hips_shift)
 	if drop != 0.0 and hips >= 0:
 		sk.set_bone_pose_position(hips, sk.get_bone_pose_position(hips) - Vector3(0, drop, 0))
 	var f_body := _turn(sk, "DEF-hips", body, Basis.IDENTITY)

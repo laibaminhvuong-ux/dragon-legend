@@ -9,7 +9,7 @@ func test_combo_followthrough_interruption_and_directional_reactions() -> void:
 	ok(f.anim.mod.strike>0.4,"sharp extension after anticipation")
 	f.presentation = {"hitWeight":1.0,"hitSide":-0.8,"reactionSerial":1}
 	f.update(1.0/60,{"hurt":true,"attackSerial":1})
-	eq(f.anim.one_shot,"Hit_Head")
+	eq(f.anim.one_shot,"pro/Hit_Shoulder_L")   # a hit from the left twists that shoulder back (Pro clip)
 	ok(f.anim.mod.heavy_hit>0.9)
 	near(f.anim.mod.hit_side,-0.8)
 	f.presentation.reactionSerial = 2
