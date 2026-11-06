@@ -32,6 +32,7 @@ func _init(c: RuleCombat, cam: Camera3D) -> void:
 	combat = c
 	camera = cam
 	_energy_mat = ShaderMaterial.new(); _energy_mat.shader = ENERGY
+	_avatar_mat = ShaderMaterial.new(); _avatar_mat.shader = AVATAR_SHADER
 	_bar_mat = ShaderMaterial.new(); _bar_mat.shader = BAR
 	_bar_mesh = QuadMesh.new(); _bar_mesh.size = Vector2(1.35, 0.12)
 	flourish_root = Node3D.new(); flourish_root.name = "Flourishes"; add_child(flourish_root)
@@ -237,13 +238,16 @@ var _av_pulse := 0
 var _av_strike := 1.0
 var _av_arms: Array[Node3D] = []
 var _av_impact: MeshInstance3D
+var _av_fighter: Fighter
+var _avatar_mat: ShaderMaterial
+const AVATAR_SHADER := preload("res://fx/shaders/instinct_avatar.gdshader")
 
 func _update_avatar(dt: float) -> void:
 	var st := combat.avatar_state()
 	var active: bool = st.get("active", false)
 	if not active:
 		if avatar != null:
-			avatar.queue_free(); avatar = null; _av_arms.clear()
+			avatar.queue_free(); avatar = null; _av_arms.clear(); _av_fighter = null; _av_time = 0.0
 		return
 	var A: Dictionary = Data.avatar
 	if avatar == null:
@@ -252,48 +256,57 @@ func _update_avatar(dt: float) -> void:
 	_av_time += dt; _av_strike += dt
 	var pos: Vector3 = st.pos
 	var yaw := float(st.yaw)
-	avatar.position = Vector3(pos.x - sin(yaw) * 0.8, pos.y, pos.z - cos(yaw) * 0.8)
+	var side := Vector3(cos(yaw), 0, -sin(yaw)) * 0.9
+	avatar.position = Vector3(pos.x - sin(yaw) * 2.0, pos.y + 1.1 + sin(_av_time * 1.3) * 0.12, pos.z - cos(yaw) * 2.0) + side   # looming behind and above one shoulder
 	avatar.rotation.y = yaw
 	var pulse := int(st.get("pulse", 0))
 	if pulse != _av_pulse:
 		_av_pulse = pulse; _av_strike = 0.0
-	var punch := sin(_av_strike / 0.45 * PI) if _av_strike < 0.45 else 0.0
-	_av_arms[0].rotation.x = -punch * 1.5 if _av_pulse % 2 else -0.2
-	_av_arms[1].rotation.x = -0.2 if _av_pulse % 2 else -punch * 1.5
+	# the avatar fights: stance between strikes, alternating straight punches on each pulse
+	if _av_fighter != null:
+		_av_fighter.update(dt, {"speed": 0.0, "onGround": true, "inCombat": true, "attackSerial": _av_pulse,
+			"attackKind": "cross" if _av_pulse % 2 else "jab"})
 	_av_impact.visible = _av_strike < 0.45
-	_av_impact.scale = Vector3.ONE * (0.1 + minf(1.0, _av_strike / 0.45) * 1.1)
+	_av_impact.scale = Vector3.ONE * (0.4 + minf(1.0, _av_strike / 0.45) * float(A.get("halfWidth", 4.0)))
+	var glow := (float(A.get("opacity", 0.35)) + sin(_av_time * 5.0) * 0.025) * 2.2 * minf(1.0, _av_time * 2.0)   # fades in
 	for mi: MeshInstance3D in avatar.find_children("*", "MeshInstance3D", true, false):
-		mi.set_instance_shader_parameter("strength", (float(A.get("opacity", 0.35)) + sin(_av_time * 5.0) * 0.025) * 2.2)
+		mi.set_instance_shader_parameter("strength", glow * (2.5 if mi == _av_impact else 1.0))
 
 func _build_avatar(A: Dictionary) -> Node3D:
-	var root := Node3D.new(); root.name = "InstinctAvatar"
-	root.scale = Vector3.ONE * float(A.get("scale", 3.0))
+	var look: Dictionary = {}
+	var pv: Node = get_parent().get_node_or_null("Player") if get_parent() != null else null
+	if pv is Fighter:
+		look = (pv as Fighter).look.duplicate(true)
+	look.erase("anime")
+	var f := Fighter.create(look if not look.is_empty() else {"race": "Saiyan", "hair": "Spiky"})
+	f.name = "InstinctAvatar"
+	f.scale = Vector3.ONE * minf(float(A.get("scale", 5.0)), 2.3)   # head to toe in frame at the play camera; still towers over you
 	var col := _hex(A.get("color", 0x9fd8ff)); var core_col := _hex(A.get("coreColor", 0xffffff))
-	var ball := SphereMesh.new(); ball.radius = 1.0; ball.height = 2.0; ball.radial_segments = 14; ball.rings = 8
-	var make := func(parent: Node3D, c: Color, pos: Vector3, sc: Vector3, mesh: Mesh = null) -> MeshInstance3D:
-		var mi := MeshInstance3D.new(); mi.mesh = mesh if mesh != null else ball; mi.material_override = _energy_mat
-		mi.position = pos; mi.scale = sc
+	# glowing eyes: two small bright slits on the face, following the head
+	var eye := BoxMesh.new(); eye.size = Vector3(0.03, 0.009, 0.01)
+	for s: float in [-1.0, 1.0]:
+		f.add_piece("DEF-head", Transform3D(Basis.from_euler(Vector3(0, 0, s * 0.18)), Vector3(s * 0.042, 1.697, 0.112)), eye, _avatar_mat)
+	for mi: MeshInstance3D in f.find_children("*", "MeshInstance3D", true, false):
+		var up := mi.get_parent()
+		while up != null and not (up is BoneAttachment3D) and up != f:
+			up = up.get_parent()
+		if up is BoneAttachment3D and (up as BoneAttachment3D).bone_name in ["DEF-hips", "DEF-spine.001"]:
+			mi.visible = false   # no tail or belt pieces (however deep they hang): a clean energy silhouette
+			continue
+		mi.material_override = _avatar_mat
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		mi.set_instance_shader_parameter("energy_color", c)
-		parent.add_child(mi); return mi
-	make.call(root, col, Vector3(0, 1.12, 0), Vector3(0.34, 0.48, 0.2))
-	make.call(root, col, Vector3(0, 0.78, 0), Vector3(0.24, 0.2, 0.17))
-	var head := Node3D.new(); head.position = Vector3(0, 1.73, 0); root.add_child(head)
-	make.call(head, col, Vector3.ZERO, Vector3(0.17, 0.2, 0.145))
-	var spike := CylinderMesh.new(); spike.top_radius = 0.0; spike.bottom_radius = 0.1; spike.height = 0.3; spike.radial_segments = 6
-	for sign: float in [-1.0, 1.0]:
-		var box := BoxMesh.new()
-		make.call(head, core_col, Vector3(sign * 0.07, 0.018, 0.141), Vector3(0.065, 0.016, 0.012), box)
-		(make.call(head, core_col, Vector3(sign * 0.12, 0.18, -0.025), Vector3(0.8, 1, 0.8), spike) as Node3D).rotation.z = sign * -0.5
-		make.call(root, col, Vector3(sign * 0.14, 0.37, 0), Vector3(0.13, 0.38, 0.13))
-	make.call(head, core_col, Vector3(0, 0.23, -0.04), Vector3(1, 1.2, 1), spike)
-	for sign: float in [-1.0, 1.0]:
-		var pivot := Node3D.new(); pivot.position = Vector3(sign * 0.34, 1.4, 0); root.add_child(pivot)
-		make.call(pivot, col, Vector3(sign * 0.045, -0.3, 0), Vector3(0.12, 0.34, 0.12))
-		make.call(pivot, core_col, Vector3(sign * 0.055, -0.66, 0.015), Vector3(0.12, 0.12, 0.11))
-		_av_arms.append(pivot)
+		mi.set_instance_shader_parameter("energy_color", col)
+		mi.set_instance_shader_parameter("core_color", core_col)
+	for n: Node in f.find_children("*", "", true, false):   # no auras or form effects on the avatar itself
+		if n is Aura: n.queue_free()
+	var root := Node3D.new(); root.name = "InstinctAvatarRoot"
+	root.add_child(f)
+	_av_fighter = f
 	var ring := TorusMesh.new(); ring.inner_radius = 0.975; ring.outer_radius = 1.025; ring.rings = 32; ring.ring_segments = 5
-	_av_impact = make.call(root, core_col, Vector3(0, 0.025, float(A.get("range", 6.0)) / float(A.get("scale", 3.0)) * 0.55), Vector3.ONE * 0.05, ring)
+	_av_impact = MeshInstance3D.new(); _av_impact.mesh = ring; _av_impact.material_override = _energy_mat
+	_av_impact.set_instance_shader_parameter("energy_color", core_col)
+	_av_impact.position = Vector3(0, 0.1, float(A.get("range", 6.0)) * 0.55)
+	root.add_child(_av_impact)
 	return root
 
 # Presentation signals carry no gameplay commands and never mutate entities.

@@ -122,6 +122,22 @@ func _ready() -> void:
 					play.forced = {}
 					if _args.has("turn"):   # look around inside (the camera must stay in the room)
 						play.follow.set_yaw(play.follow.yaw + float(_args.turn))
+		"avatar":   # dev: Ultra Intuition form with its Energy Avatar out, near the first enemy (recordings)
+			await get_tree().create_timer(1.2).timeout
+			if play != null:
+				var g: RuleGame = play.game
+				g.slot.loadout.formPath = "instinct"   # dev only: meet the avatar's rules (path, form, move)
+				if "UIPerfected" not in g.slot.forms: g.slot.forms.append("UIPerfected")
+				if "UltraInstinctAvatar" not in g.slot.moves: g.slot.moves.append("UltraInstinctAvatar")
+				g.slot.level = int(Data.stats.MAX_LEVEL)
+				g.player.form = "UIPerfected"
+				g.combat.avatar.remaining = 30.0
+				if not g.combat.enemies.is_empty():
+					var e: Dictionary = g.combat.enemies[0]
+					var to: Vector3 = e.pos - g.player.pos
+					g.player.pos = e.pos - to.normalized() * 6.0
+					g.player.yaw = atan2(to.x, to.z)
+					play.follow.set_yaw(g.player.yaw + float(_args.get("turn", PI * 0.8)))
 		"boost":   # dev: rocket boost from the ground, then steer (recordings)
 			await get_tree().create_timer(1.5).timeout
 			if play != null:
