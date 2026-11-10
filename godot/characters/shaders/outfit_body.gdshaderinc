@@ -1,7 +1,12 @@
 // Shared by outfit.gdshader (standard look) and outfit_toon.gdshader (anime look): uniforms, regions, face.
 
 // 0 skin 1 top 2 pants 3 boots 4 belt 5 wrist 6 sleeve 7 forearm 8 hands 9 undershirt 10 plate 11 upper arm 12 trim
-uniform vec4 colors[13] : source_color;
+// 13 boot trim 14 boot laces
+uniform vec4 colors[15] : source_color;
+uniform float cloth = 0.0;        // Cloth amount (0 tight .. 1 baggy): soft fold shadows on loose clothes
+uniform float sleeve_end = 0.3;   // rest |x| where the clothed part of the arm ends
+uniform float boot_top = 0.24;    // rest height of the boots' top edge (Cloth.boot_top)
+uniform float boot_detail = 0.0;  // 1 = cuff trim line, wrap laces and a dark sole on the boots
 uniform vec4 skin_color : source_color = vec4(0.95, 0.8, 0.65, 1.0);
 uniform float skin_metal = 0.0;
 uniform float plate_gloss = 0.0;
@@ -24,6 +29,40 @@ void vertex() { rest = CUSTOM0.xyz; }
 float above(float v, float e) { float w = max(fwidth(v), 1e-4); return smoothstep(e - w, e + w, v); }
 float inside(float sdf) { float w = max(fwidth(sdf), 1e-5); return 1.0 - smoothstep(-w, w, sdf); }
 float ellipse(vec2 q, vec2 ab) { return (length(q / ab) - 1.0) * min(ab.x, ab.y); }
+// Soft cloth folds (stable in rest space, so they follow the animation): 0..1 where a fold's shadow lies.
+float fold_band(float v, float w) { return smoothstep(0.72, 0.98, sin(v)) * w; }
+float cloth_folds(vec3 p, float is_arm) {
+	float ax = abs(p.x);
+	float wob = 0.75 + 0.25 * sin(p.x * 23.0 + p.y * 17.0 + p.z * 19.0);   // folds come and go along their length
+	float f = 0.0;
+	// trousers: bunched zigzag folds above the boots, diagonal creases at the knee, long folds down the thigh
+	float pants = above(p.y, boot_top + 0.01) * (1.0 - above(p.y, 0.92)) * (1.0 - is_arm);
+	if (pants > 0.0) {
+		float lx = p.x - sign(p.x) * 0.089;
+		float th = atan(lx, p.z + 0.01);
+		float side = sign(p.x);
+		f = max(f, fold_band((p.y - boot_top) * 80.0 + 1.1 * sin(th * 3.0 + p.y * 21.0), 1.0 - smoothstep(boot_top + 0.06, boot_top + 0.12, p.y)));
+		f = max(f, fold_band(p.y * 40.0 + th * 1.4 * side, smoothstep(0.44, 0.48, p.y) * (1.0 - smoothstep(0.57, 0.64, p.y))) * wob);
+		f = max(f, fold_band(th * 2.0 * side + p.y * 16.0, smoothstep(0.64, 0.7, p.y) * (1.0 - smoothstep(0.82, 0.88, p.y)) * 0.9) * wob);
+		f *= pants;
+	}
+	// sleeves: rings bunched near the shoulder and the hem / elbow
+	if (is_arm > 0.0 && ax < sleeve_end) {
+		float ph = atan(p.z + 0.065, p.y - 1.44);
+		float sl = fold_band((ax - 0.2) * 58.0 + 0.9 * sin(ph * 2.0 + ax * 31.0), 1.0) * wob;
+		sl *= 1.0 - above(ax, sleeve_end - 0.02);
+		f = max(f, sl * is_arm);
+	}
+	// top: folds fanning up from the sash, diagonal pulls from the armpits on the chest
+	float top = above(p.y, 1.0) * (1.0 - above(p.y, 1.36)) * (1.0 - is_arm);
+	if (top > 0.0) {
+		float th = atan(p.x, p.z);
+		f = max(f, fold_band(th * 9.0 + 1.4 * sin(p.y * 13.0 + th * 2.0), (1.0 - smoothstep(1.04, 1.17, p.y))) * wob * top);
+		f = max(f, fold_band((p.y + ax * 1.3) * 42.0, smoothstep(0.07, 0.13, ax) * smoothstep(1.12, 1.2, p.y) * (1.0 - smoothstep(1.3, 1.36, p.y)) * 0.85) * wob * top);
+	}
+	return f;
+}
+
 float segment(vec2 q, vec2 a, vec2 b, float r) {
 	vec2 pa = q - a, ba = b - a;
 	float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
@@ -35,7 +74,7 @@ void fragment() {
 	float ax = abs(p.x);
 	// torso, bottom to top (rgb = colour, a = 1 cloth / 0 skin)
 	vec4 col = colors[3];
-	col = mix(col, colors[2], above(p.y, 0.24));
+	col = mix(col, colors[2], above(p.y, boot_top));
 	col = mix(col, colors[4], above(p.y, 0.93));
 	col = mix(col, colors[1], above(p.y, 1.0));
 	col = mix(col, colors[12], above(p.y, 1.0) * (1.0 - above(p.y, 1.04)) * plate_gloss);
@@ -52,6 +91,25 @@ void fragment() {
 	arm = mix(arm, colors[8], above(ax, 0.735));
 	float is_arm = above(ax, 0.2) * above(p.y, 1.22);
 	col = mix(col, arm, is_arm);
+	// boots: dark sole, wrap laces round the shaft, a contrasting trim line at the cuff
+	float boot = (1.0 - above(p.y, boot_top)) * (1.0 - is_arm);
+	if (boot > 0.0 && boot_detail > 0.0) {
+		// wrap laces: tilted bands, alternating, so they cross on the front of the shin
+		float lx = p.x - sign(p.x) * 0.089;
+		float lace = 0.0;
+		float lace_lo = 0.13, lace_hi = boot_top - 0.045;
+		for (int k = 0; k < 3; k++) {
+			float yk = mix(lace_lo, lace_hi, float(k) / 2.0);
+			float tilt = (k % 2 == 0 ? 0.32 : -0.32) * lx * step(-0.01, p.z);
+			lace = max(lace, 1.0 - above(abs(p.y - yk - tilt), 0.0045));
+			lace = max(lace, (1.0 - above(abs(p.y - yk + tilt), 0.0045)) * step(-0.01, p.z));
+		}
+		vec3 bc = col.rgb;
+		bc = mix(bc, colors[14].rgb, lace);
+		bc = mix(bc, colors[13].rgb, above(p.y, boot_top - 0.03) * (1.0 - above(p.y, boot_top - 0.016)));
+		bc = mix(bc, bc * 0.42, 1.0 - above(p.y, 0.017));
+		col.rgb = mix(col.rgb, bc, boot);
+	}
 
 	float skin = 1.0 - col.a;
 	vec3 c = mix(col.rgb, skin_color.rgb, skin);
@@ -184,6 +242,17 @@ void fragment() {
 	}
 
 	float plate = above(p.y, 1.0) * (1.0 - is_arm) * plate_gloss * (1.0 - skin);
+	// loose clothes: one flat darker tone in the folds (a cel band, not a gradient), a lighter edge on the sleeve
+	// hems and along the raised lapel
+	if (cloth > 0.0) {
+		float cl = (1.0 - skin) * (1.0 - plate) * (1.0 - boot);
+		float fold = above(cloth_folds(p, is_arm) * min(1.0, cloth * 1.3), 0.5) * cl;
+		c *= 1.0 - 0.17 * fold;
+		float hem = is_arm * step(0.1, sleeve_end) * above(ax, sleeve_end - 0.016) * (1.0 - above(ax, sleeve_end - 0.004));
+		float dv = ax - (p.y - 1.33) * 0.9;
+		float lapel = above(p.y, 1.37) * above(p.z, 0.03) * above(dv, 0.003) * (1.0 - above(dv, 0.012)) * (1.0 - is_arm);
+		c *= 1.0 + 0.14 * max(hem, lapel) * cl * min(1.0, cloth * 2.0);
+	}
 	float weave = (fract(sin(dot(floor(UV * 900.0), vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.05;
 	c *= 1.0 + weave * (1.0 - skin) * (1.0 - plate);
 	ALBEDO = c;

@@ -5,8 +5,9 @@ extends RefCounted
 # position. Each vertex keeps its rest position in CUSTOM0 (it survives skinning) and outfit.gdshader picks the
 # region per pixel, which gives smooth anti-aliased borders. region() is the same rule on the CPU (tests, tools).
 
-enum { SKIN, TOP, PANTS, BOOTS, BELT, WRIST, SLEEVE, FOREARM, HANDS, UNDERSHIRT, PLATE, UPPER_ARM, TRIM }
-const COUNT := 13
+# BOOT_TRIM and LACES are details painted on the boots (cuff trim line, wrap laces), not regions of their own.
+enum { SKIN, TOP, PANTS, BOOTS, BELT, WRIST, SLEEVE, FOREARM, HANDS, UNDERSHIRT, PLATE, UPPER_ARM, TRIM, BOOT_TRIM, LACES }
+const COUNT := 15
 # Region borders (metres, rest pose). Mirrored in shaders/outfit.gdshader.
 const ARM_X := 0.2        # |x| beyond this, above ARM_Y, is an arm
 const ARM_Y := 1.22
@@ -77,4 +78,8 @@ static func colours(parts: Dictionary) -> PackedColorArray:
 	c[FOREARM] = top if sleeves else skin
 	c[WRIST] = hx.call(parts.wrist) if parts.has("wrist") else (hx.call(parts.gloves) if parts.has("gloves") else c[FOREARM])
 	c[HANDS] = hx.call(parts.gloves) if parts.has("gloves") else skin
+	# boots: a contrasting cuff trim (gold on dark boots by default) and wrap laces (off-white by default)
+	var boots: Color = c[BOOTS]
+	c[BOOT_TRIM] = hx.call(parts.boot_trim) if parts.has("boot_trim") else (Color.hex(0xe6c04aff) if boots.get_luminance() < 0.6 else top)
+	c[LACES] = hx.call(parts.laces) if parts.has("laces") else Color.hex(0xefe9dcff)
 	return c

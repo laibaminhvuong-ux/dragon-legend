@@ -8,14 +8,16 @@ extends Node3D
 const BASE := preload("res://assets/characters/ual/AnimationLibrary_Godot_Standard.gltf")
 const OUTFIT_SHADER := preload("res://characters/shaders/outfit.gdshader")
 const HAIR_SHADER := preload("res://characters/shaders/hair.gdshader")
-# Anime look (preview, user request 2026-11-06): cel shading + ink outline, per fighter with look.anime = true
+# Anime look (cel shading + ink outline): every fighter and NPC since 2026-11-10; look.shading = "classic" (or
+# look.anime = false) keeps the earlier lit look
 const OUTFIT_TOON := preload("res://characters/shaders/outfit_toon.gdshader")
 const HAIR_TOON := preload("res://characters/shaders/hair_toon.gdshader")
 const OUTLINE := preload("res://characters/shaders/outline.gdshader")
 const PRO_ANIMS := preload("res://assets/characters/ual/pro.res")
 static var _toon_hair: ShaderMaterial
 static var _outline_mat: ShaderMaterial
-static var _toon_mats: Dictionary = {}   # StandardMaterial3D -> its cel-shaded copy
+static var _toon_mats: Dictionary = {}   # [StandardMaterial3D, ink] -> its cel-shaded copy
+static var _toon_set: Dictionary = {}    # the copies themselves
 const FACES := {"Calm": 0, "Fierce": 1, "Smirk": 2, "Determined": 3, "Cold": 4}
 const BASE_EYES := {"FrostDemon": 0xb4142a, "Majin": 0x1a1a1a}
 static var _hair_material: ShaderMaterial
@@ -55,6 +57,10 @@ var face_params: Dictionary = {}  # FaceShape: this character's own face
 var _head_xform := Transform3D.IDENTITY
 var _joint_shift: Dictionary = {}   # HeroBody: how far each joint moved from the original mannequin
 var hero: Dictionary = {}           # HeroBody.wear() result (empty on the original mannequin)
+var cloth: Dictionary = {}          # Cloth.params: how loose this outfit's clothes are
+var sash_tails: MeshInstance3D      # the sash knot's hanging tails (sway with movement)
+var sash_base: Transform3D
+var _sash_spring := Vector2.ZERO
 
 static func create(l: Dictionary) -> Fighter:
 	var f := Fighter.new()
@@ -79,7 +85,8 @@ func _build() -> void:
 	if str(look.get("age", "")) == "child":
 		face_params.nose = float(face_params.nose) * 0.65   # a small button nose
 	sculpt = BodySculpt.combine(BodySculpt.profile_for(look), face_params.sculpt)
-	body_mesh.mesh = BodySculpt.sculpted(body_mesh.mesh, sculpt)
+	var unsculpted: ArrayMesh = body_mesh.mesh
+	body_mesh.mesh = BodySculpt.sculpted(unsculpted, sculpt)
 	_head_xform = BodySculpt.head_xform(sculpt)
 	material = ShaderMaterial.new()
 	material.shader = OUTFIT_SHADER
@@ -93,6 +100,12 @@ func _build() -> void:
 	var tints: Array = Tables().appearance.get("TINTS", [0xe86a1a])
 	var tint := int(tints[clampi(int(look.get("outfitTint", 0)), 0, tints.size() - 1)])
 	var parts := Outfits.parts(str(look.get("outfit", "TurtleGi")), tint)
+	cloth = Cloth.params(parts, look)
+	body_mesh.mesh = Cloth.dressed(body_mesh.mesh, unsculpted, cloth)
+	material.set_shader_parameter("cloth", float(cloth.amount))
+	material.set_shader_parameter("sleeve_end", float(cloth.sleeve))
+	material.set_shader_parameter("boot_top", float(cloth.boot_top))
+	material.set_shader_parameter("boot_detail", clampf(float(cloth.boots), 0.0, 1.0))
 	material.set_shader_parameter("colors", BodyRegions.colours(parts))
 	material.set_shader_parameter("plate_gloss", 1.0 if parts.has("armor") else 0.0)
 	material.set_shader_parameter("face", int(FACES.get(str(look.get("face", "Calm")), 0)))
@@ -123,6 +136,8 @@ func _build() -> void:
 	Parts.costume(self, str(look.get("costume", "")))
 	if cape != null:
 		cape_base = cape.transform
+	if sash_tails != null:
+		sash_base = sash_tails.transform
 	hair_base = Hair.base_style(look, race)
 	if hair_base != "":
 		hair = add_piece("DEF-head", Hair.HEAD_SPACE, Hair.mesh(hair_base), hair_material())
@@ -189,6 +204,12 @@ func update(dt: float, a: Dictionary = {}) -> void:
 		var target := minf(0.9,float(a.get("speed",0))*0.08)+sin(_t*(14 if _charge_time>0 else 3))*(0.07 if _charge_time>0 else 0.03)
 		_cape_spring = MotionStyle.spring(_cape_spring.x,_cape_spring.y,target,dt,10)
 		cape.transform = cape_base*Transform3D(Basis.from_euler(Vector3(_cape_spring.x,0,0)),Vector3.ZERO)
+	if sash_tails != null:   # the sash tails lift and flutter with speed (pivot: the knot)
+		var sp := float(a.get("speed",0))
+		var target := minf(0.75,sp*0.07)+sin(_t*(9.0 if sp>2.0 else 2.2))*(0.06 if sp>2.0 else 0.025)+(0.12 if _charge_time>0 else 0.0)*sin(_t*16)
+		_sash_spring = MotionStyle.spring(_sash_spring.x,_sash_spring.y,target,dt,12)
+		var flutter := sin(_t*(11.0 if sp>2.0 else 2.6)+0.7)*(0.1 if sp>2.0 else 0.03)
+		sash_tails.transform = sash_base*Transform3D(Basis.from_euler(Vector3(-_sash_spring.x,0,flutter)),Vector3.ZERO)   # lifts away from the thighs
 
 static func hair_material() -> ShaderMaterial:
 	if _hair_material == null:
@@ -278,7 +299,10 @@ func hero_body_kind() -> String:
 	return base + ("_female" if look.get("female", false) else "_male")
 
 func is_anime() -> bool:
-	return bool(look.get("anime", false))
+	if _env_shading == "":
+		_env_shading = OS.get_environment("DL_SHADING") + "-"   # dev: DL_SHADING=classic for A/B frame-time checks
+	return str(look.get("shading", "")) != "classic" and look.get("anime", true) != false and _env_shading != "classic-"
+static var _env_shading := ""
 
 static func outline_material() -> ShaderMaterial:
 	if _outline_mat == null:
@@ -295,25 +319,33 @@ func _toonify() -> void:
 	material.next_pass = outline_material()
 	if _toon_hair == null:
 		_toon_hair = ShaderMaterial.new()
-		_toon_hair.shader = HAIR_TOON   # no outline: hair is an open shell, the hull would show inside it
+		_toon_hair.shader = HAIR_TOON
+		# the ink line round the hair too: drawn behind the hair (outline.gdshader's depth offset), so the open
+		# underside of the shell stays clean against the head
+		_toon_hair.next_pass = outline_material()
 	for mi: MeshInstance3D in find_children("*", "MeshInstance3D", true, false):
 		var m: Material = mi.material_override
 		if m == _hair_material:
 			mi.material_override = _toon_hair
 		elif m is StandardMaterial3D:
-			mi.material_override = _toon_copy(m)
+			mi.material_override = _toon_copy(m, mi.has_meta("ink"))
 
-static func _toon_copy(m: StandardMaterial3D) -> StandardMaterial3D:
-	if _toon_mats.values().has(m) or m.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED or m.shading_mode == BaseMaterial3D.SHADING_MODE_UNSHADED:
+## `ink`: closed solid pieces (sash, wristbands) also get the ink outline.
+static func _toon_copy(m: StandardMaterial3D, ink := false) -> StandardMaterial3D:
+	if _toon_set.has(m) or m.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED or m.shading_mode == BaseMaterial3D.SHADING_MODE_UNSHADED:
 		return m
-	if not _toon_mats.has(m):
+	var key := [m, ink]
+	if not _toon_mats.has(key):
 		var t: StandardMaterial3D = m.duplicate()
 		t.diffuse_mode = BaseMaterial3D.DIFFUSE_TOON
 		t.specular_mode = BaseMaterial3D.SPECULAR_TOON
 		t.roughness = maxf(t.roughness, 0.7)
 		t.metallic_specular = 0.2
-		_toon_mats[m] = t
-	return _toon_mats[m]
+		if ink:
+			t.next_pass = outline_material()
+		_toon_mats[key] = t
+		_toon_set[t] = true
+	return _toon_mats[key]
 
 func _set_eyes(hex: int) -> void:
 	material.set_shader_parameter("eye_color", Parts.hx(hex))

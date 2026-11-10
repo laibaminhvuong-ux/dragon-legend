@@ -502,18 +502,19 @@ func _hero(out: String) -> void:
 	env.environment.background_color = Color(0.3, 0.33, 0.4)
 	var looks: Array = []
 	for r: String in ["Saiyan", "Namekian"]:
-		for v in [["before", {"body": "classic"}], ["new body", {}], ["new + anime", {"anime": true}]]:
+		var old_look := {"shading": "classic", "cloth": 0.0, "boots": 0.0}   # the look before the cel-shaded cloth pass
+		for v in [["before", old_look.merged({"body": "classic"})], ["new body", old_look], ["new + cel cloth", {}]]:
 			var l := _look(r)
 			l.faceSeed = "hero_" + r
 			l.face = "Determined"
 			l.merge(v[1], true)
 			looks.append([v[0], l])
 	var fem := _look("Human"); fem.female = true; fem.hair = "Bun"; fem.faceSeed = "hero_f"
-	var fem0 := fem.duplicate(); fem0.body = "classic"
+	var fem0 := fem.duplicate(); fem0.body = "classic"; fem0.shading = "classic"; fem0.cloth = 0.0; fem0.boots = 0.0
 	looks.append(["before (female)", fem0])
 	looks.append(["new (female)", fem])
 	var kid := _look("Saiyan"); kid.age = "child"; kid.faceSeed = "hero_kid"
-	var kid0 := kid.duplicate(); kid0.body = "classic"
+	var kid0 := kid.duplicate(); kid0.body = "classic"; kid0.shading = "classic"; kid0.cloth = 0.0; kid0.boots = 0.0
 	looks.append(["before (child)", kid0])
 	looks.append(["new (child)", kid])
 	var teen := _look("Human"); teen.age = "teen"; teen.faceSeed = "hero_teen"
@@ -606,8 +607,84 @@ func _manga(out: String) -> void:
 			fi.body_mesh.material_override = neutral
 		await _shot(out + "_manga_zoom_grey.png")
 
+## Cel-shaded cloth style (2026-11-10): each look before (tight, classic shading) and after (baggy cloth, chunky boots,
+## folds, ink outline), front / three-quarter / side, plus a flat-grey close-up of legs and boots. `--clothpose` poses
+## the "after" looks mid-move (arms raised, legs kicking) to check the cloth never tears.
+func _cloth(out: String) -> void:
+	var looks: Array = []
+	var add := func(label: String, l: Dictionary) -> void:
+		var before := l.duplicate(); before.cloth = 0.0; before.boots = 0.0; before.shading = "classic"
+		looks.append([label + " before", before]); looks.append([label, l])
+	var m := _look("Saiyan"); m.faceSeed = "cloth_m"; m.face = "Determined"; add.call("Saiyan gi", m)
+	var w := _look("Human"); w.female = true; w.hair = "Bun"; w.faceSeed = "cloth_w"; add.call("female", w)
+	var n := _look("Namekian"); n.outfit = "NamekRobe"; n.faceSeed = "cloth_n"; add.call("Namekian robe", n)
+	var fd := _look("FrostDemon"); fd.outfit = "FrostArmor"; fd.faceSeed = "cloth_f"; add.call("Frost armour", fd)
+	var k := _look("Saiyan"); k.age = "child"; k.faceSeed = "cloth_k"; add.call("child", k)
+	var t := _look("Human"); t.age = "teen"; t.outfit = "CraneGi"; t.outfitTint = 3; t.faceSeed = "cloth_t"; add.call("teen", t)
+	var mj := _look("Human"); mj.outfit = "MajinVest"; mj.faceSeed = "cloth_v"; add.call("vest", mj)
+	var pose := "--clothpose" in OS.get_cmdline_user_args()
+	if pose:   # only the "after" looks, each striking
+		looks = looks.filter(func(e: Array) -> bool: return not str(e[0]).ends_with("before"))
+	for view in [["front", 0.0], ["three_quarter", 0.6], ["side", PI / 2]]:
+		if pose and view[0] == "front":
+			continue
+		stage = Node3D.new()
+		vp.add_child(stage)
+		env.environment.background_color = Color(0.3, 0.33, 0.4)
+		var fs: Array[Fighter] = []
+		for i in looks.size():
+			var f := Fighter.create(looks[i][1])
+			f.position = Vector3((i - (looks.size() - 1) / 2.0) * 0.95, 0, 0)
+			f.rotation.y = float(view[1])
+			stage.add_child(f)
+			fs.append(f)
+			var label := Label3D.new()
+			label.text = looks[i][0]
+			label.font_size = 30; label.pixel_size = 0.004
+			label.position = f.position + Vector3(0, -0.12, 0.6)
+			label.modulate = Color(0.95, 0.95, 0.95)
+			stage.add_child(label)
+		var kinds := ["uppercut", "spin_kick", "axe_kick", "knee", "hook", "palm_strike", "cross"]
+		for i in fs.size():
+			fs[i].update(1.0 / 30.0, {"speed": 0.0, "onGround": true})
+			for j in (6 if pose else 10):
+				var a := {"speed": 0.0, "onGround": true}
+				if pose:
+					a.merge({"attackSerial": 9, "attackKind": kinds[i % kinds.size()], "finisher": true})
+				fs[i].update(1.0 / 30.0, a)
+		cam.size = 2.35
+		vp.size = Vector2i(roundi(1150 * (looks.size() * 0.95 + 0.3) / cam.size), 1150)
+		cam.position = Vector3(0, cam.size * 0.5 - 0.2, 8)
+		var tag := "clothpose" if pose else "cloth"
+		await _shot("%s_%s_%s.png" % [out, tag, view[0]])
+		# the same sheet in halves (readable at a glance)
+		var full_w := looks.size() * 0.95 + 0.3
+		vp.size = Vector2i(roundi(1150 * (full_w / 2.0) / cam.size), 1150)
+		for half in 2:
+			cam.position.x = (-0.5 + half) * full_w / 2.0
+			await _shot("%s_%s_%s_%s.png" % [out, tag, view[0], "ab"[half]])
+		cam.position.x = 0.0
+		if not pose:
+			# legs and boots close-up on a flat grey background (first four pairs)
+			env.environment.background_color = Color(0.5, 0.5, 0.52)
+			cam.size = 1.0
+			vp.size = Vector2i(2800, 1000)
+			cam.position = Vector3((-(looks.size() - 1) / 2.0 + float(OS.get_environment("CLOTH_AT") if OS.get_environment("CLOTH_AT") != "" else "4.0")) * 0.95, 0.42, 8)
+			for l: Label3D in stage.find_children("*", "Label3D", true, false):
+				l.visible = false
+			await _shot("%s_cloth_%s_legs.png" % [out, view[0]])
+			# upper body close-up (sleeves, V-neck, sash)
+			cam.position.y = 1.18
+			await _shot("%s_cloth_%s_top.png" % [out, view[0]])
+		stage.free()
+		stage = null
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--cloth" in OS.get_cmdline_user_args() or "--clothpose" in OS.get_cmdline_user_args():
+		await _cloth(out)
+		quit()
+		return
 	if "--manga" in OS.get_cmdline_user_args():
 		await _manga(out)
 		quit()

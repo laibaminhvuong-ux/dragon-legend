@@ -6,5 +6,5 @@ shader_type spatial;
 render_mode diffuse_burley, specular_schlick_ggx;
 
 #include "res://characters/shaders/outfit_body.gdshaderinc"
-// body include rev 4
+// body include rev 6
 

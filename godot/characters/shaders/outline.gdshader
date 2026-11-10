@@ -4,7 +4,7 @@
 shader_type spatial;
 render_mode unshaded, cull_front, depth_draw_opaque;
 
-uniform float width = 0.0045;
+uniform float width = 0.0052;
 uniform vec4 ink : source_color = vec4(0.06, 0.05, 0.08, 1.0);
 
 void vertex() {

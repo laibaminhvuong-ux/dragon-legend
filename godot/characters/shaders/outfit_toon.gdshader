@@ -6,7 +6,7 @@ render_mode specular_disabled;
 
 #define TOON
 #include "res://characters/shaders/outfit_body.gdshaderinc"
-// body include rev 4
+// body include rev 6
 
 
 void light() {
