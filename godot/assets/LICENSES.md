@@ -1,6 +1,6 @@
 # Asset licences
 
-Every asset here is CC0 (public domain): free for any use, no attribution required.
+Every asset here is CC0 (public domain): free for any use, no attribution required, except the sound effects marked ElevenLabs below.
 
 | Asset | Used for | Source | Licence |
 |---|---|---|---|
@@ -16,3 +16,4 @@ Every asset here is CC0 (public domain): free for any use, no attribution requir
 | shrub_03 | model | https://polyhaven.com/a/shrub_03 | CC0 |
 | dead_tree_trunk | model | https://polyhaven.com/a/dead_tree_trunk | CC0 |
 | Universal Animation Library (Standard), Quaternius | humanoid rig, mannequin, 46 animations | https://quaternius.com/packs/universalanimationlibrary.html (mirror: github.com/J-Ponzo/gltf-universal-animation-library) | CC0 |
+| Sound effects (audio/combat/*.wav, audio/game/*.wav) | combat, UI, progression, travel sounds | Generated with ElevenLabs Sound Effects (eleven_text_to_sound_v2) on the owner's paid plan; prompts in tools/sfx_prompts.json | ElevenLabs Terms of Service: commercial use allowed on paid plans |

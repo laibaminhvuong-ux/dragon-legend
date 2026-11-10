@@ -29,6 +29,8 @@ var _reticle: Control
 var _stamp := ""
 var _quest_stamp := ""
 var _timer := 0.0
+var _zeni_seen := -1          # last zeni total shown; a rise plays the coin sound
+var _sting_ms := -100000      # last level/quest sting, so its zeni reward does not stack a coin sound on top
 var open_menu: Callable   # set by main: opens the fighter menu on a tab
 
 func _init(p: PlaySession) -> void:
@@ -101,11 +103,27 @@ func _init(p: PlaySession) -> void:
 	_reticle = Reticle.new()
 	add_child(_reticle)
 	Events.notify.connect(toast)
-	Events.levelup.connect(func(level: int, _g: int) -> void: toast("Level up! Level %d" % level))
+	Events.levelup.connect(_on_levelup)
+	Events.quest_accepted.connect(_on_quest_accepted)
+	Events.quest_completed.connect(_on_quest_completed)
 
 func _exit_tree() -> void:
-	if Events.notify.is_connected(toast):
-		Events.notify.disconnect(toast)
+	for pair: Array in [[Events.notify, toast], [Events.levelup, _on_levelup], [Events.quest_accepted, _on_quest_accepted], [Events.quest_completed, _on_quest_completed]]:
+		if (pair[0] as Signal).is_connected(pair[1]):
+			(pair[0] as Signal).disconnect(pair[1])
+
+func _on_levelup(level: int, _gained: int) -> void:
+	toast("Level up! Level %d" % level)
+	_sting("level_up")
+
+func _on_quest_accepted(_id: String, _title: String) -> void:
+	_sting("quest_accept")
+
+func _on_quest_completed(_id: String, _title: String) -> void:
+	_sting("quest_complete")
+
+func _sting(id: String) -> void:
+	if GameSfx.play(self, id): _sting_ms = Time.get_ticks_msec()
 
 func _centered_label(anchor: Vector2, size: int, color: Color) -> Label:
 	var l := UiKit.label("")
@@ -151,6 +169,9 @@ func update_hud(dt: float) -> void:
 	_ki_text.text = "Ki %d / %d" % [int(s.ki), int(s.maxKi)]
 	_xp.value = clampf(float(s.xp) / maxf(1.0, float(s.xpNext)), 0.0, 1.0)
 	_meta.text = "PL %s · %s zeni" % [_grouped(int(s.powerLevel)), _grouped(int(s.zeni))]
+	if _zeni_seen >= 0 and int(s.zeni) > _zeni_seen and Time.get_ticks_msec() - _sting_ms > 1500:
+		GameSfx.play(self, "zeni")
+	_zeni_seen = int(s.zeni)
 	_points.visible = int(s.statPoints) > 0
 	_points.text = "%d stat point%s · %s" % [int(s.statPoints), "" if int(s.statPoints) == 1 else "s", UiKit.key_name("menu")]
 	_fps.visible = bool(Settings.get_value("showFps"))

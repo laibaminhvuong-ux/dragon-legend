@@ -105,6 +105,7 @@ func _look_signature() -> String:
 
 func _on_travel(zone: String) -> void:
 	pending_travel = zone
+	if is_inside_tree(): GameSfx.play(self, "travel_whoosh")
 
 func is_frozen() -> bool:
 	return paused or not frozen_by.is_empty()
@@ -349,6 +350,7 @@ func _boost_view(pos: Vector3, frame_dt: float) -> void:
 	if int(p.get("boostSerial", 0)) != _boost_serial:
 		_boost_serial = int(p.get("boostSerial", 0))
 		Burst.spawn(self, pos + Vector3.UP * 0.3, color, 3.0)
+		GameSfx.play(self, "boost_ignite", -2.0)
 		Burst.spawn(self, Vector3(pos.x, game.zone.height_at(pos.x, pos.z) + 0.1, pos.z), Color(0.7, 0.65, 0.55, 0.8), 3.5)
 		Events.emit_named("notify", {"text": "Rocket boost! 20 s (%s again to stop)" % UiKit.key_name("dash")})
 	var boosting: bool = p.get("boosting", false)

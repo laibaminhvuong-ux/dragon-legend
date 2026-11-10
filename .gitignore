@@ -14,3 +14,6 @@ build/
 
 # Quaternius source packs (~140 MB, CC0): baked into godot/assets/characters/ubc by godot/tools_bake_bodies.gd
 art/quaternius/
+
+# ElevenLabs raw sound-effect takes (paid generations, cached so re-runs never re-pay)
+art/elevenlabs/

@@ -80,10 +80,15 @@ static func label(text: String, variation := "", wrap := false) -> Label:
 		l.custom_minimum_size.x = 200
 	return l
 
+const BACK_LABELS := ["Back", "Close", "Cancel", "Not now", "Resume"]
+
 static func button(text: String, on_press: Callable, primary := false) -> Button:
 	var b := Button.new()
 	b.text = text
 	if primary: b.theme_type_variation = "PrimaryButton"
+	# Click sound first: on_press may free the button (GameSfx voices live on the scene root, so it still plays).
+	var sound := "ui_back" if text in BACK_LABELS else "ui_confirm" if primary else "ui_click"
+	b.pressed.connect(func() -> void: GameSfx.play(b, sound))
 	b.pressed.connect(on_press)
 	b.focus_mode = Control.FOCUS_ALL
 	return b

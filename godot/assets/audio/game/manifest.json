@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "source": "ElevenLabs Sound Effects (eleven_text_to_sound_v2) generated for this project on the owner's paid plan; one take per family from tools/sfx_prompts.json, variants _2/_3 derived by pitch/speed shift and EQ.",
+  "license": "ElevenLabs Sound Effects output, paid plan: commercial use permitted per ElevenLabs Terms of Service",
+  "generator": "tools/elevenlabs_sfx.py",
+  "prompts": "tools/sfx_prompts.json",
+  "normalization": {
+    "metric": "full-clip RMS dBFS (not LUFS)",
+    "peak_ceiling": 0.7,
+    "targets_dbfs": {
+      "ui_click": -26,
+      "ui_confirm": -26,
+      "ui_back": -26,
+      "menu_open": -26,
+      "level_up": -22,
+      "quest_accept": -24,
+      "quest_complete": -22,
+      "item_pickup": -24,
+      "zeni": -24,
+      "boost_ignite": -22,
+      "travel_whoosh": -22
+    }
+  },
+  "sounds": {
+    "ui_click": {
+      "file": "ui_click.wav",
+      "loop": false,
+      "frames": 8379,
+      "rate": 44100,
+      "peak": 0.2572327,
+      "rms": 0.0501187,
+      "sha256": "7266f70eeb30306eaf7763e628f72ed5961fdb81dcf74d37abfd6c25ecfbcd20"
+    },
+    "ui_confirm": {
+      "file": "ui_confirm.wav",
+      "loop": false,
+      "frames": 19845,
+      "rate": 44100,
+      "peak": 0.2828369,
+      "rms": 0.0501188,
+      "sha256": "e985ae60e1600049761b6cf1958b555566a441fd4265a4e14fe9dd7d9ae411f6"
+    },
+    "ui_back": {
+      "file": "ui_back.wav",
+      "loop": false,
+      "frames": 14994,
+      "rate": 44100,
+      "peak": 0.6149902,
+      "rms": 0.0501188,
+      "sha256": "e90466b4a15acdd7cc0b86335c1bf21f4dc048b17edd41ca11a8252c82fab7aa"
+    },
+    "menu_open": {
+      "file": "menu_open.wav",
+      "loop": false,
+      "frames": 29988,
+      "rate": 44100,
+      "peak": 0.4378967,
+      "rms": 0.0501188,
+      "sha256": "ed8dfb00df7ed10dfac7a6ad81db11739b4ffd67925273fae5926b6862da6015"
+    },
+    "level_up": {
+      "file": "level_up.wav",
+      "loop": false,
+      "frames": 70560,
+      "rate": 44100,
+      "peak": 0.3779602,
+      "rms": 0.0794328,
+      "sha256": "892a0f0c3094cdc37587a98a1684985f21ca0e53e44600d3d0b590e2f5e8379d"
+    },
+    "quest_accept": {
+      "file": "quest_accept.wav",
+      "loop": false,
+      "frames": 42336,
+      "rate": 44100,
+      "peak": 0.228363,
+      "rms": 0.0630957,
+      "sha256": "6a427a6e07fc78c8f0dd129fe997ff68e51d8769d55aed2e3137cd51ab55a2e9"
+    },
+    "quest_complete": {
+      "file": "quest_complete.wav",
+      "loop": false,
+      "frames": 65268,
+      "rate": 44100,
+      "peak": 0.5059204,
+      "rms": 0.0794328,
+      "sha256": "8cb18fe10f1c9d0dc4c195722b20cf654c6d4a3527002b926fd6192798f05262"
+    },
+    "item_pickup": {
+      "file": "item_pickup.wav",
+      "loop": false,
+      "frames": 18522,
+      "rate": 44100,
+      "peak": 0.6919861,
+      "rms": 0.0630957,
+      "sha256": "5f141dd44a7f7a5132b2cd9f72d942d5a657a072e57f042d83139e1e8e8cc496"
+    },
+    "zeni": {
+      "file": "zeni.wav",
+      "loop": false,
+      "frames": 35280,
+      "rate": 44100,
+      "peak": 0.6862488,
+      "rms": 0.0630957,
+      "sha256": "5f4a5ebafeefc09788fad18af3298101af5fba59ab4ab5f8577fc7550e696638"
+    },
+    "boost_ignite": {
+      "file": "boost_ignite.wav",
+      "loop": false,
+      "frames": 32634,
+      "rate": 44100,
+      "peak": 0.2004089,
+      "rms": 0.0794327,
+      "sha256": "ba6040ede94d5d896ef92aca9c38feb77d4b3c93cb3a927a9b449fac290f0dcb"
+    },
+    "travel_whoosh": {
+      "file": "travel_whoosh.wav",
+      "loop": false,
+      "frames": 44982,
+      "rate": 44100,
+      "peak": 0.4369507,
+      "rms": 0.0794329,
+      "sha256": "226dd049eb39498ce61ca5515475e678edc44132d24dc22bbe998d38a2bdead8"
+    }
+  }
+}

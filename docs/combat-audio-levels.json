@@ -1,5 +1,7 @@
 {
   "metric": "full-clip PCM peak/RMS dBFS, not LUFS or perceptual loudness",
+  "source": "ElevenLabs Sound Effects (eleven_text_to_sound_v2) generated for this project on the owner's paid plan; one take per family from tools/sfx_prompts.json, variants _2/_3 derived by pitch/speed shift and EQ.",
+  "generator": "tools/elevenlabs_sfx.py",
   "targets": {
     "metric": "full-clip RMS dBFS (not LUFS)",
     "one_shot_target_dbfs": -22,
@@ -11,7 +13,25 @@
   "clip_count": 258,
   "seam_review_flags": [
     {
-      "file": "shield_charge_1.wav",
+      "file": "rush_charge_2.wav",
+      "flags": [
+        "head/tail energy differs > 6 dB"
+      ]
+    },
+    {
+      "file": "impact_charge_1.wav",
+      "flags": [
+        "head/tail energy differs > 6 dB"
+      ]
+    },
+    {
+      "file": "impact_charge_2.wav",
+      "flags": [
+        "head/tail energy differs > 6 dB"
+      ]
+    },
+    {
+      "file": "impact_charge_3.wav",
       "flags": [
         "head/tail energy differs > 6 dB"
       ]
@@ -19,2915 +39,3030 @@
   ],
   "banks": {
     "wave_charge": {
-      "peak_dbfs_max": -10.254,
+      "peak_dbfs_max": -10.435,
       "rms_dbfs_min": -24.0,
-      "rms_dbfs_max": -24.0,
+      "rms_dbfs_max": -23.999,
       "clips": [
         {
           "file": "wave_charge_1.wav",
-          "peak_dbfs": -10.655,
-          "rms_dbfs": -24.0,
+          "peak_dbfs": -10.703,
+          "rms_dbfs": -23.999,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -39.782,
-          "boundary_rms_delta_db": 4.194
+          "seam_slope_delta_dbfs": -23.188,
+          "boundary_rms_delta_db": 0.121
         },
         {
           "file": "wave_charge_2.wav",
-          "peak_dbfs": -10.254,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -10.435,
+          "rms_dbfs": -23.999,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -29.918,
-          "boundary_rms_delta_db": 0.474
+          "seam_slope_delta_dbfs": -22.144,
+          "boundary_rms_delta_db": 0.231
         },
         {
           "file": "wave_charge_3.wav",
-          "peak_dbfs": -10.908,
+          "peak_dbfs": -10.55,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -35.192,
-          "boundary_rms_delta_db": 1.334
+          "seam_slope_delta_dbfs": -24.58,
+          "boundary_rms_delta_db": 0.298
         }
       ]
     },
     "wave_release": {
-      "peak_dbfs_max": -5.762,
+      "peak_dbfs_max": -13.883,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "wave_release_1.wav",
-          "peak_dbfs": -6.59,
+          "peak_dbfs": -14.499,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.36,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "wave_release_2.wav",
-          "peak_dbfs": -5.762,
+          "peak_dbfs": -13.883,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.3014,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "wave_release_3.wav",
-          "peak_dbfs": -5.957,
+          "peak_dbfs": -14.46,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.4241,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "wave_impact": {
-      "peak_dbfs_max": -6.089,
+      "peak_dbfs_max": -10.055,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "wave_impact_1.wav",
-          "peak_dbfs": -8.322,
+          "peak_dbfs": -10.055,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.27,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "wave_impact_2.wav",
-          "peak_dbfs": -6.503,
+          "peak_dbfs": -10.055,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.2153,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "wave_impact_3.wav",
-          "peak_dbfs": -6.089,
+          "peak_dbfs": -10.092,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.3298,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "blast_charge": {
-      "peak_dbfs_max": -9.618,
-      "rms_dbfs_min": -24.0,
-      "rms_dbfs_max": -24.0,
+      "peak_dbfs_max": -11.598,
+      "rms_dbfs_min": -23.999,
+      "rms_dbfs_max": -23.998,
       "clips": [
         {
           "file": "blast_charge_1.wav",
-          "peak_dbfs": -10.997,
-          "rms_dbfs": -24.0,
+          "peak_dbfs": -11.598,
+          "rms_dbfs": -23.999,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -22.561,
-          "boundary_rms_delta_db": 2.79
+          "seam_slope_delta_dbfs": -35.055,
+          "boundary_rms_delta_db": 0.161
         },
         {
           "file": "blast_charge_2.wav",
-          "peak_dbfs": -10.822,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -12.256,
+          "rms_dbfs": -23.998,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -25.17,
-          "boundary_rms_delta_db": 2.719
+          "seam_slope_delta_dbfs": -33.382,
+          "boundary_rms_delta_db": 0.046
         },
         {
           "file": "blast_charge_3.wav",
-          "peak_dbfs": -9.618,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -11.944,
+          "rms_dbfs": -23.999,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -33.545,
-          "boundary_rms_delta_db": 1.059
+          "seam_slope_delta_dbfs": -34.746,
+          "boundary_rms_delta_db": 0.283
         }
       ]
     },
     "blast_release": {
-      "peak_dbfs_max": -6.86,
+      "peak_dbfs_max": -10.369,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "blast_release_1.wav",
-          "peak_dbfs": -7.004,
+          "peak_dbfs": -11.285,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.68,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "blast_release_2.wav",
-          "peak_dbfs": -6.86,
+          "peak_dbfs": -10.369,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.6507,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "blast_release_3.wav",
-          "peak_dbfs": -7.272,
+          "peak_dbfs": -11.735,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.712,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "blast_impact": {
-      "peak_dbfs_max": -6.468,
+      "peak_dbfs_max": -3.161,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "blast_impact_1.wav",
-          "peak_dbfs": -6.468,
+          "peak_dbfs": -3.205,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.8,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "blast_impact_2.wav",
-          "peak_dbfs": -8.32,
+          "peak_dbfs": -3.161,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.7655,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "blast_impact_3.wav",
-          "peak_dbfs": -7.769,
+          "peak_dbfs": -3.239,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.8377,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "disc_charge": {
-      "peak_dbfs_max": -10.722,
+      "peak_dbfs_max": -11.96,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "disc_charge_1.wav",
-          "peak_dbfs": -11.592,
+          "peak_dbfs": -12.284,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -35.192,
-          "boundary_rms_delta_db": 0.743
+          "seam_slope_delta_dbfs": -22.777,
+          "boundary_rms_delta_db": 0.906
         },
         {
           "file": "disc_charge_2.wav",
-          "peak_dbfs": -10.722,
+          "peak_dbfs": -11.96,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -35.661,
-          "boundary_rms_delta_db": 0.279
+          "seam_slope_delta_dbfs": -22.188,
+          "boundary_rms_delta_db": 0.968
         },
         {
           "file": "disc_charge_3.wav",
-          "peak_dbfs": -11.139,
+          "peak_dbfs": -12.497,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -21.124,
-          "boundary_rms_delta_db": 0.219
+          "seam_slope_delta_dbfs": -23.25,
+          "boundary_rms_delta_db": 0.813
         }
       ]
     },
     "disc_release": {
-      "peak_dbfs_max": -7.387,
+      "peak_dbfs_max": -8.77,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "disc_release_1.wav",
-          "peak_dbfs": -7.387,
+          "peak_dbfs": -9.315,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.9,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "disc_release_2.wav",
-          "peak_dbfs": -8.078,
+          "peak_dbfs": -9.133,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.8612,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "disc_release_3.wav",
-          "peak_dbfs": -7.856,
+          "peak_dbfs": -8.77,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.9424,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "disc_impact": {
-      "peak_dbfs_max": -7.592,
+      "peak_dbfs_max": -3.182,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "disc_impact_1.wav",
-          "peak_dbfs": -7.812,
+          "peak_dbfs": -3.182,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.07,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "disc_impact_2.wav",
-          "peak_dbfs": -7.592,
+          "peak_dbfs": -3.226,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.0239,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "disc_impact_3.wav",
-          "peak_dbfs": -8.017,
+          "peak_dbfs": -3.212,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.1204,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "flare_charge": {
-      "peak_dbfs_max": -10.424,
-      "rms_dbfs_min": -24.0,
-      "rms_dbfs_max": -24.0,
+      "peak_dbfs_max": -14.602,
+      "rms_dbfs_min": -23.999,
+      "rms_dbfs_max": -23.999,
       "clips": [
         {
           "file": "flare_charge_1.wav",
-          "peak_dbfs": -10.837,
-          "rms_dbfs": -24.0,
+          "peak_dbfs": -14.68,
+          "rms_dbfs": -23.999,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -37.68,
-          "boundary_rms_delta_db": 1.659
+          "seam_slope_delta_dbfs": -22.873,
+          "boundary_rms_delta_db": 0.081
         },
         {
           "file": "flare_charge_2.wav",
-          "peak_dbfs": -10.858,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -14.602,
+          "rms_dbfs": -23.999,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -48.097,
-          "boundary_rms_delta_db": 2.307
+          "seam_slope_delta_dbfs": -22.097,
+          "boundary_rms_delta_db": 0.007
         },
         {
           "file": "flare_charge_3.wav",
-          "peak_dbfs": -10.424,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -14.642,
+          "rms_dbfs": -23.999,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -24.036,
-          "boundary_rms_delta_db": 1.264
+          "seam_slope_delta_dbfs": -24.04,
+          "boundary_rms_delta_db": 0.136
         }
       ]
     },
     "flare_release": {
-      "peak_dbfs_max": -5.881,
+      "peak_dbfs_max": -3.144,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "flare_release_1.wav",
-          "peak_dbfs": -5.881,
+          "peak_dbfs": -3.144,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.2,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "flare_release_2.wav",
-          "peak_dbfs": -7.292,
+          "peak_dbfs": -3.18,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.1483,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "flare_release_3.wav",
-          "peak_dbfs": -6.349,
+          "peak_dbfs": -3.165,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.2565,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "flare_impact": {
-      "peak_dbfs_max": -6.716,
+      "peak_dbfs_max": -3.262,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "flare_impact_1.wav",
-          "peak_dbfs": -7.216,
+          "peak_dbfs": -3.262,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.36,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "flare_impact_2.wav",
-          "peak_dbfs": -8.052,
+          "peak_dbfs": -3.314,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.3014,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "flare_impact_3.wav",
-          "peak_dbfs": -6.716,
+          "peak_dbfs": -3.262,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.4241,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "triad_charge": {
-      "peak_dbfs_max": -10.268,
+      "peak_dbfs_max": -11.361,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "triad_charge_1.wav",
-          "peak_dbfs": -10.674,
+          "peak_dbfs": -11.361,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -34.091,
-          "boundary_rms_delta_db": 3.235
+          "seam_slope_delta_dbfs": -13.636,
+          "boundary_rms_delta_db": 0.334
         },
         {
           "file": "triad_charge_2.wav",
-          "peak_dbfs": -10.612,
+          "peak_dbfs": -11.432,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -33.469,
-          "boundary_rms_delta_db": 1.185
+          "seam_slope_delta_dbfs": -13.065,
+          "boundary_rms_delta_db": 0.131
         },
         {
           "file": "triad_charge_3.wav",
-          "peak_dbfs": -10.268,
+          "peak_dbfs": -11.543,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -26.007,
-          "boundary_rms_delta_db": 1.676
+          "seam_slope_delta_dbfs": -13.72,
+          "boundary_rms_delta_db": 0.356
         }
       ]
     },
     "triad_release": {
-      "peak_dbfs_max": -6.151,
+      "peak_dbfs_max": -10.192,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "triad_release_1.wav",
-          "peak_dbfs": -6.151,
+          "peak_dbfs": -11.121,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.28,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "triad_release_2.wav",
-          "peak_dbfs": -7.583,
+          "peak_dbfs": -10.446,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.2249,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "triad_release_3.wav",
-          "peak_dbfs": -6.199,
+          "peak_dbfs": -10.192,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.3403,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "triad_impact": {
-      "peak_dbfs_max": -6.63,
+      "peak_dbfs_max": -10.997,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "triad_impact_1.wav",
-          "peak_dbfs": -6.63,
+          "peak_dbfs": -11.894,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 0.92,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "triad_impact_2.wav",
-          "peak_dbfs": -6.881,
+          "peak_dbfs": -10.997,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 0.8803,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "triad_impact_3.wav",
-          "peak_dbfs": -7.47,
+          "peak_dbfs": -12.191,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 0.9633,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "rush_charge": {
-      "peak_dbfs_max": -9.506,
+      "peak_dbfs_max": -13.313,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "rush_charge_1.wav",
-          "peak_dbfs": -10.008,
+          "peak_dbfs": -13.313,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -29.489,
-          "boundary_rms_delta_db": 3.165
+          "seam_slope_delta_dbfs": -90.309,
+          "boundary_rms_delta_db": 5.401
         },
         {
           "file": "rush_charge_2.wav",
-          "peak_dbfs": -9.506,
+          "peak_dbfs": -13.314,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
-          "review_flags": [],
+          "review_flags": [
+            "head/tail energy differs > 6 dB"
+          ],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -21.666,
-          "boundary_rms_delta_db": 1.758
+          "seam_slope_delta_dbfs": -90.309,
+          "boundary_rms_delta_db": 6.141
         },
         {
           "file": "rush_charge_3.wav",
-          "peak_dbfs": -10.277,
+          "peak_dbfs": -13.313,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -21.176,
-          "boundary_rms_delta_db": 2.263
+          "seam_slope_delta_dbfs": -90.309,
+          "boundary_rms_delta_db": 5.331
         }
       ]
     },
     "rush_release": {
-      "peak_dbfs_max": -5.321,
+      "peak_dbfs_max": -6.82,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "rush_release_1.wav",
-          "peak_dbfs": -6.585,
+          "peak_dbfs": -6.82,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.85,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "rush_release_2.wav",
-          "peak_dbfs": -6.957,
+          "peak_dbfs": -6.826,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.8134,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "rush_release_3.wav",
-          "peak_dbfs": -5.321,
+          "peak_dbfs": -6.858,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.89,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "rush_impact": {
-      "peak_dbfs_max": -6.748,
+      "peak_dbfs_max": -6.904,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "rush_impact_1.wav",
-          "peak_dbfs": -7.369,
+          "peak_dbfs": -7.151,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 0.59,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "rush_impact_2.wav",
-          "peak_dbfs": -6.748,
+          "peak_dbfs": -6.904,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 0.5646,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "rush_impact_3.wav",
-          "peak_dbfs": -6.969,
+          "peak_dbfs": -7.253,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 0.6178,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "transform_charge": {
-      "peak_dbfs_max": -10.92,
+      "peak_dbfs_max": -12.215,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "transform_charge_1.wav",
-          "peak_dbfs": -10.92,
+          "peak_dbfs": -12.227,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -49.641,
-          "boundary_rms_delta_db": 1.691
+          "seam_slope_delta_dbfs": -78.268,
+          "boundary_rms_delta_db": 1.913
         },
         {
           "file": "transform_charge_2.wav",
-          "peak_dbfs": -11.008,
+          "peak_dbfs": -12.233,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -30.248,
-          "boundary_rms_delta_db": 2.247
+          "seam_slope_delta_dbfs": -76.33,
+          "boundary_rms_delta_db": 0.435
         },
         {
           "file": "transform_charge_3.wav",
-          "peak_dbfs": -11.386,
+          "peak_dbfs": -12.215,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -25.389,
-          "boundary_rms_delta_db": 0.329
+          "seam_slope_delta_dbfs": -78.268,
+          "boundary_rms_delta_db": 4.242
         }
       ]
     },
     "transform_release": {
-      "peak_dbfs_max": -6.504,
+      "peak_dbfs_max": -8.365,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "transform_release_1.wav",
-          "peak_dbfs": -8.424,
+          "peak_dbfs": -8.685,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.09,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "transform_release_2.wav",
-          "peak_dbfs": -8.208,
+          "peak_dbfs": -8.365,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.043,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "transform_release_3.wav",
-          "peak_dbfs": -6.504,
+          "peak_dbfs": -8.857,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.1413,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "transform_impact": {
-      "peak_dbfs_max": -8.12,
+      "peak_dbfs_max": -13.031,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "transform_impact_1.wav",
-          "peak_dbfs": -9.132,
+          "peak_dbfs": -13.085,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.62,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "transform_impact_2.wav",
-          "peak_dbfs": -8.12,
+          "peak_dbfs": -13.031,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.5502,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "transform_impact_3.wav",
-          "peak_dbfs": -8.547,
+          "peak_dbfs": -13.109,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.6963,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "spirit_charge": {
-      "peak_dbfs_max": -11.007,
+      "peak_dbfs_max": -12.801,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "spirit_charge_1.wav",
-          "peak_dbfs": -11.12,
+          "peak_dbfs": -12.815,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -25.839,
-          "boundary_rms_delta_db": 1.922
+          "seam_slope_delta_dbfs": -70.309,
+          "boundary_rms_delta_db": 1.663
         },
         {
           "file": "spirit_charge_2.wav",
-          "peak_dbfs": -11.007,
+          "peak_dbfs": -12.801,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -42.741,
-          "boundary_rms_delta_db": 1.408
+          "seam_slope_delta_dbfs": -68.725,
+          "boundary_rms_delta_db": 1.12
         },
         {
           "file": "spirit_charge_3.wav",
-          "peak_dbfs": -11.831,
+          "peak_dbfs": -12.818,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -28.392,
-          "boundary_rms_delta_db": 0.356
+          "seam_slope_delta_dbfs": -72.247,
+          "boundary_rms_delta_db": 2.006
         }
       ]
     },
     "spirit_release": {
-      "peak_dbfs_max": -7.372,
+      "peak_dbfs_max": -10.219,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "spirit_release_1.wav",
-          "peak_dbfs": -7.384,
+          "peak_dbfs": -10.253,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 1.53,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "spirit_release_2.wav",
-          "peak_dbfs": -7.372,
+          "peak_dbfs": -10.219,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 1.4641,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "spirit_release_3.wav",
-          "peak_dbfs": -7.614,
+          "peak_dbfs": -10.291,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 1.6021,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "spirit_impact": {
-      "peak_dbfs_max": -7.685,
+      "peak_dbfs_max": -9.036,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "spirit_impact_1.wav",
-          "peak_dbfs": -7.685,
+          "peak_dbfs": -9.112,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.04,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "spirit_impact_2.wav",
-          "peak_dbfs": -7.757,
+          "peak_dbfs": -9.036,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 1.9521,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "spirit_impact_3.wav",
-          "peak_dbfs": -7.884,
+          "peak_dbfs": -9.166,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.1361,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "spiral_charge": {
-      "peak_dbfs_max": -9.535,
+      "peak_dbfs_max": -10.625,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "spiral_charge_1.wav",
-          "peak_dbfs": -10.102,
+          "peak_dbfs": -10.625,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -22.127,
-          "boundary_rms_delta_db": 4.26
+          "seam_slope_delta_dbfs": -28.427,
+          "boundary_rms_delta_db": 0.267
         },
         {
           "file": "spiral_charge_2.wav",
-          "peak_dbfs": -9.609,
+          "peak_dbfs": -10.791,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -44.074,
-          "boundary_rms_delta_db": 2.656
+          "seam_slope_delta_dbfs": -28.42,
+          "boundary_rms_delta_db": 0.228
         },
         {
           "file": "spiral_charge_3.wav",
-          "peak_dbfs": -9.535,
+          "peak_dbfs": -10.715,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -37.187,
-          "boundary_rms_delta_db": 1.096
+          "seam_slope_delta_dbfs": -27.891,
+          "boundary_rms_delta_db": 0.252
         }
       ]
     },
     "spiral_release": {
-      "peak_dbfs_max": -5.201,
+      "peak_dbfs_max": -10.172,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "spiral_release_1.wav",
-          "peak_dbfs": -5.271,
+          "peak_dbfs": -10.396,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.06,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "spiral_release_2.wav",
-          "peak_dbfs": -5.201,
+          "peak_dbfs": -10.221,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.0143,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "spiral_release_3.wav",
-          "peak_dbfs": -6.174,
+          "peak_dbfs": -10.172,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.1099,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "spiral_impact": {
-      "peak_dbfs_max": -5.976,
+      "peak_dbfs_max": -9.813,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "spiral_impact_1.wav",
-          "peak_dbfs": -6.624,
+          "peak_dbfs": -10.488,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.6,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "spiral_impact_2.wav",
-          "peak_dbfs": -5.976,
+          "peak_dbfs": -9.908,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.5311,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "spiral_impact_3.wav",
-          "peak_dbfs": -7.782,
+          "peak_dbfs": -9.813,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.6754,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "lance_charge": {
-      "peak_dbfs_max": -10.07,
+      "peak_dbfs_max": -12.446,
       "rms_dbfs_min": -24.0,
-      "rms_dbfs_max": -24.0,
+      "rms_dbfs_max": -23.999,
       "clips": [
         {
           "file": "lance_charge_1.wav",
-          "peak_dbfs": -10.07,
-          "rms_dbfs": -24.0,
+          "peak_dbfs": -12.773,
+          "rms_dbfs": -23.999,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -32.739,
-          "boundary_rms_delta_db": 2.594
+          "seam_slope_delta_dbfs": -34.364,
+          "boundary_rms_delta_db": 1.797
         },
         {
           "file": "lance_charge_2.wav",
-          "peak_dbfs": -10.522,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -12.446,
+          "rms_dbfs": -23.999,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -31.302,
-          "boundary_rms_delta_db": 2.234
+          "seam_slope_delta_dbfs": -33.57,
+          "boundary_rms_delta_db": 1.708
         },
         {
           "file": "lance_charge_3.wav",
-          "peak_dbfs": -10.792,
+          "peak_dbfs": -13.512,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -23.143,
-          "boundary_rms_delta_db": 1.362
+          "seam_slope_delta_dbfs": -35.71,
+          "boundary_rms_delta_db": 1.962
         }
       ]
     },
     "lance_release": {
-      "peak_dbfs_max": -5.468,
+      "peak_dbfs_max": -8.187,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "lance_release_1.wav",
-          "peak_dbfs": -6.069,
+          "peak_dbfs": -8.424,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.92,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "lance_release_2.wav",
-          "peak_dbfs": -5.468,
+          "peak_dbfs": -8.187,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.8803,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "lance_release_3.wav",
-          "peak_dbfs": -6.34,
+          "peak_dbfs": -8.477,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.9633,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "lance_impact": {
-      "peak_dbfs_max": -6.303,
+      "peak_dbfs_max": -8.814,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "lance_impact_1.wav",
-          "peak_dbfs": -7.287,
+          "peak_dbfs": -8.846,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 0.86,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "lance_impact_2.wav",
-          "peak_dbfs": -6.303,
+          "peak_dbfs": -8.814,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 0.8229,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "lance_impact_3.wav",
-          "peak_dbfs": -6.818,
+          "peak_dbfs": -9.078,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 0.9005,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "galick_charge": {
-      "peak_dbfs_max": -9.374,
+      "peak_dbfs_max": -14.899,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "galick_charge_1.wav",
-          "peak_dbfs": -9.374,
+          "peak_dbfs": -14.939,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -33.187,
-          "boundary_rms_delta_db": 2.232
+          "seam_slope_delta_dbfs": -80.767,
+          "boundary_rms_delta_db": 1.154
         },
         {
           "file": "galick_charge_2.wav",
-          "peak_dbfs": -10.831,
+          "peak_dbfs": -14.899,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -24.743,
-          "boundary_rms_delta_db": 2.973
+          "seam_slope_delta_dbfs": -80.767,
+          "boundary_rms_delta_db": 1.12
         },
         {
           "file": "galick_charge_3.wav",
-          "peak_dbfs": -10.676,
+          "peak_dbfs": -14.973,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -50.223,
-          "boundary_rms_delta_db": 3.136
+          "seam_slope_delta_dbfs": -80.767,
+          "boundary_rms_delta_db": 0.988
         }
       ]
     },
     "galick_release": {
-      "peak_dbfs_max": -6.365,
+      "peak_dbfs_max": -12.426,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "galick_release_1.wav",
-          "peak_dbfs": -7.391,
+          "peak_dbfs": -12.586,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.27,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "galick_release_2.wav",
-          "peak_dbfs": -6.893,
+          "peak_dbfs": -12.426,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.2153,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "galick_release_3.wav",
-          "peak_dbfs": -6.365,
+          "peak_dbfs": -12.766,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.3298,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "galick_impact": {
-      "peak_dbfs_max": -5.689,
+      "peak_dbfs_max": -10.088,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "galick_impact_1.wav",
-          "peak_dbfs": -7.332,
+          "peak_dbfs": -10.17,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.28,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "galick_impact_2.wav",
-          "peak_dbfs": -6.029,
+          "peak_dbfs": -10.088,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.2249,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "galick_impact_3.wav",
-          "peak_dbfs": -5.689,
+          "peak_dbfs": -10.27,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.3403,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "flash_charge": {
-      "peak_dbfs_max": -10.084,
+      "peak_dbfs_max": -10.818,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "flash_charge_1.wav",
-          "peak_dbfs": -10.62,
+          "peak_dbfs": -11.248,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -46.281,
-          "boundary_rms_delta_db": 5.27
+          "seam_slope_delta_dbfs": -24.688,
+          "boundary_rms_delta_db": 0.299
         },
         {
           "file": "flash_charge_2.wav",
-          "peak_dbfs": -10.084,
+          "peak_dbfs": -10.818,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -21.877,
-          "boundary_rms_delta_db": 2.977
+          "seam_slope_delta_dbfs": -24.223,
+          "boundary_rms_delta_db": 0.255
         },
         {
           "file": "flash_charge_3.wav",
-          "peak_dbfs": -10.277,
+          "peak_dbfs": -11.064,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -28.617,
-          "boundary_rms_delta_db": 1.123
+          "seam_slope_delta_dbfs": -24.956,
+          "boundary_rms_delta_db": 0.241
         }
       ]
     },
     "flash_release": {
-      "peak_dbfs_max": -6.115,
+      "peak_dbfs_max": -6.56,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "flash_release_1.wav",
-          "peak_dbfs": -6.117,
+          "peak_dbfs": -6.87,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 1.33,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "flash_release_2.wav",
-          "peak_dbfs": -6.704,
+          "peak_dbfs": -6.56,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 1.2727,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "flash_release_3.wav",
-          "peak_dbfs": -6.115,
+          "peak_dbfs": -7.092,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 1.3926,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "flash_impact": {
-      "peak_dbfs_max": -6.235,
+      "peak_dbfs_max": -7.576,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "flash_impact_1.wav",
-          "peak_dbfs": -6.332,
+          "peak_dbfs": -7.827,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.17,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "flash_impact_2.wav",
-          "peak_dbfs": -6.951,
+          "peak_dbfs": -7.576,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.0765,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "flash_impact_3.wav",
-          "peak_dbfs": -6.235,
+          "peak_dbfs": -8.03,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.2722,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "heavy_charge": {
-      "peak_dbfs_max": -9.299,
+      "peak_dbfs_max": -13.068,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "heavy_charge_1.wav",
-          "peak_dbfs": -10.299,
+          "peak_dbfs": -13.07,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -27.845,
-          "boundary_rms_delta_db": 5.168
+          "seam_slope_delta_dbfs": -90.309,
+          "boundary_rms_delta_db": 3.796
         },
         {
           "file": "heavy_charge_2.wav",
-          "peak_dbfs": -9.299,
+          "peak_dbfs": -13.068,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -31.014,
-          "boundary_rms_delta_db": 4.041
+          "seam_slope_delta_dbfs": -90.309,
+          "boundary_rms_delta_db": 4.919
         },
         {
           "file": "heavy_charge_3.wav",
-          "peak_dbfs": -9.54,
+          "peak_dbfs": -13.076,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -50.755,
-          "boundary_rms_delta_db": 0.522
+          "seam_slope_delta_dbfs": -90.309,
+          "boundary_rms_delta_db": 2.308
         }
       ]
     },
     "heavy_release": {
-      "peak_dbfs_max": -5.634,
+      "peak_dbfs_max": -8.114,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "heavy_release_1.wav",
-          "peak_dbfs": -5.634,
+          "peak_dbfs": -8.236,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.93,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "heavy_release_2.wav",
-          "peak_dbfs": -6.226,
+          "peak_dbfs": -8.114,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.8899,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "heavy_release_3.wav",
-          "peak_dbfs": -6.716,
+          "peak_dbfs": -8.283,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.9738,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "heavy_impact": {
-      "peak_dbfs_max": -6.616,
+      "peak_dbfs_max": -9.945,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "heavy_impact_1.wav",
-          "peak_dbfs": -6.841,
+          "peak_dbfs": -10.506,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.46,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "heavy_impact_2.wav",
-          "peak_dbfs": -6.616,
+          "peak_dbfs": -9.945,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.3971,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "heavy_impact_3.wav",
-          "peak_dbfs": -6.81,
+          "peak_dbfs": -10.607,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.5288,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "needle_charge": {
-      "peak_dbfs_max": -10.151,
+      "peak_dbfs_max": -10.133,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "needle_charge_1.wav",
-          "peak_dbfs": -10.29,
+          "peak_dbfs": -10.781,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -41.304,
-          "boundary_rms_delta_db": 3.681
+          "seam_slope_delta_dbfs": -34.892,
+          "boundary_rms_delta_db": 0.521
         },
         {
           "file": "needle_charge_2.wav",
-          "peak_dbfs": -10.286,
+          "peak_dbfs": -10.324,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -34.921,
-          "boundary_rms_delta_db": 3.727
+          "seam_slope_delta_dbfs": -36.417,
+          "boundary_rms_delta_db": 0.567
         },
         {
           "file": "needle_charge_3.wav",
-          "peak_dbfs": -10.151,
+          "peak_dbfs": -10.133,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -34.475,
-          "boundary_rms_delta_db": 0.856
+          "seam_slope_delta_dbfs": -34.172,
+          "boundary_rms_delta_db": 0.402
         }
       ]
     },
     "needle_release": {
-      "peak_dbfs_max": -6.094,
+      "peak_dbfs_max": -3.238,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "needle_release_1.wav",
-          "peak_dbfs": -6.999,
+          "peak_dbfs": -3.255,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.6,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "needle_release_2.wav",
-          "peak_dbfs": -6.094,
+          "peak_dbfs": -3.238,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.5741,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "needle_release_3.wav",
-          "peak_dbfs": -7.151,
+          "peak_dbfs": -3.265,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.6282,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "needle_impact": {
-      "peak_dbfs_max": -6.748,
+      "peak_dbfs_max": -3.146,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "needle_impact_1.wav",
-          "peak_dbfs": -6.748,
+          "peak_dbfs": -3.319,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.4,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "needle_impact_2.wav",
-          "peak_dbfs": -7.948,
+          "peak_dbfs": -3.189,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.3827,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "needle_impact_3.wav",
-          "peak_dbfs": -7.446,
+          "peak_dbfs": -3.146,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.4188,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "eclipse_charge": {
-      "peak_dbfs_max": -10.992,
+      "peak_dbfs_max": -11.215,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "eclipse_charge_1.wav",
-          "peak_dbfs": -11.809,
+          "peak_dbfs": -11.229,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -61.366,
-          "boundary_rms_delta_db": 1.053
+          "seam_slope_delta_dbfs": -78.268,
+          "boundary_rms_delta_db": 0.78
         },
         {
           "file": "eclipse_charge_2.wav",
-          "peak_dbfs": -11.466,
+          "peak_dbfs": -11.243,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -36.312,
-          "boundary_rms_delta_db": 1.188
+          "seam_slope_delta_dbfs": -78.268,
+          "boundary_rms_delta_db": 0.879
         },
         {
           "file": "eclipse_charge_3.wav",
-          "peak_dbfs": -10.992,
+          "peak_dbfs": -11.215,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -22.626,
-          "boundary_rms_delta_db": 0.085
+          "seam_slope_delta_dbfs": -84.288,
+          "boundary_rms_delta_db": 0.705
         }
       ]
     },
     "eclipse_release": {
-      "peak_dbfs_max": -6.746,
+      "peak_dbfs_max": -11.789,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "eclipse_release_1.wav",
-          "peak_dbfs": -6.746,
+          "peak_dbfs": -11.81,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 2.0,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "eclipse_release_2.wav",
-          "peak_dbfs": -7.02,
+          "peak_dbfs": -11.789,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 1.9138,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "eclipse_release_3.wav",
-          "peak_dbfs": -8.117,
+          "peak_dbfs": -11.829,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 2.0942,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "eclipse_impact": {
-      "peak_dbfs_max": -7.996,
+      "peak_dbfs_max": -8.643,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "eclipse_impact_1.wav",
-          "peak_dbfs": -8.416,
+          "peak_dbfs": -8.653,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.1,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "eclipse_impact_2.wav",
-          "peak_dbfs": -8.256,
+          "peak_dbfs": -8.643,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.0095,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "eclipse_impact_3.wav",
-          "peak_dbfs": -7.996,
+          "peak_dbfs": -8.66,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.1989,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "heal_charge": {
-      "peak_dbfs_max": -14.827,
-      "rms_dbfs_min": -24.0,
-      "rms_dbfs_max": -24.0,
+      "peak_dbfs_max": -11.953,
+      "rms_dbfs_min": -23.999,
+      "rms_dbfs_max": -23.998,
       "clips": [
         {
           "file": "heal_charge_1.wav",
-          "peak_dbfs": -14.827,
-          "rms_dbfs": -24.0,
+          "peak_dbfs": -11.953,
+          "rms_dbfs": -23.998,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -39.731,
-          "boundary_rms_delta_db": 1.383
+          "seam_slope_delta_dbfs": -17.276,
+          "boundary_rms_delta_db": 0.931
         },
         {
           "file": "heal_charge_2.wav",
-          "peak_dbfs": -14.833,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -12.101,
+          "rms_dbfs": -23.998,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -33.892,
-          "boundary_rms_delta_db": 0.045
+          "seam_slope_delta_dbfs": -16.834,
+          "boundary_rms_delta_db": 0.974
         },
         {
           "file": "heal_charge_3.wav",
-          "peak_dbfs": -14.838,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -11.967,
+          "rms_dbfs": -23.999,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -35.47,
-          "boundary_rms_delta_db": 0.677
+          "seam_slope_delta_dbfs": -17.227,
+          "boundary_rms_delta_db": 1.025
         }
       ]
     },
     "heal_release": {
-      "peak_dbfs_max": -9.106,
+      "peak_dbfs_max": -6.948,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "heal_release_1.wav",
-          "peak_dbfs": -9.106,
+          "peak_dbfs": -7.249,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.02,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "heal_release_2.wav",
-          "peak_dbfs": -9.738,
+          "peak_dbfs": -7.582,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.9761,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "heal_release_3.wav",
-          "peak_dbfs": -9.261,
+          "peak_dbfs": -6.948,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.068,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "heal_impact": {
-      "peak_dbfs_max": -10.107,
+      "peak_dbfs_max": -4.81,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "heal_impact_1.wav",
-          "peak_dbfs": -10.714,
+          "peak_dbfs": -4.81,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.6,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "heal_impact_2.wav",
-          "peak_dbfs": -10.379,
+          "peak_dbfs": -5.531,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.5311,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "heal_impact_3.wav",
-          "peak_dbfs": -10.107,
+          "peak_dbfs": -5.09,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.6754,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "sweet_charge": {
-      "peak_dbfs_max": -14.608,
+      "peak_dbfs_max": -7.791,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "sweet_charge_1.wav",
-          "peak_dbfs": -14.608,
+          "peak_dbfs": -7.867,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -36.576,
-          "boundary_rms_delta_db": 0.01
+          "seam_slope_delta_dbfs": -29.641,
+          "boundary_rms_delta_db": 1.276
         },
         {
           "file": "sweet_charge_2.wav",
-          "peak_dbfs": -14.873,
+          "peak_dbfs": -7.952,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -31.147,
-          "boundary_rms_delta_db": 0.301
+          "seam_slope_delta_dbfs": -28.99,
+          "boundary_rms_delta_db": 1.204
         },
         {
           "file": "sweet_charge_3.wav",
-          "peak_dbfs": -14.808,
+          "peak_dbfs": -7.791,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -34.281,
-          "boundary_rms_delta_db": 0.055
+          "seam_slope_delta_dbfs": -30.01,
+          "boundary_rms_delta_db": 1.266
         }
       ]
     },
     "sweet_release": {
-      "peak_dbfs_max": -9.488,
+      "peak_dbfs_max": -3.974,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "sweet_release_1.wav",
-          "peak_dbfs": -9.878,
+          "peak_dbfs": -4.044,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.88,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "sweet_release_2.wav",
-          "peak_dbfs": -9.488,
+          "peak_dbfs": -3.974,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.8421,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "sweet_release_3.wav",
-          "peak_dbfs": -9.492,
+          "peak_dbfs": -4.141,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.9214,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "sweet_impact": {
-      "peak_dbfs_max": -10.74,
+      "peak_dbfs_max": -3.181,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "sweet_impact_1.wav",
-          "peak_dbfs": -11.259,
+          "peak_dbfs": -3.221,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.36,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "sweet_impact_2.wav",
-          "peak_dbfs": -11.163,
+          "peak_dbfs": -3.181,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.3014,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "sweet_impact_3.wav",
-          "peak_dbfs": -10.74,
+          "peak_dbfs": -3.233,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.4241,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "transfer_charge": {
-      "peak_dbfs_max": -10.839,
-      "rms_dbfs_min": -24.0,
-      "rms_dbfs_max": -24.0,
+      "peak_dbfs_max": -10.387,
+      "rms_dbfs_min": -23.997,
+      "rms_dbfs_max": -23.996,
       "clips": [
         {
           "file": "transfer_charge_1.wav",
-          "peak_dbfs": -11.63,
-          "rms_dbfs": -24.0,
+          "peak_dbfs": -10.63,
+          "rms_dbfs": -23.997,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -36.612,
-          "boundary_rms_delta_db": 1.021
+          "seam_slope_delta_dbfs": -18.743,
+          "boundary_rms_delta_db": 0.314
         },
         {
           "file": "transfer_charge_2.wav",
-          "peak_dbfs": -11.674,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -10.387,
+          "rms_dbfs": -23.996,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -31.67,
-          "boundary_rms_delta_db": 0.653
+          "seam_slope_delta_dbfs": -18.096,
+          "boundary_rms_delta_db": 0.116
         },
         {
           "file": "transfer_charge_3.wav",
-          "peak_dbfs": -10.839,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -10.439,
+          "rms_dbfs": -23.997,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -23.238,
-          "boundary_rms_delta_db": 0.279
+          "seam_slope_delta_dbfs": -18.532,
+          "boundary_rms_delta_db": 0.454
         }
       ]
     },
     "transfer_release": {
-      "peak_dbfs_max": -8.481,
+      "peak_dbfs_max": -5.383,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "transfer_release_1.wav",
-          "peak_dbfs": -8.609,
+          "peak_dbfs": -5.944,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.8,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "transfer_release_2.wav",
-          "peak_dbfs": -8.481,
+          "peak_dbfs": -6.003,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.7655,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "transfer_release_3.wav",
-          "peak_dbfs": -8.786,
+          "peak_dbfs": -5.383,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.8377,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "transfer_impact": {
-      "peak_dbfs_max": -7.971,
+      "peak_dbfs_max": -9.447,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "transfer_impact_1.wav",
-          "peak_dbfs": -8.217,
+          "peak_dbfs": -9.678,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 0.5,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "transfer_impact_2.wav",
-          "peak_dbfs": -8.177,
+          "peak_dbfs": -9.447,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 0.4784,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "transfer_impact_3.wav",
-          "peak_dbfs": -7.971,
+          "peak_dbfs": -9.915,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 0.5235,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "evade_charge": {
-      "peak_dbfs_max": -11.481,
+      "peak_dbfs_max": -12.687,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "evade_charge_1.wav",
-          "peak_dbfs": -11.669,
+          "peak_dbfs": -12.706,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -22.42,
-          "boundary_rms_delta_db": 1.558
+          "seam_slope_delta_dbfs": -90.309,
+          "boundary_rms_delta_db": 1.406
         },
         {
           "file": "evade_charge_2.wav",
-          "peak_dbfs": -11.592,
+          "peak_dbfs": -12.687,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -23.873,
-          "boundary_rms_delta_db": 0.659
+          "seam_slope_delta_dbfs": -90.309,
+          "boundary_rms_delta_db": 1.373
         },
         {
           "file": "evade_charge_3.wav",
-          "peak_dbfs": -11.481,
+          "peak_dbfs": -12.724,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -13.586,
-          "boundary_rms_delta_db": 0.978
+          "seam_slope_delta_dbfs": -90.309,
+          "boundary_rms_delta_db": 1.316
         }
       ]
     },
     "evade_release": {
-      "peak_dbfs_max": -6.989,
+      "peak_dbfs_max": -7.657,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "evade_release_1.wav",
-          "peak_dbfs": -7.731,
+          "peak_dbfs": -7.684,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.39,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "evade_release_2.wav",
-          "peak_dbfs": -6.989,
+          "peak_dbfs": -7.677,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.3732,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "evade_release_3.wav",
-          "peak_dbfs": -7.807,
+          "peak_dbfs": -7.657,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.4083,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "evade_impact": {
-      "peak_dbfs_max": -7.204,
+      "peak_dbfs_max": -5.042,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "evade_impact_1.wav",
-          "peak_dbfs": -7.671,
+          "peak_dbfs": -5.053,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.46,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "evade_impact_2.wav",
-          "peak_dbfs": -7.628,
+          "peak_dbfs": -5.119,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.4402,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "evade_impact_3.wav",
-          "peak_dbfs": -7.204,
+          "peak_dbfs": -5.042,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.4816,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "demon_charge": {
-      "peak_dbfs_max": -9.958,
-      "rms_dbfs_min": -24.0,
-      "rms_dbfs_max": -24.0,
+      "peak_dbfs_max": -9.484,
+      "rms_dbfs_min": -24.002,
+      "rms_dbfs_max": -24.001,
       "clips": [
         {
           "file": "demon_charge_1.wav",
-          "peak_dbfs": -10.158,
-          "rms_dbfs": -24.0,
+          "peak_dbfs": -9.958,
+          "rms_dbfs": -24.001,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -35.873,
-          "boundary_rms_delta_db": 5.616
+          "seam_slope_delta_dbfs": -24.67,
+          "boundary_rms_delta_db": 4.018
         },
         {
           "file": "demon_charge_2.wav",
-          "peak_dbfs": -9.958,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -9.484,
+          "rms_dbfs": -24.002,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -23.041,
-          "boundary_rms_delta_db": 2.97
+          "seam_slope_delta_dbfs": -23.289,
+          "boundary_rms_delta_db": 3.696
         },
         {
           "file": "demon_charge_3.wav",
-          "peak_dbfs": -10.005,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -10.842,
+          "rms_dbfs": -24.001,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -38.645,
-          "boundary_rms_delta_db": 1.486
+          "seam_slope_delta_dbfs": -26.735,
+          "boundary_rms_delta_db": 5.034
         }
       ]
     },
     "demon_release": {
-      "peak_dbfs_max": -6.397,
+      "peak_dbfs_max": -9.075,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "demon_release_1.wav",
-          "peak_dbfs": -6.397,
+          "peak_dbfs": -9.585,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.06,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "demon_release_2.wav",
-          "peak_dbfs": -6.911,
+          "peak_dbfs": -9.075,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.0143,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "demon_release_3.wav",
-          "peak_dbfs": -6.995,
+          "peak_dbfs": -9.909,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.1099,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "demon_impact": {
-      "peak_dbfs_max": -6.103,
+      "peak_dbfs_max": -8.104,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "demon_impact_1.wav",
-          "peak_dbfs": -6.103,
+          "peak_dbfs": -8.38,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.76,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "demon_impact_2.wav",
-          "peak_dbfs": -7.868,
+          "peak_dbfs": -8.104,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.6842,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "demon_impact_3.wav",
-          "peak_dbfs": -7.239,
+          "peak_dbfs": -8.645,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.8429,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "chime_charge": {
-      "peak_dbfs_max": -14.481,
+      "peak_dbfs_max": -12.845,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "chime_charge_1.wav",
-          "peak_dbfs": -14.508,
+          "peak_dbfs": -12.848,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -50.223,
-          "boundary_rms_delta_db": 0.726
+          "seam_slope_delta_dbfs": -66.787,
+          "boundary_rms_delta_db": 1.654
         },
         {
           "file": "chime_charge_2.wav",
-          "peak_dbfs": -14.752,
+          "peak_dbfs": -12.845,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -42.526,
-          "boundary_rms_delta_db": 0.556
+          "seam_slope_delta_dbfs": -64.288,
+          "boundary_rms_delta_db": 1.737
         },
         {
           "file": "chime_charge_3.wav",
-          "peak_dbfs": -14.481,
+          "peak_dbfs": -12.853,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -33.892,
-          "boundary_rms_delta_db": 0.688
+          "seam_slope_delta_dbfs": -69.481,
+          "boundary_rms_delta_db": 1.46
         }
       ]
     },
     "chime_release": {
-      "peak_dbfs_max": -9.3,
+      "peak_dbfs_max": -5.279,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "chime_release_1.wav",
-          "peak_dbfs": -9.649,
+          "peak_dbfs": -5.415,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.28,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "chime_release_2.wav",
-          "peak_dbfs": -9.573,
+          "peak_dbfs": -5.308,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.2249,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "chime_release_3.wav",
-          "peak_dbfs": -9.3,
+          "peak_dbfs": -5.279,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.3403,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "chime_impact": {
-      "peak_dbfs_max": -10.402,
+      "peak_dbfs_max": -7.454,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "chime_impact_1.wav",
-          "peak_dbfs": -10.805,
+          "peak_dbfs": -7.604,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.06,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "chime_impact_2.wav",
-          "peak_dbfs": -11.254,
+          "peak_dbfs": -7.454,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.0143,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "chime_impact_3.wav",
-          "peak_dbfs": -10.402,
+          "peak_dbfs": -7.629,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.1099,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "destroy_charge": {
-      "peak_dbfs_max": -10.607,
+      "peak_dbfs_max": -14.264,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "destroy_charge_1.wav",
-          "peak_dbfs": -12.004,
+          "peak_dbfs": -14.27,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -23.676,
-          "boundary_rms_delta_db": 1.07
+          "seam_slope_delta_dbfs": -64.734,
+          "boundary_rms_delta_db": 4.199
         },
         {
           "file": "destroy_charge_2.wav",
-          "peak_dbfs": -10.994,
+          "peak_dbfs": -14.267,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -24.07,
-          "boundary_rms_delta_db": 0.757
+          "seam_slope_delta_dbfs": -63.461,
+          "boundary_rms_delta_db": 4.028
         },
         {
           "file": "destroy_charge_3.wav",
-          "peak_dbfs": -10.607,
+          "peak_dbfs": -14.264,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -20.042,
-          "boundary_rms_delta_db": 0.062
+          "seam_slope_delta_dbfs": -66.227,
+          "boundary_rms_delta_db": 4.195
         }
       ]
     },
     "destroy_release": {
-      "peak_dbfs_max": -6.855,
+      "peak_dbfs_max": -11.144,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "destroy_release_1.wav",
-          "peak_dbfs": -7.709,
+          "peak_dbfs": -11.462,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 1.6,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "destroy_release_2.wav",
-          "peak_dbfs": -6.855,
+          "peak_dbfs": -11.144,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 1.5311,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "destroy_release_3.wav",
-          "peak_dbfs": -7.915,
+          "peak_dbfs": -11.78,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 1.6754,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "destroy_impact": {
-      "peak_dbfs_max": -7.018,
+      "peak_dbfs_max": -9.528,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "destroy_impact_1.wav",
-          "peak_dbfs": -8.877,
+          "peak_dbfs": -10.348,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.39,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "destroy_impact_2.wav",
-          "peak_dbfs": -7.018,
+          "peak_dbfs": -9.528,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.2871,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "destroy_impact_3.wav",
-          "peak_dbfs": -7.246,
+          "peak_dbfs": -10.755,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.5026,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "focus_charge": {
-      "peak_dbfs_max": -14.383,
+      "peak_dbfs_max": -14.332,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "focus_charge_1.wav",
-          "peak_dbfs": -14.724,
+          "peak_dbfs": -14.348,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -43.741,
-          "boundary_rms_delta_db": 0.909
+          "seam_slope_delta_dbfs": -80.767,
+          "boundary_rms_delta_db": 3.388
         },
         {
           "file": "focus_charge_2.wav",
-          "peak_dbfs": -14.88,
+          "peak_dbfs": -14.332,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -37.66,
-          "boundary_rms_delta_db": 0.703
+          "seam_slope_delta_dbfs": -90.309,
+          "boundary_rms_delta_db": 3.57
         },
         {
           "file": "focus_charge_3.wav",
-          "peak_dbfs": -14.383,
+          "peak_dbfs": -14.361,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -66.227,
-          "boundary_rms_delta_db": 0.214
+          "seam_slope_delta_dbfs": -78.268,
+          "boundary_rms_delta_db": 3.279
         }
       ]
     },
     "focus_release": {
-      "peak_dbfs_max": -9.576,
+      "peak_dbfs_max": -3.158,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "focus_release_1.wav",
-          "peak_dbfs": -9.576,
+          "peak_dbfs": -3.164,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.2,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "focus_release_2.wav",
-          "peak_dbfs": -10.323,
+          "peak_dbfs": -3.175,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.1483,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "focus_release_3.wav",
-          "peak_dbfs": -9.772,
+          "peak_dbfs": -3.158,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 1.2565,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "focus_impact": {
-      "peak_dbfs_max": -10.684,
+      "peak_dbfs_max": -7.591,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "focus_impact_1.wav",
-          "peak_dbfs": -10.76,
+          "peak_dbfs": -7.65,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.17,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "focus_impact_2.wav",
-          "peak_dbfs": -10.72,
+          "peak_dbfs": -7.591,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.1196,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "focus_impact_3.wav",
-          "peak_dbfs": -10.684,
+          "peak_dbfs": -7.602,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.2251,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "avatar_charge": {
-      "peak_dbfs_max": -11.046,
+      "peak_dbfs_max": -12.503,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "avatar_charge_1.wav",
-          "peak_dbfs": -11.279,
+          "peak_dbfs": -12.503,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -26.666,
-          "boundary_rms_delta_db": 1.955
+          "seam_slope_delta_dbfs": -73.407,
+          "boundary_rms_delta_db": 2.416
         },
         {
           "file": "avatar_charge_2.wav",
-          "peak_dbfs": -11.046,
+          "peak_dbfs": -12.505,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -29.624,
-          "boundary_rms_delta_db": 0.438
+          "seam_slope_delta_dbfs": -71.224,
+          "boundary_rms_delta_db": 2.242
         },
         {
           "file": "avatar_charge_3.wav",
-          "peak_dbfs": -11.212,
+          "peak_dbfs": -12.503,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -33.749,
-          "boundary_rms_delta_db": 4.288
+          "seam_slope_delta_dbfs": -76.33,
+          "boundary_rms_delta_db": 2.512
         }
       ]
     },
     "avatar_release": {
-      "peak_dbfs_max": -6.542,
+      "peak_dbfs_max": -10.888,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "avatar_release_1.wav",
-          "peak_dbfs": -7.9,
+          "peak_dbfs": -10.984,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 1.61,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "avatar_release_2.wav",
-          "peak_dbfs": -7.553,
+          "peak_dbfs": -10.888,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 1.5406,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "avatar_release_3.wav",
-          "peak_dbfs": -6.542,
+          "peak_dbfs": -11.077,
           "rms_dbfs": -22.0,
-          "seconds": 0.95,
+          "seconds": 1.6858,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "avatar_impact": {
-      "peak_dbfs_max": -7.942,
+      "peak_dbfs_max": -10.061,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "avatar_impact_1.wav",
-          "peak_dbfs": -7.942,
+          "peak_dbfs": -10.084,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.15,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "avatar_impact_2.wav",
-          "peak_dbfs": -8.546,
+          "peak_dbfs": -10.061,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.0574,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "avatar_impact_3.wav",
-          "peak_dbfs": -8.107,
+          "peak_dbfs": -10.1,
           "rms_dbfs": -22.0,
-          "seconds": 1.25,
+          "seconds": 2.2513,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "shield_charge": {
-      "peak_dbfs_max": -9.701,
+      "peak_dbfs_max": -12.304,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "shield_charge_1.wav",
-          "peak_dbfs": -10.117,
+          "peak_dbfs": -12.311,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
-          "review_flags": [
-            "head/tail energy differs > 6 dB"
-          ],
+          "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -27.318,
-          "boundary_rms_delta_db": 6.911
+          "seam_slope_delta_dbfs": -84.288,
+          "boundary_rms_delta_db": 4.974
         },
         {
           "file": "shield_charge_2.wav",
-          "peak_dbfs": -9.701,
+          "peak_dbfs": -12.304,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -25.046,
-          "boundary_rms_delta_db": 2.986
+          "seam_slope_delta_dbfs": -80.767,
+          "boundary_rms_delta_db": 5.236
         },
         {
           "file": "shield_charge_3.wav",
-          "peak_dbfs": -11.011,
+          "peak_dbfs": -12.321,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -30.939,
-          "boundary_rms_delta_db": 1.398
+          "seam_slope_delta_dbfs": -84.288,
+          "boundary_rms_delta_db": 4.86
         }
       ]
     },
     "shield_release": {
-      "peak_dbfs_max": -5.309,
+      "peak_dbfs_max": -6.637,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "shield_release_1.wav",
-          "peak_dbfs": -5.787,
+          "peak_dbfs": -6.637,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.89,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "shield_release_2.wav",
-          "peak_dbfs": -6.925,
+          "peak_dbfs": -6.68,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.8516,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "shield_release_3.wav",
-          "peak_dbfs": -5.309,
+          "peak_dbfs": -6.966,
           "rms_dbfs": -22.0,
-          "seconds": 0.65,
+          "seconds": 0.9319,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "shield_impact": {
-      "peak_dbfs_max": -6.933,
+      "peak_dbfs_max": -8.303,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "shield_impact_1.wav",
-          "peak_dbfs": -7.368,
+          "peak_dbfs": -8.761,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.19,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "shield_impact_2.wav",
-          "peak_dbfs": -6.933,
+          "peak_dbfs": -8.303,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.1387,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "shield_impact_3.wav",
-          "peak_dbfs": -7.012,
+          "peak_dbfs": -9.592,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.246,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "impact_charge": {
-      "peak_dbfs_max": -10.777,
-      "rms_dbfs_min": -24.0,
-      "rms_dbfs_max": -24.0,
+      "peak_dbfs_max": -7.536,
+      "rms_dbfs_min": -24.014,
+      "rms_dbfs_max": -24.003,
       "clips": [
         {
           "file": "impact_charge_1.wav",
-          "peak_dbfs": -11.946,
-          "rms_dbfs": -24.0,
+          "peak_dbfs": -7.536,
+          "rms_dbfs": -24.012,
           "seconds": 2.0,
           "loop": true,
-          "review_flags": [],
+          "review_flags": [
+            "head/tail energy differs > 6 dB"
+          ],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -32.796,
-          "boundary_rms_delta_db": 2.303
+          "seam_slope_delta_dbfs": -44.032,
+          "boundary_rms_delta_db": 9.91
         },
         {
           "file": "impact_charge_2.wav",
-          "peak_dbfs": -12.089,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -7.536,
+          "rms_dbfs": -24.014,
+          "seconds": 1.9139,
           "loop": true,
-          "review_flags": [],
+          "review_flags": [
+            "head/tail energy differs > 6 dB"
+          ],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -41.811,
-          "boundary_rms_delta_db": 1.168
+          "seam_slope_delta_dbfs": -41.335,
+          "boundary_rms_delta_db": 9.732
         },
         {
           "file": "impact_charge_3.wav",
-          "peak_dbfs": -10.777,
-          "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "peak_dbfs": -7.536,
+          "rms_dbfs": -24.003,
+          "seconds": 2.0942,
           "loop": true,
-          "review_flags": [],
+          "review_flags": [
+            "head/tail energy differs > 6 dB"
+          ],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -34.531,
-          "boundary_rms_delta_db": 0.751
+          "seam_slope_delta_dbfs": -46.845,
+          "boundary_rms_delta_db": 8.988
         }
       ]
     },
     "impact_release": {
-      "peak_dbfs_max": -4.478,
+      "peak_dbfs_max": -8.392,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "impact_release_1.wav",
-          "peak_dbfs": -4.478,
+          "peak_dbfs": -8.392,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.61,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "impact_release_2.wav",
-          "peak_dbfs": -4.755,
+          "peak_dbfs": -8.401,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.5837,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "impact_release_3.wav",
-          "peak_dbfs": -5.443,
+          "peak_dbfs": -8.395,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.6387,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "impact_impact": {
-      "peak_dbfs_max": -4.794,
+      "peak_dbfs_max": -8.946,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "impact_impact_1.wav",
-          "peak_dbfs": -5.5,
+          "peak_dbfs": -9.022,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.43,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "impact_impact_2.wav",
-          "peak_dbfs": -5.702,
+          "peak_dbfs": -8.946,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.4115,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "impact_impact_3.wav",
-          "peak_dbfs": -4.794,
+          "peak_dbfs": -9.122,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.4502,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "impact_light": {
-      "peak_dbfs_max": -3.762,
+      "peak_dbfs_max": -8.262,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "impact_light_1.wav",
-          "peak_dbfs": -4.812,
+          "peak_dbfs": -8.543,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.4,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "impact_light_2.wav",
-          "peak_dbfs": -4.418,
+          "peak_dbfs": -8.262,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.3827,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "impact_light_3.wav",
-          "peak_dbfs": -3.762,
+          "peak_dbfs": -8.595,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.4188,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "impact_heavy": {
-      "peak_dbfs_max": -4.434,
+      "peak_dbfs_max": -11.698,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "impact_heavy_1.wav",
-          "peak_dbfs": -5.346,
+          "peak_dbfs": -11.969,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.55,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "impact_heavy_2.wav",
-          "peak_dbfs": -4.455,
+          "peak_dbfs": -11.698,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.5263,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "impact_heavy_3.wav",
-          "peak_dbfs": -4.434,
+          "peak_dbfs": -12.049,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.5759,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "kick": {
-      "peak_dbfs_max": -4.82,
+      "peak_dbfs_max": -9.197,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "kick_1.wav",
-          "peak_dbfs": -4.82,
+          "peak_dbfs": -9.299,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.28,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "kick_2.wav",
-          "peak_dbfs": -5.936,
+          "peak_dbfs": -9.197,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.2679,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "kick_3.wav",
-          "peak_dbfs": -6.333,
+          "peak_dbfs": -9.388,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.2932,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "guard": {
-      "peak_dbfs_max": -4.411,
+      "peak_dbfs_max": -6.587,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "guard_1.wav",
-          "peak_dbfs": -4.411,
+          "peak_dbfs": -6.677,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.57,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "guard_2.wav",
-          "peak_dbfs": -4.783,
+          "peak_dbfs": -6.62,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.5454,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "guard_3.wav",
-          "peak_dbfs": -5.189,
+          "peak_dbfs": -6.587,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.5968,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "swing": {
-      "peak_dbfs_max": -6.532,
+      "peak_dbfs_max": -7.341,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "swing_1.wav",
-          "peak_dbfs": -6.532,
+          "peak_dbfs": -7.411,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.16,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "swing_2.wav",
-          "peak_dbfs": -7.648,
+          "peak_dbfs": -7.341,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.1531,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "swing_3.wav",
-          "peak_dbfs": -8.118,
+          "peak_dbfs": -7.51,
           "rms_dbfs": -22.0,
-          "seconds": 0.32,
+          "seconds": 0.1675,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "landing": {
-      "peak_dbfs_max": -3.23,
+      "peak_dbfs_max": -3.264,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "landing_1.wav",
-          "peak_dbfs": -6.129,
+          "peak_dbfs": -3.269,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.61,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "landing_2.wav",
-          "peak_dbfs": -5.756,
+          "peak_dbfs": -3.268,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.5837,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "landing_3.wav",
-          "peak_dbfs": -3.23,
+          "peak_dbfs": -3.264,
           "rms_dbfs": -22.0,
-          "seconds": 0.22,
+          "seconds": 0.6387,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "flight": {
-      "peak_dbfs_max": -7.695,
+      "peak_dbfs_max": -10.062,
       "rms_dbfs_min": -22.0,
       "rms_dbfs_max": -22.0,
       "clips": [
         {
           "file": "flight_1.wav",
-          "peak_dbfs": -7.726,
+          "peak_dbfs": -10.125,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.04,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "flight_2.wav",
-          "peak_dbfs": -7.695,
+          "peak_dbfs": -10.062,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 0.9952,
           "loop": false,
           "review_flags": []
         },
         {
           "file": "flight_3.wav",
-          "peak_dbfs": -7.91,
+          "peak_dbfs": -10.175,
           "rms_dbfs": -22.0,
-          "seconds": 0.8,
+          "seconds": 1.089,
           "loop": false,
           "review_flags": []
         }
       ]
     },
     "charge_loop": {
-      "peak_dbfs_max": -9.533,
+      "peak_dbfs_max": -13.572,
       "rms_dbfs_min": -24.0,
       "rms_dbfs_max": -24.0,
       "clips": [
         {
           "file": "charge_loop_1.wav",
-          "peak_dbfs": -10.542,
+          "peak_dbfs": -13.585,
           "rms_dbfs": -24.0,
           "seconds": 2.0,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -29.943,
-          "boundary_rms_delta_db": 3.861
+          "seam_slope_delta_dbfs": -62.705,
+          "boundary_rms_delta_db": 1.336
         },
         {
           "file": "charge_loop_2.wav",
-          "peak_dbfs": -10.346,
+          "peak_dbfs": -13.572,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 1.9139,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -36.347,
-          "boundary_rms_delta_db": 2.918
+          "seam_slope_delta_dbfs": -60.767,
+          "boundary_rms_delta_db": 1.221
         },
         {
           "file": "charge_loop_3.wav",
-          "peak_dbfs": -9.533,
+          "peak_dbfs": -13.594,
           "rms_dbfs": -24.0,
-          "seconds": 2.0,
+          "seconds": 2.0942,
           "loop": true,
           "review_flags": [],
           "seam_step_dbfs": -90.309,
-          "seam_slope_delta_dbfs": -20.807,
-          "boundary_rms_delta_db": 2.472
+          "seam_slope_delta_dbfs": -64.288,
+          "boundary_rms_delta_db": 1.624
         }
       ]
+    }
+  },
+  "game_sounds": {
+    "targets": {
+      "metric": "full-clip RMS dBFS (not LUFS)",
+      "peak_ceiling": 0.7,
+      "targets_dbfs": {
+        "ui_click": -26,
+        "ui_confirm": -26,
+        "ui_back": -26,
+        "menu_open": -26,
+        "level_up": -22,
+        "quest_accept": -24,
+        "quest_complete": -22,
+        "item_pickup": -24,
+        "zeni": -24,
+        "boost_ignite": -22,
+        "travel_whoosh": -22
+      }
+    },
+    "clips": {
+      "ui_click": {
+        "file": "ui_click.wav",
+        "peak_dbfs": -11.793,
+        "rms_dbfs": -26.0,
+        "seconds": 0.19,
+        "loop": false,
+        "review_flags": []
+      },
+      "ui_confirm": {
+        "file": "ui_confirm.wav",
+        "peak_dbfs": -10.969,
+        "rms_dbfs": -26.0,
+        "seconds": 0.45,
+        "loop": false,
+        "review_flags": []
+      },
+      "ui_back": {
+        "file": "ui_back.wav",
+        "peak_dbfs": -4.223,
+        "rms_dbfs": -26.0,
+        "seconds": 0.34,
+        "loop": false,
+        "review_flags": []
+      },
+      "menu_open": {
+        "file": "menu_open.wav",
+        "peak_dbfs": -7.173,
+        "rms_dbfs": -26.0,
+        "seconds": 0.68,
+        "loop": false,
+        "review_flags": []
+      },
+      "level_up": {
+        "file": "level_up.wav",
+        "peak_dbfs": -8.451,
+        "rms_dbfs": -22.0,
+        "seconds": 1.6,
+        "loop": false,
+        "review_flags": []
+      },
+      "quest_accept": {
+        "file": "quest_accept.wav",
+        "peak_dbfs": -12.827,
+        "rms_dbfs": -24.0,
+        "seconds": 0.96,
+        "loop": false,
+        "review_flags": []
+      },
+      "quest_complete": {
+        "file": "quest_complete.wav",
+        "peak_dbfs": -5.918,
+        "rms_dbfs": -22.0,
+        "seconds": 1.48,
+        "loop": false,
+        "review_flags": []
+      },
+      "item_pickup": {
+        "file": "item_pickup.wav",
+        "peak_dbfs": -3.198,
+        "rms_dbfs": -24.0,
+        "seconds": 0.42,
+        "loop": false,
+        "review_flags": []
+      },
+      "zeni": {
+        "file": "zeni.wav",
+        "peak_dbfs": -3.27,
+        "rms_dbfs": -24.0,
+        "seconds": 0.8,
+        "loop": false,
+        "review_flags": []
+      },
+      "boost_ignite": {
+        "file": "boost_ignite.wav",
+        "peak_dbfs": -13.962,
+        "rms_dbfs": -22.0,
+        "seconds": 0.74,
+        "loop": false,
+        "review_flags": []
+      },
+      "travel_whoosh": {
+        "file": "travel_whoosh.wav",
+        "peak_dbfs": -7.191,
+        "rms_dbfs": -22.0,
+        "seconds": 1.02,
+        "loop": false,
+        "review_flags": []
+      }
     }
   }
 }

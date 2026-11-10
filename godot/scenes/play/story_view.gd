@@ -22,6 +22,7 @@ var _since := 1.0
 var _orb_mat: ShaderMaterial
 var _ball: SphereMesh
 var _energy: ShaderMaterial
+var _player_pos := Vector3(1e9, 1e9, 1e9)   # last known player position (pickup sound proximity)
 
 func _init(s: RuleStory, c: RuleCombat) -> void:
 	name = "Story"
@@ -152,6 +153,8 @@ func _sync_pickups() -> void:
 		pickups[key] = g
 	for k: String in pickups.keys():
 		if not seen.has(k):
+			# collected beside the player (not merely unloaded by travel): pickup sound
+			if (pickups[k] as Node3D).position.distance_to(_player_pos) < 8.0: GameSfx.play(self, "item_pickup")
 			(pickups[k] as Node).queue_free()
 			pickups.erase(k)
 
@@ -181,6 +184,7 @@ func _sync_pads() -> void:
 func update_view(dt: float, player_pos: Vector3) -> void:
 	_t += dt
 	_since += dt
+	_player_pos = player_pos
 	if _since > 0.3:
 		_since = 0.0
 		refresh()

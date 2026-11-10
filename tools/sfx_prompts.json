@@ -1,0 +1,438 @@
+{
+  "_comment": "Prompts for tools/elevenlabs_sfx.py. One ElevenLabs take per entry; variants _2/_3 are made by DSP. Prompts describe sounds physically and never name any franchise. combat.* keys are manifest families of godot/assets/audio/combat; game.* are general sounds in godot/assets/audio/game.",
+  "defaults": {
+    "prompt_influence": 0.5,
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "combat": {
+    "wave_charge": {
+      "prompt": "Anime-style energy charging between cupped hands, deep rising electric hum with a bright glowing whine on top, crackling sparks, steady sustained power build, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "wave_release": {
+      "prompt": "Anime-style huge energy beam fired from both hands, powerful roaring blast with a bright sizzling whoosh, sustained rushing energy stream, cinematic",
+      "duration_seconds": 1.4
+    },
+    "wave_impact": {
+      "prompt": "Massive energy beam slamming into a target, big deep explosion with rumbling boom, crackling energy debris and rolling tail",
+      "duration_seconds": 1.8
+    },
+    "blast_charge": {
+      "prompt": "Small ball of energy humming in an open palm, compact buzzing electric glow with faint crackle, sustained, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "blast_release": {
+      "prompt": "Quick anime energy blast fired from the palm, short punchy zap with a fast whoosh, snappy",
+      "duration_seconds": 0.7
+    },
+    "blast_impact": {
+      "prompt": "Small energy ball hitting a target, short sharp crackling pop explosion, tight and punchy",
+      "duration_seconds": 0.8
+    },
+    "disc_charge": {
+      "prompt": "Spinning disc of energy held overhead, high-pitched whirring buzz-saw hum, steady rotating electric whine, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "disc_release": {
+      "prompt": "Spinning energy saw blade thrown through the air, whirring buzz-saw whoosh flying away, doppler sweep",
+      "duration_seconds": 1.2
+    },
+    "disc_impact": {
+      "prompt": "Spinning energy blade slicing through rock, sharp metallic slicing shriek with crackling sparks and a short crunch",
+      "duration_seconds": 1.4
+    },
+    "flare_charge": {
+      "prompt": "Bright light gathering around a face, shimmering rising high hum with glassy sparkle, sustained radiant tone, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "flare_release": {
+      "prompt": "Blinding flash of light burst, bright crystalline whoosh flare with a sharp shimmering pop, airy ringing",
+      "duration_seconds": 1.2
+    },
+    "flare_impact": {
+      "prompt": "Dazzling light flash fading out, high bright ringing shimmer with soft airy sparkle tail",
+      "duration_seconds": 1.4
+    },
+    "triad_charge": {
+      "prompt": "Energy concentrated in a triangle shape between hands, intense focused electric hum with a tense high whine and buzzing pulses, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "triad_release": {
+      "prompt": "Concentrated energy beam fired with force, sharp piercing zap into a heavy roaring beam blast",
+      "duration_seconds": 1.3
+    },
+    "triad_impact": {
+      "prompt": "Focused energy beam striking the ground, deep crushing explosion with a cratering thud and crackle",
+      "duration_seconds": 1.6
+    },
+    "rush_charge": {
+      "prompt": "Martial artist tensing up before a rushing attack, low rumbling wind and energy aura flickering, sustained, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "rush_release": {
+      "prompt": "Rapid martial arts flurry of claw strikes, fast whooshing swipes in quick succession with air cuts",
+      "duration_seconds": 1.2
+    },
+    "rush_impact": {
+      "prompt": "Flurry of hard punches and claw strikes landing on a body, fast series of meaty thumps ending in a heavy hit",
+      "duration_seconds": 1.4
+    },
+    "transform_charge": {
+      "prompt": "Warrior powering up, intense roaring energy aura building, rumbling earth, rising electric crackle, sustained, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "transform_release": {
+      "prompt": "Explosive power-up transformation burst, huge flaring energy aura erupting with a deep whoosh and electric crackle",
+      "duration_seconds": 1.5
+    },
+    "transform_impact": {
+      "prompt": "Energy aura settling after a power-up, roaring flame-like aura with a deep pulsing hum fading out",
+      "duration_seconds": 1.8
+    },
+    "spirit_charge": {
+      "prompt": "Giant energy sphere gathering overhead, vast deep swelling hum with a choir-like airy shimmer and slow rising power, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "spirit_release": {
+      "prompt": "Huge energy sphere thrown down from above, massive heavy rushing whoosh with a deep rumbling roar",
+      "duration_seconds": 2.0
+    },
+    "spirit_impact": {
+      "prompt": "Gigantic energy sphere colliding and detonating, enormous deep explosion with long rumbling tail and debris",
+      "duration_seconds": 2.6
+    },
+    "spiral_charge": {
+      "prompt": "Energy drilling at two fingertips, high whirling spiral whine with tight electric crackle, sustained, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "spiral_release": {
+      "prompt": "Corkscrew drilling energy beam fired, piercing spiraling zap with a high whirling scream",
+      "duration_seconds": 1.3
+    },
+    "spiral_impact": {
+      "prompt": "Drilling energy beam piercing through a target, sharp boring screech ending in a concentrated explosion",
+      "duration_seconds": 1.6
+    },
+    "lance_charge": {
+      "prompt": "Energy gathering at the forehead, dark tense buzzing hum with a menacing low drone and fizzing crackle, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "lance_release": {
+      "prompt": "Energy lance beam fired forward, sharp thrusting electric zap with a buzzing beam stream",
+      "duration_seconds": 1.2
+    },
+    "lance_impact": {
+      "prompt": "Energy lance hitting a target, sharp sizzling burst explosion with crackle",
+      "duration_seconds": 1.4
+    },
+    "galick_charge": {
+      "prompt": "Dark violet energy charging at the side of the body, deep menacing growling hum with thick electric crackle, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "galick_release": {
+      "prompt": "Dark powerful energy beam unleashed, heavy roaring blast with a gritty distorted energy stream",
+      "duration_seconds": 1.4
+    },
+    "galick_impact": {
+      "prompt": "Dark energy beam exploding on impact, heavy booming detonation with gritty crackle and rumble",
+      "duration_seconds": 1.8
+    },
+    "flash_charge": {
+      "prompt": "Enormous energy gathering in front of both palms, intense blazing rising roar with high electric sizzle, overwhelming power build, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "flash_release": {
+      "prompt": "Gigantic blazing energy wave fired, colossal roaring blast with searing sizzle and a long rushing stream",
+      "duration_seconds": 2.0
+    },
+    "flash_impact": {
+      "prompt": "Colossal energy wave impact, gigantic explosion with deep shockwave and long rolling thunder rumble",
+      "duration_seconds": 2.6
+    },
+    "heavy_charge": {
+      "prompt": "Large heavy energy ball growing in one hand, thick deep throbbing hum with pulsing rumble, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "heavy_release": {
+      "prompt": "Large heavy energy ball fired, deep thumping launch with a big rushing whoosh",
+      "duration_seconds": 1.2
+    },
+    "heavy_impact": {
+      "prompt": "Large energy ball exploding, big heavy boom with shockwave and crumbling rock debris",
+      "duration_seconds": 1.8
+    },
+    "needle_charge": {
+      "prompt": "Tiny concentrated energy point at a fingertip, thin high-pitched focused whine with faint fizz, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "needle_release": {
+      "prompt": "Thin precise energy laser shot from a fingertip, very quick sharp piercing zip zap",
+      "duration_seconds": 0.6
+    },
+    "needle_impact": {
+      "prompt": "Thin laser piercing a target, tiny sharp sizzling pop",
+      "duration_seconds": 0.6
+    },
+    "eclipse_charge": {
+      "prompt": "Dark ominous energy orb growing above a raised finger, deep sinister swelling drone with low throbbing pulse and distant thunder, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "eclipse_release": {
+      "prompt": "Huge dark energy orb descending, heavy ominous rushing roar with deep sub rumble",
+      "duration_seconds": 2.0
+    },
+    "eclipse_impact": {
+      "prompt": "Massive dark energy orb detonating, apocalyptic deep explosion with long rumbling earthquake tail",
+      "duration_seconds": 2.6
+    },
+    "heal_charge": {
+      "prompt": "Gentle healing energy glowing, warm soft shimmering pad with light sparkling chimes and calm breath, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "heal_release": {
+      "prompt": "Healing magic released, warm rising shimmer with soft sparkling chime swell",
+      "duration_seconds": 1.4
+    },
+    "heal_impact": {
+      "prompt": "Healing complete, soft bright magical sparkle chime with a warm gentle glow fading out",
+      "duration_seconds": 1.6
+    },
+    "sweet_charge": {
+      "prompt": "Playful pink magic charging, bubbly soft warbling hum with light twinkling sparkles, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "sweet_release": {
+      "prompt": "Playful magic ribbon beam fired, bouncy wobbly zap with sparkly twinkle",
+      "duration_seconds": 1.2
+    },
+    "sweet_impact": {
+      "prompt": "Playful magic hitting a target, soft bubbly pop with sparkles and a cartoon poof",
+      "duration_seconds": 1.4
+    },
+    "transfer_charge": {
+      "prompt": "Continuous steady focused humming energy tone with soft tingling shimmer and gentle airy flutter, constant level, no pauses, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true,
+      "prompt_influence": 0.6
+    },
+    "transfer_release": {
+      "prompt": "Instant teleport vanish, quick airy zip with a soft vacuum pop",
+      "duration_seconds": 0.8
+    },
+    "transfer_impact": {
+      "prompt": "Instant teleport reappearing, quick reverse whoosh into a soft displaced-air thump",
+      "duration_seconds": 0.8
+    },
+    "evade_charge": {
+      "prompt": "Continuous steady soft wind rushing around a fighter with a faint flickering energy shimmer, constant level, no pauses, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true,
+      "prompt_influence": 0.6
+    },
+    "evade_release": {
+      "prompt": "Super fast dodge leaving an afterimage, quick sharp whoosh with a faint flicker",
+      "duration_seconds": 0.6
+    },
+    "evade_impact": {
+      "prompt": "Afterimage fading away, soft quick airy flutter whoosh",
+      "duration_seconds": 0.6
+    },
+    "demon_charge": {
+      "prompt": "Wild unstable energy surging in open palms, aggressive crackling roar with distorted electric surges, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "demon_release": {
+      "prompt": "Wild bursting energy wave fired, aggressive explosive roar with crackling chaotic energy stream",
+      "duration_seconds": 1.4
+    },
+    "demon_impact": {
+      "prompt": "Bursting energy wave hitting, violent crackling explosion with heavy boom",
+      "duration_seconds": 1.8
+    },
+    "chime_charge": {
+      "prompt": "Two fighters synchronizing energy, harmonious shimmering hum with soft resonant chimes, sustained, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "chime_release": {
+      "prompt": "Synchronized energy merge, bright harmonious chime swell with a sparkling whoosh",
+      "duration_seconds": 1.3
+    },
+    "chime_impact": {
+      "prompt": "Energy fusion completing, bright resonant bell-like flash with a warm shimmering tail",
+      "duration_seconds": 1.6
+    },
+    "destroy_charge": {
+      "prompt": "Annihilating energy sphere forming in a palm, deep unstable warping hum with crackling distortion and dark rumble, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "destroy_release": {
+      "prompt": "Annihilation sphere released, heavy warping whoosh with deep pulsing distortion",
+      "duration_seconds": 2.0
+    },
+    "destroy_impact": {
+      "prompt": "Annihilation sphere erasing everything, deep implosion with reverse suction then crackling disintegration and rumble",
+      "duration_seconds": 2.6
+    },
+    "focus_charge": {
+      "prompt": "Calm controlled energy, quiet steady meditative hum with soft airy shimmer and slow breath, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "focus_release": {
+      "prompt": "Energy aura snapping into perfect focus, clean bright resonant whoosh with a soft shimmering ring",
+      "duration_seconds": 1.2
+    },
+    "focus_impact": {
+      "prompt": "Calm silver energy aura pulse, soft resonant shimmer with a gentle airy swell fading out",
+      "duration_seconds": 1.4
+    },
+    "avatar_charge": {
+      "prompt": "Colossal energy giant manifesting, huge deep resonant drone with rising ethereal shimmer and rumbling ground, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "avatar_release": {
+      "prompt": "Giant energy fist swinging down, massive heavy whoosh with deep ethereal roar",
+      "duration_seconds": 2.0
+    },
+    "avatar_impact": {
+      "prompt": "Giant energy fist smashing the ground, enormous deep impact boom with shockwave and long rumble",
+      "duration_seconds": 2.6
+    },
+    "shield_charge": {
+      "prompt": "Energy barrier humming around a body, steady electric force field hum with soft crackle, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "shield_release": {
+      "prompt": "Energy force field snapping up, bright electric shield activation whoosh with resonant hum",
+      "duration_seconds": 1.2
+    },
+    "shield_impact": {
+      "prompt": "Attack hitting an energy shield, resonant electric deflection thump with crackle and ring",
+      "duration_seconds": 1.4
+    },
+    "impact_charge": {
+      "prompt": "Fighter winding up a punch, low tense wind and tightening fists with faint energy hum, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    },
+    "impact_release": {
+      "prompt": "Loud fast punch swinging through the air, sharp close-up whoosh swipe, martial arts fight sound effect",
+      "duration_seconds": 0.8,
+      "prompt_influence": 0.6
+    },
+    "impact_impact": {
+      "prompt": "Loud hard punch hitting a body, close-up solid meaty thump with crisp slap and snap, action movie fight sound effect",
+      "duration_seconds": 0.8,
+      "prompt_influence": 0.6
+    },
+    "impact_light": {
+      "prompt": "Light quick punch hitting a body, short punchy fleshy thwack, anime fight style",
+      "duration_seconds": 0.5
+    },
+    "impact_heavy": {
+      "prompt": "Heavy powerful punch hitting a body, deep thudding crunch with a shockwave boom, anime fight style",
+      "duration_seconds": 0.7
+    },
+    "kick": {
+      "prompt": "Strong kick landing on a body, sharp snappy thump with whoosh, martial arts fight",
+      "duration_seconds": 0.5
+    },
+    "guard": {
+      "prompt": "Loud punch blocked by forearms, close-up solid thud with a short sharp crackling energy deflection, fight sound effect",
+      "duration_seconds": 0.8,
+      "prompt_influence": 0.6
+    },
+    "swing": {
+      "prompt": "Fast martial arts swing through the air, quick sharp whoosh",
+      "duration_seconds": 0.5
+    },
+    "landing": {
+      "prompt": "Loud heavy landing on rocky ground after a jump, close-up deep boot thud impact with dust burst and gravel scatter",
+      "duration_seconds": 0.8,
+      "prompt_influence": 0.6
+    },
+    "flight": {
+      "prompt": "Fighter launching into flight, rushing wind whoosh with a soft energy aura roar",
+      "duration_seconds": 1.2
+    },
+    "charge_loop": {
+      "prompt": "Fighter powering up energy aura, steady roaring flame-like aura with electric crackle and low rumble, sustained, seamless loop",
+      "duration_seconds": 3.0,
+      "loop": true
+    }
+  },
+  "game": {
+    "ui_click": {
+      "prompt": "Clean short soft UI button click, subtle modern game menu tick",
+      "duration_seconds": 0.5,
+      "prompt_influence": 0.6
+    },
+    "ui_confirm": {
+      "prompt": "Bright positive UI confirm sound, short two-tone soft chime, modern game menu",
+      "duration_seconds": 0.6,
+      "prompt_influence": 0.6
+    },
+    "ui_back": {
+      "prompt": "Soft UI cancel or close sound, short descending muted blip, modern game menu",
+      "duration_seconds": 0.5,
+      "prompt_influence": 0.6
+    },
+    "menu_open": {
+      "prompt": "Game menu panel opening, soft airy swoosh with a light glassy tick",
+      "duration_seconds": 0.7,
+      "prompt_influence": 0.6
+    },
+    "level_up": {
+      "prompt": "Triumphant short level up sting, bright rising brass and shimmering chime swell, video game, original",
+      "duration_seconds": 2.0
+    },
+    "quest_accept": {
+      "prompt": "New quest accepted, short adventurous rising two-note horn with soft paper rustle, video game",
+      "duration_seconds": 1.2
+    },
+    "quest_complete": {
+      "prompt": "Quest complete, short heroic orchestral fanfare sting with brass and cymbal swell, original, video game",
+      "duration_seconds": 2.5
+    },
+    "item_pickup": {
+      "prompt": "Picking up an item, short bright sparkly pop with a soft whoosh, video game",
+      "duration_seconds": 0.7,
+      "prompt_influence": 0.6
+    },
+    "zeni": {
+      "prompt": "Handful of gold coins clinking, short bright coin jingle, video game currency pickup",
+      "duration_seconds": 0.8,
+      "prompt_influence": 0.6
+    },
+    "boost_ignite": {
+      "prompt": "Energy aura igniting like a rocket booster, sudden roaring burst with rushing wind and crackle",
+      "duration_seconds": 1.5
+    },
+    "travel_whoosh": {
+      "prompt": "High speed flight travel transition, long rushing wind whoosh passing by with a deep swoosh",
+      "duration_seconds": 1.5
+    }
+  }
+}
