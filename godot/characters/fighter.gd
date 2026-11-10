@@ -8,8 +8,8 @@ extends Node3D
 const BASE := preload("res://assets/characters/ual/AnimationLibrary_Godot_Standard.gltf")
 const OUTFIT_SHADER := preload("res://characters/shaders/outfit.gdshader")
 const HAIR_SHADER := preload("res://characters/shaders/hair.gdshader")
-# Anime look (cel shading + ink outline): every fighter and NPC since 2026-11-10; look.shading = "classic" (or
-# look.anime = false) keeps the earlier lit look
+# Anime look (cel shading + ink outline + baggy cloth): only fighters with look.shading = "cel" (Gokan for now,
+# set in tools/godot_additions.mjs); everyone else keeps the earlier lit look
 const OUTFIT_TOON := preload("res://characters/shaders/outfit_toon.gdshader")
 const HAIR_TOON := preload("res://characters/shaders/hair_toon.gdshader")
 const OUTLINE := preload("res://characters/shaders/outline.gdshader")
@@ -301,7 +301,8 @@ func hero_body_kind() -> String:
 func is_anime() -> bool:
 	if _env_shading == "":
 		_env_shading = OS.get_environment("DL_SHADING") + "-"   # dev: DL_SHADING=classic for A/B frame-time checks
-	return str(look.get("shading", "")) != "classic" and look.get("anime", true) != false and _env_shading != "classic-"
+	# opt-in per character (user request 2026-11-10: the cloth/cel style is for Gokan only until the custom model arrives)
+	return (str(look.get("shading", "")) == "cel" or look.get("anime", false) == true) and _env_shading != "classic-"
 static var _env_shading := ""
 
 static func outline_material() -> ShaderMaterial:

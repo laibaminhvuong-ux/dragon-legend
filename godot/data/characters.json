@@ -11,6 +11,7 @@
       "outfit": "TurtleGi",
       "outfitTint": 0,
       "physique": "gokan",
+      "shading": "cel",
       "faceSeed": "goku"
     },
     "style": "turtle"

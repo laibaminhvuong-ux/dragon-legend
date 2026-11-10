@@ -679,8 +679,44 @@ func _cloth(out: String) -> void:
 		stage.free()
 		stage = null
 
+## Gokan (cel-styled) beside other fighters on the earlier look, from the real character data.
+func _only(out: String) -> void:
+	env.environment.background_color = Color(0.3, 0.33, 0.4)
+	var chars: Dictionary = root.get_node("Data").characters
+	var ids := ["goku", "vegeta", "piccolo", "krillin", "bulma", "frieza"]
+	for view in [["front", 0.0], ["three_quarter", 0.6]]:
+		stage = Node3D.new()
+		vp.add_child(stage)
+		for i in ids.size():
+			var c: Dictionary = chars.get(ids[i], {})
+			var l: Dictionary = (c.get("look", {}) as Dictionary).duplicate()
+			l.faceSeed = ids[i]
+			var f := Fighter.create(l)
+			f.position = Vector3((i - (ids.size() - 1) / 2.0) * 1.0, 0, 0)
+			f.rotation.y = float(view[1])
+			f.scale = Vector3.ONE * (float(c.get("scale", 1.0)) if c.get("scale") != null else 1.0)
+			stage.add_child(f)
+			for k in 10:
+				f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true})
+			var label := Label3D.new()
+			label.text = str(c.get("name", ids[i]))
+			label.font_size = 36; label.pixel_size = 0.004
+			label.position = f.position + Vector3(0, -0.12, 0.3)
+			label.modulate = Color(0.95, 0.95, 0.95)
+			stage.add_child(label)
+		cam.size = 2.5
+		vp.size = Vector2i(roundi(1150 * (ids.size() * 1.0 + 0.3) / cam.size), 1150)
+		cam.position = Vector3(0, cam.size * 0.5 - 0.25, 8)
+		await _shot("%s_only_%s.png" % [out, view[0]])
+		stage.free()
+		stage = null
+
 func _run(out: String) -> void:
 	await process_frame
+	if "--only" in OS.get_cmdline_user_args():
+		await _only(out)
+		quit()
+		return
 	if "--cloth" in OS.get_cmdline_user_args() or "--clothpose" in OS.get_cmdline_user_args():
 		await _cloth(out)
 		quit()

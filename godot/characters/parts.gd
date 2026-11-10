@@ -43,36 +43,50 @@ static func dress(f: Fighter, parts: Dictionary, race_id: String, skin: Color) -
 	var wrist := _sc(f, "forearm")
 	var pad := sqrt(_sc(f, "upper_arm") * _sc(f, "shoulders"))
 	var loose := float(f.cloth.get("amount", 0.0))
-	if parts.has("sash"):
-		# a thick cloth sash sitting on the loose top (it grows with the cloth), tied in a knot at the front with two
-		# hanging tails (a separate piece: Fighter.update sways it from the knot)
-		var sfit := _fit(f, Vector3(0, 0.965, -0.008), waist * 1.02 * (1.0 + 0.11 * loose), (waist + float(f.sculpt.get("belly", 0.0)) * 4.0) * (1.0 + 0.13 * loose))
-		var sash_mat := material(hx(parts.sash), 0.75)
-		var band := f.add_piece("DEF-hips", sfit, _mesh("sash2", func(g: Geo) -> void:
-			var sq := Basis.from_scale(Vector3(1, 1, 0.78))
-			g.cylinder(Transform3D(sq, Vector3(0, 0.946, -0.008)), 0.166, 0.158, 0.038, 32)
-			g.cylinder(Transform3D(sq, Vector3(0, 0.984, -0.008)), 0.158, 0.166, 0.038, 32)
-			# the knot: a bunched lump with a wrap round it
-			g.sphere(Transform3D(Basis.from_scale(Vector3(1.25, 1.0, 0.75)), Vector3(0.062, 0.962, 0.128)), 0.03, 10, 14)
-			g.torus(Transform3D(Basis.from_euler(Vector3(PI / 2, 0, 0.35)) * Basis.from_scale(Vector3(1.0, 0.7, 1.0)), Vector3(0.062, 0.962, 0.13)), 0.026, 0.011)), sash_mat)
-		band.set_meta("ink", true)
-		var knot := Vector3(0.062, 0.948, 0.13)
-		f.sash_tails = f.add_piece("DEF-hips", sfit * Transform3D(Basis.IDENTITY, knot), _mesh("sash_tails", func(g: Geo) -> void:
-			var flat := Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 0.38)), Vector3.ZERO)
-			g.tube(PackedVector3Array([Vector3(0, 0.01, 0), Vector3(0.012, -0.08, 0.02 / 0.38), Vector3(0.03, -0.2, 0.03 / 0.38)]), 0.024, 0.03, 12, 10, flat)
-			g.tube(PackedVector3Array([Vector3(-0.01, 0.01, 0), Vector3(-0.022, -0.07, 0.016 / 0.38), Vector3(-0.03, -0.155, 0.026 / 0.38)]), 0.022, 0.027, 10, 10, flat)), sash_mat)
-		f.sash_tails.set_meta("ink", true)
-	if parts.has("wrist"):
-		for s in [1, -1]:
-			var wc := Vector3(s * 0.7, 1.4408, -0.068)
-			var wfit := Transform3D(Basis.from_scale(Vector3(1.0, wrist, wrist)), wc - Basis.from_scale(Vector3(1.0, wrist, wrist)) * wc)
-			# thick padded wristbands with rounded rims
-			var band := f.add_piece("DEF-forearm." + ("L" if s > 0 else "R"), wfit, _mesh("wrist2_%d" % s, func(g: Geo) -> void:
-				var along := Basis.from_euler(Vector3(0, 0, PI / 2))
-				g.cylinder(Transform3D(along, Vector3(s * 0.7, 1.4408, -0.068)), 0.055, 0.055, 0.084, 22)
-				for e in [-1.0, 1.0]:
-					g.torus(Transform3D(along, Vector3(s * (0.7 + e * 0.042), 1.4408, -0.068)), 0.051, 0.007, 22, 8)), material(hx(parts.wrist), 0.7))
+	if not f.is_anime():   # classic look (everyone but the cel-styled fighters): the original sash and wristbands
+		var belt := _fit(f, Vector3(0, 0.965, -0.008), waist * 1.02, waist + float(f.sculpt.get("belly", 0.0)) * 4.0)
+		if parts.has("sash"):
+			f.add_piece("DEF-hips", belt, _mesh("sash", func(g: Geo) -> void:
+				g.cylinder(Transform3D(Basis.from_scale(Vector3(1, 1, 0.78)), Vector3(0, 0.965, -0.008)), 0.158, 0.162, 0.06, 28)
+				g.box(Transform3D(Basis.from_euler(Vector3(0, 0, 0.15)), Vector3(0.05, 0.89, 0.116)), Vector3(0.05, 0.16, 0.012))
+				g.box(Transform3D(Basis.from_euler(Vector3(0, 0, -0.1)), Vector3(-0.03, 0.895, 0.116)), Vector3(0.05, 0.14, 0.012))), material(hx(parts.sash), 0.75))
+		if parts.has("wrist"):
+			for s in [1, -1]:
+				var wc := Vector3(s * 0.7, 1.4408, -0.068)
+				var wfit := Transform3D(Basis.from_scale(Vector3(1.0, wrist, wrist)), wc - Basis.from_scale(Vector3(1.0, wrist, wrist)) * wc)
+				f.add_piece("DEF-forearm." + ("L" if s > 0 else "R"), wfit, _mesh("wrist%d" % s, func(g: Geo) -> void:
+					g.cylinder(Transform3D(Basis.from_euler(Vector3(0, 0, PI / 2)), Vector3(s * 0.7, 1.4408, -0.068)), 0.047, 0.047, 0.075, 20)), material(hx(parts.wrist), 0.7))
+	else:
+		if parts.has("sash"):
+			# a thick cloth sash sitting on the loose top (it grows with the cloth), tied in a knot at the front with two
+			# hanging tails (a separate piece: Fighter.update sways it from the knot)
+			var sfit := _fit(f, Vector3(0, 0.965, -0.008), waist * 1.02 * (1.0 + 0.11 * loose), (waist + float(f.sculpt.get("belly", 0.0)) * 4.0) * (1.0 + 0.13 * loose))
+			var sash_mat := material(hx(parts.sash), 0.75)
+			var band := f.add_piece("DEF-hips", sfit, _mesh("sash2", func(g: Geo) -> void:
+				var sq := Basis.from_scale(Vector3(1, 1, 0.78))
+				g.cylinder(Transform3D(sq, Vector3(0, 0.946, -0.008)), 0.166, 0.158, 0.038, 32)
+				g.cylinder(Transform3D(sq, Vector3(0, 0.984, -0.008)), 0.158, 0.166, 0.038, 32)
+				# the knot: a bunched lump with a wrap round it
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.25, 1.0, 0.75)), Vector3(0.062, 0.962, 0.128)), 0.03, 10, 14)
+				g.torus(Transform3D(Basis.from_euler(Vector3(PI / 2, 0, 0.35)) * Basis.from_scale(Vector3(1.0, 0.7, 1.0)), Vector3(0.062, 0.962, 0.13)), 0.026, 0.011)), sash_mat)
 			band.set_meta("ink", true)
+			var knot := Vector3(0.062, 0.948, 0.13)
+			f.sash_tails = f.add_piece("DEF-hips", sfit * Transform3D(Basis.IDENTITY, knot), _mesh("sash_tails", func(g: Geo) -> void:
+				var flat := Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 0.38)), Vector3.ZERO)
+				g.tube(PackedVector3Array([Vector3(0, 0.01, 0), Vector3(0.012, -0.08, 0.02 / 0.38), Vector3(0.03, -0.2, 0.03 / 0.38)]), 0.024, 0.03, 12, 10, flat)
+				g.tube(PackedVector3Array([Vector3(-0.01, 0.01, 0), Vector3(-0.022, -0.07, 0.016 / 0.38), Vector3(-0.03, -0.155, 0.026 / 0.38)]), 0.022, 0.027, 10, 10, flat)), sash_mat)
+			f.sash_tails.set_meta("ink", true)
+		if parts.has("wrist"):
+			for s in [1, -1]:
+				var wc := Vector3(s * 0.7, 1.4408, -0.068)
+				var wfit := Transform3D(Basis.from_scale(Vector3(1.0, wrist, wrist)), wc - Basis.from_scale(Vector3(1.0, wrist, wrist)) * wc)
+				# thick padded wristbands with rounded rims
+				var band := f.add_piece("DEF-forearm." + ("L" if s > 0 else "R"), wfit, _mesh("wrist2_%d" % s, func(g: Geo) -> void:
+					var along := Basis.from_euler(Vector3(0, 0, PI / 2))
+					g.cylinder(Transform3D(along, Vector3(s * 0.7, 1.4408, -0.068)), 0.055, 0.055, 0.084, 22)
+					for e in [-1.0, 1.0]:
+						g.torus(Transform3D(along, Vector3(s * (0.7 + e * 0.042), 1.4408, -0.068)), 0.051, 0.007, 22, 8)), material(hx(parts.wrist), 0.7))
+				band.set_meta("ink", true)
 	if parts.has("armor") and parts.armor.get("pads", false):
 		for s in [1, -1]:
 			var pc := Vector3(s * 0.215, 1.47, -0.06)

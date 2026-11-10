@@ -25,7 +25,7 @@ static func params(parts: Dictionary, look: Dictionary) -> Dictionary:
 	elif parts.get("sleeves", false):
 		sleeve = BodyRegions.WRIST_X
 	var boots := float(look.get("boots", parts.get("boots", 1.0)))
-	if OS.get_environment("DL_CLOTH") == "0":   # dev: A/B checks without the cloth pass
+	if look.get("shading", "") != "cel" or OS.get_environment("DL_CLOTH") == "0":   # cloth only on cel-styled fighters (dev: DL_CLOTH=0 turns it off)
 		amount = 0.0; boots = 0.0
 	return {"amount": clampf(amount, 0.0, 1.5), "sleeve": sleeve, "boots": boots, "boot_top": boot_top(boots)}
 
