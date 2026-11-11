@@ -160,18 +160,18 @@ function childhoodPlaces(zones) {
     return id;
   };
   const ids = [
-    area('mt_paozu', 'Mt. Paozu', 'earth_plains', [{type: 'paozuhut', name: "Grandpa Gohin's Hut", x: 0, z: 10, collide: 3.5, flatten: 18}],
+    area('mt_paozu', 'Mt. Paozu', 'earth_plains', [{type: 'paozucabin', name: "Grandpa Gohin's Hut", x: 0, z: 10, rot: Math.PI, collide: 4.5, flatten: 18}],
       {biome: {treeCount: 260, bushes: 260}, terrain: {hills: {amp: 9, scale: 110}}}),
-    area('fire_mountain', 'Fire Mountain', 'gizard_wasteland', [{type: 'firecastle', name: "The Ox-Lord's Castle", x: 0, z: 40, collide: 14, flatten: 36}],
+    area('fire_mountain', 'Fire Mountain', 'gizard_wasteland', [{type: 'firekeep', name: "The Ox-Lord's Castle", x: 0, z: 40, rot: Math.PI, collide: 17, flatten: 36}],
       {biome: {treeCount: 10}}),
-    area('pilav_castle', "Emperor Pilav's Castle", 'gizard_wasteland', [{type: 'pilavcastle', name: "Pilav's Castle", x: 0, z: 40, collide: 16, flatten: 40}]),
-    area('muscle_tower', 'Muscle Tower', 'broly_glacier', [{type: 'muscletower', name: 'Muscle Tower', x: 0, z: 40, collide: 9, flatten: 30}]),
-    area('baaba_palace', "Fortuneteller Baaba's Palace", 'earth_plains', [{type: 'baabapalace', name: "Baaba's Palace", x: 0, z: 40, collide: 12, flatten: 46}],
+    area('pilav_castle', "Emperor Pilav's Castle", 'gizard_wasteland', [{type: 'pilavpalace', name: "Pilav's Castle", x: 0, z: 40, rot: Math.PI, collide: 23, flatten: 40}]),
+    area('muscle_tower', 'Muscle Tower', 'broly_glacier', [{type: 'musclefort', name: 'Muscle Tower', x: 0, z: 40, rot: Math.PI, collide: 13, flatten: 30}]),
+    area('baaba_palace', "Fortuneteller Baaba's Palace", 'earth_plains', [{type: 'baabaisle', name: "Baaba's Palace", x: 0, z: 40, collide: 8, flatten: 56}],
       {biome: {treeCount: 40}}),
-    area('korrin_tower', 'Korrin Tower', 'earth_plains', [{type: 'korrintower', name: 'Korrin Tower', x: 0, z: 30, collide: 4, flatten: 20}],
+    area('korrin_tower', 'Korrin Tower', 'earth_plains', [{type: 'korrinspire', name: 'Korrin Tower', x: 0, z: 30, collide: 7, flatten: 20}],
       {biome: {treeCount: 220}}),
-    area('piccor_castle', "King Piccor's Castle", 'gizard_wasteland', [{type: 'piccorcastle', name: "King Piccor's Castle", x: 0, z: 45, collide: 15, flatten: 42}]),
-    area('tournament_island', 'Tournament Island', 'earth_plains', [{type: 'budokai', name: 'World Tournament Arena', x: 0, z: 20, flatten: 40}],
+    area('piccor_castle', "King Piccor's Castle", 'gizard_wasteland', [{type: 'kingcastle', name: "King Piccor's Castle", x: 0, z: 45, rot: Math.PI, collide: 19, flatten: 42}]),
+    area('tournament_island', 'Tournament Island', 'earth_plains', [{type: 'budokaihall', name: 'World Tournament Arena', x: 0, z: 20, flatten: 50}],
       {biome: {treeCount: 30}}),
   ];
   // Kamu's Lookout: a floating platform in the sky, reached by flying up past Korrin Tower's top. There is nothing
@@ -181,7 +181,7 @@ function childhoodPlaces(zones) {
     name: "Kamu's Lookout", planet: 'Earth', saga: 'Origins',
     terrain: {size: 300, ground: 'white', platform: {radius: 40, height: 0}, killY: -300, spawn: {x: 0, z: -18}},
     biome: {...structuredClone(zones.earth_plains.biome), treeCount: 0, bushes: 0, rocks: 0, stones: 0},
-    landmarks: [{type: 'lookout', name: "Kamu's Lookout", x: 0, z: 0, flatten: 40}],
+    landmarks: [{type: 'lookoutpalace', name: "Kamu's Lookout", x: 0, z: 0, flatten: 40}],
     travelPoint: {x: 10, z: -18},
     // falling past ~75 m below the edge lands you at Korrin Tower (the sphere's top is 70 m under the platform, so
     // standing anywhere on it never triggers it); killY respawns you on top if the tower isn't open yet
@@ -220,6 +220,7 @@ export function applyGodotAdditions(tables) {
   const characters = structuredClone(tables.characters);
   const appearance = structuredClone(tables.appearance);
   const races = structuredClone(tables.races);
+  const form_looks = structuredClone(tables.form_looks);   // Godot-only form looks (cast batches add/fix entries below)
   const zoneOrder = [...tables.zone_order];
   const world = openWorld(zones, zoneOrder);
   const childhood = childhoodPlaces(zones);
@@ -299,6 +300,159 @@ export function applyGodotAdditions(tables) {
     characters[id].look = {...characters[id].look, ...look};
     characters[id].scale = scale;
   }
+  // Cast batch B1 (Claude, 2026-11-10; art/reference/cast_audit.md): Kais, angels, gods and aliens. Uses the
+  // per-look fields documented at the top of godot/characters/outfits.gd (race-part toggles, hairAnyRace, hairRgb,
+  // eyeRgb, outfitRgb/outfitRgb2/outfitParts, costume arrays). Races stay as they were (forms/rules use them).
+  const WHITE_HAIR = 0xf2f2f4, DARK_EYES = 0x2a1d14, KAI = {raceParts: false, ears: 'pointed', eyeRgb: DARK_EYES, hairAnyRace: true};
+  const ANGEL = {raceParts: false, hairAnyRace: true, hair: 'AngelCrest', hairRgb: WHITE_HAIR, eyeRgb: 0x5a3a8a, costume: ['halo']};
+  const b1 = {
+    supreme_kai: {...KAI, hair: 'Mohawk', hairRgb: WHITE_HAIR, outfit: 'AngelRobe', outfitRgb: 0x2a9e9a, outfitRgb2: 0xe0552a, outfitParts: {shoes: 0xc8322a}, costume: ['potara']},
+    elder_kai: {...KAI, hair: 'Mohawk', hairRgb: WHITE_HAIR, outfit: 'AngelRobe', outfitRgb: 0xc8322a, outfitRgb2: 0xe88a2a, outfitParts: {shoes: 0x2a9e9a}, costume: ['potara']},
+    kibito: {...KAI, hair: 'Long', hairRgb: WHITE_HAIR, outfit: 'AngelRobe', outfitRgb: 0xc8322a, outfitRgb2: 0xe88a2a, outfitParts: {pants: 0x2a9e9a, shoes: 0xd8b04a}},
+    zamasu: {...KAI, hair: 'Mohawk', hairRgb: WHITE_HAIR, outfit: 'AngelRobe', outfitRgb: 0x2c2a3c, outfitRgb2: 0x7a3aa8, outfitParts: {shoes: 0xf2f2f2}, costume: ['potara_green']},
+    whis: {...ANGEL, outfit: 'AngelRobe', outfitRgb: 0x7a1e3a, outfitParts: {plate: 0x18181c, trim: 0xe88a2a}},
+    vados: {...ANGEL, outfit: 'AngelRobe', outfitRgb: 0x1e5a58, outfitParts: {plate: 0x18181c, trim: 0xe88a2a}},
+    grand_priest: {...ANGEL, eyeRgb: DARK_EYES, outfit: 'AngelRobe', outfitRgb: 0x3a7ab8, outfitRgb2: 0xc8322a},
+    merus: {raceParts: false, hairAnyRace: true, hair: 'Short', hairRgb: WHITE_HAIR, eyeRgb: DARK_EYES, outfit: 'SaiyanSuit', outfitRgb: 0x3a54b0, outfitParts: {sash: 0xf2f2f2}},
+    beerus: {raceParts: false, tail: 'cat', eyeRgb: 0xe8c030, costume: ['cat_ears'], outfit: 'AngelRobe', outfitRgb: 0x1a1a1e, outfitParts: {pants: 0x2a9e9a, wrist: 0xd8b04a}},
+    champa: {raceParts: false, tail: 'cat', eyeRgb: 0xe8c030, costume: ['cat_ears'], outfit: 'AngelRobe', outfitRgb: 0x1a1a1e, outfitParts: {pants: 0xd8542a, wrist: 0xd8b04a}},
+    king_kai: {raceParts: false, antenna: 'long', eyeRgb: DARK_EYES, costume: ['shades'], outfit: 'AngelRobe', outfitRgb: 0x1a1a1e, outfitRgb2: 0xc8324a},
+    zeno: {raceParts: false, skinHex: 0xe8eaf2, eyeRgb: 0x101014, outfit: 'AngelRobe', outfitRgb: 0xd0408a, outfitParts: {collar: false, shoes: 0xe8c840}},
+    hit: {raceParts: false, eyeRgb: 0xc81e1e, outfit: 'AngelRobe', outfitRgb: 0x3a3a46, outfitRgb2: 0x1a1a1a, outfitParts: {collar: false}},
+    jiren: {raceParts: false, eyeRgb: 0x050505},
+    gas: {raceParts: false, ears: 'pointed', hairAnyRace: true, hair: 'Dreadlocks', hairRgb: 0x4a2a6a, skinHex: 0x4fa8b0, eyeRgb: DARK_EYES,
+      outfit: 'AngelRobe', outfitRgb: 0xb8202a, outfitRgb2: 0xd8b04a, outfitParts: {pants: 0xf2f0ea}},
+    mr_popo: {raceParts: false, eyeRgb: DARK_EYES, costume: ['turban'], outfit: 'MajinVest', outfitParts: {top: 0xc8322a, pants: 0xf2f0ea, shoes: 0xc8322a, sash: 0xc8322a, wrist: false}},
+    yardrat: {raceParts: false, skinHex: 0xf0c8c8, eyeRgb: DARK_EYES},
+    yardrat_elder: {raceParts: false, skinHex: 0xe8c0c4, eyeRgb: DARK_EYES},
+    magetta: {raceParts: false, skinHex: 0x7a8aa0, eyeRgb: 0xff8a1a},
+    botamo: {raceParts: false, skinHex: 0xe8c040, outfitParts: {top: 0xc8322a, wrist: false}},
+    saganbo: {raceParts: false},
+    moro: {raceParts: false, skinHex: 0x8a9ab0, costume: ['ramhorns'], outfitParts: {pants: 0x5a3a7a, shoes: 0x1a1a1a, plate: 0xe8e4d8}},
+    granolah: {hairRgb: 0x6ad8c0, outfit: 'CapsuleCorp', outfitRgb: 0x3a6a3a, outfitParts: {pants: 0x3a5a3a, shoes: 0x6a4a2a, gloves: 0x6a4a2a}},
+    cheelai: {raceParts: false, hairAnyRace: true, hair: 'Short', hairRgb: WHITE_HAIR, eyeRgb: 0xc81e1e, outfitParts: {top: 0x5a2a7a, pants: 0x5a2a7a}},
+  };
+  for (const [id, look] of Object.entries(b1)) if (characters[id]?.look) characters[id].look = {...characters[id].look, ...look};
+  // Cast batch B2 (Claude, 2026-11-10; cast_audit.md): Saiyans, fusions and their forms. Adults lose the tail; outfits
+  // recoloured with outfitRgb/outfitParts; look.formLooks points a form at the character's own form_looks variant and
+  // look.form draws an NPC in a form by default (Fighter.set_form; fields at the top of godot/characters/outfits.gd).
+  {
+    const FL = form_looks, GOLD = 0xffc81e, SSJ_EYES = 0x1fa98f, WHITE = 0xf2f2f2, GOLDTRIM = 0xd8b04a;
+    // colour fixes on shared entries (audit "Colour mismatches")
+    FL.SSJRage = {...FL.SSJRage, aura: {...FL.SSJRage.aura, color: GOLD, core: 0xfff2b0}};   // gold aura, blue sparks stay
+    FL.FalseSSJ = {...FL.FalseSSJ, hair: {...FL.FalseSSJ.hair, color: 0x8a4a1c, glow: 0.08}, aura: {...FL.FalseSSJ.aura, color: 0xffb21e, core: 0xfff0b0}};
+    FL.SSJ4 = {...FL.SSJ4, fur: 0xa72437};
+    // new looks: per-character variants (via look.formLooks) and story forms that have no playable form yet
+    Object.assign(FL, {
+      SSJ4Gogeta: {...FL.SSJ4, hair: {style: 'ssj4', color: 0x3a0e12, glow: 0.05}, eyes: 0x2a9ad8, fur: 0xc8202a},
+      SSJ4Daima: {...FL.SSJ4, hair: {style: 'ssj4', color: 0xc8283a, glow: 0.1}, fur: 0xb0243a},
+      SSJBroly: {...FL.SSJ, aura: {...FL.SSJ.aura, color: 0x9ae03a, core: 0xf0ffc8}},
+      SSJRestrained: {hair: {style: 'ssj1', color: 0x7a9ad8, glow: 0.2}, eyes: 0xe8f0f8, scale: 1.05,
+        aura: {color: 0xffd23a, core: 0xfff4c8, size: 1.1, flicker: 0.8, sparks: 0}},
+      Wrathful: {hair: {style: 'same', color: 0x141414, glow: 0.0}, eyes: 0xc8ffb0, bulk: [1.2, 1.04, 1.15],
+        aura: {color: 0x3ad84a, core: 0xd8ffd0, size: 1.15, flicker: 1, sparks: 1, sparkColor: 0xc8ffd0}},
+      SSJKefla: {hair: {style: 'ssj1', color: 0x4cc83a, glow: 0.3}, eyes: 0x2aa8d0,
+        aura: {color: 0x3ad84a, core: 0xd8ffc8, size: 1.05, flicker: 0.9, sparks: 0}},
+      SSJRose: {hair: {style: 'ssj1', color: 0xf0609a, glow: 0.3}, eyes: 0x9a9aa8,
+        aura: {color: 0xff4ab0, core: 0xffd8ec, size: 1.1, flicker: 0.6, sparks: 0, motes: 0xffc8e8}},
+      SSJBlueKaioken: {...FL.SSJBlue, flush: [0xe02a1e, 0.3],
+        aura: {color: 0xff2a1e, core: 0x8ad8ff, size: 1.15, flicker: 1, sparks: 1, sparkColor: 0xc8f0ff}},
+      SSJBlueEvolved: {hair: {style: 'ssj2', color: 0x1a6ad8, glow: 0.3}, eyes: 0x1a5ad0, scale: 1.04,
+        aura: {color: 0x1a6aff, core: 0xc0e4ff, size: 1.15, flicker: 0.9, sparks: 1, sparkColor: 0xa8d8ff, motes: 0xa0d0ff}},
+      SuperKaioken: {...FL.SSJ, flush: [0xe02a1e, 0.3], aura: {color: 0xff3a1e, core: 0xffd890, size: 1.1, flicker: 1, sparks: 1, sparkColor: 0xffc8a0}},
+      SSJ2Majin: {...FL.SSJ2, aura: {...FL.SSJ2.aura, sparks: 2, sparkColor: 0x2a1a10}},   // dark veins through the gold
+      JirenFullPower: {hair: null, eyes: null, scale: 1.05,
+        aura: {color: 0xff2a2a, core: 0xffc0b0, size: 1.15, flicker: 0.9, sparks: 1, sparkColor: 0xff9a8a}},
+      ToppoGoD: {hair: null, eyes: 0xf4e8f8, skin: 0x4a2a3a, scale: 1.08,
+        aura: {color: 0xc040ff, core: 0xff8ad8, size: 1.2, flicker: 1, sparks: 1, sparkColor: 0xff7ad8}},
+    });
+    // the two fusions (names from names.js: Gogeto, Vegitto)
+    characters.gogeta = {name: 'Gogeto', scale: 1.02, style: 'turtle', look: {race: 'Saiyan', skin: 0, face: 'Smirk', hair: 'Spiky', hairColor: 0,
+      build: 'Muscular', physique: 'gokan', outfit: 'MajinVest'}};
+    characters.vegito = {name: 'Vegitto', scale: 1.02, style: 'speedster', look: {race: 'Saiyan', skin: 0, face: 'Smirk', hair: 'Swept', hairColor: 0,
+      build: 'Muscular', physique: 'gokan', outfit: 'TurtleGi'}};
+    // Metamoran vest: dark vest with gold shoulder pads, white baggy pants, teal sash and boots, dark wristbands
+    const METAMORAN = {outfit: 'MajinVest', outfitParts: {top: 0x24242c, plate: 0x24242c, trim: 0xe0d050, pads: true, pants: 0xeeeef0,
+      sash: 0x1e7a9a, wrist: 0x2a2a30, shoes: 0x2a2a30, boot_trim: 0x1e7a9a}};
+    const DBS_ARMOR = {pads: false, trim: GOLDTRIM, gloves: WHITE, shoes: WHITE, boot_trim: GOLDTRIM};
+    const b2 = {
+      goku: {tail: false},
+      goku_kid: {outfitParts: {wrist: 0xc8322a, sash: WHITE}},
+      vegeta: {tail: false, outfitParts: DBS_ARMOR},
+      majin_vegeta: {tail: false, form: 'SSJ2', formLooks: {SSJ2: 'SSJ2Majin'}, outfitParts: {...DBS_ARMOR, plate: 0xf4f2ea}},
+      goku_black: {tail: false, costume: ['potara_green'], formLooks: {SSJBlue: 'SSJRose'}, outfitRgb: 0x2c2c34,
+        outfitParts: {undershirt: 0x5a5a64, sash: 0xb8202a, wrist: false, shoes: WHITE, boot_trim: 0x5a5a64}},
+      broly: {tail: false, formLooks: {SSJ: 'SSJBroly'},   // shirtless (top shows the skin), green waist cloth (collar torus sat on the chest: left out)
+        outfitParts: {top: 'skin', sleeves: false, gloves: false, pants: 0x26262c, sash: 0x2e7a3a, wrist: 0x3a54b0, shoes: 0xe8e8e8, boot_trim: 0x26262c}},
+      paragus: {tail: false, outfitParts: {cape: WHITE}},
+      cabba: {tail: false, outfitParts: {top: 0x1c2a5c, pants: 0x1c2a5c, plate: 0x2a3a7a, trim: 0x1c2a5c, pads: false, sash: 0x6a3a8a, shoes: WHITE}},
+      kefla: {tail: false, costume: ['potara'], formLooks: {SSJ: 'SSJKefla'}, eyeRgb: 0x2a1d14, outfit: 'CraneGi',
+        outfitParts: {top: 0xc8306a, pants: 0xa82a5c, sash: 0xa82a5c, wrist: 0xe8c840, shoes: 0x2a2a30, cloth: 0.5}},
+      gotenks: {...METAMORAN, hairRgb: 0x3a2a48, eyeRgb: 0x1fa98f},
+      gogeta: {tail: false, ...METAMORAN, formLooks: {SSJ4: 'SSJ4Gogeta'}},
+      vegito: {tail: false, costume: ['potara'], outfitRgb: 0x1e2a6a,
+        outfitParts: {undershirt: 0xe86a1a, sash: 0x1e2a6a, wrist: false, gloves: WHITE, shoes: WHITE, boot_trim: GOLDTRIM}},
+      trunks: {eyeRgb: 0x3a7ad0, outfitParts: {pants: 0x3a3a42, shoes: 0xc89a3a}},
+      trunks_kid: {eyeRgb: 0x3a7ad0, outfitRgb: 0x2a5a3a, outfitParts: {undershirt: false, sash: 0xe88a2a, wrist: 0xe88a2a, shoes: 0xb8963a}},
+      gohan: {outfitParts: {undershirt: false, sash: 0xc8322a, wrist: 0x1a1a1a, shoes: 0x6a4a2a}},
+      pan: {outfitParts: {undershirt: 0x1a1a1a, pants: 0xd8d0e8, sash: false, wrist: false, shoes: 0xc8322a}},
+    };
+    for (const [id, look] of Object.entries(b2)) if (characters[id]?.look) characters[id].look = {...characters[id].look, ...look};
+  }
+  // Cast batch B3 (Claude, 2026-11-10; cast_audit.md): Frieza Force, Frost Demons, Radix and Nappo. New look fields
+  // (outfits.gd header): outfit FriezaForce (flared shoulder flaps) / FrostBody (no clothes), scouter and horn gear,
+  // domeRgb/shellRgb/skinMetal; form_looks extras chitin/shells/gear (Parts.form_extras). Frigor's earlier forms are
+  // look-only entries (no playable form in forms.json).
+  {
+    const FL = form_looks, PINK = 0xe0848e, CHITIN = 0xf2eef0, GEM = 0x8a3ab8, RED_EYES = 0xb4142a;
+    const SMALL_AURA = {color: 0xc878ff, core: 0xf4e8ff, size: 0.95, flicker: 0.5, sparks: 0};
+    Object.assign(FL, {
+      // Frigor's 1st/2nd/3rd forms: pink limbs, white chitin torso and forearm guards, purple gems, horns or crest
+      FirstForm: {hair: null, eyes: RED_EYES, skin: PINK, chitin: CHITIN, shells: CHITIN, dome: GEM, gear: ['frost_horns'], aura: SMALL_AURA},
+      SecondForm: {hair: null, eyes: RED_EYES, skin: PINK, chitin: CHITIN, shells: CHITIN, dome: GEM, gear: ['frost_horns_big'], bulk: [1.2, 1.3, 1.2],
+        aura: {...SMALL_AURA, size: 1.05}},
+      ThirdForm: {hair: null, eyes: RED_EYES, skin: 0xe8828e, chitin: 0xdfe6e0, shells: GEM, dome: GEM, gear: ['third_crest'], bulk: [1.12, 1.18, 1.12],
+        aura: {...SMALL_AURA, size: 1.05, flicker: 0.8}},
+      // Frosk: mint body and blue gems in his final forms; his assault form is the crested third-form shape
+      FinalFormFrost: {...FL.FinalForm, skin: 0xc4ece0, dome: 0x2a5ad8, shells: 0x2a5ad8, aura: {...FL.FinalForm.aura, color: 0x6aa8ff, core: 0xe8f4ff}},
+      FullPowerFrost: {...FL.FullPower, skin: 0xc4ece0, dome: 0x2a5ad8, shells: 0x2a5ad8, aura: {...FL.FullPower.aura, color: 0x5a8aff, core: 0xe0eeff}},
+      FrostAssault: {hair: null, eyes: RED_EYES, skin: 0x3a5ad8, chitin: 0xa8e0d0, shells: 0x2a5ad8, dome: 0x2a5ad8, gear: ['third_crest'], bulk: [1.12, 1.18, 1.12],
+        aura: {color: 0x6aa8ff, core: 0xe8f4ff, size: 1.05, flicker: 0.8, sparks: 0}},
+      // Zarvon transformed: bulky, green warty skin
+      ZarbonMonster: {hair: null, eyes: 0xd8c040, skin: 0x5a9a5a, bulk: [1.28, 1.08, 1.28], aura: {color: 0x7ad86a, core: 0xe8ffe0, size: 1.1, flicker: 0.8, sparks: 0}},
+    });
+    const FF = 'FriezaForce', NAVY = 0x1c2a5c, BLACK_SUIT = 0x1a1a1e, WHITE = 0xf2f2f2;
+    const GINYU_FORCE = {outfit: FF, outfitRgb: BLACK_SUIT, outfitParts: {trim: 0xc8862a, wrist: BLACK_SUIT, boot_trim: 0xc8862a}};
+    const NEW_STYLE = {flaps: false, plate: 0xf2f2f0, trim: 0x3a8a4a};   // DBS Frieza Force: green/white armour, no flaps
+    const b3 = {
+      frieza: {outfit: 'FrostBody', shellRgb: GEM},
+      golden_frieza: {outfit: 'FrostBody', shellRgb: GEM, form: 'Golden', build: 'Short', face: 'Smirk'},
+      black_frieza: {outfit: 'FrostBody', shellRgb: GEM, form: 'Black'},
+      mecha_frieza: {outfit: 'FrostBody', skinHex: 0xb8bec8, skinMetal: 0.65, shellRgb: 0x9aa0ac, build: 'Short'},
+      king_cold: {skinHex: 0xc878d0, domeRgb: 0x2a5a66, shells: false, costume: ['cold_horns'], outfit: FF, outfitRgb: 0x2a3ab0,
+        outfitParts: {plate: 0x2a3ab0, trim: 0xd02a3a, cape: 0x7a1424, wrist: 0xd8dce4, shoes: 'skin', boot_trim: 'skin'}},
+      frost: {skinHex: 0x3a5ad8, domeRgb: 0x2a5ad8, shellRgb: 0xa8e0d0, costume: ['frost_horns'], outfit: 'FrostBody',
+        outfitParts: {top: 0xa8e0d0, wrist: 0xa8e0d0, pants: 0x4a4a5a}, formLooks: {FinalForm: 'FinalFormFrost', FullPower: 'FullPowerFrost'}},
+      ginyu: {...GINYU_FORCE, antenna: false, skinHex: 0xa890d8, costume: ['frost_horns', 'scouter']},
+      recoome: {...GINYU_FORCE, costume: ['scouter']},
+      burter: {...GINYU_FORCE, raceParts: false, skinHex: 0x3a8ad8, costume: ['scouter']},
+      jeice: {...GINYU_FORCE, antenna: false, ears: 'pointed', skinHex: 0xd8443a, hairAnyRace: true, hair: 'Wild', hairRgb: 0xf2f2f4, costume: ['scouter_red']},
+      guldo: {...GINYU_FORCE, raceParts: false, costume: ['four_eyes']},
+      dodoria: {outfit: FF, antenna: false, outfitRgb: NAVY, outfitParts: {trim: 0xd8b040, pants: 0x3a1a4a, wrist: NAVY}, costume: ['head_spikes', 'scouter']},
+      zarbon: {skinHex: 0x9ad0b8, hairRgb: 0x2a8a5a, costume: ['tiara'], outfit: FF, outfitRgb: 0xe07aa8,
+        outfitParts: {sleeves: true, pants: 0x4a2a6a, cape: WHITE, wrist: 0xe07aa8}},
+      frieza_soldier: {outfit: FF, outfitRgb: NAVY, costume: ['scouter']},
+      sorbet: {raceParts: false, skinHex: 0x5a8ad8, outfit: FF, outfitRgb: BLACK_SUIT, outfitParts: {...NEW_STYLE, pants: 0xc8302a, cape: WHITE}},
+      tagoma: {skinHex: 0xb8a0d8, outfit: FF, outfitRgb: BLACK_SUIT, outfitParts: {...NEW_STYLE, pants: 0xb8302a}, costume: ['scouter']},
+      lemo: {skinHex: 0xe8904a, hair: 'None', costume: ['cap'], outfit: FF, outfitRgb: 0x3a6a3a, outfitParts: {...NEW_STYLE, plate: 0x3a6a3a, belly: false}},
+      raditz: {outfit: FF, outfitRgb: 0x1a1e2e, outfitParts: {trim: 0xa8743a, wrist: 0x2a3a6a, shoes: 0x2a3a6a, boot_trim: WHITE}, costume: ['scouter', 'red_bands']},
+      nappa: {outfit: FF, outfitRgb: NAVY, outfitParts: {trim: 0xd8b040, wrist: NAVY, shoes: WHITE}, costume: ['scouter_purple', 'mustache']},
+      saibaman: {raceParts: false, outfit: 'FrostBody', skinHex: 0x5aa046, eyeRgb: 0xd8202a, sculpt: {head_w: 1.18, head_h: 1.2}},
+      giran: {raceParts: false, tail: 'frost', outfit: 'FrostBody', outfitParts: {pants: 0x8a2a2a, sash: 0xd8b040}},
+    };
+    for (const [id, look] of Object.entries(b3)) if (characters[id]?.look) characters[id].look = {...characters[id].look, ...look};
+    if (characters.golden_frieza) characters.golden_frieza.scale = 0.9;
+  }
   // Every character's own face (FaceShape): seeded by the character id, so identical looks still differ
   for (const [id, c] of Object.entries(characters)) if (c.look && c.look.faceSeed == null) c.look.faceSeed = id;
   const fighting_styles = fightingStyles(tables.combat);
@@ -307,7 +461,7 @@ export function applyGodotAdditions(tables) {
     ['muscle_tower', 650, 1290, 160], ['baaba_palace', -1320, 650, 150], ['korrin_tower', -550, 900, 150], ['piccor_castle', 920, -800, 170],
     ['tournament_island', -150, -575, 150]]) world.planets.earth.regions.push({zone, x, z, radius, blend: 80});
   return {
-    ...tables, zones, npcs, characters, appearance, races, zone_order: zoneOrder, planets: world.planets,
+    ...tables, zones, npcs, characters, appearance, races, form_looks, zone_order: zoneOrder, planets: world.planets,
     fighting_styles, schema:{...tables.schema, version:Math.max(7,tables.schema.version), slots:10},
     skill_presentation: skillPresentation(tables.moves,tables.combat.starterMove),
     godot_additions: {zones: [...new Set(changed)].sort(), note: 'Zones changed for the Godot game only; JS parity skips them.'},

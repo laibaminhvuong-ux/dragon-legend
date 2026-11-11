@@ -711,8 +711,39 @@ func _only(out: String) -> void:
 		stage.free()
 		stage = null
 
+## Any characters by id (cast batches): --ids=whis,vados,goku:SSJ4,... [--per=8] [--yaw=0.6] (id:form = in that form).
+## Writes <prefix>_cast<n>.png.
+func _cast(out: String, ids: Array) -> void:
+	var chars: Dictionary = root.get_node("Data").characters
+	var per := 8
+	var yaw := 0.0
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--per="): per = int(a.substr(6))
+		if a.begins_with("--yaw="): yaw = float(a.substr(6))
+	var n := 0
+	while n * per < ids.size():
+		var row: Array = []
+		for entry: String in ids.slice(n * per, n * per + per):
+			var id := entry.get_slice(":", 0)   # "goku:SSJ4" shows the character in a form
+			var c: Dictionary = chars.get(id, {})
+			var l: Dictionary = (c.get("look", {}) as Dictionary).duplicate()
+			l.faceSeed = id
+			if entry.contains(":"): l.form = entry.get_slice(":", 1)
+			row.append([str(c.get("name", id)) + (" " + str(l.form) if entry.contains(":") else ""), l, minf(float(c.get("scale", 1.0)) if c.get("scale") != null else 1.0, 2.2)])
+		_row(row, 1.0)
+		_turn(yaw)
+		await _settle()
+		_paint(null, Color(0.3, 0.33, 0.4))
+		n += 1
+		await _shot("%s_cast%d.png" % [out, n])
+
 func _run(out: String) -> void:
 	await process_frame
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--ids="):
+			await _cast(out, Array(a.substr(6).split(",")))
+			quit()
+			return
 	if "--only" in OS.get_cmdline_user_args():
 		await _only(out)
 		quit()

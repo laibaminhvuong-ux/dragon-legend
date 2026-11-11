@@ -1,7 +1,8 @@
 class_name Parts
 extends RefCounted
 # Rigid pieces on bones (port of the JS dress()): sash, wristbands, armour pads, collar, cape, and race
-# features (Saiyan tail, Namekian antennae and arm patches, Frost Demon dome and tail, Majin antenna).
+# features (Saiyan tail, Namekian antennae and arm patches, Frost Demon dome and tail, Majin antenna), which each
+# look can switch on or off one by one (Parts.features; field list at the top of outfits.gd).
 # Positions are in model space at the rest (T-) pose, or in Hair.HEAD_SPACE for head pieces.
 # Meshes and materials are cached and shared.
 
@@ -96,6 +97,8 @@ static func dress(f: Fighter, parts: Dictionary, race_id: String, skin: Color) -
 			f.add_piece("DEF-upper_arm." + ("L" if s > 0 else "R"), pfit, _mesh("pad%d" % s, func(g: Geo) -> void:
 				var h := SphereMesh.new(); h.radius = 0.085; h.height = 0.085; h.is_hemisphere = true; h.radial_segments = 24; h.rings = 8
 				g.add_primitive(h, Transform3D(Basis.from_euler(Vector3(0, 0, -s * 0.45)) * Basis.from_scale(Vector3(1.3, 0.8, 1.25)), Vector3(s * 0.215, 1.47, -0.06)))), material(hx(parts.armor.trim), 0.4, 0.1))
+	if parts.has("armor"):
+		_armor_flaps(f, parts.armor, pad, waist)
 	if parts.has("collar"):
 		f.add_piece("DEF-spine.003", _fit(f, Vector3(0, 1.47, -0.012), _sc(f, "neck"), _sc(f, "neck")), _mesh("collar", func(g: Geo) -> void:
 			g.torus(Transform3D(Basis.IDENTITY, Vector3(0, 1.47, -0.012)), 0.1, 0.018)), material(hx(parts.collar), 0.3, 0.5))
@@ -109,40 +112,237 @@ static func dress(f: Fighter, parts: Dictionary, race_id: String, skin: Color) -
 				g.add_primitive(h, Transform3D(Basis.from_scale(Vector3(1.4, 0.6, 1.2)), Vector3(s * 0.17, 1.47, -0.02)))), material(hx(parts.cape), 0.8))
 	if f.hero_body_kind() == "":   # the Universal Base Characters heads have their own nose and ears
 		face(f, race_id, skin)
-	match race_id:
-		"Saiyan":
-			f.add_piece("DEF-hips", Transform3D.IDENTITY, _mesh("saiyan_tail", func(g: Geo) -> void:
-				g.tube(_offset([Vector3(0, 0, 0), Vector3(0, -0.12, -0.12), Vector3(0.12, -0.28, -0.18), Vector3(0.22, -0.32, -0.05), Vector3(0.18, -0.22, 0.04)], Vector3(0, 0.9, -0.12)), 0.032, 0.022)), material(Color.hex(0x4a2e1cff), 0.85))
-		"Namekian":
-			var green := material(skin * 0.9, 0.55)
-			f.add_skin_piece(f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("antennae", func(g: Geo) -> void:
-				for s in [1, -1]:
-					g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.02, 0.06, 0.02), Vector3(s * 0.05, 0.12, 0.0)], Vector3(s * 0.03, 0.135, 0.07)), 0.009, 0.006, 12, 8)
-					g.sphere(Transform3D(Basis.IDENTITY, Vector3(s * 0.08, 0.255, 0.07)), 0.011, 8, 10)), green), 0.9)
-			# long pointed ears sweeping up and back
-			f.add_skin_piece(f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("namek_ears", func(g: Geo) -> void:
-				for s in [1, -1]:
-					g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.04, 0.018, -0.015), Vector3(s * 0.085, 0.045, -0.04)], Vector3(s * 0.088, 0.03, -0.005)), 0.022, 0.002, 12, 10)), material(skin, 0.55)), 1.0)
+	var rp := features(race_id, f.look)
+	if rp.tail == "saiyan":
+		f.add_piece("DEF-hips", Transform3D.IDENTITY, _mesh("saiyan_tail", func(g: Geo) -> void:
+			g.tube(_offset([Vector3(0, 0, 0), Vector3(0, -0.12, -0.12), Vector3(0.12, -0.28, -0.18), Vector3(0.22, -0.32, -0.05), Vector3(0.18, -0.22, 0.04)], Vector3(0, 0.9, -0.12)), 0.032, 0.022)), material(Color.hex(0x4a2e1cff), 0.85))
+	if rp.antenna == "namek":
+		f.add_skin_piece(f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("antennae", func(g: Geo) -> void:
 			for s in [1, -1]:
-				f.add_piece("DEF-upper_arm." + ("L" if s > 0 else "R"), Transform3D.IDENTITY, _mesh("namek_patch%d" % s, func(g: Geo) -> void:
-					g.sphere(Transform3D(Basis.from_scale(Vector3(1.6, 0.55, 0.95)), Vector3(s * 0.33, 1.47, -0.062)), 0.05)), material(Color.hex(0xd88a9aff), 0.5))
-		"FrostDemon":
-			f.dome = f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("dome", func(g: Geo) -> void:
-				g.cap(Transform3D(Basis.from_scale(Vector3(1.04, 0.95, 1.12)), Vector3(0, 0.075, -0.01)), 0.108, PI * 0.36, PI * 0.46)), material(Color.hex(0x8a3ab8ff), 0.15, 0.1))
-			# bone-white shoulder domes and a chest plate: the armoured carapace of the race
-			var shell := material(Color.hex(0xe8e4f0ff), 0.25, 0.05)
+				g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.02, 0.06, 0.02), Vector3(s * 0.05, 0.12, 0.0)], Vector3(s * 0.03, 0.135, 0.07)), 0.009, 0.006, 12, 8)
+				g.sphere(Transform3D(Basis.IDENTITY, Vector3(s * 0.08, 0.255, 0.07)), 0.011, 8, 10)), material(skin * 0.9, 0.55)), 0.9)
+	elif rp.antenna == "long":   # two long thin feelers swept back (King Kae)
+		f.add_skin_piece(f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("antennae_long", func(g: Geo) -> void:
 			for s in [1, -1]:
-				var dc := Vector3(s * 0.2, 1.455, -0.06)
-				f.add_piece("DEF-upper_arm." + ("L" if s > 0 else "R"), Transform3D(Basis.from_scale(Vector3.ONE * pad), Vector3(dc.x * _sc(f, "shoulders"), dc.y, dc.z) - Basis.from_scale(Vector3.ONE * pad) * dc), _mesh("frost_dome%d" % s, func(g: Geo) -> void:
-					var h := SphereMesh.new(); h.radius = 0.075; h.height = 0.075; h.is_hemisphere = true; h.radial_segments = 24; h.rings = 8
-					g.add_primitive(h, Transform3D(Basis.from_euler(Vector3(0, 0, -s * 0.5)) * Basis.from_scale(Vector3(1.15, 0.9, 1.1)), Vector3(s * 0.2, 1.455, -0.06)))), shell)
-			f.add_piece("DEF-spine.003", _fit(f, Vector3(0, 1.36, 0.0), _sc(f, "shoulders"), _sc(f, "chest")), _mesh("frost_chest", func(g: Geo) -> void:
-				g.sphere(Transform3D(Basis.from_scale(Vector3(1.5, 0.75, 0.42)), Vector3(0, 1.36, 0.075)), 0.09, 10, 18)), shell)
-			f.add_skin_piece(f.add_piece("DEF-hips", Transform3D.IDENTITY, _mesh("frost_tail", func(g: Geo) -> void:
-				g.tube(_offset([Vector3(0, 0, 0), Vector3(0, -0.3, -0.25), Vector3(0.05, -0.75, -0.35), Vector3(0.25, -0.9, -0.1), Vector3(0.35, -0.92, 0.15)], Vector3(0, 0.88, -0.14)), 0.06, 0.02, 30)), material(skin, 0.45)), 1.0)
-		"Majin":
-			f.add_skin_piece(f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("majin_antenna", func(g: Geo) -> void:
-				g.tube(_offset([Vector3(0, 0, 0), Vector3(0, 0.12, -0.04), Vector3(0, 0.2, -0.14), Vector3(0, 0.17, -0.24), Vector3(0, 0.08, -0.26)], Vector3(0, 0.13, 0)), 0.035, 0.012, 24)), material(skin, 0.5)), 1.0)
+				g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.015, 0.09, -0.02), Vector3(s * 0.04, 0.2, -0.08), Vector3(s * 0.07, 0.28, -0.17)], Vector3(s * 0.03, 0.14, 0.04)), 0.008, 0.005, 16, 8)
+				g.sphere(Transform3D(Basis.IDENTITY, Vector3(s * 0.1, 0.42, -0.13)), 0.01, 8, 10)), material(skin * 0.9, 0.55)), 0.9)
+	elif rp.antenna == "buu":
+		f.add_skin_piece(f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("majin_antenna", func(g: Geo) -> void:
+			g.tube(_offset([Vector3(0, 0, 0), Vector3(0, 0.12, -0.04), Vector3(0, 0.2, -0.14), Vector3(0, 0.17, -0.24), Vector3(0, 0.08, -0.26)], Vector3(0, 0.13, 0)), 0.035, 0.012, 24)), material(skin, 0.5)), 1.0)
+	if rp.ears == "pointed":   # long pointed ears sweeping up and back (Namekians, Kais)
+		f.add_skin_piece(f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("namek_ears", func(g: Geo) -> void:
+			for s in [1, -1]:
+				g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.04, 0.018, -0.015), Vector3(s * 0.085, 0.045, -0.04)], Vector3(s * 0.088, 0.03, -0.005)), 0.022, 0.002, 12, 10)), material(skin, 0.55)), 1.0)
+	if rp.patches:
+		for s in [1, -1]:
+			f.add_piece("DEF-upper_arm." + ("L" if s > 0 else "R"), Transform3D.IDENTITY, _mesh("namek_patch%d" % s, func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.6, 0.55, 0.95)), Vector3(s * 0.33, 1.47, -0.062)), 0.05)), material(Color.hex(0xd88a9aff), 0.5))
+	if rp.dome:
+		f.dome = f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("dome", func(g: Geo) -> void:
+			g.cap(Transform3D(Basis.from_scale(Vector3(1.04, 0.95, 1.12)), Vector3(0, 0.075, -0.01)), 0.108, PI * 0.36, PI * 0.46)), material(hx(dome_colour(f.look)), 0.15, 0.1))
+	if rp.shells:
+		# bone-white shoulder domes and a chest plate: the armoured carapace of the Frost race (look.shellRgb / form shells)
+		var shell := material(hx(shell_colour(f.look)), 0.25, 0.05)
+		var shells: Array = []
+		for s in [1, -1]:
+			var dc := Vector3(s * 0.2, 1.455, -0.06)
+			shells.append(f.add_piece("DEF-upper_arm." + ("L" if s > 0 else "R"), Transform3D(Basis.from_scale(Vector3.ONE * pad), Vector3(dc.x * _sc(f, "shoulders"), dc.y, dc.z) - Basis.from_scale(Vector3.ONE * pad) * dc), _mesh("frost_dome%d" % s, func(g: Geo) -> void:
+				var h := SphereMesh.new(); h.radius = 0.075; h.height = 0.075; h.is_hemisphere = true; h.radial_segments = 24; h.rings = 8
+				g.add_primitive(h, Transform3D(Basis.from_euler(Vector3(0, 0, -s * 0.5)) * Basis.from_scale(Vector3(1.15, 0.9, 1.1)), Vector3(s * 0.2, 1.455, -0.06)))), shell))
+		shells.append(f.add_piece("DEF-spine.003", _fit(f, Vector3(0, 1.36, 0.0), _sc(f, "shoulders"), _sc(f, "chest")), _mesh("frost_chest", func(g: Geo) -> void:
+			g.sphere(Transform3D(Basis.from_scale(Vector3(1.5, 0.75, 0.42)), Vector3(0, 1.36, 0.075)), 0.09, 10, 18)), shell))
+		f.set_meta("shells", shells)
+	if rp.tail == "frost":
+		f.add_skin_piece(f.add_piece("DEF-hips", Transform3D.IDENTITY, _mesh("frost_tail", func(g: Geo) -> void:
+			g.tube(_offset([Vector3(0, 0, 0), Vector3(0, -0.3, -0.25), Vector3(0.05, -0.75, -0.35), Vector3(0.25, -0.9, -0.1), Vector3(0.35, -0.92, 0.15)], Vector3(0, 0.88, -0.14)), 0.06, 0.02, 30)), material(skin, 0.45)), 1.0)
+	elif rp.tail == "cat":   # a thin whip tail with a tufted tip (the cat gods)
+		f.add_skin_piece(f.add_piece("DEF-hips", Transform3D.IDENTITY, _mesh("cat_tail", func(g: Geo) -> void:
+			g.tube(_offset([Vector3(0, 0, 0), Vector3(0, -0.25, -0.12), Vector3(0.04, -0.6, -0.2), Vector3(0.16, -0.78, -0.06), Vector3(0.22, -0.74, 0.1)], Vector3(0, 0.9, -0.13)), 0.018, 0.01, 26, 8)), material(skin, 0.5)), 1.0)
+	form_reset(f)
+
+# ------------------------------------------------------------------------------------------------ cast batch B3
+# Frieza Force armour flaps, Frost dome/shell colours, per-form extras (form_looks shells / chitin / gear) and the
+# B3 gear ids (field list at the top of outfits.gd).
+
+## Frieza Force armour: big flared shoulder flaps over the chest plate, hip flaps over the thighs and a ribbed belly
+## panel, all in the armour's trim colour with a white rim (armor.flaps / armor.belly).
+static func _armor_flaps(f: Fighter, armor: Dictionary, pad: float, waist: float) -> void:
+	var col := material(hx(armor.trim), 0.45, 0.05, true)
+	var rim := material(hx(armor.plate), 0.4, 0.05, true)
+	if armor.get("flaps", false):
+		for s in [1, -1]:
+			var pc := Vector3(s * 0.25, 1.5, -0.055)
+			var moved := Vector3(pc.x * _sc(f, "shoulders"), pc.y, pc.z)
+			var fit := Transform3D(Basis.from_scale(Vector3.ONE * pad), moved - Basis.from_scale(Vector3.ONE * pad) * pc)
+			# a wide, low shell over the shoulder whose outer end flares up (rim: a slightly bigger white shell under it)
+			var tilt := Basis.from_euler(Vector3(0, 0, s * 0.3))
+			f.add_piece("DEF-spine.003", fit, _mesh("ff_flap%d" % s, func(g: Geo) -> void:
+				g.cap(Transform3D(tilt * Basis.from_scale(Vector3(2.25, 0.62, 1.45)), pc + Vector3(0, 0.006, 0)), 0.1, PI * 0.5, PI * 0.5, 8, 24)), col)
+			f.add_piece("DEF-spine.003", fit, _mesh("ff_flap_rim%d" % s, func(g: Geo) -> void:
+				g.cap(Transform3D(tilt * Basis.from_scale(Vector3(2.38, 0.6, 1.56)), pc), 0.1, PI * 0.5, PI * 0.5, 8, 24)), rim)
+			# hip flap: a curved plate on the outside front of each thigh, hanging from the belt
+			var n := Vector3(s, 0, 0.55).normalized()
+			var down := Vector3(0, -1, 0)
+			var hb := Basis(n.cross(down), n, down) * Basis.from_scale(Vector3(0.95, 0.38, 1.45))
+			f.add_piece("DEF-thigh." + ("L" if s > 0 else "R"), Transform3D.IDENTITY, _mesh("ff_hip%d" % s, func(g: Geo) -> void:
+				g.cap(Transform3D(hb, Vector3(s * 0.138, 0.84, 0.035)), 0.1, PI * 0.5, PI * 0.5, 8, 20)), col)
+	if armor.get("belly", false):
+		var bfit := _fit(f, Vector3(0, 1.08, 0.0), waist, waist + float(f.sculpt.get("belly", 0.0)) * 4.0)
+		f.add_piece("DEF-spine.001", bfit, _mesh("ff_belly", func(g: Geo) -> void:
+			g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 0.8, 0.5)), Vector3(0, 1.075, 0.058)), 0.1, 10, 18)
+			for k in 3:   # ribs across the panel
+				g.torus(Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 0.52)), Vector3(0, 1.035 + k * 0.03, 0.06)), 0.094 - absf(k - 1) * 0.008, 0.0045, 24, 6)), col)
+
+## The Frost dome colour outside forms (look.domeRgb, default purple).
+static func dome_colour(look: Dictionary) -> int:
+	var c := Outfits.rgb(look.get("domeRgb"))
+	return c if c >= 0 else 0x8a3ab8
+
+## The Frost shoulder/chest shell colour outside forms (look.shellRgb, default bone white).
+static func shell_colour(look: Dictionary) -> int:
+	var c := Outfits.rgb(look.get("shellRgb"))
+	return c if c >= 0 else 0xe8e4f0
+
+static func _paint_shells(f: Fighter, hex: int) -> void:
+	for mi: Variant in f.get_meta("shells", []):
+		if is_instance_valid(mi):
+			(mi as MeshInstance3D).material_override = material(hx(hex), 0.25, 0.05)
+
+## Base look after a form ends (and when the fighter is built): dome and shell colours, the outfit's region
+## colours (form chitin undone) and look.skinMetal.
+static func form_reset(f: Fighter) -> void:
+	if f.dome != null:
+		f.dome.material_override = material(hx(dome_colour(f.look)), 0.15, 0.1)
+	_paint_shells(f, shell_colour(f.look))
+	if f.has_meta("base_colors"):
+		f.material.set_shader_parameter("colors", f.get_meta("base_colors"))
+	else:
+		f.set_meta("base_colors", f.material.get_shader_parameter("colors"))
+	var metal := clampf(float(f.look.get("skinMetal", 0.0)), 0.0, 1.0)
+	if metal > 0.0:
+		f._set_skin(f.skin, metal)
+
+## Form-look extras (Fighter.set_form): shells colour, chitin (torso, forearm guards: two-tone Frost forms) and gear
+## worn only in the form. Returns the pieces added, so the fighter removes them when the form ends.
+static func form_extras(f: Fighter, F: Dictionary) -> Array[Node]:
+	var out: Array[Node] = []
+	if Outfits.rgb(F.get("shells")) >= 0:
+		_paint_shells(f, Outfits.rgb(F.shells))
+	if Outfits.rgb(F.get("chitin")) >= 0 and f.has_meta("base_colors"):
+		var c: PackedColorArray = (f.get_meta("base_colors") as PackedColorArray).duplicate()
+		for r: int in [BodyRegions.TOP, BodyRegions.PLATE, BodyRegions.UNDERSHIRT, BodyRegions.TRIM, BodyRegions.FOREARM, BodyRegions.WRIST]:
+			c[r] = hx(Outfits.rgb(F.chitin))
+		f.material.set_shader_parameter("colors", c)
+	var ids: Variant = F.get("gear")
+	if ids is Array:
+		var before := f.skeleton.find_children("*", "MeshInstance3D", true, false)
+		for id: Variant in ids:
+			gear(f, str(id))
+		for mi: Node in f.skeleton.find_children("*", "MeshInstance3D", true, false):
+			if not before.has(mi):
+				out.append(mi)
+	return out
+
+static func _lens(hex: int) -> StandardMaterial3D:
+	var key := "lens_%06x" % hex
+	if not _mats.has(key):
+		var m := StandardMaterial3D.new()
+		m.albedo_color = Color(hx(hex), 0.55)
+		m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		m.roughness = 0.1; m.metallic = 0.2
+		m.emission_enabled = true; m.emission = hx(hex); m.emission_energy_multiplier = 0.6
+		m.cull_mode = BaseMaterial3D.CULL_DISABLED
+		_mats[key] = m
+	return _mats[key]
+
+## The B3 gear ids (Parts.gear passes ids it does not know on here). Head pieces in Hair.HEAD_SPACE.
+static func gear_b3(f: Fighter, id: String) -> void:
+	match id:
+		"scouter", "scouter_red", "scouter_purple", "scouter_blue":   # over the left eye: ear unit, arm, tinted lens
+			var lens: int = {"scouter": 0x3ad84a, "scouter_red": 0xe8303a, "scouter_purple": 0xa04ad8, "scouter_blue": 0x3a8ae8}[id]
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("scouter_unit", func(g: Geo) -> void:
+				g.box(Transform3D(Basis.IDENTITY, Vector3(0.1, 0.035, 0.0)), Vector3(0.026, 0.07, 0.06))
+				g.box(Transform3D(Basis.from_euler(Vector3(0, -0.28, 0)), Vector3(0.088, 0.062, 0.07)), Vector3(0.012, 0.014, 0.09))
+				g.box(Transform3D(Basis.IDENTITY, Vector3(0.066, 0.052, 0.113)), Vector3(0.012, 0.03, 0.01))), material(Color.hex(0xe4e4e8ff), 0.35, 0.2))
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("scouter_lens", func(g: Geo) -> void:
+				g.box(Transform3D(Basis.from_euler(Vector3(0, 0.12, 0)), Vector3(0.034, 0.04, 0.116)), Vector3(0.056, 0.038, 0.003))), _lens(lens))
+		"frost_horns":   # two short dark horns pointing out and up from the sides of the head (1st form, Frosk, Ginnu)
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("frost_horns", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.06, 0.02, -0.01), Vector3(s * 0.12, 0.055, -0.02), Vector3(s * 0.17, 0.1, -0.03)], Vector3(s * 0.085, 0.1, -0.01)), 0.022, 0.002, 18, 8)), material(Color.hex(0x2a2a32ff), 0.3, 0.2))
+		"frost_horns_big", "cold_horns":   # big horns sweeping out then straight up (2nd form; King Kold's are purple)
+			var hc := 0x4a3a6e if id == "cold_horns" else 0x2a2a32
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("frost_horns_big", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.07, 0.015, 0.0), Vector3(s * 0.13, 0.07, -0.01), Vector3(s * 0.155, 0.18, -0.03), Vector3(s * 0.15, 0.28, -0.05)], Vector3(s * 0.08, 0.09, -0.01)), 0.032, 0.003, 24, 8)), material(Color.hex((hc << 8) | 0xff), 0.3, 0.2))
+		"third_crest":   # 3rd form: a long head crest swept back (the dome's colour) with white chitin spikes
+			var dm: Material = f.dome.material_override if f.dome != null else material(hx(dome_colour(f.look)), 0.15, 0.1)
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("third_crest", func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.from_euler(Vector3(-0.4, 0, 0)) * Basis.from_scale(Vector3(0.95, 0.85, 1.75)), Vector3(0, 0.085, -0.06)), 0.1, 12, 18)), dm)
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("third_spikes", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.spike(Vector3(s * 0.075, 0.09, -0.02), 0.16, 0.03, Vector3(s * 0.45, 1.0, -0.5))
+					g.spike(Vector3(s * 0.085, 0.04, -0.09), 0.14, 0.028, Vector3(s * 0.9, 0.55, -0.7))), material(Color.hex(0xdfe6e0ff), 0.35))
+		"head_spikes":   # Dodorra: short skin-coloured spikes over the top of the head
+			f.add_skin_piece(f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("head_spikes", func(g: Geo) -> void:
+				for i in 9:
+					var a := float(i) / 9.0 * TAU
+					var lat := 0.55 if i % 2 == 0 else 0.95
+					var d := Vector3(sin(a) * sin(lat), cos(lat), cos(a) * sin(lat) - 0.15)
+					g.spike(Vector3(0, 0.06, -0.01) + d.normalized() * 0.1, 0.05, 0.018, d)
+				g.spike(Vector3(0, 0.165, -0.01), 0.06, 0.02, Vector3.UP)), material(f.skin * 0.92, 0.5)), 0.92)
+		"mustache":   # a thick black moustache under the nose (Nappo)
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("mustache", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.016, -0.002, -0.002), Vector3(s * 0.032, -0.012, -0.01), Vector3(s * 0.038, -0.03, -0.016)], Vector3(s * 0.004, -0.016, 0.112)), 0.008, 0.004, 12, 8)), material(Color.hex(0x141210ff), 0.85))
+		"tiara":   # Zarvon: a thin gold circlet with a front jewel, and gold earrings
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("tiara", func(g: Geo) -> void:
+				g.torus(Transform3D(Basis.from_euler(Vector3(0.18, 0, 0)), Vector3(0, 0.1, -0.008)), 0.104, 0.006, 32, 6)
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 1.3, 0.6)), Vector3(0, 0.122, 0.1)), 0.012, 8, 10)
+				for s in [1, -1]:
+					g.sphere(Transform3D(Basis.IDENTITY, Vector3(s * 0.098, -0.03, 0.0)), 0.012, 8, 10)), material(Color.hex(0xe0b040ff), 0.3, 0.7))
+		"red_bands":   # Radix: red bands round the left upper arm and left thigh
+			var red := material(Color.hex(0xc8202aff), 0.6)
+			f.add_piece("DEF-upper_arm.L", Transform3D.IDENTITY, _mesh("red_band_arm", func(g: Geo) -> void:
+				g.torus(Transform3D(Basis.from_euler(Vector3(0, 0, PI / 2)), Vector3(0.36, 1.443, -0.066)), 0.052, 0.011, 22, 6)), red)
+			f.add_piece("DEF-thigh.L", Transform3D.IDENTITY, _mesh("red_band_leg", func(g: Geo) -> void:
+				g.torus(Transform3D(Basis.IDENTITY, Vector3(0.1, 0.68, 0.0)), 0.074, 0.012, 22, 6)), red)
+		"cap":   # Lemmo: an orange soldier's cap with a short visor
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("soldier_cap", func(g: Geo) -> void:
+				g.cap(Transform3D(Basis.from_scale(Vector3(1.05, 0.85, 1.08)), Vector3(0, 0.06, -0.005)), 0.118, PI * 0.4, PI * 0.5)
+				g.box(Transform3D(Basis.from_euler(Vector3(-0.15, 0, 0)), Vector3(0, 0.09, 0.12)), Vector3(0.14, 0.008, 0.06))), material(Color.hex(0xe0782aff), 0.7))
+		"four_eyes":   # Gurdo: a second pair of eyes above the first
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("four_eyes", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.sphere(Transform3D(Basis.from_scale(Vector3(1.2, 0.85, 0.5)), Vector3(s * 0.034, 0.088, 0.096)), 0.017, 8, 12)), material(Color.hex(0xf4f2eaff), 0.3))
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("four_pupils", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 0.5)), Vector3(s * 0.034, 0.087, 0.105)), 0.0065, 6, 8)), material(Color.hex(0x141414ff), 0.3))
+
+## The race features a look wears (see the field list at the top of outfits.gd): each race has its defaults and
+## look.tail / dome / shells / antenna / ears / patches override them one by one; look.raceParts = false starts from none.
+## Returns {tail: "" | "saiyan" | "frost" | "cat", dome: bool, shells: bool, antenna: "" | "namek" | "long" | "buu",
+## ears: "" | "pointed", patches: bool}.
+static func features(race_id: String, look: Dictionary) -> Dictionary:
+	var rp := {"tail": "", "dome": false, "shells": false, "antenna": "", "ears": "", "patches": false}
+	if look.get("raceParts", true) != false:
+		match race_id:
+			"Saiyan": rp.tail = "saiyan"
+			"Namekian": rp.antenna = "namek"; rp.ears = "pointed"; rp.patches = true
+			"FrostDemon": rp.tail = "frost"; rp.dome = true; rp.shells = true
+			"Majin": rp.antenna = "buu"
+	var kinds := {"tail": ["saiyan", "frost", "cat"], "antenna": ["namek", "long", "buu"], "ears": ["pointed"]}
+	for k: String in rp:
+		if not look.has(k) or look[k] == null:
+			continue
+		var v: Variant = look[k]
+		if rp[k] is bool:
+			rp[k] = v is bool and v
+		elif v is bool:
+			rp[k] = (rp[k] if rp[k] != "" else str(kinds[k][0])) if v else ""
+		elif v is String and (kinds[k] as Array).has(v):
+			rp[k] = v
+	return rp
 
 ## 3D facial structure on top of the painted eyes/brows/mouth (presentation rebuild): nose, ears and brow ridges,
 ## different per race. Model rest-space coordinates on DEF-head (front of the face z about 0.118, eyes at y 1.703,
@@ -185,6 +385,7 @@ static func face(f: Fighter, race_id: String, skin: Color) -> void:
 ## NPC-only costume pieces on top of the outfit (look.costume). Head pieces are in Hair.HEAD_SPACE
 ## (head centre about (0, 0.06, 0), radius about 0.105, +Z is the face).
 static func costume(f: Fighter, id: String) -> void:
+	gear(f, id)
 	match id:
 		"vael":   # Vael the Unwound: a pale porcelain mask and a mantle of floating clock shards
 			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("vael_mask", func(g: Geo) -> void:
@@ -260,6 +461,42 @@ static func costume(f: Fighter, id: String) -> void:
 				g.cylinder(Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 0.92)), Vector3(0, 0.145, -0.005)), 0.122, 0.122, 0.022, 24)), hat)
 			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("yemmo_hat_plate", func(g: Geo) -> void:
 				g.box(Transform3D(Basis.IDENTITY, Vector3(0, 0.215, 0.104)), Vector3(0.075, 0.09, 0.012))), gold)
+
+## Divine/alien gear (cast batch B1). Several can be worn at once (look.costume as an array).
+static func gear(f: Fighter, id: String) -> void:
+	gear_b3(f, id)   # Frieza Force / Frost Demon gear (scouters, horns, ...)
+	match id:
+		"halo":   # angels: a glowing pale-blue ring floating round the back of the neck
+			var glow := material(Color.hex(0xbfe8ffff), 0.1)
+			glow.emission_enabled = true; glow.emission = Color.hex(0x8fd4ffff); glow.emission_energy_multiplier = 1.6
+			f.add_piece("DEF-spine.003", Transform3D.IDENTITY, _mesh("halo", func(g: Geo) -> void:
+				g.torus(Transform3D(Basis.from_euler(Vector3(0.35, 0, 0)), Vector3(0, 1.52, -0.07)), 0.15, 0.012, 36, 8)), glow)
+		"potara", "potara_green":   # Kai earrings: a ring and a ball hanging from each ear lobe
+			var col := 0x3fbf5a if id == "potara_green" else 0xf2c230
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("potara", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.torus(Transform3D(Basis.from_euler(Vector3(0, 0, PI / 2)), Vector3(s * 0.098, -0.005, 0.0)), 0.011, 0.004, 14, 6)
+					g.sphere(Transform3D(Basis.IDENTITY, Vector3(s * 0.098, -0.03, 0.0)), 0.014, 8, 10)), material(Color.hex((col << 8) | 0xff), 0.3, 0.6))
+		"shades":   # round black sunglasses
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("shades", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.cylinder(Transform3D(Basis.from_euler(Vector3(PI / 2, 0, 0)), Vector3(s * 0.042, 0.04, 0.108)), 0.028, 0.028, 0.008, 18)
+				g.box(Transform3D(Basis.IDENTITY, Vector3(0, 0.048, 0.11)), Vector3(0.03, 0.006, 0.006))), material(Color.hex(0x101014ff), 0.15, 0.3))
+		"cat_ears":   # tall pointed cat ears (the cat gods)
+			f.add_skin_piece(f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("cat_ears", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.spike(Vector3(s * 0.075, 0.12, -0.015), 0.16, 0.055, Vector3(s * 0.4, 1, -0.1))), material(f.skin, 0.55)), 1.0)
+		"ramhorns":   # thick ram horns curling back and down past the ears
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("ramhorns", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.05, 0.06, -0.04), Vector3(s * 0.1, 0.03, -0.11), Vector3(s * 0.12, -0.06, -0.08), Vector3(s * 0.11, -0.09, 0.0)], Vector3(s * 0.06, 0.13, 0.02)), 0.032, 0.01, 24, 10)), material(Color.hex(0xd9cfb0ff), 0.55))
+		"turban":   # a white wrapped turban with a red jewel at the front
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("turban", func(g: Geo) -> void:
+				g.cap(Transform3D(Basis.from_scale(Vector3(1.08, 1.0, 1.1)), Vector3(0, 0.01, -0.008)), 0.132, PI * 0.4, PI * 0.58)
+				g.torus(Transform3D(Basis.from_euler(Vector3(0.12, 0, 0)), Vector3(0, 0.04, -0.004)), 0.128, 0.024, 28, 8)
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 0.85, 1.0)), Vector3(0, 0.13, -0.02)), 0.075, 10, 14)), material(Color.hex(0xf2f0eaff), 0.8))
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("turban_jewel", func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 1.2, 0.6)), Vector3(0, 0.06, 0.15)), 0.017, 8, 10)), material(Color.hex(0xd8203aff), 0.2, 0.3))
 
 static func _offset(pts: Array, o: Vector3) -> PackedVector3Array:
 	var out := PackedVector3Array()

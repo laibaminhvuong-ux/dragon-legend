@@ -12,6 +12,7 @@
       "outfitTint": 0,
       "physique": "gokan",
       "shading": "cel",
+      "tail": false,
       "faceSeed": "goku"
     },
     "style": "turtle"
@@ -44,6 +45,12 @@
       "outfit": "TurtleGi",
       "outfitTint": 2,
       "physique": "gohin",
+      "outfitParts": {
+        "undershirt": false,
+        "sash": 13120042,
+        "wrist": 1710618,
+        "shoes": 6965802
+      },
       "faceSeed": "gohan"
     },
     "style": "turtle"
@@ -75,6 +82,14 @@
       "build": "Short",
       "outfit": "TurtleGi",
       "outfitTint": 6,
+      "eyeRgb": 3832528,
+      "outfitRgb": 2775610,
+      "outfitParts": {
+        "undershirt": false,
+        "sash": 15239722,
+        "wrist": 15239722,
+        "shoes": 12097082
+      },
       "faceSeed": "trunks_kid"
     },
     "scale": 0.62,
@@ -92,6 +107,11 @@
       "outfit": "CapsuleCorp",
       "outfitTint": 1,
       "physique": "tronks",
+      "eyeRgb": 3832528,
+      "outfitParts": {
+        "pants": 3816002,
+        "shoes": 13146682
+      },
       "faceSeed": "trunks"
     },
     "style": "turtle"
@@ -108,6 +128,13 @@
       "outfit": "TurtleGi",
       "outfitTint": 5,
       "female": true,
+      "outfitParts": {
+        "undershirt": 1710618,
+        "pants": 14209256,
+        "sash": false,
+        "wrist": false,
+        "shoes": 13120042
+      },
       "faceSeed": "pan"
     },
     "scale": 0.5,
@@ -266,9 +293,20 @@
       "hair": "LongSpiky",
       "hairColor": 0,
       "build": "Muscular",
-      "outfit": "SaiyanArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 3,
       "physique": "gokan",
+      "outfitRgb": 1711662,
+      "outfitParts": {
+        "trim": 11039802,
+        "wrist": 2767466,
+        "shoes": 2767466,
+        "boot_trim": 15921906
+      },
+      "costume": [
+        "scouter",
+        "red_bands"
+      ],
       "faceSeed": "raditz"
     },
     "scale": 1.08,
@@ -283,9 +321,19 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Muscular",
-      "outfit": "SaiyanArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 3,
       "physique": "nappo",
+      "outfitRgb": 1845852,
+      "outfitParts": {
+        "trim": 14200896,
+        "wrist": 1845852,
+        "shoes": 15921906
+      },
+      "costume": [
+        "scouter_purple",
+        "mustache"
+      ],
       "faceSeed": "nappa"
     },
     "scale": 1.2,
@@ -303,6 +351,14 @@
       "outfit": "SaiyanArmor",
       "outfitTint": 1,
       "physique": "vegara",
+      "tail": false,
+      "outfitParts": {
+        "pads": false,
+        "trim": 14200906,
+        "gloves": 15921906,
+        "shoes": 15921906,
+        "boot_trim": 14200906
+      },
       "faceSeed": "vegeta"
     },
     "scale": 0.95,
@@ -317,8 +373,15 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Slim",
-      "outfit": "MajinVest",
+      "outfit": "FrostBody",
       "outfitTint": 6,
+      "raceParts": false,
+      "skinHex": 5939270,
+      "eyeRgb": 14164010,
+      "sculpt": {
+        "head_w": 1.18,
+        "head_h": 1.2
+      },
       "faceSeed": "saibaman"
     },
     "scale": 0.75,
@@ -333,8 +396,16 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Short",
-      "outfit": "TurtleGi",
+      "outfit": "AngelRobe",
       "outfitTint": 3,
+      "raceParts": false,
+      "antenna": "long",
+      "eyeRgb": 2759956,
+      "costume": [
+        "shades"
+      ],
+      "outfitRgb": 1710622,
+      "outfitRgb2": 13120074,
       "faceSeed": "king_kai"
     },
     "scale": 0.85,
@@ -461,9 +532,10 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Short",
-      "outfit": "FrostArmor",
+      "outfit": "FrostBody",
       "outfitTint": 2,
       "physique": "frigor",
+      "shellRgb": 9059000,
       "faceSeed": "frieza"
     },
     "scale": 0.9,
@@ -477,12 +549,15 @@
       "face": "Smirk",
       "hair": "None",
       "hairColor": 3,
-      "build": "Average",
-      "outfit": "FrostArmor",
+      "build": "Short",
+      "outfit": "FrostBody",
       "outfitTint": 0,
       "physique": "frigor",
+      "shellRgb": 9059000,
+      "form": "Golden",
       "faceSeed": "golden_frieza"
     },
+    "scale": 0.9,
     "style": "speedster"
   },
   "zarbon": {
@@ -494,9 +569,21 @@
       "hair": "Ponytail",
       "hairColor": 0,
       "build": "Tall",
-      "outfit": "FrostArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 4,
       "physique": "zarvon",
+      "skinHex": 10145976,
+      "hairRgb": 2787930,
+      "costume": [
+        "tiara"
+      ],
+      "outfitRgb": 14711464,
+      "outfitParts": {
+        "sleeves": true,
+        "pants": 4860522,
+        "cape": 15921906,
+        "wrist": 14711464
+      },
       "faceSeed": "zarbon"
     },
     "style": "turtle"
@@ -510,9 +597,20 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Muscular",
-      "outfit": "FrostArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 4,
       "physique": "dodorra",
+      "antenna": false,
+      "outfitRgb": 1845852,
+      "outfitParts": {
+        "trim": 14200896,
+        "pants": 3807818,
+        "wrist": 1845852
+      },
+      "costume": [
+        "head_spikes",
+        "scouter"
+      ],
       "faceSeed": "dodoria"
     },
     "scale": 1.25,
@@ -527,8 +625,20 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Muscular",
-      "outfit": "SaiyanArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 3,
+      "outfitRgb": 1710622,
+      "outfitParts": {
+        "trim": 13141546,
+        "wrist": 1710622,
+        "boot_trim": 13141546
+      },
+      "antenna": false,
+      "skinHex": 11047128,
+      "costume": [
+        "frost_horns",
+        "scouter"
+      ],
       "faceSeed": "ginyu"
     },
     "style": "turtle"
@@ -542,9 +652,18 @@
       "hair": "Wild",
       "hairColor": 4,
       "build": "Muscular",
-      "outfit": "SaiyanArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 3,
       "physique": "recume",
+      "outfitRgb": 1710622,
+      "outfitParts": {
+        "trim": 13141546,
+        "wrist": 1710622,
+        "boot_trim": 13141546
+      },
+      "costume": [
+        "scouter"
+      ],
       "faceSeed": "recoome"
     },
     "scale": 1.3,
@@ -559,8 +678,19 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Tall",
-      "outfit": "SaiyanArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 3,
+      "outfitRgb": 1710622,
+      "outfitParts": {
+        "trim": 13141546,
+        "wrist": 1710622,
+        "boot_trim": 13141546
+      },
+      "raceParts": false,
+      "skinHex": 3836632,
+      "costume": [
+        "scouter"
+      ],
       "faceSeed": "burter"
     },
     "scale": 1.2,
@@ -572,11 +702,25 @@
       "race": "Majin",
       "skin": 1,
       "face": "Smirk",
-      "hair": "Short",
+      "hair": "Wild",
       "hairColor": 5,
       "build": "Average",
-      "outfit": "SaiyanArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 3,
+      "outfitRgb": 1710622,
+      "outfitParts": {
+        "trim": 13141546,
+        "wrist": 1710622,
+        "boot_trim": 13141546
+      },
+      "antenna": false,
+      "ears": "pointed",
+      "skinHex": 14173242,
+      "hairAnyRace": true,
+      "hairRgb": 15921908,
+      "costume": [
+        "scouter_red"
+      ],
       "faceSeed": "jeice"
     },
     "style": "speedster"
@@ -590,8 +734,18 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Short",
-      "outfit": "SaiyanArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 3,
+      "outfitRgb": 1710622,
+      "outfitParts": {
+        "trim": 13141546,
+        "wrist": 1710622,
+        "boot_trim": 13141546
+      },
+      "raceParts": false,
+      "costume": [
+        "four_eyes"
+      ],
       "faceSeed": "guldo"
     },
     "scale": 0.7,
@@ -606,8 +760,12 @@
       "hair": "Short",
       "hairColor": 0,
       "build": "Average",
-      "outfit": "FrostArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 3,
+      "outfitRgb": 1845852,
+      "costume": [
+        "scouter"
+      ],
       "faceSeed": "frieza_soldier"
     },
     "style": "turtle"
@@ -623,6 +781,9 @@
       "build": "Short",
       "outfit": "AngelRobe",
       "outfitTint": 2,
+      "raceParts": false,
+      "skinHex": 15253700,
+      "eyeRgb": 2759956,
       "faceSeed": "yardrat_elder"
     },
     "scale": 0.85,
@@ -639,6 +800,9 @@
       "build": "Short",
       "outfit": "AngelRobe",
       "outfitTint": 6,
+      "raceParts": false,
+      "skinHex": 15780040,
+      "eyeRgb": 2759956,
       "faceSeed": "yardrat"
     },
     "scale": 0.8,
@@ -652,10 +816,13 @@
       "face": "Cold",
       "hair": "None",
       "hairColor": 0,
-      "build": "Average",
-      "outfit": "FrostArmor",
+      "build": "Short",
+      "outfit": "FrostBody",
       "outfitTint": 3,
       "physique": "frigor",
+      "skinHex": 12107464,
+      "skinMetal": 0.65,
+      "shellRgb": 10133676,
       "faceSeed": "mecha_frieza"
     },
     "style": "turtle"
@@ -669,9 +836,24 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Muscular",
-      "outfit": "FrostArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 2,
       "physique": "kold",
+      "skinHex": 13138128,
+      "domeRgb": 2775654,
+      "shells": false,
+      "costume": [
+        "cold_horns"
+      ],
+      "outfitRgb": 2767536,
+      "outfitParts": {
+        "plate": 2767536,
+        "trim": 13642298,
+        "cape": 8000548,
+        "wrist": 14212324,
+        "shoes": "skin",
+        "boot_trim": "skin"
+      },
       "faceSeed": "king_cold"
     },
     "scale": 1.8,
@@ -814,8 +996,20 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Short",
-      "outfit": "AngelRobe",
+      "outfit": "MajinVest",
       "outfitTint": 5,
+      "raceParts": false,
+      "eyeRgb": 2759956,
+      "costume": [
+        "turban"
+      ],
+      "outfitParts": {
+        "top": 13120042,
+        "pants": 15921386,
+        "shoes": 13120042,
+        "sash": 13120042,
+        "wrist": false
+      },
       "faceSeed": "mr_popo"
     },
     "style": "turtle"
@@ -873,11 +1067,24 @@
       "race": "FrostDemon",
       "skin": 1,
       "face": "Calm",
-      "hair": "Short",
+      "hair": "Mohawk",
       "hairColor": 5,
       "build": "Slim",
       "outfit": "AngelRobe",
       "outfitTint": 1,
+      "raceParts": false,
+      "ears": "pointed",
+      "eyeRgb": 2759956,
+      "hairAnyRace": true,
+      "hairRgb": 15921908,
+      "outfitRgb": 2793114,
+      "outfitRgb2": 14701866,
+      "outfitParts": {
+        "shoes": 13120042
+      },
+      "costume": [
+        "potara"
+      ],
       "faceSeed": "supreme_kai"
     },
     "style": "crane"
@@ -888,11 +1095,22 @@
       "race": "Majin",
       "skin": 1,
       "face": "Calm",
-      "hair": "LongSpiky",
+      "hair": "Long",
       "hairColor": 5,
       "build": "Tall",
       "outfit": "AngelRobe",
       "outfitTint": 5,
+      "raceParts": false,
+      "ears": "pointed",
+      "eyeRgb": 2759956,
+      "hairAnyRace": true,
+      "hairRgb": 15921908,
+      "outfitRgb": 13120042,
+      "outfitRgb2": 15239722,
+      "outfitParts": {
+        "pants": 2793114,
+        "shoes": 14200906
+      },
       "faceSeed": "kibito"
     },
     "style": "crane"
@@ -903,11 +1121,24 @@
       "race": "FrostDemon",
       "skin": 1,
       "face": "Smirk",
-      "hair": "Short",
+      "hair": "Mohawk",
       "hairColor": 5,
       "build": "Short",
       "outfit": "AngelRobe",
       "outfitTint": 5,
+      "raceParts": false,
+      "ears": "pointed",
+      "eyeRgb": 2759956,
+      "hairAnyRace": true,
+      "hairRgb": 15921908,
+      "outfitRgb": 13120042,
+      "outfitRgb2": 15239722,
+      "outfitParts": {
+        "shoes": 2793114
+      },
+      "costume": [
+        "potara"
+      ],
       "faceSeed": "elder_kai"
     },
     "scale": 0.85,
@@ -1005,6 +1236,19 @@
       "outfit": "SaiyanSuit",
       "outfitTint": 1,
       "physique": "vegara",
+      "tail": false,
+      "form": "SSJ2",
+      "formLooks": {
+        "SSJ2": "SSJ2Majin"
+      },
+      "outfitParts": {
+        "pads": false,
+        "trim": 14200906,
+        "gloves": 15921906,
+        "shoes": 15921906,
+        "boot_trim": 14200906,
+        "plate": 16052970
+      },
       "faceSeed": "majin_vegeta"
     },
     "scale": 0.95,
@@ -1069,8 +1313,21 @@
       "hair": "Wild",
       "hairColor": 2,
       "build": "Short",
-      "outfit": "SaiyanArmor",
+      "outfit": "MajinVest",
       "outfitTint": 1,
+      "outfitParts": {
+        "top": 2368556,
+        "plate": 2368556,
+        "trim": 14733392,
+        "pads": true,
+        "pants": 15658736,
+        "sash": 1997466,
+        "wrist": 2763312,
+        "shoes": 2763312,
+        "boot_trim": 1997466
+      },
+      "hairRgb": 3811912,
+      "eyeRgb": 2075023,
       "faceSeed": "gotenks"
     },
     "scale": 0.75,
@@ -1088,6 +1345,17 @@
       "outfit": "AngelRobe",
       "outfitTint": 3,
       "physique": "beeros",
+      "raceParts": false,
+      "tail": "cat",
+      "eyeRgb": 15253552,
+      "costume": [
+        "cat_ears"
+      ],
+      "outfitRgb": 1710622,
+      "outfitParts": {
+        "pants": 2793114,
+        "wrist": 14200906
+      },
       "faceSeed": "beerus"
     },
     "style": "crane"
@@ -1098,12 +1366,24 @@
       "race": "FrostDemon",
       "skin": 2,
       "face": "Calm",
-      "hair": "Short",
+      "hair": "AngelCrest",
       "hairColor": 5,
       "build": "Tall",
       "outfit": "AngelRobe",
       "outfitTint": 2,
       "physique": "wiss",
+      "raceParts": false,
+      "hairAnyRace": true,
+      "hairRgb": 15921908,
+      "eyeRgb": 5913226,
+      "costume": [
+        "halo"
+      ],
+      "outfitRgb": 8003130,
+      "outfitParts": {
+        "plate": 1579036,
+        "trim": 15239722
+      },
       "faceSeed": "whis"
     },
     "style": "speedster"
@@ -1133,8 +1413,18 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Short",
-      "outfit": "FrostArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 3,
+      "raceParts": false,
+      "skinHex": 5933784,
+      "outfitRgb": 1710622,
+      "outfitParts": {
+        "flaps": false,
+        "plate": 15921904,
+        "trim": 3836490,
+        "pants": 13119530,
+        "cape": 15921906
+      },
       "faceSeed": "sorbet"
     },
     "scale": 0.8,
@@ -1149,8 +1439,19 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Muscular",
-      "outfit": "FrostArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 3,
+      "skinHex": 12099800,
+      "outfitRgb": 1710622,
+      "outfitParts": {
+        "flaps": false,
+        "plate": 15921904,
+        "trim": 3836490,
+        "pants": 12070954
+      },
+      "costume": [
+        "scouter"
+      ],
       "faceSeed": "tagoma"
     },
     "scale": 1.2,
@@ -1167,6 +1468,17 @@
       "build": "Muscular",
       "outfit": "AngelRobe",
       "outfitTint": 3,
+      "raceParts": false,
+      "tail": "cat",
+      "eyeRgb": 15253552,
+      "costume": [
+        "cat_ears"
+      ],
+      "outfitRgb": 1710622,
+      "outfitParts": {
+        "pants": 14177322,
+        "wrist": 14200906
+      },
       "faceSeed": "champa"
     },
     "scale": 1.25,
@@ -1178,12 +1490,24 @@
       "race": "FrostDemon",
       "skin": 2,
       "face": "Smirk",
-      "hair": "Ponytail",
+      "hair": "AngelCrest",
       "hairColor": 5,
       "build": "Slim",
       "outfit": "AngelRobe",
       "outfitTint": 1,
       "female": true,
+      "raceParts": false,
+      "hairAnyRace": true,
+      "hairRgb": 15921908,
+      "eyeRgb": 5913226,
+      "costume": [
+        "halo"
+      ],
+      "outfitRgb": 1989208,
+      "outfitParts": {
+        "plate": 1579036,
+        "trim": 15239722
+      },
       "faceSeed": "vados"
     },
     "style": "speedster"
@@ -1200,6 +1524,13 @@
       "outfit": "AngelRobe",
       "outfitTint": 3,
       "physique": "hitto",
+      "raceParts": false,
+      "eyeRgb": 13114910,
+      "outfitRgb": 3816006,
+      "outfitRgb2": 1710618,
+      "outfitParts": {
+        "collar": false
+      },
       "faceSeed": "hit"
     },
     "style": "speedster"
@@ -1216,6 +1547,16 @@
       "outfit": "EliteArmor",
       "outfitTint": 5,
       "physique": "tronks",
+      "tail": false,
+      "outfitParts": {
+        "top": 1845852,
+        "pants": 1845852,
+        "plate": 2767482,
+        "trim": 1845852,
+        "pads": false,
+        "sash": 6961802,
+        "shoes": 15921906
+      },
       "faceSeed": "cabba"
     },
     "style": "turtle"
@@ -1229,8 +1570,23 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Average",
-      "outfit": "FrostArmor",
+      "outfit": "FrostBody",
       "outfitTint": 1,
+      "skinHex": 3824344,
+      "domeRgb": 2775768,
+      "shellRgb": 11067600,
+      "costume": [
+        "frost_horns"
+      ],
+      "outfitParts": {
+        "top": 11067600,
+        "wrist": 11067600,
+        "pants": 4868698
+      },
+      "formLooks": {
+        "FinalForm": "FinalFormFrost",
+        "FullPower": "FullPowerFrost"
+      },
       "faceSeed": "frost"
     },
     "style": "speedster"
@@ -1246,6 +1602,12 @@
       "build": "Muscular",
       "outfit": "MajinVest",
       "outfitTint": 0,
+      "raceParts": false,
+      "skinHex": 15253568,
+      "outfitParts": {
+        "top": 13120042,
+        "wrist": false
+      },
       "faceSeed": "botamo"
     },
     "scale": 1.4,
@@ -1262,6 +1624,9 @@
       "build": "Muscular",
       "outfit": "PrideTrooper",
       "outfitTint": 3,
+      "raceParts": false,
+      "skinHex": 8030880,
+      "eyeRgb": 16747034,
       "faceSeed": "magetta"
     },
     "scale": 1.6,
@@ -1295,6 +1660,21 @@
       "outfit": "TurtleGi",
       "outfitTint": 3,
       "physique": "gokan",
+      "tail": false,
+      "costume": [
+        "potara_green"
+      ],
+      "formLooks": {
+        "SSJBlue": "SSJRose"
+      },
+      "outfitRgb": 2894900,
+      "outfitParts": {
+        "undershirt": 5921380,
+        "sash": 12066858,
+        "wrist": false,
+        "shoes": 15921906,
+        "boot_trim": 5921380
+      },
       "faceSeed": "goku_black"
     },
     "style": "turtle"
@@ -1305,11 +1685,24 @@
       "race": "Namekian",
       "skin": 2,
       "face": "Cold",
-      "hair": "None",
+      "hair": "Mohawk",
       "hairColor": 5,
       "build": "Slim",
       "outfit": "AngelRobe",
       "outfitTint": 6,
+      "raceParts": false,
+      "ears": "pointed",
+      "eyeRgb": 2759956,
+      "hairAnyRace": true,
+      "hairRgb": 15921908,
+      "outfitRgb": 2894396,
+      "outfitRgb2": 8010408,
+      "outfitParts": {
+        "shoes": 15921906
+      },
+      "costume": [
+        "potara_green"
+      ],
       "faceSeed": "zamasu"
     },
     "style": "crane"
@@ -1320,11 +1713,20 @@
       "race": "FrostDemon",
       "skin": 2,
       "face": "Calm",
-      "hair": "Short",
+      "hair": "AngelCrest",
       "hairColor": 5,
       "build": "Tall",
       "outfit": "AngelRobe",
       "outfitTint": 1,
+      "raceParts": false,
+      "hairAnyRace": true,
+      "hairRgb": 15921908,
+      "eyeRgb": 2759956,
+      "costume": [
+        "halo"
+      ],
+      "outfitRgb": 3832504,
+      "outfitRgb2": 13120042,
       "faceSeed": "grand_priest"
     },
     "scale": 1.05,
@@ -1341,6 +1743,14 @@
       "build": "Short",
       "outfit": "AngelRobe",
       "outfitTint": 2,
+      "raceParts": false,
+      "skinHex": 15264498,
+      "eyeRgb": 1052692,
+      "outfitRgb": 13648010,
+      "outfitParts": {
+        "collar": false,
+        "shoes": 15255616
+      },
       "faceSeed": "zeno"
     },
     "scale": 0.6,
@@ -1358,6 +1768,8 @@
       "outfit": "PrideTrooper",
       "outfitTint": 5,
       "physique": "jiran",
+      "raceParts": false,
+      "eyeRgb": 328965,
       "faceSeed": "jiren"
     },
     "scale": 1.25,
@@ -1389,10 +1801,26 @@
       "hair": "Ponytail",
       "hairColor": 0,
       "build": "Slim",
-      "outfit": "SaiyanArmor",
+      "outfit": "CraneGi",
       "outfitTint": 6,
       "female": true,
       "physique": "kafla",
+      "tail": false,
+      "costume": [
+        "potara"
+      ],
+      "formLooks": {
+        "SSJ": "SSJKefla"
+      },
+      "eyeRgb": 2759956,
+      "outfitParts": {
+        "top": 13119594,
+        "pants": 11020892,
+        "sash": 11020892,
+        "wrist": 15255616,
+        "shoes": 2763312,
+        "cloth": 0.5
+      },
       "faceSeed": "kefla"
     },
     "style": "speedster"
@@ -1409,6 +1837,20 @@
       "outfit": "SaiyanSuit",
       "outfitTint": 6,
       "physique": "brolo",
+      "tail": false,
+      "formLooks": {
+        "SSJ": "SSJBroly"
+      },
+      "outfitParts": {
+        "top": "skin",
+        "sleeves": false,
+        "gloves": false,
+        "pants": 2500140,
+        "sash": 3045946,
+        "wrist": 3822768,
+        "shoes": 15263976,
+        "boot_trim": 2500140
+      },
       "faceSeed": "broly"
     },
     "scale": 1.35,
@@ -1426,6 +1868,10 @@
       "outfit": "SaiyanArmor",
       "outfitTint": 3,
       "physique": "paragos",
+      "tail": false,
+      "outfitParts": {
+        "cape": 15921906
+      },
       "faceSeed": "paragus"
     },
     "style": "turtle"
@@ -1436,12 +1882,20 @@
       "race": "Namekian",
       "skin": 2,
       "face": "Smirk",
-      "hair": "None",
+      "hair": "Short",
       "hairColor": 5,
       "build": "Slim",
       "outfit": "FrostArmor",
       "outfitTint": 4,
       "female": true,
+      "raceParts": false,
+      "hairAnyRace": true,
+      "hairRgb": 15921908,
+      "eyeRgb": 13114910,
+      "outfitParts": {
+        "top": 5909114,
+        "pants": 5909114
+      },
       "faceSeed": "cheelai"
     },
     "scale": 0.85,
@@ -1453,11 +1907,22 @@
       "race": "Human",
       "skin": 2,
       "face": "Calm",
-      "hair": "Short",
+      "hair": "None",
       "hairColor": 1,
       "build": "Short",
-      "outfit": "FrostArmor",
+      "outfit": "FriezaForce",
       "outfitTint": 4,
+      "skinHex": 15241290,
+      "costume": [
+        "cap"
+      ],
+      "outfitRgb": 3828282,
+      "outfitParts": {
+        "flaps": false,
+        "plate": 3828282,
+        "trim": 3836490,
+        "belly": false
+      },
       "faceSeed": "lemo"
     },
     "scale": 0.85,
@@ -1567,10 +2032,18 @@
       "hair": "Short",
       "hairColor": 5,
       "build": "Tall",
-      "outfit": "AngelRobe",
+      "outfit": "SaiyanSuit",
       "outfitTint": 2,
       "physique": "wiss",
-      "faceSeed": "whis"
+      "raceParts": false,
+      "hairAnyRace": true,
+      "hairRgb": 15921908,
+      "eyeRgb": 2759956,
+      "outfitRgb": 3822768,
+      "outfitParts": {
+        "sash": 15921906
+      },
+      "faceSeed": "merus"
     },
     "style": "speedster"
   },
@@ -1586,7 +2059,17 @@
       "outfit": "FrostArmor",
       "outfitTint": 3,
       "physique": "morro",
-      "faceSeed": "dabura"
+      "raceParts": false,
+      "skinHex": 9083568,
+      "costume": [
+        "ramhorns"
+      ],
+      "outfitParts": {
+        "pants": 5913210,
+        "shoes": 1710618,
+        "plate": 15262936
+      },
+      "faceSeed": "moro"
     },
     "scale": 1.3,
     "style": "crane"
@@ -1603,7 +2086,8 @@
       "outfit": "SaiyanArmor",
       "outfitTint": 3,
       "physique": "nappo",
-      "faceSeed": "nappa"
+      "raceParts": false,
+      "faceSeed": "saganbo"
     },
     "scale": 1.2,
     "style": "brawler"
@@ -1620,7 +2104,14 @@
       "outfit": "CapsuleCorp",
       "outfitTint": 1,
       "physique": "tronks",
-      "faceSeed": "trunks"
+      "hairRgb": 7002304,
+      "outfitRgb": 3828282,
+      "outfitParts": {
+        "pants": 3824186,
+        "shoes": 6965802,
+        "gloves": 6965802
+      },
+      "faceSeed": "granolah"
     },
     "style": "crane"
   },
@@ -1645,13 +2136,24 @@
       "race": "Majin",
       "skin": 3,
       "face": "Cold",
-      "hair": "None",
+      "hair": "Dreadlocks",
       "hairColor": 0,
       "build": "Tall",
       "outfit": "AngelRobe",
       "outfitTint": 3,
       "physique": "hitto",
-      "faceSeed": "hit"
+      "raceParts": false,
+      "ears": "pointed",
+      "hairAnyRace": true,
+      "hairRgb": 4860522,
+      "skinHex": 5220528,
+      "eyeRgb": 2759956,
+      "outfitRgb": 12066858,
+      "outfitRgb2": 14200906,
+      "outfitParts": {
+        "pants": 15921386
+      },
+      "faceSeed": "gas"
     },
     "style": "crane"
   },
@@ -1664,10 +2166,12 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Short",
-      "outfit": "FrostArmor",
+      "outfit": "FrostBody",
       "outfitTint": 2,
       "physique": "frigor",
-      "faceSeed": "frieza"
+      "shellRgb": 9059000,
+      "form": "Black",
+      "faceSeed": "black_frieza"
     },
     "scale": 0.9,
     "style": "speedster"
@@ -1751,7 +2255,11 @@
       "outfitTint": 1,
       "faceSeed": "goku_kid",
       "age": "child",
-      "costume": "powerpole"
+      "costume": "powerpole",
+      "outfitParts": {
+        "wrist": 13120042,
+        "sash": 15921906
+      }
     },
     "scale": 0.62,
     "style": "turtle",
@@ -1947,11 +2455,17 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Muscular",
-      "outfit": "SaiyanArmor",
+      "outfit": "FrostBody",
       "outfitTint": 6,
       "faceSeed": "giran",
       "skinHex": 5939274,
-      "physique": "kold"
+      "physique": "kold",
+      "raceParts": false,
+      "tail": "frost",
+      "outfitParts": {
+        "pants": 9054762,
+        "sash": 14200896
+      }
     },
     "scale": 1.55,
     "style": "brawler",
@@ -2609,5 +3123,65 @@
     "style": "crane",
     "rift": true,
     "scale": 1
+  },
+  "gogeta": {
+    "name": "Gogeto",
+    "scale": 1.02,
+    "style": "turtle",
+    "look": {
+      "race": "Saiyan",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Spiky",
+      "hairColor": 0,
+      "build": "Muscular",
+      "physique": "gokan",
+      "outfit": "MajinVest",
+      "tail": false,
+      "outfitParts": {
+        "top": 2368556,
+        "plate": 2368556,
+        "trim": 14733392,
+        "pads": true,
+        "pants": 15658736,
+        "sash": 1997466,
+        "wrist": 2763312,
+        "shoes": 2763312,
+        "boot_trim": 1997466
+      },
+      "formLooks": {
+        "SSJ4": "SSJ4Gogeta"
+      },
+      "faceSeed": "gogeta"
+    }
+  },
+  "vegito": {
+    "name": "Vegitto",
+    "scale": 1.02,
+    "style": "speedster",
+    "look": {
+      "race": "Saiyan",
+      "skin": 0,
+      "face": "Smirk",
+      "hair": "Swept",
+      "hairColor": 0,
+      "build": "Muscular",
+      "physique": "gokan",
+      "outfit": "TurtleGi",
+      "tail": false,
+      "costume": [
+        "potara"
+      ],
+      "outfitRgb": 1976938,
+      "outfitParts": {
+        "undershirt": 15231514,
+        "sash": 1976938,
+        "wrist": false,
+        "gloves": 15921906,
+        "shoes": 15921906,
+        "boot_trim": 14200906
+      },
+      "faceSeed": "vegito"
+    }
   }
 }

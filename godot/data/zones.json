@@ -3437,11 +3437,12 @@
     },
     "landmarks": [
       {
-        "type": "paozuhut",
+        "type": "paozucabin",
         "name": "Grandpa Gohin's Hut",
         "x": 0,
         "z": 10,
-        "collide": 3.5,
+        "rot": 3.141592653589793,
+        "collide": 4.5,
         "flatten": 18
       }
     ],
@@ -3492,11 +3493,12 @@
     },
     "landmarks": [
       {
-        "type": "firecastle",
+        "type": "firekeep",
         "name": "The Ox-Lord's Castle",
         "x": 0,
         "z": 40,
-        "collide": 14,
+        "rot": 3.141592653589793,
+        "collide": 17,
         "flatten": 36
       }
     ],
@@ -3547,11 +3549,12 @@
     },
     "landmarks": [
       {
-        "type": "pilavcastle",
+        "type": "pilavpalace",
         "name": "Pilav's Castle",
         "x": 0,
         "z": 40,
-        "collide": 16,
+        "rot": 3.141592653589793,
+        "collide": 23,
         "flatten": 40
       }
     ],
@@ -3602,11 +3605,12 @@
     },
     "landmarks": [
       {
-        "type": "muscletower",
+        "type": "musclefort",
         "name": "Muscle Tower",
         "x": 0,
         "z": 40,
-        "collide": 9,
+        "rot": 3.141592653589793,
+        "collide": 13,
         "flatten": 30
       }
     ],
@@ -3642,12 +3646,12 @@
     },
     "landmarks": [
       {
-        "type": "baabapalace",
+        "type": "baabaisle",
         "name": "Baaba's Palace",
         "x": 0,
         "z": 40,
-        "collide": 12,
-        "flatten": 46
+        "collide": 8,
+        "flatten": 56
       }
     ],
     "travelPoint": {
@@ -3682,11 +3686,11 @@
     },
     "landmarks": [
       {
-        "type": "korrintower",
+        "type": "korrinspire",
         "name": "Korrin Tower",
         "x": 0,
         "z": 30,
-        "collide": 4,
+        "collide": 7,
         "flatten": 20
       }
     ],
@@ -3746,11 +3750,12 @@
     },
     "landmarks": [
       {
-        "type": "piccorcastle",
+        "type": "kingcastle",
         "name": "King Piccor's Castle",
         "x": 0,
         "z": 45,
-        "collide": 15,
+        "rot": 3.141592653589793,
+        "collide": 19,
         "flatten": 42
       }
     ],
@@ -3786,11 +3791,11 @@
     },
     "landmarks": [
       {
-        "type": "budokai",
+        "type": "budokaihall",
         "name": "World Tournament Arena",
         "x": 0,
         "z": 20,
-        "flatten": 40
+        "flatten": 50
       }
     ],
     "travelPoint": {
@@ -3829,7 +3834,7 @@
     },
     "landmarks": [
       {
-        "type": "lookout",
+        "type": "lookoutpalace",
         "name": "Kamu's Lookout",
         "x": 0,
         "z": 0,

@@ -5,14 +5,19 @@ extends RefCounted
 # mannequin's head (model space, rest pose). Meshes are cached per style and shared by every fighter.
 
 const HEAD_SPACE := Transform3D(Vector3(0.98, 0, 0), Vector3(0, 1.1, 0), Vector3(0, 0, 1.12), Vector3(0, 1.66, 0.002))
-const BASE := {"Spiky": "goku", "Wild": "wild", "Swept": "flame", "LongSpiky": "mane", "Short": "short", "Bowl": "bowl", "Ponytail": "ponytail", "Long": "long", "Bun": "bun"}
+# Mohawk / AngelCrest / Dreadlocks are NPC-only styles (cast batch B1; not in the creator's HAIR_STYLES list)
+const BASE := {"Spiky": "goku", "Wild": "wild", "Swept": "flame", "LongSpiky": "mane", "Short": "short", "Bowl": "bowl", "Ponytail": "ponytail", "Long": "long", "Bun": "bun",
+	"Mohawk": "mohawk", "AngelCrest": "angelcrest", "Dreadlocks": "dreads"}
 const FORM_STYLES := ["ssj1", "ssj2", "ssj3", "ssj4", "grade3", "legendary", "ego", "beast"]
 static var _cache: Dictionary = {}
 
 ## The base hair style for a look (or "" for bald / races without hair).
 static func base_style(look: Dictionary, race: Dictionary) -> String:
 	var h := str(look.get("hair", "Spiky"))
-	if not (race.get("hairStyles", []) as Array).has(h):
+	var allowed: Array = race.get("hairStyles", [])
+	# races with hair draw every style (a Saiyan with Short hair); hairless races (Namekian, Frost Demon, Majin)
+	# only when the look says so with hairAnyRace (Kais, angels, aliens with hair)
+	if not allowed.has(h) and allowed.size() <= 1 and look.get("hairAnyRace", false) != true:
 		return ""
 	return str(BASE.get(h, ""))
 
@@ -79,6 +84,33 @@ static func _build(g: Geo, style: String) -> void:
 			for i in 5:
 				var x := (i / 4.0 - 0.5) * 0.12
 				g.spike(Vector3(x, 0.115, 0.088), 0.035, 0.016, Vector3(x * 0.5, -1, 0.35))
+		"mohawk":   # bald sides, one thick rounded crest from the forehead over the crown (Kais)
+			var ridge := PackedVector3Array()
+			for i in 7:
+				var a := lerpf(-0.8, 1.7, i / 6.0)   # angle from the top of the head, + towards the back
+				ridge.append(Vector3(0, 0.05 + cos(a) * 0.118, -0.008 - sin(a) * 0.124))
+			g.tube(ridge, 0.04, 0.028, 18, 12)
+			for i in 9:   # the crest: flattened locks standing up and swept back, tallest over the crown
+				var a := lerpf(-0.7, 1.5, i / 8.0)
+				var p := Vector3(0, 0.05 + cos(a) * 0.12, -0.008 - sin(a) * 0.126)
+				var d := Vector3(0, cos(a), -sin(a))
+				g.spike(p - d * 0.03, 0.075 + 0.05 * (1.0 - absf(a - 0.3) / 1.3), 0.045, d + Vector3(0, 0.8, -0.6), 0.1)
+		"angelcrest":   # combed straight up into one tall rounded column growing out of the crown (angels)
+			g.tube(PackedVector3Array([Vector3(0, 0.0, -0.035), Vector3(0, 0.09, -0.04), Vector3(0, 0.17, -0.05), Vector3(0, 0.24, -0.06)]), 0.085, 0.055, 20, 18)
+			g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 0.8, 1.0)), Vector3(0, 0.24, -0.06)), 0.055, 10, 16)
+		"dreads":   # dreadlocks: a cap and thick ropes hanging round the head to the shoulders
+			_cap(g, 0.116, 0.38, 0.66)
+			for i in 15:
+				var a := lerpf(-2.1, 2.1, i / 14.0)
+				if cos(a) > 0.6:
+					continue   # leave the face clear
+				var top := Vector3(sin(a) * 0.1, 0.1, cos(a) * 0.1 - 0.012)
+				var out := Vector3(sin(a), 0, cos(a)) * 0.04
+				var l := 0.26 + 0.04 * float((i * 7) % 3)
+				g.tube(PackedVector3Array([top, top + out + Vector3(0, -0.06, -0.02), top + out * 1.5 + Vector3(0, -l * 0.6, -0.03), top + out * 1.6 + Vector3(0, -l, -0.02)]), 0.02, 0.012, 14, 6)
+			for i in 5:   # a few locks falling over the forehead sides
+				var x := (i / 4.0 - 0.5) * 0.16
+				g.spike(Vector3(x, 0.115, 0.085), 0.06, 0.02, Vector3(x * 2.5, -1, 0.3))
 		_:
 			_cap(g, 0.113)
 			_form(g, style)

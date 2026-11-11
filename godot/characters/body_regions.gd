@@ -60,7 +60,7 @@ static func region(p: Vector3) -> int:
 ## transformation can recolour or flush the skin everywhere at once); alpha 1 is cloth or armour.
 static func colours(parts: Dictionary) -> PackedColorArray:
 	var c := PackedColorArray(); c.resize(COUNT)
-	var hx := func(v: Variant) -> Color: return Color.hex((int(v) << 8) | 0xff)
+	var hx := func(v: Variant) -> Color: return Color(0, 0, 0, 0) if int(v) < 0 else Color.hex((int(v) << 8) | 0xff)   # Outfits.SKIN: shows the skin
 	var skin := Color(0, 0, 0, 0)
 	var top: Color = hx.call(parts.top)
 	var sleeves: bool = parts.get("sleeves", false)

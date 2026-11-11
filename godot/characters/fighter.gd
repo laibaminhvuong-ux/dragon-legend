@@ -4,6 +4,8 @@ extends Node3D
 # Same contract as the JS model: Fighter.create(look) -> update(dt, anim), set_form(id), set_ki_color(hex),
 # set_hair_color(hex), dispose(). Models face +Z; the parent sets rotation.y = yaw.
 # look = { race, skin, face, hair, hairColor, build, outfit, outfitTint, female, kiColor, kiColorHex }
+# plus optional NPC fields (race-part toggles, hairAnyRace, hairRgb, eyeRgb, outfitRgb/outfitRgb2/outfitParts):
+# documented at the top of outfits.gd
 
 const BASE := preload("res://assets/characters/ual/AnimationLibrary_Godot_Standard.gltf")
 const OUTFIT_SHADER := preload("res://characters/shaders/outfit.gdshader")
@@ -97,9 +99,11 @@ func _build() -> void:
 	skin = Parts.hx(look.skinHex) if look.get("skinHex") != null else Parts.hx(skins[clampi(int(look.get("skin", 0)), 0, skins.size() - 1)])
 	var hair_cols: Array = Tables().appearance.get("HAIR_COLORS", [0x141414])
 	hair_color = Parts.hx(hair_cols[clampi(int(look.get("hairColor", 0)), 0, hair_cols.size() - 1)])
+	if Outfits.rgb(look.get("hairRgb")) >= 0:   # a free hair colour outside the palette
+		hair_color = Parts.hx(Outfits.rgb(look.get("hairRgb")))
 	var tints: Array = Tables().appearance.get("TINTS", [0xe86a1a])
 	var tint := int(tints[clampi(int(look.get("outfitTint", 0)), 0, tints.size() - 1)])
-	var parts := Outfits.parts(str(look.get("outfit", "TurtleGi")), tint)
+	var parts := Outfits.for_look(look, tint)
 	cloth = Cloth.params(parts, look)
 	body_mesh.mesh = Cloth.dressed(body_mesh.mesh, unsculpted, cloth)
 	material.set_shader_parameter("cloth", float(cloth.amount))
@@ -121,9 +125,10 @@ func _build() -> void:
 	material.set_shader_parameter("face_brows", brows_v)
 	material.set_shader_parameter("feminine", 1.0 if look.get("female", false) else 0.0)
 	material.set_shader_parameter("face_mouth", face_params.mouth)
-	material.set_shader_parameter("brow_color", hair_color.darkened(0.3) if race.get("hairStyles", []).size() > 1 else skin.darkened(0.45))
+	var has_hair: bool = race.get("hairStyles", []).size() > 1 or Hair.base_style(look, race) != ""
+	material.set_shader_parameter("brow_color", hair_color.darkened(0.3) if has_hair else skin.darkened(0.45))
 	_set_skin(skin, 0.0)
-	_set_eyes(int(BASE_EYES.get(race.get("id", ""), 0x2a1d14)))
+	_set_eyes(base_eyes())
 	var build := {"height": 1.0, "width": 1.0, "depth": 1.0}
 	for b: Dictionary in Tables().appearance.get("BUILDS", []):
 		if b.id == look.get("build", "Average"):
@@ -133,7 +138,9 @@ func _build() -> void:
 		base_scale *= 1.0 / float(hero.height)
 	body.scale = base_scale
 	Parts.dress(self, parts, str(race.get("id", "")), skin)
-	Parts.costume(self, str(look.get("costume", "")))
+	var costumes: Variant = look.get("costume", "")
+	for c: Variant in (costumes if costumes is Array else [costumes]):
+		Parts.costume(self, str(c))
 	if cape != null:
 		cape_base = cape.transform
 	if sash_tails != null:
@@ -151,6 +158,8 @@ func _build() -> void:
 	feet = FootPlacement.new()
 	feet.name = "FootPlacement"
 	skeleton.add_child(feet)
+	if str(look.get("form", "")) != "":   # an NPC drawn in a form by default (Majinn Vegara in Super Saiyan 2)
+		set_form(str(look.form))
 
 ## How far the body is visually lunging forward right now (metres, world scale).
 func lunge_world() -> float:
@@ -348,6 +357,11 @@ static func _toon_copy(m: StandardMaterial3D, ink := false) -> StandardMaterial3
 		_toon_set[t] = true
 	return _toon_mats[key]
 
+## The eye colour outside forms: look.eyeRgb, else the race's.
+func base_eyes() -> int:
+	var own := Outfits.rgb(look.get("eyeRgb"))
+	return own if own >= 0 else int(BASE_EYES.get(race.get("id", ""), 0x2a1d14))
+
 func _set_eyes(hex: int) -> void:
 	material.set_shader_parameter("eye_color", Parts.hx(hex))
 
@@ -359,8 +373,16 @@ func _set_hair(c: Color, glow: float) -> void:
 func set_hair_color(hex: Variant) -> void:
 	if hex != null:
 		hair_color = Parts.hx(hex)
-	if form_id == "" or not (Tables().form_looks.get(form_id, {}).get("hair") is Dictionary):
+	if form_id == "" or not (form_look(form_id).get("hair") is Dictionary):
 		_set_hair(hair_color, 0.0)
+
+## The form look this fighter shows for a form id: look.formLooks may point a form at its own variant entry
+## (e.g. {"SSJ": "SSJBroly"}: Brolo's green-gold Super Saiyan), else the shared form_looks entry.
+func form_look(id: String) -> Dictionary:
+	var own: Variant = look.get("formLooks")
+	if own is Dictionary and Tables().form_looks.has(str((own as Dictionary).get(id, ""))):
+		return Tables().form_looks[str(own[id])]
+	return Tables().form_looks.get(id, {})
 
 func set_ki_color(hex: int) -> void:
 	look["kiColorHex"] = "#%06x" % hex
@@ -378,7 +400,7 @@ func set_form(id: String) -> void:
 	_clear_form()
 	form_id = id
 	anim.set_form(id)
-	var F: Dictionary = Tables().form_looks.get(id, {})
+	var F: Dictionary = form_look(id)
 	if F.is_empty():
 		return
 	var fh: Variant = F.get("hair")
@@ -400,13 +422,16 @@ func set_form(id: String) -> void:
 		_set_skin(skin.lerp(Parts.hx(F.flush[0]), float(F.flush[1])), 0.0)
 	if F.get("dome") != null and dome != null:
 		dome.material_override = Parts.material(Parts.hx(F.dome), 0.15, 0.1)
+	_form_nodes.append_array(Parts.form_extras(self, F))   # shells / chitin colours, form-only gear (horns)
 	_toonify()
 	var sc := base_scale
 	if F.get("scale") != null: sc = base_scale * float(F.scale)
 	if F.get("bulk") is Array: sc = base_scale * Vector3(float(F.bulk[0]), float(F.bulk[1]), float(F.bulk[2]))
 	if F.get("slim", false): sc = base_scale * Vector3(0.95, 1.01, 0.95)
 	body.scale = sc
-	if id == "SSJ4":
+	if F.get("fur") != null:   # Super Saiyan 4: red fur on the arms and chest (form_looks fur colour)
+		_ssj4_fur(Parts.hx(F.fur))
+	elif id == "SSJ4":
 		_ssj4_fur()
 	if id == "Oozaru" or id == "GoldenOozaru":
 		skeleton.visible = false
@@ -420,8 +445,8 @@ func set_form(id: String) -> void:
 		form_aura.flare()
 		_form_nodes.append(form_aura)
 
-func _ssj4_fur() -> void:
-	var fur := Parts.material(Color.hex(0xa72437ff), 0.95)
+func _ssj4_fur(colour := Color.hex(0xa72437ff)) -> void:
+	var fur := Parts.material(colour, 0.95)
 	for s in [1, -1]:
 		var side := "L" if s > 0 else "R"
 		_form_nodes.append(add_piece("DEF-upper_arm." + side, Transform3D.IDENTITY, Parts._mesh("fur_arm%d" % s, func(g: Geo) -> void:
@@ -450,10 +475,9 @@ func _clear_form() -> void:
 		hair.mesh = Hair.mesh(hair_base)
 		_set_hair(hair_color, 0.0)
 	_set_skin(skin, 0.0)
-	_set_eyes(int(BASE_EYES.get(race.get("id", ""), 0x2a1d14)))
+	_set_eyes(base_eyes())
 	material.set_shader_parameter("brows", 1.0)
-	if dome != null:
-		dome.material_override = Parts.material(Color.hex(0x8a3ab8ff), 0.15, 0.1)
+	Parts.form_reset(self)   # own dome/shell colours, outfit colours, look.skinMetal
 	body.scale = base_scale
 
 func dispose() -> void:

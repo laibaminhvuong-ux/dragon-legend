@@ -11,8 +11,17 @@ const BUILDERS := ["pod", "crater", "crashpod", "farmhouse", "kamehouse", "snake
 	"crystals", "pyramid", "stands", "bunker", "pillar", "zenobox", "hangar", "radartower", "checkin", "town", "kaiplanet", "interior",
 	"paozuhut", "firecastle", "pilavcastle", "muscletower", "baabapalace", "korrintower", "piccorcastle", "lookout", "nexus", "echoprison"]
 
+static func _groups() -> Array:
+	return [LandmarksOrigins, LandmarksEarth, LandmarksDivine, LandmarksAlien]
+
 static func has_builder(type: String) -> bool:
-	return type in BUILDERS
+	return type in BUILDERS or _group_for(type) != null
+
+static func _group_for(type: String) -> Variant:
+	for gr: Variant in _groups():
+		if type in gr.TYPES:
+			return gr
+	return null
 
 static func build(zone: RefCounted) -> Node3D:
 	var root := Node3D.new()
@@ -32,8 +41,12 @@ static func build(zone: RefCounted) -> Node3D:
 		g.position = Vector3(l.x, y, l.z)
 		g.rotation.y = float(l.get("rot", 0.0))
 		g.scale = Vector3.ONE * float(l.get("scale", 1.0))
-		var b := Builder.new(g, zone, l)
-		b.call("_" + l.type)
+		var gr: Variant = _group_for(str(l.type))
+		if gr != null:
+			gr.build(str(l.type), g, zone, l)
+		else:
+			var b := Builder.new(g, zone, l)
+			b.call("_" + l.type)
 		root.add_child(g)
 		if l.get("collide") != null:
 			var body := StaticBody3D.new()
