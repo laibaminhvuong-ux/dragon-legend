@@ -330,6 +330,16 @@ func props() -> RefCounted:
 		_props = PropSet.new(self)
 	return _props
 
+## Does a fighter-sized disc (margin m) at (x, z) touch the collider (a circle {x,z,radius} or an oriented box {x,z,rot,hw,hd})?
+static func _overlaps(c: Dictionary,x: float,z: float,m: float) -> bool:
+	var dx: float = x-c.x
+	var dz: float = z-c.z
+	if not c.has("hw"):
+		return sqrt(dx*dx+dz*dz) < c.radius+m
+	var lx: float = dx*cos(float(c.rot))-dz*sin(float(c.rot))
+	var lz: float = dx*sin(float(c.rot))+dz*cos(float(c.rot))
+	return absf(lx) < float(c.hw)+m and absf(lz) < float(c.hd)+m
+
 func free_position(point: Variant) -> Vector3:
 	var px: float = point.x
 	var pz: float = point.z
@@ -346,7 +356,7 @@ func free_position(point: Variant) -> Vector3:
 				continue
 			var blocked: bool = false
 			for c: Dictionary in props().near(x,z,0.5):
-				if y <= c.top and _distance(x-c.x,z-c.z) < c.radius+0.5:
+				if y <= c.top and _overlaps(c,x,z,0.5):
 					blocked = true
 					break
 			if not blocked:

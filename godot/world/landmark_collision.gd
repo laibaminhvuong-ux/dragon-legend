@@ -315,21 +315,40 @@ static func blocks(c: Dictionary, pt: Dictionary) -> bool:
 	return depth(c, p.x, p.z) + CLEAR > float(pt.slack) and (is_nan(p.y) or p.y <= float(c.top))
 
 ## Drops (or, under a high point, cuts down) the colliders that block a protected point. Returns how many.
-static func carve(cs: Array, points: Array, base: float) -> int:
+static func carve(cs: Array, points: Array, base: float, zone: RefCounted = null) -> int:
 	var n := 0
 	for pt: Dictionary in points:
 		var p: Vector3 = pt.p
 		for c: Dictionary in cs.duplicate():
 			if not blocks(c, pt):
 				continue
-			if pt.kind == "npc" and depth(c, p.x, p.z) > 2.5:
-				continue   # well inside: free_position stands the NPC outside
+			# an NPC well inside a building is stood outside by free_position, when there is room close by; one with an
+			# authored height (on a platform) or none nearby (the Elder on his mesa top, Zeno's box) keeps its place
+			if pt.kind == "npc" and is_nan(p.y) and depth(c, p.x, p.z) > 2.5 and _room_near(cs, p, zone):
+				continue
 			n += 1
 			if not is_nan(p.y) and p.y > base + GROUNDED:
 				c.top = minf(float(c.top), p.y - 0.05)
 			elif not _trim(c, p, float(pt.slack)):
 				cs.erase(c)
 	return n
+
+## Is there standing room within 6 m of the point, clear of every collider and not on a steep slope?
+static func _room_near(cs: Array, p: Vector3, zone: RefCounted) -> bool:
+	for radius: float in [2.0, 4.0, 6.0]:
+		for i in 16:
+			var x := p.x + sin(i * PI / 8.0) * radius
+			var z := p.z + cos(i * PI / 8.0) * radius
+			if zone != null and zone.normal_data(x, z).y < 0.6:
+				continue
+			var free := true
+			for c: Dictionary in cs:
+				if depth(c, x, z) + CLEAR > 0.0:
+					free = false
+					break
+			if free:
+				return true
+	return false
 
 ## Pulls the collider's nearest side back so the point is clear (most of the wall stays). False: too little is
 ## left, drop it.
@@ -386,7 +405,7 @@ static func apply(zone: RuleZone, root: Node3D, built: Array) -> void:
 			for sf: Dictionary in built_cs[1]:
 				zone.add_surface(sf)
 		g.set_meta("surfaces", built_cs[1].size())
-		g.set_meta("carved", carve(cs, near, g.position.y))
+		g.set_meta("carved", carve(cs, near, g.position.y, zone))
 		g.set_meta("colliders", cs)
 		if cs.is_empty():
 			if l.get("collide") != null:

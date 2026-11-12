@@ -64,7 +64,8 @@ func npc_pos(n: Dictionary) -> Dictionary:
 		var p: Dictionary = zone.place_in(n.zone,n.x,n.z)
 		if n.has("y"):
 			p.y = float(n.y)+zone.lift_of(n.zone)
-		positions[n.id] = RuleRuntime.position(zone.free_position(p))
+		# seated NPCs (King Yemmo on his throne) stay exactly where authored: free_position would push them out of the chair's collider
+		positions[n.id] = RuleRuntime.position(Vector3(float(p.x),float(p.y),float(p.z))) if n.get("sit",false) and n.has("y") else RuleRuntime.position(zone.free_position(p))
 	elif not n.has("y"):   # landmark platforms register when the world is built, after the first placement
 		var at_p: Dictionary = positions[n.id]
 		var top: float = zone.surface_top(float(at_p.x),float(at_p.z))
