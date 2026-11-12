@@ -494,20 +494,43 @@ class D extends LandmarksOrigins.B:
 				puff.scale = Vector3(1.6, 0.6, 1.0)
 
 	## The white band road: an open ring round a sphere (centre c, radius r), in the local y-z plane (over the top).
+	## The white road round King Kae's planetoid: a strip mesh (not a cylinder, whose flat facets and seams stood
+	## proud of the terrain and let the grass through). The top half follows the terrain's own height (zone.height_at,
+	## so it lies on the ground even with the noise); the underside and the horizon follow the sphere.
 	func _band(c: Vector3, r: float, lift: float) -> void:
-		var white := mat(0xe8ecf2, {"rough": 0.6}); var rim := mat(0xb8bcc8, {"rough": 0.5})
 		var w := clampf(r * 0.11, 2.0, 7.0)
-		var cm := CylinderMesh.new()
-		cm.top_radius = r + lift; cm.bottom_radius = r + lift; cm.height = w
-		cm.radial_segments = 96; cm.rings = 1; cm.cap_top = false; cm.cap_bottom = false
-		var band := put(cm, white, c.x, c.y, c.z, null)
-		band.rotation.z = PI / 2
-		for sx in [-1.0, 1.0]:
-			var t := torus(r + lift, 0.14, rim, c.x + sx * w * 0.5, c.y, c.z)
-			t.rotation.z = PI / 2
-		for k in 48:   # cross seams
-			var a := float(k) / 48.0 * TAU
-			box(w, 0.06, 0.12, rim, c.x, c.y + cos(a) * (r + lift + 0.02), c.z + sin(a) * (r + lift + 0.02)).rotation.x = -a
+		var off := g.position.y / maxf(g.scale.y, 0.01)
+		var R := r + lift
+		var steps := int(ceil(TAU * R / 0.9))
+		var white := mat(0xe8ecf2, {"rough": 0.6}); var rim := mat(0xb8bcc8, {"rough": 0.5})
+		for part: Array in [[-w * 0.5, w * 0.5, 0.0, white], [-w * 0.5 - 0.18, -w * 0.5, 0.01, rim], [w * 0.5, w * 0.5 + 0.18, 0.01, rim]]:
+			var st := SurfaceTool.new()
+			st.begin(Mesh.PRIMITIVE_TRIANGLES)
+			for i in steps:
+				var a0 := float(i) / steps * TAU; var a1 := float(i + 1) / steps * TAU
+				if cos(a0) > 0.1 and cos(a1) > 0.1 and absf(sin(a0) * R) < R - 2.0 and absf(sin(a1) * R) < R - 2.0:
+					continue   # the top half is painted on the terrain itself (zone.surface_at, terrain.planetoid.road)
+				var q := [_band_pt(c, R, off, float(part[0]), a0, float(part[2])), _band_pt(c, R, off, float(part[1]), a0, float(part[2])),
+					_band_pt(c, R, off, float(part[1]), a1, float(part[2])), _band_pt(c, R, off, float(part[0]), a1, float(part[2]))]
+				for k in [0, 2, 1, 0, 3, 2]:
+					st.set_normal(Vector3.UP if cos(a0) > 0.0 else (q[k] - c).normalized())
+					st.add_vertex(q[k])
+			var mi := MeshInstance3D.new()
+			st.index()
+			mi.mesh = st.commit()
+			var bm: BaseMaterial3D = (part[3] as BaseMaterial3D).duplicate()
+			bm.cull_mode = BaseMaterial3D.CULL_DISABLED
+			mi.material_override = bm
+			mi.set_meta("no_collision", true)   # walked on at ground level, never a wall
+			g.add_child(mi)
+
+	## One band vertex at lateral offset x and angle a (0 = the top): on the terrain over the top, else on the sphere.
+	func _band_pt(c: Vector3, R: float, off: float, x: float, a: float, up: float) -> Vector3:
+		var z := sin(a) * R
+		var y := c.y + cos(a) * R
+		if zone != null and cos(a) > 0.1 and absf(z) < R - 2.0 and zone.has_method("height_at"):
+			y = zone.height_at(x, z) + 0.05 - off
+		return Vector3(x, y + up, z)
 
 	## King Kae's planetoid (zone king_kai, terrain.planetoid): the white band road over the terrain dome, the lower
 	## hemisphere under it (the terrain only draws the top) and trees sticking out of its sides.

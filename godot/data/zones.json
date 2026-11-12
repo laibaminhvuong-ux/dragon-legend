@@ -300,7 +300,8 @@
       },
       "gravity": 10,
       "planetoid": {
-        "radius": 58
+        "radius": 58,
+        "road": 6.4
       },
       "killY": -60
     },

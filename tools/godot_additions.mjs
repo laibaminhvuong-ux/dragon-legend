@@ -343,6 +343,7 @@ function mapPass008(zones) {
     {type: 'serpentcoils', x: -110, z: -260, alt: 6}, {type: 'serpentcoils', x: 90, z: 20, alt: 4, span: 180},
     {type: 'serpentcoils', x: -120, z: 260, alt: 8, loops: 2});
   add('king_kai', {type: 'kaiband', x: 0, z: 0});
+  Z('king_kai').terrain.planetoid = {...zones.king_kai.terrain.planetoid, road: 6.4};   // the white road is painted on the terrain (rules surface_at), not a floating strip
   add('world_of_void', {type: 'toparena', x: 0, z: 0});
   // beerus_planet: NOT the floating-platform terrain (it is a region of the 1600 m beeros planet map, where the
   // platform's void would become a 290 m pit); the temple + great tree stand on the existing ground instead.

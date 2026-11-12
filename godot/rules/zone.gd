@@ -229,6 +229,8 @@ func surface_at(x: float, z: float) -> String:
 			return "sand"
 	if ground in ["white","stone"]:
 		return ground
+	if _terrain.has("planetoid") and _terrain.planetoid.has("road") and absf(x) < float(_terrain.planetoid.road)*0.5:
+		return "white"   # King Kae's road: the planetoid's ground painted white along the great circle (x near 0)
 	var n: Dictionary = normal_data(x,z)
 	if ground == "snow" or (h > biome.get("snowLine",135)+_noise[1].fbm(x/40,z/40,2)*20 and n.y > 0.6):
 		return "rock" if n.y < 0.78 else "snow"
