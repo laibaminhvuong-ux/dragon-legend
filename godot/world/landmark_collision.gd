@@ -28,6 +28,9 @@ const WALK_TOP := 0.8      # tops lower than this are floors, paths, steps: walk
 const PLATFORM_TOP := 2.0  # wide pieces lower than this are rings, stages, plinths: stood on
 const PLATFORM_MIN := 3.0
 const GROUNDED := 2.5      # a piece starting higher than this rests on others (or floats)
+const SURFACE_TOP := 2.0   # stand-on pieces: tops at most this far above the landmark's base
+const SURFACE_MIN_TOP := 0.12
+const SURFACE_MIN := 0.8   # and at least this wide / deep
 const CLEAR := 0.8         # protected points keep this much room (fighter radius 0.35 + margin)
 
 static var _sphere_aabbs: Dictionary = {}
@@ -41,7 +44,8 @@ static func piece(mi: MeshInstance3D, root: Node3D) -> Dictionary:
 	elif m == null and mi.mesh.get_surface_count() > 0:
 		m = mi.mesh.surface_get_material(0)
 	return {"xf": MeshMerge._relative(mi, root), "aabb": local_aabb(mi.mesh), "mat": m,
-		"round": mi.mesh is CylinderMesh or mi.mesh is SphereMesh or mi.mesh is CapsuleMesh, "skip": _opted_out(mi, root)}
+		"round": mi.mesh is CylinderMesh or mi.mesh is SphereMesh or mi.mesh is CapsuleMesh,
+		"flat": mi.mesh is BoxMesh or mi.mesh is CylinderMesh, "skip": _opted_out(mi, root)}
 
 static func _opted_out(n: Node, root: Node) -> bool:
 	var c := n
@@ -118,12 +122,18 @@ static func pieces_of(g: Node3D) -> Array:
 
 ## Rule colliders (world space; the landmark node `g` sits directly under the world origin) for one landmark.
 static func colliders(g: Node3D) -> Array:
+	return build(g)[0]
+
+## [colliders, surfaces] for one landmark. Surfaces are the flat tops you can stand on (RuleZone.add_surface):
+## upright box / cylinder pieces under SURFACE_TOP that rest on the ground or on another surface and are at least
+## SURFACE_MIN across, so rings, stages, stairs and plinths can be climbed (tiers up to a step apart) and jumped
+## onto, while their sides stop you like a wall. Floating canopies and bridges never become surfaces.
+static func build(g: Node3D) -> Array:
 	var gx := g.transform
 	var base := g.position.y
 	var yaw := g.rotation.y
 	var extra: Array = g.get_meta("no_collision_mats", [])
-	var solid: Array = []    # [collider, Rect2 footprint]
-	var resting: Array = []  # [bottom, top, Rect2]
+	var infos: Array = []
 	for p: Dictionary in pieces_of(g):
 		if p.skip or p.aabb == null or _decor(p.mat, extra):
 			continue
@@ -133,7 +143,47 @@ static func colliders(g: Node3D) -> Array:
 		for i in 8:
 			var w := full * aabb.get_endpoint(i)
 			lo = lo.min(w); hi = hi.max(w)
-		var size := hi - lo
+		infos.append({"p": p, "aabb": aabb, "full": full, "lo": lo, "hi": hi, "size": hi - lo, "surface": false})
+	# surfaces: grounded pieces first, then those resting on an accepted surface (lowest first)
+	var cands: Array = []
+	for inf: Dictionary in infos:
+		var top: float = inf.hi.y - base
+		if not bool(inf.p.get("flat", false)) or top <= SURFACE_MIN_TOP or top > SURFACE_TOP:
+			continue
+		if absf((inf.full.basis.y as Vector3).normalized().y) < 0.985:
+			continue
+		var c := _shape2d(inf.full, inf.aabb, bool(inf.p.round), yaw)
+		var w2: float = float(c.radius) * 2.0 if c.has("radius") else float(c.hw) * 2.0
+		var d2: float = w2 if c.has("radius") else float(c.hd) * 2.0
+		if minf(w2, d2) < SURFACE_MIN:
+			continue
+		c.top = inf.hi.y
+		inf.shape = c
+		inf.rect = Rect2(inf.lo.x, inf.lo.z, inf.size.x, inf.size.z)
+		cands.append(inf)
+	cands.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.lo.y < b.lo.y)
+	var surfaces: Array = []
+	var accepted: Array = []
+	for inf: Dictionary in cands:
+		var ok: bool = inf.lo.y - base <= 0.3
+		if not ok:
+			for a: Dictionary in accepted:
+				if absf(float(a.hi.y) - float(inf.lo.y)) <= 0.2 and (a.rect as Rect2).grow(0.05).intersects(inf.rect):
+					ok = true
+					break
+		if ok:
+			inf.surface = true
+			accepted.append(inf)
+			surfaces.append(inf.shape)
+	var solid: Array = []    # [collider, Rect2 footprint]
+	var resting: Array = []  # [bottom, top, Rect2]
+	for inf: Dictionary in infos:
+		if inf.surface:
+			continue
+		var p: Dictionary = inf.p
+		var aabb: AABB = inf.aabb
+		var full: Transform3D = inf.full
+		var lo: Vector3 = inf.lo; var hi: Vector3 = inf.hi; var size: Vector3 = inf.size
 		if maxf(size.x, maxf(size.y, size.z)) < MIN_SIZE or hi.y - base < WALK_TOP:
 			continue
 		var rect := Rect2(lo.x, lo.z, size.x, size.z)
@@ -164,7 +214,7 @@ static func colliders(g: Node3D) -> Array:
 	var out: Array = []
 	for s: Array in solid:
 		out.append(s[0])
-	return out
+	return [out, surfaces]
 
 ## PropSet.near finds colliders by their centre's 16 m cell within radius + 26 m: big boxes are cut into tiles
 ## no wider than MAX_HALF each way, and every box carries its bounding `radius` (near() reads it).
@@ -322,7 +372,8 @@ static func apply(zone: RuleZone, root: Node3D, built: Array) -> void:
 	for it: Array in built:
 		var g: Node3D = it[0]
 		var l: Dictionary = it[1]
-		var cs := colliders(g)
+		var built_cs := build(g)
+		var cs: Array = built_cs[0]
 		g.remove_meta("pieces")   # the recorded pieces are only needed here
 		var near: Array = []
 		var reach := 0.0
@@ -331,6 +382,10 @@ static func apply(zone: RuleZone, root: Node3D, built: Array) -> void:
 		for pt: Dictionary in points:
 			if Vector2(pt.p.x - g.position.x, pt.p.z - g.position.z).length() < reach + CLEAR:
 				near.append(pt)
+		if fresh:
+			for sf: Dictionary in built_cs[1]:
+				zone.add_surface(sf)
+		g.set_meta("surfaces", built_cs[1].size())
 		g.set_meta("carved", carve(cs, near, g.position.y))
 		g.set_meta("colliders", cs)
 		if cs.is_empty():

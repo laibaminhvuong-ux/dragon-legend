@@ -41,7 +41,8 @@ func _built(t: String, zid: String) -> Array:
 	var t0 := Time.get_ticks_usec()
 	var g := WorldLandmarks.build_one(zone, l)
 	var t1 := Time.get_ticks_usec()
-	var cs := LandmarkCollision.colliders(g)
+	var built := LandmarkCollision.build(g)
+	var cs: Array = built[0] + built[1]   # solids and the flat tops that stop you from the side (climbable ones included)
 	var t2 := Time.get_ticks_usec()
 	return [zone, l, g, cs, (t1 - t0) / 1000.0, (t2 - t1) / 1000.0]
 

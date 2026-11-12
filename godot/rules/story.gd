@@ -65,6 +65,11 @@ func npc_pos(n: Dictionary) -> Dictionary:
 		if n.has("y"):
 			p.y = float(n.y)+zone.lift_of(n.zone)
 		positions[n.id] = RuleRuntime.position(zone.free_position(p))
+	elif not n.has("y"):   # landmark platforms register when the world is built, after the first placement
+		var at_p: Dictionary = positions[n.id]
+		var top: float = zone.surface_top(float(at_p.x),float(at_p.z))
+		if top>float(at_p.y)+0.001:
+			at_p.y = top
 	return positions[n.id]
 func at(step: Dictionary) -> Dictionary:
 	return zone.place_in(step.zone,step.get("x",0),step.get("z",0)) if zone.has_region(str(step.get("zone",""))) else {"x":step.get("x",0),"z":step.get("z",0)}

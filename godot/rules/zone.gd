@@ -275,8 +275,43 @@ func inside_building(x: float, z: float) -> Dictionary:
 
 ## What you stand on at a point: the terrain, or a town's road, field, plaza, building footing or floor on top of
 ## it (user request 2026-11-04: walk ON roads and floors, step up onto them).
-func ground_at(x: float, z: float) -> float:
-	var h: float = height_at(x, z)
+## Flat tops that can be stood on (landmark platforms, rings, stairs, low walls; filled in by world/landmark_collision.gd):
+## {x, z, top} plus {radius} or {rot, hw, hd}. A surface counts when its top is at most STEP above `reach_y`.
+const SURFACE_STEP := 1.35   # a landmark's flat top is climbed when it is at most this far above your feet (stairs are 0.4 apart; plinths and low stages are vaulted)
+var _surface_grid: Dictionary = {}
+func add_surface(s: Dictionary) -> void:
+	var r: float = float(s.radius) if s.has("radius") else Vector2(float(s.hw), float(s.hd)).length()
+	for cx: int in range(floori((float(s.x) - r) / 16.0), floori((float(s.x) + r) / 16.0) + 1):
+		for cz: int in range(floori((float(s.z) - r) / 16.0), floori((float(s.z) + r) / 16.0) + 1):
+			var key := Vector2i(cx, cz)
+			if not _surface_grid.has(key):
+				_surface_grid[key] = []
+			_surface_grid[key].append(s)
+func surface_top(x: float, z: float, reach_y: float = INF) -> float:
+	var list: Variant = _surface_grid.get(Vector2i(floori(x / 16.0), floori(z / 16.0)))
+	var best := -INF
+	if list == null:
+		return best
+	for s: Dictionary in list:
+		var top: float = s.top
+		if top <= best or top > reach_y + SURFACE_STEP:
+			continue
+		var dx: float = x - float(s.x); var dz: float = z - float(s.z)
+		if s.has("radius"):
+			if dx * dx + dz * dz > float(s.radius) * float(s.radius):
+				continue
+		else:
+			var lx: float = dx * cos(float(s.rot)) - dz * sin(float(s.rot))
+			var lz: float = dx * sin(float(s.rot)) + dz * cos(float(s.rot))
+			if absf(lx) > float(s.hw) or absf(lz) > float(s.hd):
+				continue
+		best = top
+	return best
+
+## What you stand on at (x, z): terrain, a town's floors and roads, or a landmark's flat tops no higher than a step above
+## `reach_y` (default INF: the tallest thing there, which is what blocks you from walking into it from below).
+func ground_at(x: float, z: float, reach_y: float = INF) -> float:
+	var h: float = maxf(height_at(x, z), surface_top(x, z, reach_y))
 	for l: Dictionary in landmarks:
 		if str(l.get("type", "")) != "town":
 			continue
@@ -306,7 +341,7 @@ func free_position(point: Variant) -> Vector3:
 			var z: float = pz + cos(i*PI/8)*radius
 			if absf(x)>half or absf(z)>half:
 				continue
-			var y: float = point.y if authored_y else height_at(x,z)
+			var y: float = point.y if authored_y else maxf(height_at(x,z),surface_top(x,z))   # on a platform when the point is on one
 			if y < -100 or (not authored_y and normal_data(x,z).y < 0.6):
 				continue
 			var blocked: bool = false
