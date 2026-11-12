@@ -21,6 +21,12 @@ uniform vec4 face_mouth = vec4(1.0, 0.0, 1.0, 0.0);
 uniform float feminine = 0.0;   // female faces: bolder lashes with a flick, coloured lips   // width, height offset, iris size, mark (1 scar, 2 freckles)
 uniform float manga = 1.0;   // 1 = manga-style painted face (default), 0 = the earlier face
 uniform vec4 rim_color : source_color = vec4(1.0, 0.95, 0.85, 1.0);
+// cast batch B4 (CastB4.apply): a pattern on the bare skin, the face in its own colour, the Majin forehead "M"
+uniform int skin_pattern = 0;   // 0 none, 1 spots (Cel), 2 plates (cyborg panel seams), 3 majin (soft glossy Boo tone)
+uniform vec4 pattern_color : source_color = vec4(0.12, 0.23, 0.07, 1.0);
+uniform vec4 face_tint : source_color = vec4(1.0, 1.0, 1.0, 0.0);   // a = 1: face front in this colour
+uniform float forehead_mark = 0.0;
+uniform vec4 mark_color : source_color = vec4(0.1, 0.05, 0.05, 1.0);
 
 varying vec3 rest;
 
@@ -61,6 +67,24 @@ float cloth_folds(vec3 p, float is_arm) {
 		f = max(f, fold_band((p.y + ax * 1.3) * 42.0, smoothstep(0.07, 0.13, ax) * smoothstep(1.12, 1.2, p.y) * (1.0 - smoothstep(1.3, 1.36, p.y)) * 0.85) * wob * top);
 	}
 	return f;
+}
+
+// B4 Cel spots: distance to the nearest of a jittered 3D grid of blobs (rest space, so they follow the animation)
+float spot_field(vec3 p) {
+	vec3 q = p * 30.0;
+	vec3 i = floor(q);
+	vec3 f = fract(q);
+	float d = 9.0;
+	for (int x = -1; x <= 1; x++) {
+		for (int y = -1; y <= 1; y++) {
+			for (int z = -1; z <= 1; z++) {
+				vec3 o = vec3(float(x), float(y), float(z));
+				vec3 h = fract(sin(vec3(dot(i + o, vec3(127.1, 311.7, 74.7)), dot(i + o, vec3(269.5, 183.3, 246.1)), dot(i + o, vec3(113.5, 271.9, 124.6)))) * 43758.5453);
+				d = min(d, length(o + h - f) / (0.6 + 0.4 * h.x));
+			}
+		}
+	}
+	return d;
 }
 
 float segment(vec2 q, vec2 a, vec2 b, float r) {
@@ -113,6 +137,22 @@ void fragment() {
 
 	float skin = 1.0 - col.a;
 	vec3 c = mix(col.rgb, skin_color.rgb, skin);
+	// ---- cast batch B4: face colour, skin pattern (bare skin only; the face itself stays clear)
+	float face_area = inside(ellipse(vec2(p.x, p.y - 1.668), vec2(0.07, 0.072))) * above(p.z, 0.045) * (1.0 - is_arm);
+	c = mix(c, face_tint.rgb, face_tint.a * face_area * skin);
+	if (skin_pattern > 0 && skin > 0.0) {
+		float on = skin * (1.0 - face_area);
+		if (skin_pattern == 1) {
+			c = mix(c, pattern_color.rgb, inside(spot_field(p) - 0.42) * on);
+		} else if (skin_pattern == 2) {
+			float ry = abs(fract(p.y * 7.0 + 0.5) - 0.5) / 7.0;   // seams: rings every 14 cm, lines along the limbs
+			float rx = abs(fract(p.x * 6.0 + 0.5) - 0.5) / 6.0;
+			c = mix(c, pattern_color.rgb, max(inside(ry - 0.0022), inside(rx - 0.0022)) * on * 0.85);
+		} else if (skin_pattern == 3) {
+			float belly = inside(ellipse(vec2(p.x, p.y - 1.16), vec2(0.13, 0.2))) * above(p.z, 0.02) * (1.0 - is_arm);
+			c = mix(c, c * 1.12 + 0.03, belly * skin);
+		}
+	}
 
 	// ---- face (front of the head)
 	float front = above(p.z, 0.05) * above(p.y, 1.58) * (1.0 - is_arm);
@@ -241,6 +281,12 @@ void fragment() {
 		}
 	}
 
+	if (forehead_mark > 0.5) {   // B4: the Majin "M", two peaks over the brow line
+		vec2 mq = vec2(p.x, p.y - 1.758);
+		float m = min(min(segment(mq, vec2(-0.02, -0.012), vec2(-0.012, 0.012), 0.0024), segment(mq, vec2(-0.012, 0.012), vec2(0.0, -0.004), 0.0024)),
+			min(segment(mq, vec2(0.0, -0.004), vec2(0.012, 0.012), 0.0024), segment(mq, vec2(0.012, 0.012), vec2(0.02, -0.012), 0.0024)));
+		c = mix(c, mark_color.rgb, inside(m) * above(p.z, 0.05) * (1.0 - is_arm));
+	}
 	float plate = above(p.y, 1.0) * (1.0 - is_arm) * plate_gloss * (1.0 - skin);
 	// loose clothes: one flat darker tone in the folds (a cel band, not a gradient), a lighter edge on the sleeve
 	// hems and along the raised lapel
@@ -256,7 +302,7 @@ void fragment() {
 	float weave = (fract(sin(dot(floor(UV * 900.0), vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.05;
 	c *= 1.0 + weave * (1.0 - skin) * (1.0 - plate);
 	ALBEDO = c;
-	ROUGHNESS = mix(mix(0.88, mix(0.5, 0.3, skin_metal), skin), 0.3, plate);
+	ROUGHNESS = mix(mix(0.88, mix(0.5, 0.3, skin_metal) - (skin_pattern == 3 ? 0.18 : 0.0), skin), 0.3, plate);
 	METALLIC = skin * skin_metal;
 	SPECULAR = mix(mix(0.2, 0.35, skin), 0.6, plate);
 #ifdef TOON

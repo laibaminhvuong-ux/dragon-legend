@@ -167,6 +167,9 @@ static func _chunk(grid: Dictionary, ci: int, cj: int, w: int, d: int, floor_y: 
 ## each with collision from the same triangles.
 static func _path_ribbon(root: Node3D, zone: RefCounted, mat: Material) -> void:
 	var p: Dictionary = zone.def.terrain.path
+	if p.get("serpent", false):   # B3 opt-in: the road is the serpent's back (default off)
+		_serpent_road(root, zone, p)
+		return
 	var half_w: float = float(p.width) / 2.0
 	var z0: float = float(p.get("from", -zone.size / 2.0))
 	var z1: float = float(p.get("to", zone.size / 2.0))
@@ -206,6 +209,108 @@ static func _path_ribbon(root: Node3D, zone: RefCounted, mat: Material) -> void:
 		root.add_child(body)
 		piece += 1
 		z += CHUNK
+
+## Serpent Road as the snake's body (terrain.path.serpent: true; B3, audit 106): lilac stone paving on top, a scaled
+## round belly under it, saw-tooth dorsal fins along one edge (path.spikes: "right" (default) | "left" | "both" |
+## "none"). Same 64 m pieces and road collision as the plain ribbon; materials from LandmarksDivine.
+static func _serpent_road(root: Node3D, zone: RefCounted, p: Dictionary) -> void:
+	var half_w: float = float(p.width) / 2.0
+	var z0: float = float(p.get("from", -zone.size / 2.0))
+	var z1: float = float(p.get("to", zone.size / 2.0))
+	var spikes: String = str(p.get("spikes", "right"))
+	var paving: ShaderMaterial = LandmarksDivine.serpent_paving()
+	paving.set_shader_parameter("half_w", half_w)
+	var th0 := 0.95                                   # belly arc starts this far (rad) from straight up
+	var rb := half_w / sin(th0)
+	var drop := rb * cos(th0) + 0.05
+	var ring := 14
+	var along := 0.0
+	var piece := 0
+	var z := z0
+	while z < z1:
+		var top := SurfaceTool.new(); top.begin(Mesh.PRIMITIVE_TRIANGLES)
+		var belly := SurfaceTool.new(); belly.begin(Mesh.PRIMITIVE_TRIANGLES)
+		var fins := SurfaceTool.new(); fins.begin(Mesh.PRIMITIVE_TRIANGLES)
+		var zz := z
+		while zz < minf(z + CHUNK, z1):
+			var zb := minf(zz + 1.0, z1)
+			var a := _road_edge(zone, zz, half_w)
+			var b := _road_edge(zone, zb, half_w)
+			var ca: Vector3 = (a.l + a.r) * 0.5; var cb: Vector3 = (b.l + b.r) * 0.5
+			var step := ca.distance_to(cb)
+			for q in [[a.l, a.r, b.r], [a.l, b.r, b.l]]:
+				for v: Vector3 in q:
+					var on_b: bool = v == b.l or v == b.r
+					var across: float = -half_w if (v == a.l or v == b.l) else half_w
+					top.set_normal(Vector3.UP); top.set_uv(Vector2(across, along + (step if on_b else 0.0))); top.add_vertex(v)
+			var xa: Vector3 = (a.r - a.l).normalized(); var xb: Vector3 = (b.r - b.l).normalized()
+			if zz == z0:
+				_serpent_cap(belly, ca, xa, rb, drop, th0, ring, cb - ca)
+			if zb >= z1:
+				_serpent_cap(belly, cb, xb, rb, drop, th0, ring, cb - ca)
+			for k in ring:
+				var t0 := th0 + (TAU - 2.0 * th0) * float(k) / ring
+				var t1 := th0 + (TAU - 2.0 * th0) * float(k + 1) / ring
+				var quad := []
+				for e in [[ca, xa, t0, 0.0], [ca, xa, t1, 0.0], [cb, xb, t1, step], [cb, xb, t0, step]]:
+					var c: Vector3 = e[0]; var x: Vector3 = e[1]; var t: float = e[2]
+					var n: Vector3 = x * sin(t) + Vector3.UP * cos(t)
+					quad.append([c + Vector3(0, -drop, 0) + n * rb, n, Vector2(along + float(e[3]), t * rb)])
+				for i in [0, 1, 2, 0, 2, 3]:
+					var vq: Array = quad[i]
+					belly.set_normal(vq[1]); belly.set_uv(vq[2]); belly.add_vertex(vq[0])
+			if spikes != "none" and fmod(zz - z0, 2.0) < 0.5:
+				for side in ([1.0, -1.0] if spikes == "both" else ([-1.0] if spikes == "left" else [1.0])):
+					var ea: Vector3 = a.r if side > 0 else a.l
+					var eb: Vector3 = b.r if side > 0 else b.l
+					var out: Vector3 = (xa + xb).normalized() * float(side)
+					var tip: Vector3 = (ea + eb) * 0.5 + out * 0.55 + Vector3(0, 0.9, 0) + (eb - ea) * 0.35
+					var fn: Vector3 = (eb - ea).cross(tip - ea).normalized()
+					for v in [ea + Vector3(0, -0.15, 0), eb + Vector3(0, -0.15, 0), tip]:
+						fins.set_normal(fn); fins.add_vertex(v)
+			along += step
+			zz += 1.0
+		var mesh := top.commit()
+		mesh.surface_set_material(0, paving)
+		var mi := MeshInstance3D.new()
+		mi.mesh = mesh
+		mi.name = "Road_%d" % piece
+		root.add_child(mi)
+		var bm := belly.commit()
+		bm.surface_set_material(0, LandmarksDivine.serpent_scales())
+		var bi := MeshInstance3D.new()
+		bi.mesh = bm
+		bi.name = "Belly_%d" % piece
+		root.add_child(bi)
+		if spikes != "none":
+			var fm := fins.commit()
+			if fm.get_surface_count() > 0:
+				fm.surface_set_material(0, LandmarksDivine.serpent_spike())
+				var fi := MeshInstance3D.new()
+				fi.mesh = fm
+				fi.name = "Fins_%d" % piece
+				root.add_child(fi)
+		var body := StaticBody3D.new()
+		body.name = mi.name + "_Body"
+		var shape := CollisionShape3D.new()
+		shape.shape = mesh.create_trimesh_shape()
+		body.add_child(shape)
+		root.add_child(body)
+		piece += 1
+		z += CHUNK
+
+## Flat end cap closing the serpent body at a road end (centre c, across x, facing along dir).
+static func _serpent_cap(st: SurfaceTool, c: Vector3, x: Vector3, rb: float, drop: float, th0: float, ring: int, dir: Vector3) -> void:
+	var mid := c + Vector3(0, -drop, 0)
+	var n := dir.normalized()
+	var pts: Array[Vector3] = []
+	for k in ring + 1:
+		var t := th0 + (TAU - 2.0 * th0) * float(k) / ring
+		pts.append(mid + (x * sin(t) + Vector3.UP * cos(t)) * rb)
+	pts.append(pts[0])
+	for k in pts.size() - 1:
+		for v: Vector3 in [mid, pts[k], pts[k + 1]]:
+			st.set_normal(n); st.set_uv(Vector2((v - mid).x, (v - mid).y)); st.add_vertex(v)
 
 static func _road_edge(zone: RefCounted, z: float, half_w: float) -> Dictionary:
 	var c: float = zone.path_centre(z)

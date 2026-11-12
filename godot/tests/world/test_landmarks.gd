@@ -20,7 +20,8 @@ func test_placed_at_rule_positions() -> void:
 		var zone: RefCounted = load("res://rules/zone.gd").new(id)
 		var root: Node3D = load("res://world/landmarks.gd").build(zone)
 		var groups: Array = root.get_children().filter(func(c: Node) -> bool: return c.has_meta("landmark"))
-		eq(groups.size(), zone.landmarks.size(), "%s: one node per landmark" % id)
+		var built: Array = zone.landmarks.filter(func(l: Dictionary) -> bool: return str(l.type) != "town")   # towns stream in (TownStream)
+		eq(groups.size(), built.size(), "%s: one node per landmark" % id)
 		for g: Node3D in groups:
 			var l: Dictionary = g.get_meta("landmark")
 			near(g.position.x, float(l.x), 1e-4, "%s %s x" % [id, l.type])

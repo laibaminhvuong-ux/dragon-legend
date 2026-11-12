@@ -112,6 +112,8 @@ static func dress(f: Fighter, parts: Dictionary, race_id: String, skin: Color) -
 				g.add_primitive(h, Transform3D(Basis.from_scale(Vector3(1.4, 0.6, 1.2)), Vector3(s * 0.17, 1.47, -0.02)))), material(hx(parts.cape), 0.8))
 	if f.hero_body_kind() == "":   # the Universal Base Characters heads have their own nose and ears
 		face(f, race_id, skin)
+	facial_hair(f)   # cast batch B5: look.moustache / beard, then glasses, hats, marks, jewellery (FaceGear)
+	FaceGear.dress(f)
 	var rp := features(race_id, f.look)
 	if rp.tail == "saiyan":
 		f.add_piece("DEF-hips", Transform3D.IDENTITY, _mesh("saiyan_tail", func(g: Geo) -> void:
@@ -446,25 +448,27 @@ static func costume(f: Fighter, id: String) -> void:
 		"braid":   # Mercenary Tau: one long braid down the back
 			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("braid", func(g: Geo) -> void:
 				g.tube(_offset([Vector3(0, 0, 0), Vector3(0, -0.08, -0.06), Vector3(0, -0.24, -0.08), Vector3(0, -0.42, -0.06)], Vector3(0, 0.08, -0.11)), 0.03, 0.014, 20, 8)), material(Color.hex(0x141414ff), 0.8))
-		"yemmo":   # King Yemmo: a thick black beard round the jaw and a tall judge's hat with a gold plate
+		"yemmo":   # King Yemmo: a thick black beard round the jaw and a tall judge's hat with a gold plate (B6: fitted to the hero head)
 			var black := material(Color.hex(0x161212ff), 0.85)
 			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("yemmo_beard", func(g: Geo) -> void:
-				g.sphere(Transform3D(Basis.from_scale(Vector3(1.25, 1.05, 0.95)), Vector3(0, -0.035, 0.035)), 0.1, 12, 18)
-				g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 1.25, 0.8)), Vector3(0, -0.1, 0.06)), 0.075, 10, 16)
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.25, 0.9, 0.95)), Vector3(0, -0.07, 0.035)), 0.1, 12, 18)
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 1.25, 0.8)), Vector3(0, -0.125, 0.06)), 0.075, 10, 16)
 				for s in [1, -1]:
 					g.sphere(Transform3D(Basis.from_scale(Vector3(0.6, 1.3, 0.8)), Vector3(s * 0.095, 0.0, 0.0)), 0.045, 8, 12)
-					g.sphere(Transform3D(Basis.from_scale(Vector3(1.6, 0.55, 0.7)), Vector3(s * 0.035, 0.155, 0.098)), 0.026, 8, 12)), black)
+					g.sphere(Transform3D(Basis.from_scale(Vector3(1.6, 0.55, 0.7)), Vector3(s * 0.035, 0.078, 0.1)), 0.026, 8, 12)), black)
 			var hat := material(Color.hex(0x2c2a52ff), 0.55)
 			var gold := material(Color.hex(0xd8a733ff), 0.3, 0.8)
 			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("yemmo_hat", func(g: Geo) -> void:
-				g.cylinder(Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 0.92)), Vector3(0, 0.215, -0.005)), 0.112, 0.118, 0.15, 24)
-				g.cylinder(Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 0.92)), Vector3(0, 0.145, -0.005)), 0.122, 0.122, 0.022, 24)), hat)
+				g.cylinder(Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 0.92)), Vector3(0, 0.175, -0.005)), 0.112, 0.118, 0.15, 24)
+				g.cylinder(Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 0.92)), Vector3(0, 0.105, -0.005)), 0.122, 0.122, 0.022, 24)), hat)
 			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("yemmo_hat_plate", func(g: Geo) -> void:
-				g.box(Transform3D(Basis.IDENTITY, Vector3(0, 0.215, 0.104)), Vector3(0.075, 0.09, 0.012))), gold)
+				g.box(Transform3D(Basis.IDENTITY, Vector3(0, 0.175, 0.104)), Vector3(0.075, 0.09, 0.012))), gold)
 
 ## Divine/alien gear (cast batch B1). Several can be worn at once (look.costume as an array).
 static func gear(f: Fighter, id: String) -> void:
 	gear_b3(f, id)   # Frieza Force / Frost Demon gear (scouters, horns, ...)
+	CreatureBodies.gear(f, id)   # cast batch B6: Namekian/animal heads, demon parts, props, creature bodies
+	CastB4.gear(f, id)   # Cel crest/wings/tail, helmets, caps, scarves, M belt (cast batch B4)
 	match id:
 		"halo":   # angels: a glowing pale-blue ring floating round the back of the neck
 			var glow := material(Color.hex(0xbfe8ffff), 0.1)
@@ -503,3 +507,71 @@ static func _offset(pts: Array, o: Vector3) -> PackedVector3Array:
 	for p: Vector3 in pts:
 		out.append(p + o)
 	return out
+
+# ------------------------------------------------------------------------------------------------ cast batch B5
+# Facial hair (look.moustache / look.beard / look.facialHairRgb, field list at the top of outfits.gd). Colour defaults
+# to the fighter's hair colour (look.hairColor / hairRgb, so white for the old masters). Head space (Hair.HEAD_SPACE):
+# nose tip about (0, -0.005, 0.112), mouth y -0.03, chin about (0, -0.065, 0.085).
+
+## Moustache styles: "thick" (B3's black bar moustache, recoloured), "bushy" (Master Roshu, Mr. Sadan), "long" (thin
+## drooping ends: Mercenary Tau), "thin". Beard styles: "long" (flowing down the chest: Master Roshu), "full" (a big
+## jaw beard: the Ox-Lord), "short" (Jackie Chung), "goatee".
+static func facial_hair(f: Fighter) -> void:
+	var mo := str(f.look.get("moustache", ""))
+	var be := str(f.look.get("beard", ""))
+	if mo == "" and be == "":
+		return
+	var c := Outfits.rgb(f.look.get("facialHairRgb"))
+	var col := hx(c) if c >= 0 else f.hair_color
+	var hm := material(col, 0.9)
+	match mo:
+		"thick":   # reuse B3's moustache mesh, in this fighter's colour
+			var before := f.skeleton.find_children("*", "MeshInstance3D", true, false)
+			gear_b3(f, "mustache")
+			for mi: Node in f.skeleton.find_children("*", "MeshInstance3D", true, false):
+				if not before.has(mi):
+					(mi as MeshInstance3D).material_override = hm
+		"bushy":
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("fh_bushy", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.sphere(Transform3D(Basis.from_euler(Vector3(0, 0, s * -0.35)) * Basis.from_scale(Vector3(1.7, 0.75, 0.75)), Vector3(s * 0.02, -0.02, 0.108)), 0.016, 8, 10)
+					g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.014, -0.012, -0.006), Vector3(s * 0.02, -0.03, -0.012)], Vector3(s * 0.034, -0.026, 0.104)), 0.011, 0.004, 10, 6)), hm)
+		"long":
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("fh_long", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.02, -0.004, -0.004), Vector3(s * 0.034, -0.03, -0.01), Vector3(s * 0.04, -0.075, -0.016), Vector3(s * 0.042, -0.11, -0.014)], Vector3(s * 0.005, -0.016, 0.113)), 0.005, 0.0018, 16, 6)), hm)
+		"thin":
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("fh_thin", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.016, -0.003, -0.003), Vector3(s * 0.03, -0.01, -0.01)], Vector3(s * 0.004, -0.017, 0.112)), 0.0045, 0.002, 10, 6)), hm)
+		"":
+			pass
+		_:
+			push_warning("Parts.facial_hair: unknown moustache %s" % mo)
+	match be:
+		"long":
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("fh_beard_long", func(g: Geo) -> void:
+				_jaw(g, 1.0)
+				g.tube(PackedVector3Array([Vector3(0, -0.045, 0.09), Vector3(0, -0.11, 0.1), Vector3(0, -0.2, 0.1), Vector3(0.01, -0.3, 0.09), Vector3(0.02, -0.36, 0.08)]), 0.05, 0.008, 20, 10, Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 0.5)), Vector3(0, 0, 0.045)))), hm)
+		"full":
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("fh_beard_full", func(g: Geo) -> void:
+				_jaw(g, 1.15)
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.2, 1.1, 0.75)), Vector3(0, -0.085, 0.07)), 0.055, 10, 14)), hm)
+		"short":
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("fh_beard_short", func(g: Geo) -> void:
+				_jaw(g, 0.85)
+				g.tube(PackedVector3Array([Vector3(0, -0.05, 0.088), Vector3(0, -0.085, 0.09), Vector3(0, -0.115, 0.08)]), 0.028, 0.006, 12, 8)), hm)
+		"goatee":
+			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("fh_goatee", func(g: Geo) -> void:
+				g.tube(PackedVector3Array([Vector3(0, -0.045, 0.098), Vector3(0, -0.07, 0.095), Vector3(0, -0.095, 0.085)]), 0.018, 0.004, 12, 8)), hm)
+		"":
+			pass
+		_:
+			push_warning("Parts.facial_hair: unknown beard %s" % be)
+
+## Beard mass along the jaw from ear to ear, under the mouth (k = thickness).
+static func _jaw(g: Geo, k: float) -> void:
+	for i in 9:
+		var a := lerpf(-1.25, 1.25, i / 8.0)
+		var p := Vector3(sin(a) * 0.082, -0.045 + 0.04 * absf(sin(a)), cos(a) * 0.076 + 0.012)
+		g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 1.25, 0.8)), p), 0.027 * k, 8, 10)

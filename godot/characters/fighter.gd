@@ -129,6 +129,7 @@ func _build() -> void:
 	material.set_shader_parameter("brow_color", hair_color.darkened(0.3) if has_hair else skin.darkened(0.45))
 	_set_skin(skin, 0.0)
 	_set_eyes(base_eyes())
+	CastB4.apply(self)   # look.skinPattern / faceRgb / mark (cast batch B4)
 	var build := {"height": 1.0, "width": 1.0, "depth": 1.0}
 	for b: Dictionary in Tables().appearance.get("BUILDS", []):
 		if b.id == look.get("build", "Average"):
@@ -138,6 +139,7 @@ func _build() -> void:
 		base_scale *= 1.0 / float(hero.height)
 	body.scale = base_scale
 	Parts.dress(self, parts, str(race.get("id", "")), skin)
+	CastB4.dress(self, parts)   # Red Ribbon badge, epaulettes, wizard cape collar (outfitParts)
 	var costumes: Variant = look.get("costume", "")
 	for c: Variant in (costumes if costumes is Array else [costumes]):
 		Parts.costume(self, str(c))

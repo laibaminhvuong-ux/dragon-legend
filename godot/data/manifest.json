@@ -47,7 +47,7 @@
     "tools/skill_presentation.mjs": "447b6907ff183affbc451f0cfc6ea987c0e928256f7a3c5f988cc01a5636b322",
     "tools/rift_patrol.mjs": "2b19a29e7e0ee9b7757ec9974abcb2797c92c6d6b14a644178acd5b9081314c1",
     "tools/origins.mjs": "53193315419770fe6a6308fe9183180f3acdf2437facc73f7e7fff97554faeb4",
-    "tools/godot_additions.mjs": "ceb25f53e1d7c1524c06ec78fa447ac9eddcd98d47481fee31d599f9a005a1e9",
+    "tools/godot_additions.mjs": "ecf2dbd13a95882e8fdb7565526bb1a17772bd0bccb3231f318847c60e3849f5",
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
   "files": {
@@ -70,8 +70,8 @@
       "entries": 208
     },
     "characters.json": {
-      "sha256": "9e5ed485937095eb752d6c09d0cf0c0497f66b46c181e4e9d90b1ba5279f421f",
-      "bytes": 66138,
+      "sha256": "e15aa1efe15633329bf3c7a0696f6a20177d52abe55bc1f67e52d7ac406ded2a",
+      "bytes": 80138,
       "kind": "object",
       "entries": 155
     },
@@ -148,8 +148,8 @@
       "entries": 5
     },
     "zones.json": {
-      "sha256": "665806083fb98c1b1ebca779d874b40eb4b44696913594b977bc052450d63bab",
-      "bytes": 71818,
+      "sha256": "ca4b18f706bd6f40ec4bfb8b71471564555bcd5b7206ab2fde9ec6d6f8aa0126",
+      "bytes": 85676,
       "kind": "object",
       "entries": 57
     },
@@ -190,10 +190,10 @@
       "entries": 74
     },
     "form_looks.json": {
-      "sha256": "b8ee7e21af028a86d430aa61db3c4e6fb32bdff1a1e5f9070075048beb3970c5",
-      "bytes": 15853,
+      "sha256": "2e29ec94d64d12690cf064a467db52b48ff0f0f32b21eaaced4c6aeb249a82af",
+      "bytes": 16861,
       "kind": "object",
-      "entries": 55
+      "entries": 59
     },
     "dragon_hunts.json": {
       "sha256": "eb93fddbfabd21f6b13d19cc113590729836693fc69969616635546d6bafaac9",
@@ -304,8 +304,8 @@
       "entries": 5
     },
     "godot_additions.json": {
-      "sha256": "de65b61b938370215b8b49969716797e529cbfc55444a6d33aa1b1c26c8158c3",
-      "bytes": 440,
+      "sha256": "17d45b956375f916515af903727de5a55ab585f128da568e17ec95884865288d",
+      "bytes": 1078,
       "kind": "object",
       "entries": 2
     },

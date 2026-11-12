@@ -74,7 +74,18 @@
         "azimuth": 205
       },
       "trees": "broadleaf",
-      "treeCount": 340
+      "treeCount": 340,
+      "cloudLayers": [
+        {
+          "y": 260,
+          "color": 16777215,
+          "coverage": 0.52,
+          "scale": 0.0016,
+          "opacity": 0.9
+        }
+      ],
+      "waterShallow": 3856588,
+      "waterClarity": 6
     },
     "landmarks": [
       {
@@ -145,12 +156,13 @@
     },
     "landmarks": [
       {
-        "type": "kamehouse",
+        "type": "kamecottage",
         "x": 0,
         "z": 8,
         "name": "Kama House",
-        "flatten": 9,
-        "collide": 5
+        "collide": 5,
+        "flatten": 12,
+        "rot": 3.1416
       }
     ],
     "travelPoint": {
@@ -173,7 +185,8 @@
         "amp": 70,
         "wave": 70,
         "from": -390,
-        "to": 390
+        "to": 390,
+        "serpent": true
       },
       "killY": -40,
       "plaza": {
@@ -186,19 +199,19 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 15775840,
-        "horizon": 16770984,
-        "bottom": 16111470,
+        "top": 14699716,
+        "horizon": 16165088,
+        "bottom": 15906880,
         "elevation": 40,
         "azimuth": 200,
         "sunColor": 16773824
       },
       "fog": [
-        16770984,
-        0.0016
+        15904988,
+        0.0014
       ],
       "cloudSea": {
-        "color": 15978332,
+        "color": 16171578,
         "y": -18
       },
       "trees": "none",
@@ -206,29 +219,58 @@
       "bushes": 0,
       "grass": 0,
       "clouds": false,
-      "stones": 0
+      "stones": 0,
+      "cloudLayers": [
+        {
+          "y": -70,
+          "color": 15243808,
+          "coverage": 0.3,
+          "scale": 0.003,
+          "opacity": 0.95
+        }
+      ]
     },
     "landmarks": [
       {
-        "type": "checkin",
+        "type": "checkinhall",
         "name": "King Yemmo's Check-In Station",
         "x": 29.729930222797574,
         "z": -447,
         "collide": 5.5
       },
       {
-        "type": "snakehead",
-        "x": 0,
-        "z": -386,
-        "name": "Serpent Road gate"
-      },
-      {
-        "type": "kaiplanet",
+        "type": "kaiorb",
         "name": "King Kae's Planet",
         "x": -113.72207389311869,
         "z": 520,
         "alt": 110,
         "radius": 34
+      },
+      {
+        "type": "serpenthead",
+        "name": "Serpent Road gate",
+        "x": 38,
+        "z": -392
+      },
+      {
+        "type": "serpentcoils",
+        "x": -110,
+        "z": -260,
+        "alt": 6
+      },
+      {
+        "type": "serpentcoils",
+        "x": 90,
+        "z": 20,
+        "alt": 4,
+        "span": 180
+      },
+      {
+        "type": "serpentcoils",
+        "x": -120,
+        "z": 260,
+        "alt": 8,
+        "loops": 2
       }
     ],
     "travelPoint": {
@@ -265,19 +307,19 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 15643482,
-        "horizon": 16770720,
-        "bottom": 16111470,
+        "top": 14175424,
+        "horizon": 15900890,
+        "bottom": 15773760,
         "elevation": 40,
         "azimuth": 200,
         "sunColor": 16773824
       },
       "fog": [
-        16770720,
-        0.002
+        15771864,
+        0.0018
       ],
       "cloudSea": {
-        "color": 15978332,
+        "color": 16171578,
         "y": -45
       },
       "tints": {
@@ -309,6 +351,11 @@
         "rot": 1.2,
         "name": "King Kae's car",
         "collide": 2
+      },
+      {
+        "type": "kaiband",
+        "x": 0,
+        "z": 0
       }
     ],
     "travelPoint": {
@@ -411,9 +458,44 @@
       "treeCount": 40,
       "rocks": 420,
       "bushes": 60,
-      "grass": 0.12
+      "grass": 0.12,
+      "weather": {
+        "type": "dust",
+        "density": 0.6
+      },
+      "cloudLayers": [
+        {
+          "y": 12,
+          "mist": true,
+          "color": 15260872,
+          "coverage": 0.48,
+          "scale": 0.004,
+          "opacity": 0.4
+        }
+      ]
     },
-    "landmarks": [],
+    "landmarks": [
+      {
+        "type": "crater",
+        "name": "Saiyar pod",
+        "x": 40,
+        "z": 40,
+        "dig": {
+          "radius": 9,
+          "depth": 2.6
+        }
+      },
+      {
+        "type": "crater",
+        "name": "Saiyar pod",
+        "x": 58,
+        "z": 52,
+        "dig": {
+          "radius": 9,
+          "depth": 2.6
+        }
+      }
+    ],
     "travelPoint": {
       "x": 0,
       "z": -16
@@ -541,15 +623,40 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 5817498,
-        "horizon": 12579030,
+        "top": 4171824,
+        "horizon": 12642440,
         "bottom": 3116920,
         "elevation": 48,
         "azimuth": 200,
-        "sunColor": 16187376
+        "sunColor": 16187376,
+        "bodies": [
+          {
+            "kind": "sun",
+            "az": 200,
+            "el": 48,
+            "size": 2.6,
+            "color": 16775384
+          },
+          {
+            "kind": "sun",
+            "az": 226,
+            "el": 30,
+            "size": 1.9,
+            "color": 16773824,
+            "light": 0.3
+          },
+          {
+            "kind": "sun",
+            "az": 178,
+            "el": 22,
+            "size": 1.3,
+            "color": 16772784,
+            "light": 0.2
+          }
+        ]
       },
       "fog": [
-        11462348,
+        12116128,
         0.0009
       ],
       "tints": {
@@ -559,8 +666,8 @@
           1.25
         ],
         "rock": [
-          0.85,
-          1,
+          1.15,
+          0.82,
           0.95
         ],
         "sand": [
@@ -569,50 +676,59 @@
           0.95
         ]
       },
-      "trees": "ajisa",
+      "trees": "ajisa_tall",
       "treeCount": 260,
       "rocks": 140,
       "bushes": 200,
-      "water": 2795419
+      "water": 2795419,
+      "grassColors": {
+        "root": 1720202,
+        "tip": 4830438,
+        "dry": 9097184,
+        "forest": 1920918
+      }
     },
     "landmarks": [
       {
-        "type": "namekhouse",
+        "type": "namekdome",
         "x": -20,
         "z": 22,
         "name": "Elder Mooru's village",
-        "flatten": 7,
-        "collide": 4
+        "collide": 4.5,
+        "flatten": 8,
+        "rot": 0.6
       },
       {
-        "type": "namekhouse",
+        "type": "namekdome",
         "x": -34,
         "z": 8,
-        "flatten": 6,
+        "scale": 0.8,
         "collide": 4,
-        "scale": 0.8
+        "flatten": 7,
+        "rot": 1.2
       },
       {
-        "type": "namekhouse",
+        "type": "namekdome",
         "x": -8,
         "z": 38,
-        "flatten": 6,
+        "scale": 0.9,
         "collide": 4,
-        "scale": 0.9
+        "flatten": 7,
+        "rot": 0.1
       },
       {
-        "type": "gurutower",
+        "type": "elderspire",
         "x": 160,
         "z": 90,
         "name": "Grand Elder Gura's house"
       },
       {
-        "type": "friezaship",
+        "type": "tyrantship",
         "x": 40,
         "z": -190,
         "name": "Frigor's spaceship",
-        "flatten": 28,
-        "collide": 16
+        "collide": 15,
+        "flatten": 28
       },
       {
         "type": "capsuleship",
@@ -684,22 +800,6 @@
     },
     "landmarks": [
       {
-        "type": "yardrathut",
-        "x": -18,
-        "z": 20,
-        "name": "Yardran village",
-        "flatten": 8,
-        "collide": 4
-      },
-      {
-        "type": "yardrathut",
-        "x": 6,
-        "z": 30,
-        "flatten": 7,
-        "collide": 4,
-        "scale": 0.8
-      },
-      {
         "type": "crashpod",
         "x": 30,
         "z": -20,
@@ -708,6 +808,14 @@
           "radius": 6,
           "depth": 1.5
         }
+      },
+      {
+        "type": "yardratvillage",
+        "name": "Yardran village",
+        "x": -10,
+        "z": 42,
+        "huts": 4,
+        "flatten": 18
       }
     ],
     "travelPoint": {
@@ -745,58 +853,65 @@
     },
     "landmarks": [
       {
-        "type": "capsulecorp",
+        "type": "capsulehq",
         "x": 0,
         "z": 30,
         "name": "Kapsule Corporation",
-        "flatten": 30,
-        "collide": 17
+        "collide": 17,
+        "flatten": 34,
+        "rot": 3.1416
       },
       {
-        "type": "dome",
+        "type": "capsulehouse",
         "x": -55,
         "z": 10,
         "flatten": 10,
         "collide": 7,
-        "scale": 0.9
+        "scale": 0.9,
+        "rot": 3.1416
       },
       {
-        "type": "dome",
+        "type": "capsulehouse",
         "x": 52,
         "z": 6,
         "flatten": 10,
         "collide": 7,
-        "scale": 1.1
+        "scale": 1.1,
+        "rot": 3.1416
       },
       {
-        "type": "dome",
+        "type": "capsulehouse",
         "x": -60,
         "z": 70,
         "flatten": 10,
-        "collide": 7
+        "collide": 7,
+        "rot": 3.1416
       },
       {
-        "type": "dome",
+        "type": "capsulehouse",
         "x": 66,
         "z": 72,
         "flatten": 10,
         "collide": 7,
-        "scale": 0.8
+        "scale": 0.8,
+        "rot": 3.1416
       },
       {
-        "type": "dome",
+        "type": "capsulehouse",
         "x": -90,
         "z": -40,
         "flatten": 10,
         "collide": 7,
-        "scale": 1.2
+        "scale": 1.2,
+        "rot": 3.1416
       },
       {
-        "type": "dome",
+        "type": "capsulehouse",
         "x": 95,
         "z": -38,
         "flatten": 10,
-        "collide": 7
+        "collide": 7,
+        "rot": 3.1416
       },
       {
         "type": "capsuleship",
@@ -812,6 +927,26 @@
         "z": -6,
         "name": "Tronks' time machine",
         "collide": 2
+      },
+      {
+        "type": "town",
+        "name": "West Capital",
+        "x": 0,
+        "z": -165,
+        "style": "city",
+        "radius": 90,
+        "seed": 23,
+        "flatten": 90
+      },
+      {
+        "type": "town",
+        "name": "West Capital west",
+        "x": -165,
+        "z": 60,
+        "style": "city",
+        "radius": 85,
+        "seed": 29,
+        "flatten": 85
       }
     ],
     "travelPoint": {
@@ -880,26 +1015,35 @@
         "collide": 4
       },
       {
-        "type": "ruin",
+        "type": "gingertower",
         "x": -60,
-        "z": -80,
+        "z": -88,
         "name": "Ginger Town",
-        "flatten": 26,
-        "collide": 9
+        "collide": 5.5,
+        "flatten": 26
       },
       {
-        "type": "ruin",
+        "type": "gingerhouse",
         "x": -84,
         "z": -62,
-        "flatten": 14,
-        "collide": 6,
-        "scale": 0.7
+        "collide": 8,
+        "flatten": 18,
+        "rot": 1.2
       },
       {
         "type": "husk",
         "x": 70,
         "z": -40,
         "name": "Cel's empty shell"
+      },
+      {
+        "type": "gingerhouse",
+        "x": -40,
+        "z": -96,
+        "scale": 0.9,
+        "rot": -0.5,
+        "collide": 7,
+        "flatten": 16
       }
     ],
     "travelPoint": {
@@ -1003,11 +1147,12 @@
     },
     "landmarks": [
       {
-        "type": "htcroom",
+        "type": "htcpalace",
         "x": 0,
-        "z": 14,
+        "z": 16,
         "name": "Living quarters",
-        "collide": 9
+        "collide": 8,
+        "rot": 3.1416
       }
     ],
     "travelPoint": {
@@ -1080,7 +1225,7 @@
     },
     "landmarks": [
       {
-        "type": "cellarena",
+        "type": "cellring",
         "x": 0,
         "z": 0,
         "name": "Cel's ring",
@@ -1133,11 +1278,11 @@
     },
     "landmarks": [
       {
-        "type": "budokai",
+        "type": "budokaihall",
         "x": 0,
         "z": 20,
         "name": "Tournament ring",
-        "flatten": 36
+        "flatten": 50
       }
     ],
     "travelPoint": {
@@ -1196,12 +1341,13 @@
     },
     "landmarks": [
       {
-        "type": "babidiship",
+        "type": "babidihatch",
         "x": 0,
         "z": 30,
         "name": "Babido's spaceship",
+        "collide": 20,
         "flatten": 40,
-        "collide": 22
+        "rot": 3.1416
       }
     ],
     "travelPoint": {
@@ -1245,7 +1391,59 @@
         "elevation": 46,
         "azimuth": 200,
         "turbidity": 1.5,
-        "rayleigh": 2.2
+        "rayleigh": 2.2,
+        "zenith": 7101640,
+        "horizon": 15911132,
+        "bodies": [
+          {
+            "kind": "bubble",
+            "az": 170,
+            "el": 38,
+            "size": 6,
+            "color": 14209272,
+            "color2": 16777215
+          },
+          {
+            "kind": "bubble",
+            "az": 205,
+            "el": 22,
+            "size": 3.5,
+            "color": 14735615,
+            "color2": 16777215
+          },
+          {
+            "kind": "bubble",
+            "az": 228,
+            "el": 46,
+            "size": 4.5,
+            "color": 13682928,
+            "color2": 16777215
+          },
+          {
+            "kind": "bubble",
+            "az": 148,
+            "el": 18,
+            "size": 2.4,
+            "color": 15261951,
+            "color2": 16777215
+          },
+          {
+            "kind": "bubble",
+            "az": 250,
+            "el": 28,
+            "size": 2,
+            "color": 14735615,
+            "color2": 16777215
+          },
+          {
+            "kind": "bubble",
+            "az": 188,
+            "el": 56,
+            "size": 1.6,
+            "color": 15261951,
+            "color2": 16777215
+          }
+        ]
       },
       "tints": {
         "grass": [
@@ -1257,7 +1455,8 @@
       "trees": "broadleaf",
       "treeCount": 160,
       "rocks": 160,
-      "bushes": 260
+      "bushes": 260,
+      "cloudColor": 16773375
     },
     "landmarks": [
       {
@@ -1349,12 +1548,47 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 5061258,
-        "horizon": 15120614,
-        "bottom": 3811942,
+        "top": 11688576,
+        "horizon": 16172186,
+        "bottom": 5913170,
         "elevation": 36,
         "azimuth": 200,
-        "sunColor": 16773344
+        "sunColor": 16773344,
+        "nebula": {
+          "colors": [
+            13656186,
+            16300176,
+            16773328
+          ],
+          "amount": 0.55,
+          "scale": 1.6
+        },
+        "bodies": [
+          {
+            "kind": "bubble",
+            "az": 150,
+            "el": 26,
+            "size": 4.5,
+            "color": 16310448,
+            "color2": 16774368
+          },
+          {
+            "kind": "bubble",
+            "az": 250,
+            "el": 14,
+            "size": 3.2,
+            "color": 15782056,
+            "color2": 16777215
+          },
+          {
+            "kind": "bubble",
+            "az": 215,
+            "el": 40,
+            "size": 2,
+            "color": 16312520,
+            "color2": 16777215
+          }
+        ]
       },
       "fog": [
         14267103,
@@ -1380,12 +1614,19 @@
     },
     "landmarks": [
       {
-        "type": "pyramid",
+        "type": "beeruscastle",
         "x": 0,
         "z": 40,
         "name": "Beeros's temple",
-        "flatten": 30,
-        "collide": 20
+        "collide": 10,
+        "flatten": 30
+      },
+      {
+        "type": "godtree",
+        "name": "The great tree",
+        "x": -45,
+        "z": 60,
+        "collide": 4
       }
     ],
     "travelPoint": {
@@ -1422,14 +1663,14 @@
         "sunColor": 16773328
       },
       "fog": [
-        15783088,
+        15245480,
         0.0011
       ],
       "tints": {
         "dirt": [
-          1,
-          0.95,
-          0.9
+          1.25,
+          0.55,
+          0.62
         ]
       },
       "trees": "none",
@@ -1439,19 +1680,55 @@
     },
     "landmarks": [
       {
-        "type": "cellarena",
+        "type": "u6arena",
         "x": 0,
         "z": 10,
-        "scale": 1.3,
         "name": "Champo's arena",
+        "scale": 1.3,
         "flatten": 50
       },
       {
-        "type": "stands",
+        "type": "shieldbox",
+        "name": "Gods' box",
         "x": 0,
-        "z": 70,
-        "name": "Spectator stands",
-        "collide": 14
+        "z": 58,
+        "rot": 3.1416
+      },
+      {
+        "type": "cupstand",
+        "x": -50,
+        "z": 40,
+        "top": "dome"
+      },
+      {
+        "type": "cupstand",
+        "x": 50,
+        "z": 40,
+        "top": "seats"
+      },
+      {
+        "type": "cupstand",
+        "x": -62,
+        "z": -5,
+        "top": "dome"
+      },
+      {
+        "type": "cupstand",
+        "x": 62,
+        "z": -5,
+        "top": "seats"
+      },
+      {
+        "type": "cupstand",
+        "x": -48,
+        "z": -50,
+        "top": "dome"
+      },
+      {
+        "type": "cupstand",
+        "x": 48,
+        "z": -50,
+        "top": "seats"
       }
     ],
     "travelPoint": {
@@ -1480,31 +1757,38 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 7106680,
-        "horizon": 12104874,
-        "bottom": 5591628,
+        "top": 6321242,
+        "horizon": 11057306,
+        "bottom": 4871748,
         "elevation": 22,
         "azimuth": 200,
-        "sunColor": 14209216
+        "sunColor": 13160624
       },
       "fog": [
-        11052186,
-        0.0016
+        9741450,
+        0.0026
       ],
       "trees": "dead",
       "treeCount": 60,
       "rocks": 300,
       "bushes": 30,
-      "grass": 0.15
+      "grass": 0.15,
+      "cloudColor": 7767150,
+      "cloudCoverage": 0.28,
+      "weather": {
+        "type": "rain",
+        "density": 1
+      }
     },
     "landmarks": [
       {
-        "type": "ruin",
+        "type": "brokentower",
         "x": -40,
         "z": 30,
-        "scale": 1.4,
-        "collide": 10,
-        "name": "Ruined West Capital"
+        "name": "Ruined West Capital",
+        "scale": 1.2,
+        "collide": 8,
+        "flatten": 16
       },
       {
         "type": "ruin",
@@ -1514,11 +1798,12 @@
         "collide": 9
       },
       {
-        "type": "ruin",
+        "type": "brokentower",
         "x": 70,
         "z": 10,
-        "scale": 1.6,
-        "collide": 11
+        "scale": 1.4,
+        "collide": 9,
+        "flatten": 18
       },
       {
         "type": "ruin",
@@ -1528,11 +1813,12 @@
         "collide": 7
       },
       {
-        "type": "ruin",
-        "x": 10,
-        "z": 100,
-        "scale": 1.8,
-        "collide": 12
+        "type": "brokentower",
+        "x": -20,
+        "z": 130,
+        "scale": 1.6,
+        "collide": 10,
+        "flatten": 20
       },
       {
         "type": "ruin",
@@ -1578,10 +1864,30 @@
         "top": 657440,
         "horizon": 4864650,
         "bottom": 328719,
-        "elevation": 50,
+        "elevation": 30,
         "azimuth": 200,
         "sunColor": 15261951,
-        "stars": true
+        "stars": true,
+        "sunHalo": false,
+        "nebula": {
+          "colors": [
+            3806800,
+            11022446,
+            5300384
+          ],
+          "amount": 0.95,
+          "scale": 1
+        },
+        "bodies": [
+          {
+            "kind": "eclipse",
+            "az": 200,
+            "el": 30,
+            "size": 13,
+            "color": 16773852,
+            "color2": 262918
+          }
+        ]
       },
       "fog": [
         2761808,
@@ -1622,6 +1928,11 @@
         "x": 0,
         "z": 160,
         "name": "Grand Zenno's stand"
+      },
+      {
+        "type": "toparena",
+        "x": 0,
+        "z": 0
       }
     ],
     "travelPoint": {
@@ -1688,6 +1999,10 @@
           0.92,
           1.05
         ]
+      },
+      "weather": {
+        "type": "snow",
+        "density": 0.8
       }
     },
     "landmarks": [
@@ -1699,6 +2014,29 @@
         "name": "Frigor Force ship",
         "flatten": 18,
         "collide": 10
+      },
+      {
+        "type": "seracs",
+        "x": -60,
+        "z": 40,
+        "rot": 0.3,
+        "collide": 9
+      },
+      {
+        "type": "seracs",
+        "x": 140,
+        "z": -10,
+        "scale": 1.3,
+        "rot": 2.2,
+        "collide": 11
+      },
+      {
+        "type": "seracs",
+        "x": -20,
+        "z": 170,
+        "scale": 1.5,
+        "rot": 3.6,
+        "collide": 13
       }
     ],
     "travelPoint": {
@@ -1755,20 +2093,22 @@
     },
     "landmarks": [
       {
-        "type": "hangar",
+        "type": "rrhangar",
         "x": 0,
         "z": 20,
         "name": "Crimson Ribbon base",
+        "collide": 16,
         "flatten": 30,
-        "collide": 16
+        "rot": 3.1416
       },
       {
-        "type": "hangar",
+        "type": "rrhangar",
         "x": -50,
         "z": -10,
         "scale": 0.6,
+        "collide": 10,
         "flatten": 18,
-        "collide": 10
+        "rot": 1.5708
       },
       {
         "type": "radartower",
@@ -1776,6 +2116,21 @@
         "z": -20,
         "name": "Radar tower",
         "collide": 3
+      },
+      {
+        "type": "rrtower",
+        "name": "Crimson Ribbon tower",
+        "x": -70,
+        "z": 60,
+        "rot": 0.4,
+        "collide": 11,
+        "flatten": 26
+      },
+      {
+        "type": "archbridge",
+        "x": -70,
+        "z": 15,
+        "rot": 1.5708
       }
     ],
     "travelPoint": {
@@ -1794,126 +2149,80 @@
         "z": 0
       },
       "hills": {
-        "amp": 4,
-        "scale": 70
+        "amp": 6,
+        "scale": 110
       },
-      "ocean": {
-        "level": 0
+      "lake": {
+        "x": -40,
+        "z": 60,
+        "radius": 55,
+        "level": 0.4
       },
-      "flatSpawn": 0,
-      "islands": [
+      "edge": "mountains",
+      "mesas": [
         {
-          "x": 0,
-          "z": 0,
-          "r": 70,
-          "h": 4
-        },
-        {
-          "x": 160,
-          "z": 90,
-          "r": 55,
-          "h": 6
+          "x": 150,
+          "z": -60,
+          "r": 10,
+          "h": 46
         },
         {
           "x": -170,
-          "z": 60,
-          "r": 60,
-          "h": 5
-        },
-        {
-          "x": 40,
-          "z": -190,
-          "r": 65,
-          "h": 5
-        },
-        {
-          "x": -120,
-          "z": -170,
-          "r": 40,
-          "h": 4
-        },
-        {
-          "x": 230,
-          "z": -150,
-          "r": 50,
-          "h": 7
-        },
-        {
-          "x": -40,
-          "z": 230,
-          "r": 48,
-          "h": 5
-        }
-      ],
-      "mesas": [
-        {
-          "x": 160,
-          "z": 90,
-          "r": 9,
-          "h": 70
-        },
-        {
-          "x": 90,
-          "z": -60,
-          "r": 6,
-          "h": 34
-        },
-        {
-          "x": -90,
-          "z": 130,
-          "r": 7,
-          "h": 42
-        },
-        {
-          "x": 260,
-          "z": 40,
+          "z": -120,
           "r": 8,
-          "h": 48
+          "h": 36
         },
         {
-          "x": -240,
-          "z": -40,
-          "r": 6,
-          "h": 30
+          "x": 200,
+          "z": 160,
+          "r": 12,
+          "h": 58
         },
         {
-          "x": 120,
-          "z": 210,
+          "x": -220,
+          "z": 150,
           "r": 9,
-          "h": 55
-        },
-        {
-          "x": -200,
-          "z": 200,
-          "r": 7,
-          "h": 38
-        },
-        {
-          "x": 300,
-          "z": -260,
-          "r": 10,
-          "h": 62
-        },
-        {
-          "x": -60,
-          "z": -280,
-          "r": 8,
-          "h": 44
+          "h": 40
         }
       ]
     },
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 5817498,
-        "horizon": 12579030,
+        "top": 4171824,
+        "horizon": 12642440,
         "bottom": 3116920,
         "elevation": 48,
         "azimuth": 200,
-        "sunColor": 16187376
+        "sunColor": 16187376,
+        "bodies": [
+          {
+            "kind": "sun",
+            "az": 200,
+            "el": 48,
+            "size": 2.6,
+            "color": 16775384
+          },
+          {
+            "kind": "sun",
+            "az": 226,
+            "el": 30,
+            "size": 1.9,
+            "color": 16773824,
+            "light": 0.3
+          },
+          {
+            "kind": "sun",
+            "az": 178,
+            "el": 22,
+            "size": 1.3,
+            "color": 16772784,
+            "light": 0.2
+          }
+        ]
       },
       "fog": [
-        11462348,
+        12116128,
         0.0009
       ],
       "tints": {
@@ -1923,8 +2232,8 @@
           1.25
         ],
         "rock": [
-          0.85,
-          1,
+          1.15,
+          0.82,
           0.95
         ],
         "sand": [
@@ -1933,63 +2242,44 @@
           0.95
         ]
       },
-      "trees": "ajisa",
-      "treeCount": 260,
-      "rocks": 140,
-      "bushes": 200,
-      "water": 2795419
+      "trees": "ajisa_tall",
+      "treeCount": 200,
+      "rocks": 100,
+      "bushes": 120,
+      "water": 2795419,
+      "grassColors": {
+        "root": 1720202,
+        "tip": 4830438,
+        "dry": 9097184,
+        "forest": 1920918
+      }
     },
     "landmarks": [
       {
-        "type": "namekhouse",
-        "x": -20,
-        "z": 22,
-        "name": "Elder Mooru's village",
-        "flatten": 7,
-        "collide": 4
+        "type": "namekvillage",
+        "name": "New Nameck village",
+        "x": 30,
+        "z": -20,
+        "count": 3,
+        "flatten": 16
       },
       {
-        "type": "namekhouse",
-        "x": -34,
-        "z": 8,
-        "flatten": 6,
-        "collide": 4,
-        "scale": 0.8
+        "type": "namekdome",
+        "x": -10,
+        "z": 0,
+        "collide": 4.5,
+        "flatten": 8
       },
       {
-        "type": "namekhouse",
-        "x": -8,
-        "z": 38,
-        "flatten": 6,
-        "collide": 4,
-        "scale": 0.9
-      },
-      {
-        "type": "gurutower",
-        "x": 160,
-        "z": 90,
-        "name": "Grand Elder Gura's house"
-      },
-      {
-        "type": "friezaship",
-        "x": 40,
-        "z": -190,
-        "name": "Frigor's spaceship",
-        "flatten": 28,
-        "collide": 16
-      },
-      {
-        "type": "capsuleship",
-        "x": 18,
-        "z": -22,
-        "name": "Kapsule Corp ship",
-        "flatten": 9,
-        "collide": 5
+        "type": "elderspire",
+        "name": "Elder's house",
+        "x": 150,
+        "z": -60
       }
     ],
     "travelPoint": {
-      "x": 8,
-      "z": -30
+      "x": 20,
+      "z": -45
     }
   },
   "planet_cereal": {
@@ -2078,25 +2368,35 @@
           0.8
         ],
         "rock": [
+          1.25,
           1.1,
-          0.92,
-          0.78
+          0.85
         ]
       },
-      "trees": "dead",
-      "treeCount": 40,
+      "trees": "purple_spire",
+      "treeCount": 520,
       "rocks": 420,
       "bushes": 60,
       "grass": 0.12
     },
     "landmarks": [
       {
-        "type": "farmhouse",
+        "type": "cerealhut",
         "x": -24,
         "z": -10,
         "name": "Monaido’s home",
-        "flatten": 8,
-        "collide": 4
+        "collide": 5,
+        "flatten": 14,
+        "rot": 1.57
+      },
+      {
+        "type": "heetersship",
+        "name": "Elek's landing ship",
+        "x": 70,
+        "z": -30,
+        "rot": -0.4,
+        "flatten": 26,
+        "collide": 14
       }
     ],
     "travelPoint": {
@@ -2124,13 +2424,48 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 1314872,
-        "horizon": 6961832,
+        "top": 929846,
+        "horizon": 3976838,
         "bottom": 657432,
         "elevation": 60,
         "azimuth": 200,
         "sunColor": 13154559,
-        "stars": true
+        "stars": true,
+        "nebula": {
+          "colors": [
+            805440,
+            3984268,
+            15265952
+          ],
+          "amount": 0.55,
+          "scale": 0.8
+        },
+        "bodies": [
+          {
+            "kind": "moon",
+            "az": 160,
+            "el": 34,
+            "size": 4,
+            "color": 15786160,
+            "color2": 13152384
+          },
+          {
+            "kind": "moon",
+            "az": 238,
+            "el": 20,
+            "size": 2.6,
+            "color": 16051416,
+            "color2": 12103840
+          },
+          {
+            "kind": "moon",
+            "az": 196,
+            "el": 52,
+            "size": 1.6,
+            "color": 15786176,
+            "color2": 12626048
+          }
+        ]
       },
       "fog": [
         1708080,
@@ -2180,13 +2515,58 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 1707806,
-        "horizon": 5909050,
+        "top": 661048,
+        "horizon": 2775728,
         "bottom": 985616,
         "elevation": 25,
         "azimuth": 240,
         "sunColor": 16751226,
-        "stars": true
+        "stars": true,
+        "nebula": {
+          "colors": [
+            797290,
+            3968224,
+            13168895
+          ],
+          "amount": 0.85,
+          "scale": 1.1
+        },
+        "bodies": [
+          {
+            "kind": "planet",
+            "az": 228,
+            "el": 30,
+            "size": 9,
+            "color": 13647904,
+            "color2": 15765568
+          },
+          {
+            "kind": "ringed",
+            "az": 244,
+            "el": 38,
+            "size": 5,
+            "color": 14727248,
+            "color2": 14200944,
+            "tilt": 0.28,
+            "roll": -18
+          },
+          {
+            "kind": "planet",
+            "az": 236,
+            "el": 22,
+            "size": 5.5,
+            "color": 2778312,
+            "color2": 15266047
+          },
+          {
+            "kind": "moon",
+            "az": 214,
+            "el": 24,
+            "size": 3,
+            "color": 4751456,
+            "color2": 2111528
+          }
+        ]
       },
       "tints": {
         "dirt": [
@@ -2203,7 +2583,8 @@
       "fog": [
         3807782,
         0.0016
-      ]
+      ],
+      "clouds": false
     },
     "landmarks": [
       {
@@ -2264,6 +2645,14 @@
         "radius": 210,
         "seed": 11,
         "flatten": 210
+      },
+      {
+        "type": "herostatue",
+        "name": "Champion's statue",
+        "x": 18,
+        "z": 18,
+        "rot": -2.36,
+        "collide": 4
       }
     ],
     "travelPoint": {
@@ -2357,7 +2746,11 @@
           1.05
         ]
       },
-      "treeCount": 30
+      "treeCount": 30,
+      "weather": {
+        "type": "snow",
+        "density": 0.5
+      }
     },
     "landmarks": [
       {
@@ -2465,12 +2858,37 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 5817498,
-        "horizon": 12579030,
+        "top": 4171824,
+        "horizon": 12642440,
         "bottom": 3116920,
         "elevation": 48,
         "azimuth": 200,
-        "sunColor": 16187376
+        "sunColor": 16187376,
+        "bodies": [
+          {
+            "kind": "sun",
+            "az": 200,
+            "el": 48,
+            "size": 2.6,
+            "color": 16775384
+          },
+          {
+            "kind": "sun",
+            "az": 226,
+            "el": 30,
+            "size": 1.9,
+            "color": 16773824,
+            "light": 0.3
+          },
+          {
+            "kind": "sun",
+            "az": 178,
+            "el": 22,
+            "size": 1.3,
+            "color": 16772784,
+            "light": 0.2
+          }
+        ]
       },
       "fog": [
         11462348,
@@ -2547,12 +2965,37 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 5817498,
-        "horizon": 12579030,
+        "top": 4171824,
+        "horizon": 12642440,
         "bottom": 3116920,
         "elevation": 48,
         "azimuth": 200,
-        "sunColor": 16187376
+        "sunColor": 16187376,
+        "bodies": [
+          {
+            "kind": "sun",
+            "az": 200,
+            "el": 48,
+            "size": 2.6,
+            "color": 16775384
+          },
+          {
+            "kind": "sun",
+            "az": 226,
+            "el": 30,
+            "size": 1.9,
+            "color": 16773824,
+            "light": 0.3
+          },
+          {
+            "kind": "sun",
+            "az": 178,
+            "el": 22,
+            "size": 1.3,
+            "color": 16772784,
+            "light": 0.2
+          }
+        ]
       },
       "fog": [
         11462348,
@@ -2629,12 +3072,37 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 5817498,
-        "horizon": 12579030,
+        "top": 4171824,
+        "horizon": 12642440,
         "bottom": 3116920,
         "elevation": 48,
         "azimuth": 200,
-        "sunColor": 16187376
+        "sunColor": 16187376,
+        "bodies": [
+          {
+            "kind": "sun",
+            "az": 200,
+            "el": 48,
+            "size": 2.6,
+            "color": 16775384
+          },
+          {
+            "kind": "sun",
+            "az": 226,
+            "el": 30,
+            "size": 1.9,
+            "color": 16773824,
+            "light": 0.3
+          },
+          {
+            "kind": "sun",
+            "az": 178,
+            "el": 22,
+            "size": 1.3,
+            "color": 16772784,
+            "light": 0.2
+          }
+        ]
       },
       "fog": [
         11462348,
@@ -2711,12 +3179,37 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 5817498,
-        "horizon": 12579030,
+        "top": 4171824,
+        "horizon": 12642440,
         "bottom": 3116920,
         "elevation": 48,
         "azimuth": 200,
-        "sunColor": 16187376
+        "sunColor": 16187376,
+        "bodies": [
+          {
+            "kind": "sun",
+            "az": 200,
+            "el": 48,
+            "size": 2.6,
+            "color": 16775384
+          },
+          {
+            "kind": "sun",
+            "az": 226,
+            "el": 30,
+            "size": 1.9,
+            "color": 16773824,
+            "light": 0.3
+          },
+          {
+            "kind": "sun",
+            "az": 178,
+            "el": 22,
+            "size": 1.3,
+            "color": 16772784,
+            "light": 0.2
+          }
+        ]
       },
       "fog": [
         11462348,
@@ -2793,12 +3286,37 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 5817498,
-        "horizon": 12579030,
+        "top": 4171824,
+        "horizon": 12642440,
         "bottom": 3116920,
         "elevation": 48,
         "azimuth": 200,
-        "sunColor": 16187376
+        "sunColor": 16187376,
+        "bodies": [
+          {
+            "kind": "sun",
+            "az": 200,
+            "el": 48,
+            "size": 2.6,
+            "color": 16775384
+          },
+          {
+            "kind": "sun",
+            "az": 226,
+            "el": 30,
+            "size": 1.9,
+            "color": 16773824,
+            "light": 0.3
+          },
+          {
+            "kind": "sun",
+            "az": 178,
+            "el": 22,
+            "size": 1.3,
+            "color": 16772784,
+            "light": 0.2
+          }
+        ]
       },
       "fog": [
         11462348,
@@ -2875,12 +3393,37 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 5817498,
-        "horizon": 12579030,
+        "top": 4171824,
+        "horizon": 12642440,
         "bottom": 3116920,
         "elevation": 48,
         "azimuth": 200,
-        "sunColor": 16187376
+        "sunColor": 16187376,
+        "bodies": [
+          {
+            "kind": "sun",
+            "az": 200,
+            "el": 48,
+            "size": 2.6,
+            "color": 16775384
+          },
+          {
+            "kind": "sun",
+            "az": 226,
+            "el": 30,
+            "size": 1.9,
+            "color": 16773824,
+            "light": 0.3
+          },
+          {
+            "kind": "sun",
+            "az": 178,
+            "el": 22,
+            "size": 1.3,
+            "color": 16772784,
+            "light": 0.2
+          }
+        ]
       },
       "fog": [
         11462348,
@@ -3151,7 +3694,7 @@
           0.78
         ]
       },
-      "trees": "dead",
+      "trees": "purple_spire",
       "treeCount": 60,
       "rocks": 30,
       "bushes": 120,
@@ -3194,12 +3737,47 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 5061258,
-        "horizon": 15120614,
-        "bottom": 3811942,
+        "top": 11688576,
+        "horizon": 16172186,
+        "bottom": 5913170,
         "elevation": 36,
         "azimuth": 200,
-        "sunColor": 16773344
+        "sunColor": 16773344,
+        "nebula": {
+          "colors": [
+            13656186,
+            16300176,
+            16773328
+          ],
+          "amount": 0.55,
+          "scale": 1.6
+        },
+        "bodies": [
+          {
+            "kind": "bubble",
+            "az": 150,
+            "el": 26,
+            "size": 4.5,
+            "color": 16310448,
+            "color2": 16774368
+          },
+          {
+            "kind": "bubble",
+            "az": 250,
+            "el": 14,
+            "size": 3.2,
+            "color": 15782056,
+            "color2": 16777215
+          },
+          {
+            "kind": "bubble",
+            "az": 215,
+            "el": 40,
+            "size": 2,
+            "color": 16312520,
+            "color2": 16777215
+          }
+        ]
       },
       "fog": [
         14267103,
@@ -3260,22 +3838,28 @@
     "biome": {
       "sky": {
         "type": "gradient",
-        "top": 7106680,
-        "horizon": 12104874,
-        "bottom": 5591628,
+        "top": 6321242,
+        "horizon": 11057306,
+        "bottom": 4871748,
         "elevation": 22,
         "azimuth": 200,
-        "sunColor": 14209216
+        "sunColor": 13160624
       },
       "fog": [
-        11052186,
-        0.0016
+        9741450,
+        0.0026
       ],
       "trees": "dead",
       "treeCount": 60,
       "rocks": 30,
       "bushes": 120,
-      "grass": 0.15
+      "grass": 0.15,
+      "cloudColor": 7767150,
+      "cloudCoverage": 0.28,
+      "weather": {
+        "type": "rain",
+        "density": 1
+      }
     },
     "landmarks": [
       {
@@ -3317,7 +3901,9 @@
         "elevation": 46,
         "azimuth": 200,
         "turbidity": 1.5,
-        "rayleigh": 2.2
+        "rayleigh": 2.2,
+        "zenith": 7101640,
+        "horizon": 15911132
       },
       "tints": {
         "grass": [
@@ -3433,7 +4019,23 @@
       },
       "trees": "broadleaf",
       "treeCount": 260,
-      "bushes": 260
+      "bushes": 260,
+      "cloudLayers": [
+        {
+          "y": 18,
+          "mist": true,
+          "color": 16054527,
+          "coverage": 0.42,
+          "scale": 0.004
+        },
+        {
+          "y": 230,
+          "color": 16777215,
+          "coverage": 0.55,
+          "scale": 0.0016,
+          "opacity": 0.9
+        }
+      ]
     },
     "landmarks": [
       {
@@ -3489,7 +4091,11 @@
       "treeCount": 10,
       "rocks": 420,
       "bushes": 60,
-      "grass": 0.12
+      "grass": 0.12,
+      "weather": {
+        "type": "embers",
+        "density": 1
+      }
     },
     "landmarks": [
       {
@@ -3545,7 +4151,11 @@
       "treeCount": 40,
       "rocks": 420,
       "bushes": 60,
-      "grass": 0.12
+      "grass": 0.12,
+      "weather": {
+        "type": "dust",
+        "density": 1
+      }
     },
     "landmarks": [
       {
@@ -3601,7 +4211,20 @@
           0.92,
           1.05
         ]
-      }
+      },
+      "weather": {
+        "type": "snow",
+        "density": 0.5
+      },
+      "cloudLayers": [
+        {
+          "y": 40,
+          "mist": true,
+          "color": 15267064,
+          "coverage": 0.4,
+          "scale": 0.004
+        }
+      ]
     },
     "landmarks": [
       {
@@ -3682,7 +4305,23 @@
         "azimuth": 205
       },
       "trees": "broadleaf",
-      "treeCount": 220
+      "treeCount": 220,
+      "cloudLayers": [
+        {
+          "y": 22,
+          "mist": true,
+          "color": 16054527,
+          "coverage": 0.45,
+          "scale": 0.004
+        },
+        {
+          "y": 260,
+          "color": 16777215,
+          "coverage": 0.5,
+          "scale": 0.0016,
+          "opacity": 0.9
+        }
+      ]
     },
     "landmarks": [
       {
@@ -3830,7 +4469,11 @@
       "treeCount": 0,
       "bushes": 0,
       "rocks": 0,
-      "stones": 0
+      "stones": 0,
+      "cloudSea": {
+        "color": 16777215,
+        "y": -60
+      }
     },
     "landmarks": [
       {

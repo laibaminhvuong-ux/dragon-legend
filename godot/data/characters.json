@@ -77,7 +77,7 @@
       "race": "HalfSaiyan",
       "skin": 0,
       "face": "Smirk",
-      "hair": "Short",
+      "hair": "CenterPart",
       "hairColor": 2,
       "build": "Short",
       "outfit": "TurtleGi",
@@ -101,7 +101,7 @@
       "race": "HalfSaiyan",
       "skin": 0,
       "face": "Determined",
-      "hair": "Short",
+      "hair": "CenterPart",
       "hairColor": 2,
       "build": "Average",
       "outfit": "CapsuleCorp",
@@ -152,6 +152,10 @@
       "outfit": "NamekRobe",
       "outfitTint": 2,
       "physique": "piccor",
+      "antenna": false,
+      "costume": [
+        "namek_turban"
+      ],
       "faceSeed": "piccolo"
     },
     "style": "crane"
@@ -168,6 +172,9 @@
       "outfit": "TurtleGi",
       "outfitTint": 0,
       "physique": "krilan",
+      "faceMarks": [
+        "dots"
+      ],
       "faceSeed": "krillin"
     },
     "scale": 0.85,
@@ -182,9 +189,23 @@
       "hair": "None",
       "hairColor": 5,
       "build": "Short",
-      "outfit": "TurtleGi",
+      "outfit": "CraneGi",
       "outfitTint": 6,
       "physique": "roshu",
+      "moustache": "bushy",
+      "beard": "long",
+      "glasses": "sunglasses",
+      "costume": [
+        "prop_turtle_shell",
+        "prop_cane"
+      ],
+      "outfitParts": {
+        "top": 15921386,
+        "sleeves": false,
+        "pants": 13150320,
+        "sash": false,
+        "shoes": 9067066
+      },
       "faceSeed": "roshi"
     },
     "scale": 0.8,
@@ -196,12 +217,22 @@
       "race": "Human",
       "skin": 0,
       "face": "Smirk",
-      "hair": "Ponytail",
+      "hair": "Bob",
       "hairColor": 2,
       "build": "Slim",
       "outfit": "CapsuleCorp",
       "outfitTint": 4,
       "female": true,
+      "hairRgb": 3850432,
+      "eyeRgb": 3832528,
+      "neckwear": "scarf",
+      "neckRgb": 15779890,
+      "outfitRgb": 13115434,
+      "outfitParts": {
+        "pants": 13115434,
+        "sleeves": false,
+        "shoes": 13115434
+      },
       "faceSeed": "bulma"
     },
     "style": "turtle"
@@ -217,6 +248,13 @@
       "build": "Short",
       "outfit": "CapsuleCorp",
       "outfitTint": 4,
+      "hairRgb": 12103880,
+      "moustache": "bushy",
+      "glasses": "round",
+      "outfitRgb": 15921906,
+      "outfitParts": {
+        "pants": 9079440
+      },
       "faceSeed": "dr_brief"
     },
     "style": "turtle"
@@ -227,12 +265,18 @@
       "race": "Human",
       "skin": 0,
       "face": "Fierce",
-      "hair": "Ponytail",
+      "hair": "Bun",
       "hairColor": 0,
       "build": "Slim",
       "outfit": "CraneGi",
       "outfitTint": 2,
       "female": true,
+      "outfitRgb": 14170714,
+      "outfitParts": {
+        "pants": 8002090,
+        "sash": false,
+        "shoes": 13115434
+      },
       "faceSeed": "chichi"
     },
     "style": "turtle"
@@ -243,12 +287,16 @@
       "race": "Human",
       "skin": 1,
       "face": "Smirk",
-      "hair": "LongSpiky",
+      "hair": "Spiky",
       "hairColor": 0,
       "build": "Average",
       "outfit": "TurtleGi",
       "outfitTint": 0,
       "physique": "yamcho",
+      "faceMarks": [
+        "scar_cheek",
+        "scar_eye"
+      ],
       "faceSeed": "yamcha"
     },
     "style": "turtle"
@@ -265,6 +313,10 @@
       "outfit": "CraneGi",
       "outfitTint": 6,
       "physique": "tenzo",
+      "thirdEye": true,
+      "outfitParts": {
+        "sash": 13120042
+      },
       "faceSeed": "tien"
     },
     "style": "crane"
@@ -382,6 +434,9 @@
         "head_w": 1.18,
         "head_h": 1.2
       },
+      "costume": [
+        "plant_head"
+      ],
       "faceSeed": "saibaman"
     },
     "scale": 0.75,
@@ -420,8 +475,14 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Short",
-      "outfit": "TurtleGi",
+      "outfit": "FrostBody",
       "outfitTint": 3,
+      "skinHex": 4862502,
+      "faceRgb": 14201996,
+      "eyeRgb": 1710618,
+      "costume": [
+        "monkey_head"
+      ],
       "faceSeed": "bubbles"
     },
     "scale": 0.5,
@@ -451,12 +512,20 @@
       "race": "Human",
       "skin": 0,
       "face": "Smirk",
-      "hair": "Ponytail",
+      "hair": "BigCurly",
       "hairColor": 4,
       "build": "Slim",
       "outfit": "AngelRobe",
       "outfitTint": 5,
       "female": true,
+      "skinHex": 8046752,
+      "hairRgb": 15235114,
+      "neckwear": "fur_collar",
+      "neckRgb": 16052974,
+      "jewellery": [
+        "earrings"
+      ],
+      "jewelRgb": 10107608,
       "faceSeed": "princess_snake"
     },
     "style": "turtle"
@@ -472,6 +541,14 @@
       "build": "Tall",
       "outfit": "NamekRobe",
       "outfitTint": 4,
+      "outfitRgb": 16052974,
+      "outfitParts": {
+        "top": 12071466,
+        "vest": true,
+        "cape": false,
+        "sash": 16052974,
+        "wrist": false
+      },
       "faceSeed": "moori"
     },
     "style": "turtle"
@@ -487,6 +564,12 @@
       "build": "Short",
       "outfit": "NamekRobe",
       "outfitTint": 4,
+      "outfitRgb": 16052974,
+      "outfitParts": {
+        "sash": 6961832,
+        "wrist": false,
+        "cape": false
+      },
       "faceSeed": "dende"
     },
     "scale": 0.7,
@@ -503,6 +586,9 @@
       "build": "Tall",
       "outfit": "NamekRobe",
       "outfitTint": 2,
+      "outfitParts": {
+        "cape": false
+      },
       "faceSeed": "nail"
     },
     "style": "crane"
@@ -518,6 +604,19 @@
       "build": "Muscular",
       "outfit": "NamekRobe",
       "outfitTint": 4,
+      "outfitRgb": 16052974,
+      "neckwear": "scarf",
+      "neckRgb": 15239854,
+      "outfitParts": {
+        "cape": false,
+        "sash": false,
+        "wrist": false
+      },
+      "sculpt": {
+        "belly": 0.12,
+        "waist": 1.35,
+        "hips": 1.2
+      },
       "faceSeed": "guru"
     },
     "scale": 2.3,
@@ -639,6 +738,7 @@
         "frost_horns",
         "scouter"
       ],
+      "raceParts": false,
       "faceSeed": "ginyu"
     },
     "style": "turtle"
@@ -868,8 +968,24 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Muscular",
-      "outfit": "PrideTrooper",
+      "outfit": "RRUniform",
       "outfitTint": 4,
+      "raceParts": false,
+      "skinHex": 15790324,
+      "skinPattern": "plates",
+      "patternRgb": 11053236,
+      "eyeRgb": 1710618,
+      "physique": "boo_fat",
+      "costume": [
+        "android_dome"
+      ],
+      "outfitRgb": 15253552,
+      "outfitParts": {
+        "pants": 14711338,
+        "sash": 13115434,
+        "shoes": 15921906,
+        "boot_trim": 15921906
+      },
       "faceSeed": "android_19"
     },
     "scale": 1.1,
@@ -881,11 +997,24 @@
       "race": "Human",
       "skin": 0,
       "face": "Cold",
-      "hair": "Short",
+      "hair": "Long",
       "hairColor": 5,
       "build": "Slim",
-      "outfit": "PrideTrooper",
+      "outfit": "RRUniform",
       "outfitTint": 4,
+      "hairRgb": 15921906,
+      "skinHex": 15785164,
+      "costume": [
+        "rr_cap",
+        "gero_beard"
+      ],
+      "outfitRgb": 1710622,
+      "outfitParts": {
+        "pants": 6965802,
+        "sash": 13115434,
+        "shoes": 15921906,
+        "boot_trim": 15921906
+      },
       "faceSeed": "gero"
     },
     "style": "turtle"
@@ -896,12 +1025,23 @@
       "race": "Human",
       "skin": 0,
       "face": "Cold",
-      "hair": "Short",
+      "hair": "ShoulderStraight",
       "hairColor": 0,
       "build": "Slim",
       "outfit": "CapsuleCorp",
       "outfitTint": 6,
       "physique": "cyborg_slim",
+      "eyeRgb": 3832528,
+      "costume": [
+        "scarf_orange"
+      ],
+      "outfitRgb": 1710622,
+      "outfitParts": {
+        "pants": 6986448,
+        "shoes": 15921906,
+        "sash": 5913130,
+        "badge": 13115434
+      },
       "faceSeed": "android_17"
     },
     "style": "turtle"
@@ -912,13 +1052,24 @@
       "race": "Human",
       "skin": 0,
       "face": "Cold",
-      "hair": "Short",
+      "hair": "Bob",
       "hairColor": 3,
       "build": "Slim",
       "outfit": "CapsuleCorp",
       "outfitTint": 3,
       "female": true,
       "physique": "cyborg_slim",
+      "hairRgb": 15782000,
+      "eyeRgb": 3832528,
+      "costume": [
+        "hoops"
+      ],
+      "outfitRgb": 3824282,
+      "outfitParts": {
+        "pants": 1710622,
+        "shoes": 6965802,
+        "boot_trim": 6965802
+      },
       "faceSeed": "android_18"
     },
     "style": "turtle"
@@ -929,12 +1080,25 @@
       "race": "Human",
       "skin": 0,
       "face": "Calm",
-      "hair": "Short",
+      "hair": "Mohawk",
       "hairColor": 4,
       "build": "Tall",
       "outfit": "SaiyanArmor",
       "outfitTint": 6,
       "physique": "cyborg16",
+      "hairRgb": 14176298,
+      "eyeRgb": 3832528,
+      "outfitParts": {
+        "top": 1710622,
+        "plate": 3832378,
+        "trim": 3832378,
+        "pads": false,
+        "sleeves": false,
+        "pants": 8022666,
+        "shoes": 2771498,
+        "boot_trim": 1710622,
+        "badge": 13115434
+      },
       "faceSeed": "android_16"
     },
     "scale": 1.25,
@@ -949,9 +1113,28 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Tall",
-      "outfit": "FrostArmor",
+      "outfit": "FrostBody",
       "outfitTint": 6,
       "physique": "cel",
+      "raceParts": false,
+      "shells": true,
+      "shellRgb": 3812970,
+      "skinPattern": "spots",
+      "faceRgb": 15526642,
+      "costume": [
+        "cell_crest",
+        "cell_wings"
+      ],
+      "wingRgb": 3812970,
+      "outfitParts": {
+        "shoes": 3812970,
+        "boot_trim": 14725184,
+        "laces": 3812970,
+        "sash": 2759226
+      },
+      "skinHex": 10145856,
+      "patternRgb": 1980946,
+      "eyeRgb": 11542650,
       "faceSeed": "cell"
     },
     "style": "turtle"
@@ -965,8 +1148,27 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Short",
-      "outfit": "FrostArmor",
+      "outfit": "FrostBody",
       "outfitTint": 6,
+      "raceParts": false,
+      "shells": true,
+      "shellRgb": 2763354,
+      "skinPattern": "spots",
+      "faceRgb": 15526642,
+      "costume": [
+        "cell_crest",
+        "cell_wings"
+      ],
+      "wingRgb": 2763354,
+      "outfitParts": {
+        "shoes": 3812970,
+        "boot_trim": 14725184,
+        "laces": 3812970,
+        "sash": 2759226
+      },
+      "skinHex": 4889304,
+      "patternRgb": 1718906,
+      "eyeRgb": 5905002,
       "faceSeed": "cell_jr"
     },
     "scale": 0.6,
@@ -981,8 +1183,17 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Tall",
-      "outfit": "AngelRobe",
+      "outfit": "NamekRobe",
       "outfitTint": 4,
+      "outfitRgb": 16052974,
+      "outfitParts": {
+        "cape": 3820208,
+        "sash": 3820208,
+        "wrist": false
+      },
+      "costume": [
+        "prop_cane"
+      ],
       "faceSeed": "kami"
     },
     "style": "turtle"
@@ -1020,12 +1231,23 @@
       "race": "Human",
       "skin": 1,
       "face": "Smirk",
-      "hair": "Wild",
+      "hair": "Afro",
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "CraneGi",
       "outfitTint": 4,
       "physique": "sadan",
+      "moustache": "bushy",
+      "jewellery": [
+        "champion_belt"
+      ],
+      "outfitRgb": 3808842,
+      "outfitParts": {
+        "pants": 15253568,
+        "sash": false,
+        "shoes": 15921906,
+        "cape": 14172250
+      },
       "faceSeed": "mr_satan"
     },
     "style": "turtle"
@@ -1036,12 +1258,19 @@
       "race": "Human",
       "skin": 0,
       "face": "Determined",
-      "hair": "Ponytail",
+      "hair": "TwinTails",
       "hairColor": 0,
       "build": "Slim",
-      "outfit": "CraneGi",
+      "outfit": "CapsuleCorp",
       "outfitTint": 3,
       "female": true,
+      "eyeRgb": 3832528,
+      "outfitRgb": 15921906,
+      "outfitParts": {
+        "pants": 1710622,
+        "gloves": 1710622,
+        "shoes": 15921906
+      },
       "faceSeed": "videl"
     },
     "style": "turtle"
@@ -1155,6 +1384,15 @@
       "build": "Muscular",
       "outfit": "CraneGi",
       "outfitTint": 3,
+      "mark": "majin",
+      "outfitParts": {
+        "top": 1710622,
+        "vest": true,
+        "pants": 1710622,
+        "sash": 1710622,
+        "wrist": 15253552,
+        "shoes": 15921906
+      },
       "faceSeed": "spopovich"
     },
     "scale": 1.25,
@@ -1171,6 +1409,25 @@
       "build": "Short",
       "outfit": "AngelRobe",
       "outfitTint": 3,
+      "raceParts": false,
+      "ears": "pointed",
+      "skinHex": 14204992,
+      "eyeRgb": 2759956,
+      "sculpt": {
+        "head_w": 1.5,
+        "head_h": 1.42,
+        "head_d": 1.45
+      },
+      "outfitRgb": 1710622,
+      "outfitParts": {
+        "pants": 6996168,
+        "collar": false,
+        "sash": false,
+        "cape": 15230506,
+        "cape_collar": 15230506,
+        "shoes": 6965802,
+        "boot_trim": 6965802
+      },
       "faceSeed": "babidi"
     },
     "scale": 0.6,
@@ -1185,9 +1442,24 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Muscular",
-      "outfit": "FrostArmor",
+      "outfit": "CraneGi",
       "outfitTint": 3,
       "physique": "morro",
+      "raceParts": false,
+      "ears": "pointed",
+      "skinHex": 13122106,
+      "eyeRgb": 2759956,
+      "costume": [
+        "dabura_horns"
+      ],
+      "outfitRgb": 2771610,
+      "outfitParts": {
+        "pants": 2771610,
+        "cape": 15921906,
+        "shoes": 15921906,
+        "boot_trim": 15921906,
+        "sash": 1710622
+      },
       "faceSeed": "dabura"
     },
     "scale": 1.3,
@@ -1204,6 +1476,18 @@
       "build": "Average",
       "outfit": "SaiyanArmor",
       "outfitTint": 2,
+      "costume": [
+        "pui_helmet"
+      ],
+      "skinHex": 13154528,
+      "outfitParts": {
+        "top": 2771632,
+        "pants": 2771632,
+        "plate": 15921906,
+        "trim": 15921906,
+        "shoes": 15921906,
+        "boot_trim": 15921906
+      },
       "faceSeed": "pui_pui"
     },
     "style": "turtle"
@@ -1217,8 +1501,18 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Muscular",
-      "outfit": "MajinVest",
+      "outfit": "FrostBody",
       "outfitTint": 6,
+      "raceParts": false,
+      "skinHex": 3828282,
+      "eyeRgb": 15259680,
+      "mark": "majin",
+      "costume": [
+        "head_spikes"
+      ],
+      "outfitParts": {
+        "gloves": 1710622
+      },
       "faceSeed": "yakon"
     },
     "scale": 1.5,
@@ -1249,6 +1543,7 @@
         "boot_trim": 14200906,
         "plate": 16052970
       },
+      "mark": "majin",
       "faceSeed": "majin_vegeta"
     },
     "scale": 0.95,
@@ -1266,6 +1561,17 @@
       "outfit": "MajinVest",
       "outfitTint": 2,
       "physique": "boo_fat",
+      "skinPattern": "majin",
+      "costume": [
+        "m_belt"
+      ],
+      "outfitParts": {
+        "cape": 5909130,
+        "gloves": 15253568,
+        "wrist": 15253568,
+        "shoes": 15253568,
+        "boot_trim": 15253568
+      },
       "faceSeed": "fat_buu"
     },
     "scale": 1.35,
@@ -1283,6 +1589,21 @@
       "outfit": "MajinVest",
       "outfitTint": 3,
       "physique": "boo_kid",
+      "skinPattern": "majin",
+      "costume": [
+        "m_belt"
+      ],
+      "eyeRgb": 13114910,
+      "outfitParts": {
+        "top": "skin",
+        "sleeves": false,
+        "vest": false,
+        "pants": 15921386,
+        "wrist": 1710622,
+        "shoes": 1710622,
+        "boot_trim": 14725184,
+        "sash": 1710622
+      },
       "faceSeed": "super_buu"
     },
     "style": "brawler"
@@ -1299,6 +1620,22 @@
       "outfit": "MajinVest",
       "outfitTint": 3,
       "physique": "boo_kid",
+      "skinPattern": "majin",
+      "costume": [
+        "m_belt"
+      ],
+      "eyeRgb": 13114910,
+      "outfitParts": {
+        "top": "skin",
+        "sleeves": false,
+        "vest": false,
+        "pants": 15921386,
+        "wrist": 1710622,
+        "shoes": 1710622,
+        "boot_trim": 14725184,
+        "sash": 1710622
+      },
+      "skinHex": 15769792,
       "faceSeed": "kid_buu"
     },
     "scale": 0.8,
@@ -1399,9 +1736,13 @@
       "build": "Short",
       "outfit": "AngelRobe",
       "outfitTint": 0,
+      "raceParts": false,
+      "costume": [
+        "oracle_fish"
+      ],
       "faceSeed": "oracle_fish"
     },
-    "scale": 0.5,
+    "scale": 0.8,
     "style": "turtle"
   },
   "sorbet": {
@@ -1638,12 +1979,19 @@
       "race": "Human",
       "skin": 0,
       "face": "Determined",
-      "hair": "Short",
+      "hair": "Long",
       "hairColor": 0,
       "build": "Slim",
       "outfit": "CapsuleCorp",
       "outfitTint": 6,
       "female": true,
+      "hat": "beanie",
+      "hatRgb": 3832378,
+      "outfitRgb": 2771594,
+      "outfitParts": {
+        "pants": 1710622,
+        "shoes": 1710622
+      },
       "faceSeed": "mai"
     },
     "style": "turtle"
@@ -1787,6 +2135,9 @@
       "outfit": "PrideTrooper",
       "outfitTint": 5,
       "physique": "toppa",
+      "costume": [
+        "big_mustache"
+      ],
       "faceSeed": "toppo"
     },
     "scale": 1.35,
@@ -1934,12 +2285,29 @@
       "race": "Majin",
       "skin": 2,
       "face": "Cold",
-      "hair": "Short",
+      "hair": "None",
       "hairColor": 0,
       "build": "Tall",
-      "outfit": "PrideTrooper",
+      "outfit": "RRUniform",
       "outfitTint": 5,
       "physique": "gama",
+      "raceParts": false,
+      "skinHex": 11053236,
+      "skinPattern": "plates",
+      "patternRgb": 8026760,
+      "eyeRgb": 15259680,
+      "costume": [
+        "gamma_helmet"
+      ],
+      "outfitRgb": 15249440,
+      "outfitParts": {
+        "pants": 15249440,
+        "gloves": 2763316,
+        "shoes": 2763316,
+        "boot_trim": 2763316,
+        "sash": 3811882,
+        "cape": 13115434
+      },
       "faceSeed": "gamma1"
     },
     "style": "speedster"
@@ -1950,12 +2318,29 @@
       "race": "Majin",
       "skin": 2,
       "face": "Smirk",
-      "hair": "Short",
+      "hair": "None",
       "hairColor": 0,
       "build": "Tall",
-      "outfit": "PrideTrooper",
+      "outfit": "RRUniform",
       "outfitTint": 5,
       "physique": "gama",
+      "raceParts": false,
+      "skinHex": 11053236,
+      "skinPattern": "plates",
+      "patternRgb": 8026760,
+      "eyeRgb": 15259680,
+      "costume": [
+        "gamma_helmet2"
+      ],
+      "outfitRgb": 15249440,
+      "outfitParts": {
+        "pants": 15249440,
+        "gloves": 2763316,
+        "shoes": 2763316,
+        "boot_trim": 2763316,
+        "sash": 3811882,
+        "cape": 2771656
+      },
       "faceSeed": "gamma2"
     },
     "style": "speedster"
@@ -1968,9 +2353,17 @@
       "face": "Smirk",
       "hair": "Bowl",
       "hairColor": 0,
-      "build": "Slim",
+      "build": "Short",
       "outfit": "CapsuleCorp",
       "outfitTint": 4,
+      "sculpt": {
+        "belly": 0.06,
+        "waist": 1.18
+      },
+      "outfitParts": {
+        "pants": 2771594,
+        "shoes": 15253552
+      },
       "faceSeed": "hedo"
     },
     "style": "turtle"
@@ -1986,6 +2379,17 @@
       "build": "Short",
       "outfit": "CapsuleCorp",
       "outfitTint": 5,
+      "hairRgb": 1315860,
+      "skinHex": 14196848,
+      "costume": [
+        "mustache",
+        "shades"
+      ],
+      "outfitRgb": 11545210,
+      "outfitParts": {
+        "pants": 11545210,
+        "shoes": 1710622
+      },
       "faceSeed": "magenta"
     },
     "style": "turtle"
@@ -1999,8 +2403,27 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Muscular",
-      "outfit": "FrostArmor",
+      "outfit": "FrostBody",
       "outfitTint": 5,
+      "raceParts": false,
+      "shells": true,
+      "shellRgb": 11019306,
+      "skinPattern": "spots",
+      "faceRgb": null,
+      "costume": [
+        "cell_crest"
+      ],
+      "wingRgb": 3812970,
+      "outfitParts": {
+        "top": 11019306,
+        "wrist": 11019306,
+        "shoes": 11019306,
+        "boot_trim": 11019306,
+        "laces": 11019306
+      },
+      "skinHex": 6991946,
+      "patternRgb": 2375706,
+      "eyeRgb": 15261888,
       "faceSeed": "cell_max"
     },
     "scale": 3.2,
@@ -2124,10 +2547,19 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Tall",
-      "outfit": "AngelRobe",
+      "outfit": "NamekRobe",
       "outfitTint": 4,
-      "faceSeed": "kami"
+      "outfitRgb": 6961818,
+      "outfitParts": {
+        "cape": 9071288,
+        "wrist": false
+      },
+      "costume": [
+        "prop_cane"
+      ],
+      "faceSeed": "monaito"
     },
+    "scale": 0.85,
     "style": "turtle"
   },
   "gas": {
@@ -2277,7 +2709,10 @@
       "outfit": "TurtleGi",
       "outfitTint": 0,
       "faceSeed": "krillin_kid",
-      "age": "child"
+      "age": "child",
+      "faceMarks": [
+        "dots"
+      ]
     },
     "scale": 0.6,
     "style": "turtle",
@@ -2289,14 +2724,22 @@
       "race": "Human",
       "skin": 0,
       "face": "Smirk",
-      "hair": "Ponytail",
+      "hair": "SidePonytail",
       "hairColor": 2,
       "build": "Slim",
       "outfit": "CapsuleCorp",
       "outfitTint": 5,
       "female": true,
       "faceSeed": "bulma_young",
-      "age": "teen"
+      "age": "teen",
+      "hairRgb": 3848368,
+      "eyeRgb": 3832528,
+      "hat": "ribbon",
+      "hatRgb": 14164010,
+      "outfitRgb": 15235240,
+      "outfitParts": {
+        "pants": 15235240
+      }
     },
     "style": "speedster",
     "origins": true,
@@ -2319,6 +2762,18 @@
         "belly": 0.05,
         "head_w": 1.12,
         "soft": 0.008
+      },
+      "costume": [
+        "pig_head",
+        "suspenders"
+      ],
+      "outfitParts": {
+        "top": 16052974,
+        "pants": 3832378,
+        "undershirt": false,
+        "sash": false,
+        "wrist": false,
+        "shoes": 2763306
       }
     },
     "scale": 0.68,
@@ -2334,14 +2789,19 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Slim",
-      "outfit": "TurtleGi",
+      "outfit": "FrostBody",
       "outfitTint": 4,
       "faceSeed": "puar",
       "skinHex": 9094382,
       "sculpt": {
         "head_w": 1.15,
         "head_h": 1.1
-      }
+      },
+      "tail": "cat",
+      "eyeRgb": 1710618,
+      "costume": [
+        "cat_head"
+      ]
     },
     "scale": 0.5,
     "style": "speedster",
@@ -2382,7 +2842,9 @@
       "physique": "sadan",
       "sculpt": {
         "belly": 0.06
-      }
+      },
+      "beard": "full",
+      "glasses": "round"
     },
     "scale": 2.2,
     "style": "brawler",
@@ -2404,6 +2866,15 @@
       "sculpt": {
         "head_w": 1.12,
         "head_h": 1.06
+      },
+      "ears": "pointed",
+      "eyeRgb": 1710618,
+      "costume": [
+        "pilaf_hat"
+      ],
+      "outfitRgb": 15255602,
+      "outfitParts": {
+        "pants": 3816042
       }
     },
     "scale": 0.6,
@@ -2422,7 +2893,19 @@
       "outfit": "CraneGi",
       "outfitTint": 2,
       "faceSeed": "shu",
-      "skinHex": 6975632
+      "skinHex": 15241258,
+      "eyeRgb": 1710618,
+      "costume": [
+        "dog_head",
+        "ninja_hood",
+        "prop_katana"
+      ],
+      "outfitRgb": 3811950,
+      "outfitParts": {
+        "pants": 3811950,
+        "sash": 13158640,
+        "shoes": 1710622
+      }
     },
     "style": "speedster",
     "origins": true,
@@ -2440,7 +2923,15 @@
       "outfit": "CraneGi",
       "outfitTint": 1,
       "faceSeed": "jackie_chun",
-      "physique": "yamcho"
+      "physique": "yamcho",
+      "moustache": "bushy",
+      "beard": "short",
+      "glasses": "round",
+      "outfitRgb": 1973794,
+      "outfitParts": {
+        "pants": 1973794,
+        "sash": 15921906
+      }
     },
     "scale": 0.92,
     "style": "turtle",
@@ -2483,7 +2974,16 @@
       "outfit": "CraneGi",
       "outfitTint": 4,
       "faceSeed": "nam",
-      "physique": "tenzo"
+      "physique": "tenzo",
+      "hat": "turban",
+      "hatRgb": 15921386,
+      "skinHex": 13144160,
+      "outfitParts": {
+        "top": "skin",
+        "sleeves": false,
+        "pants": 8014490,
+        "sash": 15921386
+      }
     },
     "style": "crane",
     "origins": true,
@@ -2498,9 +2998,18 @@
       "hair": "Short",
       "hairColor": 5,
       "build": "Muscular",
-      "outfit": "SaiyanArmor",
+      "outfit": "RRUniform",
       "outfitTint": 3,
-      "faceSeed": "silver"
+      "faceSeed": "silver",
+      "hairRgb": 14184490,
+      "costume": [
+        "scarf_red"
+      ],
+      "outfitRgb": 5913226,
+      "outfitParts": {
+        "shoes": 6965802,
+        "boot_trim": 6965802
+      }
     },
     "style": "brawler",
     "origins": true,
@@ -2512,13 +3021,19 @@
       "race": "Human",
       "skin": 1,
       "face": "Smirk",
-      "hair": "None",
+      "hair": "Short",
       "hairColor": 0,
       "build": "Tall",
-      "outfit": "SaiyanArmor",
+      "outfit": "RRUniform",
       "outfitTint": 4,
       "faceSeed": "white",
-      "physique": "zarvon"
+      "physique": "zarvon",
+      "hairRgb": 14207136,
+      "costume": [
+        "rr_cap",
+        "scarf_red"
+      ],
+      "outfitRgb": 6978138
     },
     "style": "brawler",
     "origins": true,
@@ -2535,7 +3050,14 @@
       "build": "Short",
       "outfit": "CraneGi",
       "outfitTint": 2,
-      "faceSeed": "murasaki"
+      "faceSeed": "murasaki",
+      "hat": "bandana",
+      "hatRgb": 5910138,
+      "outfitRgb": 6961802,
+      "outfitParts": {
+        "pants": 6961802,
+        "sash": 2759226
+      }
     },
     "style": "speedster",
     "origins": true,
@@ -2550,11 +3072,13 @@
       "hair": "Short",
       "hairColor": 4,
       "build": "Tall",
-      "outfit": "SaiyanArmor",
+      "outfit": "RRUniform",
       "outfitTint": 6,
       "faceSeed": "android_8",
       "skinHex": 14203024,
-      "physique": "cyborg16"
+      "physique": "cyborg16",
+      "hairRgb": 1315860,
+      "outfitRgb": 3828282
     },
     "scale": 2.1,
     "style": "brawler",
@@ -2569,10 +3093,12 @@
       "hair": "Short",
       "hairColor": 3,
       "build": "Average",
-      "outfit": "SaiyanArmor",
+      "outfit": "RRUniform",
       "outfitTint": 1,
       "faceSeed": "blue",
-      "physique": "tronks"
+      "physique": "tronks",
+      "eyeRgb": 3832528,
+      "outfitRgb": 2771632
     },
     "style": "crane",
     "origins": true,
@@ -2584,14 +3110,20 @@
       "race": "Human",
       "skin": 0,
       "face": "Determined",
-      "hair": "None",
+      "hair": "Slick",
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "CraneGi",
       "outfitTint": 4,
       "faceSeed": "tao",
       "costume": "braid",
-      "physique": "tenzo"
+      "physique": "tenzo",
+      "moustache": "long",
+      "outfitRgb": 15241392,
+      "outfitParts": {
+        "pants": 1976922,
+        "sash": 1976922
+      }
     },
     "style": "crane",
     "origins": true,
@@ -2606,9 +3138,16 @@
       "hair": "Short",
       "hairColor": 4,
       "build": "Short",
-      "outfit": "SaiyanArmor",
+      "outfit": "RRUniform",
       "outfitTint": 5,
-      "faceSeed": "red"
+      "faceSeed": "red",
+      "costume": [
+        "eyepatch"
+      ],
+      "outfitRgb": 12066858,
+      "outfitParts": {
+        "epaulettes": 14725184
+      }
     },
     "scale": 0.7,
     "style": "brawler",
@@ -2620,7 +3159,7 @@
       "race": "Human",
       "skin": 1,
       "face": "Smirk",
-      "hair": "None",
+      "hair": "BigCurly",
       "hairColor": 5,
       "build": "Short",
       "outfit": "CraneGi",
@@ -2628,7 +3167,9 @@
       "faceSeed": "baba",
       "female": true,
       "skinHex": 16047304,
-      "costume": "witchhat"
+      "costume": "witchhat",
+      "hairRgb": 14192840,
+      "outfitRgb": 1973794
     },
     "scale": 0.7,
     "style": "crane",
@@ -2646,7 +3187,16 @@
       "outfit": "CraneGi",
       "outfitTint": 6,
       "faceSeed": "grandpa_gohan",
-      "physique": "roshu"
+      "physique": "roshu",
+      "moustache": "bushy",
+      "hat": "pompom",
+      "hatRgb": 2763312,
+      "hatRgb2": 14164010,
+      "outfitRgb": 15235114,
+      "outfitParts": {
+        "pants": 2763312,
+        "sash": 2763312
+      }
     },
     "scale": 0.85,
     "style": "turtle",
@@ -2665,7 +3215,10 @@
       "outfitTint": 6,
       "faceSeed": "tien_young",
       "age": "teen",
-      "physique": "tenzo"
+      "physique": "tenzo",
+      "thirdEye": true,
+      "hat": "skullcap",
+      "hatRgb": 1973794
     },
     "style": "crane",
     "origins": true,
@@ -2688,6 +3241,18 @@
       "sculpt": {
         "head_w": 1.12,
         "head_h": 1.06
+      },
+      "faceMarks": [
+        "cheek_circles"
+      ],
+      "hat": "pompom",
+      "hatRgb": 1973794,
+      "hatRgb2": 14164010,
+      "outfitRgb": 2005642,
+      "outfitParts": {
+        "pants": 2787898,
+        "sash": 13120042,
+        "wrist": 2787898
       }
     },
     "scale": 0.55,
@@ -2707,7 +3272,15 @@
       "outfitTint": 3,
       "faceSeed": "tambourine",
       "skinHex": 6989920,
-      "physique": "cel"
+      "physique": "cel",
+      "raceParts": false,
+      "ears": "pointed",
+      "costume": [
+        "bat_wings"
+      ],
+      "outfitParts": {
+        "cape": false
+      }
     },
     "style": "speedster",
     "origins": true,
@@ -2722,10 +3295,21 @@
       "hair": "None",
       "hairColor": 0,
       "build": "Muscular",
-      "outfit": "NamekRobe",
+      "outfit": "FrostBody",
       "outfitTint": 6,
       "faceSeed": "cymbal",
-      "skinHex": 4885060
+      "skinHex": 4885060,
+      "raceParts": false,
+      "ears": "pointed",
+      "skinPattern": "spots",
+      "patternRgb": 2775594,
+      "costume": [
+        "bat_wings",
+        "demon_crest"
+      ],
+      "sculpt": {
+        "belly": 0.06
+      }
     },
     "style": "brawler",
     "origins": true,
@@ -2744,7 +3328,22 @@
       "outfitTint": 2,
       "faceSeed": "drum",
       "skinHex": 8034890,
-      "physique": "brolo"
+      "physique": "brolo",
+      "raceParts": false,
+      "ears": "pointed",
+      "skinPattern": "spots",
+      "patternRgb": 4876842,
+      "sculpt": {
+        "belly": 0.08
+      },
+      "outfitParts": {
+        "top": "skin",
+        "sleeves": false,
+        "pants": 2771624,
+        "sash": 15238698,
+        "wrist": false,
+        "cape": false
+      }
     },
     "style": "brawler",
     "origins": true,
@@ -2766,6 +3365,11 @@
       "sculpt": {
         "neck": 0.9,
         "shoulders": 0.94
+      },
+      "outfitRgb": 16052974,
+      "outfitParts": {
+        "sash": 13120042,
+        "wrist": 13120042
       }
     },
     "style": "brawler",
@@ -2781,13 +3385,19 @@
       "hair": "None",
       "hairColor": 5,
       "build": "Slim",
-      "outfit": "CraneGi",
+      "outfit": "FrostBody",
       "outfitTint": 4,
       "faceSeed": "korin",
       "skinHex": 15920352,
       "sculpt": {
         "head_w": 1.1
-      }
+      },
+      "tail": "cat",
+      "eyeRgb": 1710618,
+      "costume": [
+        "cat_head",
+        "prop_staff"
+      ]
     },
     "scale": 0.6,
     "style": "speedster",
@@ -2809,6 +3419,14 @@
         "belly": 0.07,
         "waist": 1.25,
         "hips": 1.15
+      },
+      "costume": [
+        "prop_katana"
+      ],
+      "outfitRgb": 14715434,
+      "outfitParts": {
+        "pants": 6969930,
+        "sash": 2763312
       }
     },
     "style": "brawler",
@@ -2827,7 +3445,11 @@
       "outfit": "NamekRobe",
       "outfitTint": 2,
       "faceSeed": "piccolo_jr",
-      "physique": "piccor"
+      "physique": "piccor",
+      "antenna": false,
+      "costume": [
+        "namek_turban"
+      ]
     },
     "style": "crane",
     "origins": true,
@@ -2846,7 +3468,10 @@
       "outfitTint": 3,
       "faceSeed": "pilav_robot",
       "skinHex": 9082536,
-      "physique": "cyborg16"
+      "physique": "cyborg16",
+      "costume": [
+        "battle_walker"
+      ]
     },
     "scale": 1.9,
     "style": "brawler",
@@ -2931,7 +3556,7 @@
       "race": "Human",
       "skin": 0,
       "face": "Determined",
-      "hair": "None",
+      "hair": "Slick",
       "hairColor": 0,
       "build": "Muscular",
       "outfit": "SaiyanArmor",
@@ -2939,7 +3564,13 @@
       "faceSeed": "tao_cyborg",
       "skinHex": 13159636,
       "costume": "braid",
-      "physique": "cyborg16"
+      "physique": "cyborg16",
+      "moustache": "long",
+      "skinMetal": 0.5,
+      "outfitParts": {
+        "top": 13126250,
+        "pants": 1976922
+      }
     },
     "style": "crane",
     "origins": true,

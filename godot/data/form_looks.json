@@ -911,5 +911,67 @@
       "flicker": 0.8,
       "sparks": 0
     }
+  },
+  "CellImperfect": {
+    "hair": null,
+    "skin": 6196282,
+    "eyes": 9050714,
+    "gear": [
+      "cell_tail",
+      "cell_beak"
+    ],
+    "bulk": [
+      0.94,
+      1.04,
+      0.94
+    ],
+    "aura": {
+      "color": 9099338,
+      "core": 15269840,
+      "size": 1,
+      "flicker": 0.7,
+      "sparks": 0
+    }
+  },
+  "CellSemiPerfect": {
+    "hair": null,
+    "skin": 8699962,
+    "gear": [
+      "cell_tail"
+    ],
+    "bulk": [
+      1.26,
+      1.06,
+      1.26
+    ],
+    "aura": {
+      "color": 10149962,
+      "core": 15794136,
+      "size": 1.1,
+      "flicker": 0.8,
+      "sparks": 0
+    }
+  },
+  "CellPerfect": {
+    "hair": null,
+    "aura": {
+      "color": 16769120,
+      "core": 16775376,
+      "size": 1.05,
+      "flicker": 0.6,
+      "sparks": 0
+    }
+  },
+  "CellSuperPerfect": {
+    "hair": null,
+    "scale": 1.03,
+    "aura": {
+      "color": 16762910,
+      "core": 16773808,
+      "size": 1.12,
+      "flicker": 1,
+      "sparks": 1,
+      "sparkColor": 9099519
+    }
   }
 }

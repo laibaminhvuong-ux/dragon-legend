@@ -45,6 +45,32 @@ extends RefCounted
 #     form: "SSJ2"              drawn in this form from the start (NPCs only; Majinn Vegara)
 #     formLooks: {form: lookId}  show a form with this character's own form_looks entry, e.g. {"SSJ": "SSJBroly"}
 #     form_looks entries may set fur: 0xRRGGBB (red Super Saiyan 4 fur on arms and chest).
+# Cast batch B4 (Boo saga, Cyborgs, Cel, Red Ribbon; characters/cast_b4.gd):
+#   outfit "RRUniform":         Red Ribbon uniform: jacket = outfitRgb/tint, darker trousers, black belt + boots, red
+#                               chest badge (NPCs only, not in ALL).
+#   outfitParts badge / epaulettes / cape_collar: colour | false   chest badge disc, gold shoulder boards, a tall
+#                               stand-up wizard collar behind the head (Babido). Bare torso: {top: "skin", sleeves: false}.
+#   skinPattern: "spots" | "plates" | "majin"   on the bare skin: Cel spots, cyborg panel seams, Boo's soft glossy tone
+#                               with a lighter belly; patternRgb = spot / seam colour.
+#   faceRgb:  the front of the face in its own colour (Cel's white face).
+#   mark: "majin" (+ majinMarkRgb)   the Majin "M" on the forehead (painted; B5's faceMarks/markRgb are separate).
+#   wingRgb:  colour of the cell_wings gear.
+#   New gear ids: cell_crest, cell_wings, cell_tail, cell_beak, m_belt, android_dome, rr_cap, gamma_helmet,
+#                 gamma_helmet2, pui_helmet, dabura_horns, scarf_orange, scarf_red, eyepatch, gero_beard, hoops.
+#   Look-only Cel stages in form_looks: CellImperfect, CellSemiPerfect, CellPerfect, CellSuperPerfect (gear tail/beak).
+# Cast batch B6 (Namekians, demons, animals, creatures; characters/creature_bodies.gd, all look.costume ids):
+#   namek_turban, pilaf_hat, ninja_hood, pig_head, cat_head, dog_head, monkey_head, big_mustache, plant_head, bat_wings,
+#   demon_crest, oni_horns, prop_cane, prop_staff, prop_katana, prop_turtle_shell, suspenders; creature bodies
+#   battle_walker / oracle_fish hide the humanoid and draw a mech / a fish in a bowl instead.
+# Cast batch B5 (Earth humans; Parts.facial_hair + characters/face_gear.gd, called from Parts.dress):
+#   hair adds "CenterPart", "Bob", "TwinTails", "Afro", "BigCurly", "Topknot", "SidePonytail", "ShoulderStraight", "Slick".
+#   moustache: "thick" (B3's bar moustache) | "bushy" | "long" | "thin";  beard: "long" | "full" | "short" | "goatee";
+#     facialHairRgb (default: the hair colour, so hairColor 5 gives white).
+#   glasses: "round" | "sunglasses" | "square" (+ glassesRgb frame colour).
+#   hat: "skullcap" | "pompom" | "beanie" | "bandana" | "headband" | "turban" | "ribbon" (+ hatRgb, hatRgb2 = ball/jewel).
+#   thirdEye: true.   faceMarks: ["dots", "cheek_circles", "scar_cheek", "scar_eye"] (+ markRgb).
+#   jewellery: ["champion_belt", "earrings", "bracelets", "necklace"] (+ jewelRgb, default gold).
+#   neckwear: "scarf" | "fur_collar" (+ neckRgb).
 # ------------------------------------------------------------------------------------------------
 # What each outfit is made of (ported from web/src/character/cage_model.js outfitParts): colours for the
 # body regions plus extra pieces (armour plate/pads, cape, collar, gloves). `tint` is the player's outfit colour.
@@ -62,6 +88,8 @@ static func parts(outfit: String, tint: int) -> Dictionary:
 			return {"top": tint, "pants": tint, "shoes": 0xf2f2f2, "wrist": tint, "armor": {"plate": 0xf4f2ea, "trim": 0xc8963a, "pads": false, "flaps": true, "belly": true}, "cloth": 0.0, "boot_trim": 0xc8963a, "laces": 0xf2f2f2}
 		"FrostBody":   # cast batch B3: no clothes, the natural Frost Demon body (not offered to players)
 			return {"top": SKIN, "pants": SKIN, "shoes": SKIN, "cloth": 0.0, "boot_trim": SKIN, "laces": SKIN}
+		"RRUniform":   # cast batch B4: Red Ribbon uniform (jacket = tint, darker trousers, black belt and boots, badge; NPCs only)
+			return {"top": tint, "pants": _shade(tint, 0.78), "shoes": 0x1a1a1e, "sash": 0x1a1a1e, "sleeves": true, "cloth": 0.4, "boot_trim": 0x1a1a1e, "laces": 0x1a1a1e, "badge": 0xc8202a}
 		"SaiyanArmor", "EliteArmor":
 			return {"top": 0x1c2a5c, "pants": 0x1c2a5c, "shoes": 0xf2f2f2, "sleeves": true, "armor": {"plate": 0xf4f2ea, "trim": 0xd8b04a if outfit == "EliteArmor" else tint, "pads": true}, "cloth": 0.0, "boot_trim": 0xd8b04a if outfit == "EliteArmor" else 0x1c2a5c, "laces": 0xf2f2f2}
 		"FrostArmor":

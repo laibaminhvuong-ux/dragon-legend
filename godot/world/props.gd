@@ -4,6 +4,9 @@ extends RefCounted
 # variant). Rocks, shrubs and dead trees are CC0 scans (Poly Haven) shown as MeshInstances so Godot's automatic
 # LODs apply; living trees (broadleaf, pine, palm, Nameck ajisa, crystal) are built here as low-poly meshes with a
 # wind-swaying foliage shader and drawn as MultiMeshes; small stones are instanced.
+# Batch B4 (2026-11-10) tree kinds, used only when a zone's biome.trees names them (default off): "ajisa_tall"
+# (reference Nameck: tall thin trunk, small blue puff), "purple_spire" (Grain), "mushroom" (desert), "cypress"
+# (Lookout / Baaba), "giant" (twisted giant tree, ~25 m; use a low treeCount).
 
 const MODELS := "res://assets/models"
 const FOLIAGE := preload("res://world/shaders/foliage.gdshader")
@@ -80,6 +83,7 @@ static func tree_mesh(kind: String, variant: int) -> ArrayMesh:
 	var bark := SurfaceTool.new(); bark.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var leaf := SurfaceTool.new(); leaf.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var leaf_col := Color(0.24, 0.45, 0.16)
+	var bark_col := Color(0.32, 0.24, 0.17) if kind != "ajisa" else Color(0.62, 0.6, 0.48)
 	match kind:
 		"pine":
 			var h := rng.randf_range(7.0, 10.0)
@@ -105,6 +109,65 @@ static func tree_mesh(kind: String, variant: int) -> ArrayMesh:
 			_cylinder(bark, Vector3.ZERO, Vector3(0, h, 0), 0.18, 0.12, 7)
 			_puff(leaf, Vector3(0, h + 1.4, 0), 2.4 * rng.randf_range(0.9, 1.15), rng, 0.18)
 			leaf_col = Color(0.33, 0.66, 0.63)
+		"ajisa_tall":  # Nameck (reference look): a very tall, thin, slightly bent pale trunk and a small dense blue puff
+			var h := rng.randf_range(8.0, 11.0)
+			var bend := Vector3(rng.randf_range(-0.5, 0.5), 0, rng.randf_range(-0.5, 0.5))
+			_cylinder(bark, Vector3.ZERO, Vector3(0, h * 0.5, 0) + bend * 0.4, 0.16, 0.12, 6)
+			_cylinder(bark, Vector3(0, h * 0.5, 0) + bend * 0.4, Vector3(0, h, 0) + bend, 0.12, 0.09, 6)
+			_puff(leaf, Vector3(0, h + 1.0, 0) + bend, 1.55 * rng.randf_range(0.9, 1.15), rng, 0.22)
+			leaf_col = Color(0.16, 0.42, 0.86)
+			bark_col = Color(0.66, 0.62, 0.46)
+		"purple_spire":  # Grain (Cereal): a clump of jagged purple spikes, like a cluster of narrow conifers
+			_cylinder(bark, Vector3.ZERO, Vector3(0, 0.8, 0), 0.3, 0.22, 6)
+			for c in rng.randi_range(4, 6):
+				var a := rng.randf() * TAU
+				var off := Vector3(cos(a), 0, sin(a)) * (0.0 if c == 0 else rng.randf_range(0.7, 1.7))
+				var h := rng.randf_range(5.0, 8.5) * (1.0 if c == 0 else 0.7)
+				for i in 4:  # stacked ragged tiers give the spiky silhouette
+					_cone(leaf, off + Vector3(0, 0.4 + h * i * 0.2, 0), h * 0.42, (1.25 - i * 0.24) * rng.randf_range(0.85, 1.15), 7, rng)
+			leaf_col = Color(0.42, 0.22, 0.52)
+			bark_col = Color(0.28, 0.18, 0.26)
+		"mushroom":  # desert mushroom tree: thick pale stem, one wide flat cap with a rounded top
+			var h := rng.randf_range(4.0, 6.5)
+			var lean := Vector3(rng.randf_range(-0.6, 0.6), 0, rng.randf_range(-0.6, 0.6))
+			_cylinder(bark, Vector3.ZERO, Vector3(0, h, 0) + lean, 0.7, 0.42, 9)
+			var cap := Vector3(0, h + 0.3, 0) + lean
+			var r := rng.randf_range(2.6, 3.6)
+			_cylinder(leaf, cap + Vector3(0, -0.35, 0), cap + Vector3(0, 0.25, 0), r * 0.92, r, 14)  # cap rim
+			_disc_dome(leaf, cap + Vector3(0, 0.25, 0), r, r * 0.45, 14)
+			_disc(leaf, cap + Vector3(0, -0.35, 0), r * 0.92, 14, true)  # underside
+			leaf_col = Color(0.62, 0.5, 0.32)
+			bark_col = Color(0.82, 0.74, 0.58)
+		"cypress":  # tall columnar cypress (the Lookout, Baaba's islands)
+			var h := rng.randf_range(7.0, 10.0)
+			_cylinder(bark, Vector3.ZERO, Vector3(0, 1.4, 0), 0.25, 0.18, 6)
+			for part in 2:
+				var r := (0.95 if part == 0 else 0.62) * rng.randf_range(0.9, 1.1)
+				var off := Vector3(0, 0, 0) if part == 0 else Vector3(rng.randf_range(-0.3, 0.3), h * 0.12, rng.randf_range(-0.3, 0.3))
+				_spindle(leaf, Vector3(0, 0.9, 0) + off, r, h * (1.0 if part == 0 else 0.85), rng)
+			leaf_col = Color(0.16, 0.36, 0.16)
+		"giant":  # a huge twisted tree (Beeros's planet): braided trunk strands, wide roots, a broad canopy of puffs
+			var h := rng.randf_range(22.0, 28.0)
+			for s in 3:  # three strands spiralling round each other
+				var a0 := float(s) / 3.0 * TAU
+				var prev := Vector3(cos(a0) * 2.6, -0.5, sin(a0) * 2.6)
+				for k in 8:
+					var t := float(k + 1) / 8.0
+					var a := a0 + t * 2.4
+					var rad := lerpf(2.4, 0.9, t)
+					var p := Vector3(cos(a) * rad, h * t, sin(a) * rad)
+					_cylinder(bark, prev, p, lerpf(1.6, 0.6, t - 0.125), lerpf(1.6, 0.6, t), 7)
+					prev = p
+			for rt in 5:  # flaring roots
+				var a := rng.randf() * TAU
+				_cylinder(bark, Vector3(cos(a) * 1.5, 2.2, sin(a) * 1.5), Vector3(cos(a) * 6.5, -0.4, sin(a) * 6.5), 1.0, 0.35, 6)
+			for b in 4:  # boughs
+				var a := float(b) / 4.0 * TAU + rng.randf() * 0.6
+				_cylinder(bark, Vector3(0, h * 0.8, 0), Vector3(cos(a) * 8.0, h + 2.0, sin(a) * 8.0), 0.7, 0.3, 6)
+				_puff(leaf, Vector3(cos(a) * 8.5, h + 4.0, sin(a) * 8.5), rng.randf_range(5.0, 6.5), rng, 0.25)
+			_puff(leaf, Vector3(0, h + 6.5, 0), 8.0, rng, 0.22)
+			leaf_col = Color(0.2, 0.46, 0.2)
+			bark_col = Color(0.5, 0.42, 0.34)
 		"crystal":
 			for c in 4:
 				var a := rng.randf() * TAU
@@ -125,7 +188,7 @@ static func tree_mesh(kind: String, variant: int) -> ArrayMesh:
 	if kind != "crystal":  # crystals are all "foliage": no bark surface
 		bark.commit(mesh)
 		var bm := StandardMaterial3D.new()
-		bm.albedo_color = Color(0.32, 0.24, 0.17) if kind != "ajisa" else Color(0.62, 0.6, 0.48)
+		bm.albedo_color = bark_col
 		bm.roughness = 0.95
 		mesh.surface_set_material(mesh.get_surface_count() - 1, bm)
 	leaf.commit(mesh)
@@ -204,6 +267,46 @@ static func _prism(st: SurfaceTool, base: Vector3, up: Vector3, h: float, r: flo
 			st.set_normal((d0 + d1).normalized()); st.set_color(Color(1, 0, 0)); st.add_vertex(q[k])
 		for v in [top + d0 * r, top + d1 * r, tip]:
 			st.set_normal((d0 + d1 + up).normalized()); st.set_color(Color(1, 0, 0)); st.add_vertex(v)
+
+## Flat disc (fan) at centre; `down` faces it downwards.
+static func _disc(st: SurfaceTool, centre: Vector3, r: float, sides: int, down := false) -> void:
+	var n := Vector3.DOWN if down else Vector3.UP
+	for i in sides:
+		var a0 := TAU * i / sides
+		var a1 := TAU * (i + 1) / sides
+		for v in [centre, centre + Vector3(cos(a1), 0, sin(a1)) * r, centre + Vector3(cos(a0), 0, sin(a0)) * r]:
+			st.set_normal(n); st.set_color(Color(1, 0, 0)); st.add_vertex(v)
+
+## Low dome: rim radius r at centre, apex hh above (two rings, smooth-ish normals).
+static func _disc_dome(st: SurfaceTool, centre: Vector3, r: float, hh: float, sides: int) -> void:
+	var rings := [[1.0, 0.0], [0.72, 0.62], [0.38, 0.92], [0.0, 1.0]]
+	for k in 3:
+		var ra: float = rings[k][0]; var ya: float = rings[k][1]
+		var rb: float = rings[k + 1][0]; var yb: float = rings[k + 1][1]
+		for i in sides:
+			var a0 := TAU * i / sides
+			var a1 := TAU * (i + 1) / sides
+			var d0 := Vector3(cos(a0), 0, sin(a0)); var d1 := Vector3(cos(a1), 0, sin(a1))
+			var q := [centre + d0 * r * ra + Vector3(0, hh * ya, 0), centre + d1 * r * ra + Vector3(0, hh * ya, 0),
+				centre + d1 * r * rb + Vector3(0, hh * yb, 0), centre + d0 * r * rb + Vector3(0, hh * yb, 0)]
+			var nn := [(d0 * (1.0 - ya) + Vector3.UP * ya * 1.6).normalized(), (d1 * (1.0 - ya) + Vector3.UP * ya * 1.6).normalized(),
+				(d1 * (1.0 - yb) + Vector3.UP * yb * 1.6).normalized(), (d0 * (1.0 - yb) + Vector3.UP * yb * 1.6).normalized()]
+			for j in [0, 2, 1, 0, 3, 2]:
+				st.set_normal(nn[j]); st.set_color(Color(1, 0, 0)); st.add_vertex(q[j])
+
+## Tall bumpy ellipsoid (cypress column) standing on base: radius r, height h.
+static func _spindle(st: SurfaceTool, base: Vector3, r: float, h: float, rng: RandomNumberGenerator) -> void:
+	var s := SphereMesh.new()
+	s.radius = r; s.height = h; s.radial_segments = 10; s.rings = 10
+	var arr := s.get_mesh_arrays()
+	var verts: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+	var norms: PackedVector3Array = arr[Mesh.ARRAY_NORMAL]
+	var idx: PackedInt32Array = arr[Mesh.ARRAY_INDEX]
+	var seed_off := rng.randf() * 10.0
+	for k in idx:
+		var v: Vector3 = verts[k]
+		var d := 1.0 + 0.12 * sin(v.y * 2.3 + seed_off) * sin(atan2(v.z, v.x) * 3.0 + seed_off)
+		st.set_normal(norms[k]); st.set_color(Color(1, 0, 0)); st.add_vertex(base + Vector3(0, h * 0.5, 0) + Vector3(v.x * d, v.y, v.z * d))
 
 # --- scanned models ------------------------------------------------------------------------------------------
 static func _model_meshes(id: String) -> Array:

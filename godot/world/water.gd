@@ -2,6 +2,8 @@ class_name WorldWater
 extends RefCounted
 # Water for worlds with an ocean or a lake (zone.water: {x, z, radius, level, ocean}): a big disc at the exact
 # water level with a depth-coloured, wave-normal, reflective shader and a foam line where it meets the shore.
+# Palette (all optional): biome.water (deep hex), biome.waterShallow (hex), biome.waterClarity (metres until fully
+# deep-coloured, 4); one body may override with its own color / shallow / clarity keys (lakes on planets).
 
 const SHADER := preload("res://world/shaders/water.gdshader")
 
@@ -27,9 +29,16 @@ static func build_body(zone: RefCounted, w: Dictionary) -> Node3D:
 	m.set_shader_parameter("wave_a", _noise(3, 0.6, true))
 	m.set_shader_parameter("wave_b", _noise(11, 1.4, true))
 	m.set_shader_parameter("foam_noise", _noise(23, 2.0, false))
-	var col: Variant = zone.biome.get("water")
+	var biome: Dictionary = WorldAtmosphere.biome_of(zone)
+	var col: Variant = w.get("color", biome.get("water"))
 	if col != null:
 		m.set_shader_parameter("deep_color", Color.hex((int(col) << 8) | 0xff))
+	var shallow: Variant = w.get("shallow", biome.get("waterShallow"))
+	if shallow != null:
+		m.set_shader_parameter("shallow_color", Color.hex((int(shallow) << 8) | 0xff))
+	var clarity: Variant = w.get("clarity", biome.get("waterClarity"))
+	if clarity != null:
+		m.set_shader_parameter("clarity", float(clarity))
 	mi.material_override = m
 	mi.position = Vector3(float(w.get("x", 0)), float(w.level), float(w.get("z", 0)))
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF

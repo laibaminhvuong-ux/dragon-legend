@@ -77,6 +77,8 @@ func _init(planet_id: String, start: String = "", data: Object = null) -> void:
 			m.x = float(l.x) + regions[rid].x
 			m.z = float(l.z) + regions[rid].z
 			m.region = rid
+			if m.has("base"):   # flattened sites stand on the area's ground, which the planet lifts (0.0.8 map pass fix)
+				m.base = float(m.base) + float(regions[rid].lift)
 			landmarks.append(m)
 	landmarks.append_array(hamlets(planet_id))
 	_props = null

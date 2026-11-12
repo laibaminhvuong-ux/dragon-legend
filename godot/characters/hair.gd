@@ -7,7 +7,11 @@ extends RefCounted
 const HEAD_SPACE := Transform3D(Vector3(0.98, 0, 0), Vector3(0, 1.1, 0), Vector3(0, 0, 1.12), Vector3(0, 1.66, 0.002))
 # Mohawk / AngelCrest / Dreadlocks are NPC-only styles (cast batch B1; not in the creator's HAIR_STYLES list)
 const BASE := {"Spiky": "goku", "Wild": "wild", "Swept": "flame", "LongSpiky": "mane", "Short": "short", "Bowl": "bowl", "Ponytail": "ponytail", "Long": "long", "Bun": "bun",
-	"Mohawk": "mohawk", "AngelCrest": "angelcrest", "Dreadlocks": "dreads"}
+	"Mohawk": "mohawk", "AngelCrest": "angelcrest", "Dreadlocks": "dreads",
+	# cast batch B5 (NPC-only too): Tronks' centre part, Bulna's bob, Vidal's twin tails, Mr. Sadan's afro, Serpa's big
+	# curls, a topknot, young Bulna's side ponytail, straight shoulder-length hair, slicked-back hair (Tau)
+	"CenterPart": "centerpart", "Bob": "bob", "TwinTails": "twintails", "Afro": "afro", "BigCurly": "bigcurly",
+	"Topknot": "topknot", "SidePonytail": "sideponytail", "ShoulderStraight": "shoulder", "Slick": "slick"}
 const FORM_STYLES := ["ssj1", "ssj2", "ssj3", "ssj4", "grade3", "legendary", "ego", "beast"]
 static var _cache: Dictionary = {}
 
@@ -111,9 +115,102 @@ static func _build(g: Geo, style: String) -> void:
 			for i in 5:   # a few locks falling over the forehead sides
 				var x := (i / 4.0 - 0.5) * 0.16
 				g.spike(Vector3(x, 0.115, 0.085), 0.06, 0.02, Vector3(x * 2.5, -1, 0.3))
+		"centerpart", "bob", "twintails", "afro", "bigcurly", "topknot", "sideponytail", "shoulder", "slick":
+			_b5(g, style)
 		_:
 			_cap(g, 0.113)
 			_form(g, style)
+
+## A curtain of straight locks round the back and sides from angle -span..span (0 = the face), `length` long,
+## leaving the face clear; `flare` pushes the tips outwards, `curl` turns them in under the jaw (bob).
+static func _curtain(g: Geo, n: int, span: float, length: float, flare: float, curl := 0.0, rad := 0.03, y0 := 0.06) -> void:
+	for i in n:
+		var a := lerpf(-span, span, i / float(n - 1))
+		if cos(a) > 0.5:
+			continue   # leave the face clear
+		var out := Vector3(sin(a), 0, cos(a))
+		var top := out * 0.112 + Vector3(0, y0, -0.012)
+		var mid := top + out * flare + Vector3(0, -length * 0.55, -0.01)
+		var tip := top + out * (flare * 0.8 - curl) + Vector3(0, -length, 0.0)
+		g.tube(PackedVector3Array([top, top + out * flare * 0.6 + Vector3(0, -length * 0.25, -0.01), mid, tip]), rad, rad * 0.45, 12, 6)
+
+## A lock of fringe from the crown down over the forehead to `tip`.
+static func _lock(g: Geo, root: Vector3, tip: Vector3, rad: float) -> void:
+	var mid := (root + tip) * 0.5 + (root + tip).normalized() * 0.025 + Vector3(0, 0.02, 0)
+	g.tube(PackedVector3Array([root, mid, tip]), rad, rad * 0.25, 12, 6)
+
+## Cast batch B5 base styles.
+static func _b5(g: Geo, style: String) -> void:
+	match style:
+		"centerpart":   # Tronks: a centre parting, two curtains of fringe falling to the cheeks, covered ears, straight back
+			_cap(g, 0.116, 0.36, 0.66)
+			for s in [1.0, -1.0]:
+				for i in 5:
+					var k := i / 4.0
+					var root := Vector3(s * 0.008, 0.172 - k * 0.02, 0.03 - k * 0.04)
+					var tip := Vector3(s * (0.03 + k * 0.06), 0.06 - k * 0.04, 0.112 - k * 0.04)
+					_lock(g, root, tip, 0.03)
+			_curtain(g, 15, 2.3, 0.15, 0.022, 0.0, 0.03)
+		"bob":   # Bulna (Super): a full rounded bob to the jaw, tips curling in, side-swept fringe
+			_cap(g, 0.118, 0.38, 0.7)
+			_curtain(g, 17, 2.4, 0.12, 0.012, 0.018, 0.032, 0.07)
+			for i in 6:
+				var k := i / 5.0
+				_lock(g, Vector3(-0.03 + k * 0.03, 0.17, 0.03), Vector3(-0.07 + k * 0.13, 0.085 - k * 0.012, 0.108 - absf(k - 0.5) * 0.03), 0.028)
+		"twintails":   # Vidal: two low tails tied behind the ears, short fringe
+			_cap(g, 0.114, 0.38, 0.62)
+			for s in [1.0, -1.0]:
+				var tie := Vector3(s * 0.085, 0.015, -0.06)
+				g.torus(Transform3D(Basis.from_euler(Vector3(0, 0, s * 1.2)), tie), 0.022, 0.009, 14, 6)
+				g.tube(PackedVector3Array([tie, tie + Vector3(s * 0.035, -0.05, -0.015), tie + Vector3(s * 0.05, -0.15, -0.02), tie + Vector3(s * 0.04, -0.24, 0.0)]), 0.03, 0.01, 18, 8)
+			for i in 7:
+				var x := (i / 6.0 - 0.5) * 0.15
+				g.spike(Vector3(x, 0.115, 0.088), 0.045, 0.018, Vector3(x * 0.8, -1, 0.35))
+		"afro":   # Mr. Sadan: a big round curly afro over the top and sides of the head
+			_cap(g, 0.118, 0.36, 0.64)
+			for i in 60:   # curls packed over the cap, puffing it out
+				var a := fmod(i * 2.39996, TAU)
+				var th := acos(1.0 - (i + 0.5) / 60.0 * 1.2)
+				var d := Vector3(sin(th) * sin(a), cos(th), sin(th) * cos(a))
+				if d.z > 0.35 and d.y < 0.8:
+					continue   # not over the face
+				g.sphere(Transform3D(Basis.IDENTITY, Vector3(d.x * 0.13, 0.065 + d.y * 0.125, -0.02 + d.z * 0.13)), 0.045, 6, 8)
+			for s in [1.0, -1.0]:   # sideburns
+				g.sphere(Transform3D(Basis.from_scale(Vector3(0.5, 1.4, 0.8)), Vector3(s * 0.098, 0.0, 0.03)), 0.024, 6, 8)
+		"bigcurly":   # Princess Serpa / Baaba: a voluminous mass of curls round the head and down to the shoulders
+			_cap(g, 0.12, 0.36, 0.66)
+			for i in 64:
+				var a := lerpf(-2.7, 2.7, fmod(i * 0.618, 1.0))
+				var y := 0.17 - 0.32 * fmod(i * 0.381, 1.0)
+				if cos(a) > 0.35 and y < 0.11:
+					continue   # leave the face clear
+				var r := 0.115 + 0.02 * (1.0 - absf(y - 0.05) * 3.0) + 0.03 * clampf(-y, 0.0, 1.0)
+				g.sphere(Transform3D(Basis.IDENTITY, Vector3(sin(a) * r, y, cos(a) * r - 0.025)), 0.042, 6, 8)
+			for i in 5:   # curls over the forehead
+				g.sphere(Transform3D(Basis.IDENTITY, Vector3((i / 4.0 - 0.5) * 0.15, 0.135 - absf(i - 2) * 0.008, 0.075)), 0.03, 6, 8)
+		"topknot":   # hair combed up into a round knot on the crown
+			_cap(g, 0.114, 0.38, 0.62)
+			g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 0.9, 1.0)), Vector3(0, 0.185, -0.02)), 0.042, 10, 14)
+			g.torus(Transform3D(Basis.IDENTITY, Vector3(0, 0.155, -0.018)), 0.03, 0.008, 16, 6)
+		"sideponytail":   # young Bulna: hair gathered into a ponytail high on her left side
+			_cap(g, 0.114, 0.38, 0.62)
+			var tie := Vector3(0.085, 0.12, -0.045)
+			g.torus(Transform3D(Basis.from_euler(Vector3(0, 0, 0.8)), tie), 0.022, 0.009, 14, 6)
+			g.tube(PackedVector3Array([tie, tie + Vector3(0.05, -0.02, -0.01), tie + Vector3(0.07, -0.13, -0.02), tie + Vector3(0.05, -0.27, 0.0)]), 0.034, 0.01, 18, 8)
+			for i in 6:
+				var x := (i / 5.0 - 0.5) * 0.14
+				g.spike(Vector3(x, 0.115, 0.088), 0.05, 0.018, Vector3(x * 0.6 - 0.15, -1, 0.35))
+		"shoulder":   # straight hair to the shoulders, parted at the side
+			_cap(g, 0.116, 0.37, 0.66)
+			_curtain(g, 15, 2.3, 0.24, 0.025, 0.0, 0.028)
+			for i in 6:
+				var k := i / 5.0
+				_lock(g, Vector3(0.03, 0.17, 0.02), Vector3(-0.07 + k * 0.14, 0.09 - absf(k - 0.4) * 0.03, 0.105 - absf(k - 0.5) * 0.03), 0.026)
+		"slick":   # combed flat straight back (Tau): a smooth cap with a few long swept locks
+			_cap(g, 0.116, 0.34, 0.64)
+			for i in 7:
+				var x := (i / 6.0 - 0.5) * 0.12
+				g.tube(PackedVector3Array([Vector3(x, 0.15, 0.07), Vector3(x * 1.1, 0.172, -0.01), Vector3(x * 1.1, 0.13, -0.1), Vector3(x, 0.05, -0.128)]), 0.014, 0.008, 12, 6)
 
 ## A scalp cap so no head shows between spikes; it rises at the front to clear the eyes.
 static func _cap(g: Geo, r: float, front := 0.36, back := 0.62) -> void:

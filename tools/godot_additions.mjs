@@ -22,7 +22,7 @@ function checkInStation(zones, npcs) {
   road.terrain.spawn = at(0, -45);                            // arrive at the hall's south steps, facing the king
   road.travelPoint = at(20, -37);                             // the pilot waits by the arrival steps
   road.landmarks = [
-    {type: 'checkin', name: "King Yemmo's Check-In Station", ...at(0, 0), collide: 5.5},
+    {type: 'checkinhall', name: "King Yemmo's Check-In Station", ...at(0, 0), collide: 5.5},   // 0.0.8 map pass: B3 hall builder (was 'checkin')
     ...road.landmarks,
   ];
   // King Kae's planet hangs in the sky just past the road's end: look up to see it, fly into it to land there.
@@ -30,7 +30,7 @@ function checkInStation(zones, npcs) {
   // straight ahead of where the road ends (z 390), so it hangs right in front of you when you look up
   const kaiZ = 520;
   const kai = {x: curve(390) - curve(kaiZ), z: kaiZ, alt: 110, radius: 34};
-  road.landmarks.push({type: 'kaiplanet', name: "King Kae's Planet", x: kai.x, z: kai.z, alt: kai.alt, radius: kai.radius});
+  road.landmarks.push({type: 'kaiorb', name: "King Kae's Planet", x: kai.x, z: kai.z, alt: kai.alt, radius: kai.radius});
   road.portals = [{zone: 'king_kai', x: kai.x, z: kai.z, y: kai.alt, r: kai.radius + 14, locked: 'Run to the end of Serpent Road first.'}];
   const king = npcs.find(n => n.id === 'king_yemma');
   Object.assign(king, at(0, 8.5), {y: 1.4, rot: Math.PI, sit: true});   // seated on a raised dais
@@ -214,6 +214,175 @@ function timeNexus(zones) {
   return ['time_nexus'];
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// Zone patches, 0.0.8 map pass (integrator, 2026-11-11). Applies the builder batches' data requests
+// (art/reference/map_data_requests*.md) to zones that come from the JS tables (web/src/data/zones.js) or were built
+// above. Runs last, so towns/areas cloned from another zone's biome earlier keep their old values unless listed here.
+// Every patched zone is deep-cloned first: the JS tables share objects between zones (namek / new_namek), and
+// structuredClone keeps that sharing. Sky keys are merged into the existing `sky` dictionary (same as
+// world/atmosphere.gd's old dev PREVIEW); other biome keys replace.
+function mapPass008(zones) {
+  const touched = new Set();
+  const Z = id => {
+    if (!zones[id]) throw new Error('map pass: missing zone ' + id);
+    if (!touched.has(id)) { zones[id] = structuredClone(zones[id]); touched.add(id); }
+    return zones[id];
+  };
+  const biome = (id, b) => {
+    const z = Z(id);
+    for (const [k, v] of Object.entries(b)) {
+      if (k === 'sky') z.biome.sky = {...(z.biome.sky ?? {}), ...v};
+      else if (k === 'tints') z.biome.tints = {...(z.biome.tints ?? {}), ...v};
+      else z.biome[k] = v;
+    }
+  };
+  // replace the first landmark of `type` (optionally the one at x,z) with new fields; keeps its name
+  const swap = (id, type, fields, at = null) => {
+    const z = Z(id);
+    const i = z.landmarks.findIndex(l => l.type === type && (!at || (l.x === at[0] && l.z === at[1])));
+    if (i < 0) throw new Error(`map pass: ${id} has no ${type} at ${at}`);
+    const {x, z: lz, name, scale, collide, flatten} = z.landmarks[i];
+    const out = {type: fields.type, x, z: lz, ...(name ? {name} : {}), ...(scale != null ? {scale} : {}),
+      ...(collide != null ? {collide} : {}), ...(flatten != null ? {flatten} : {})};
+    for (const [k, v] of Object.entries(fields)) if (v === undefined) delete out[k]; else out[k] = v;
+    z.landmarks[i] = out;
+  };
+  const add = (id, ...ls) => Z(id).landmarks.push(...ls);
+  const PI = 3.1416;
+
+  // --- B5 sky / atmosphere / weather (map_data_requests.md) ----------------------------------------------------
+  const NAMEK_SKY = {top: 0x3fa830, horizon: 0xc0e888, bodies: [
+    {kind: 'sun', az: 200, el: 48, size: 2.6, color: 0xfff8d8},
+    {kind: 'sun', az: 226, el: 30, size: 1.9, color: 0xfff2c0, light: 0.3},
+    {kind: 'sun', az: 178, el: 22, size: 1.3, color: 0xffeeb0, light: 0.2}]};
+  const FUTURE = {sky: {top: 0x60745a, horizon: 0xa8b89a, bottom: 0x4a5644, sunColor: 0xc8d0b0},
+    fog: [0x94a48a, 0.0026], cloudColor: 0x76846e, cloudCoverage: 0.28, weather: {type: 'rain', density: 1.0}};
+  const BEEROS = {sky: {top: 0xb25a80, horizon: 0xf6c49a, bottom: 0x5a3a52,
+    nebula: {colors: [0xd0607a, 0xf8b890, 0xfff0d0], amount: 0.55, scale: 1.6},
+    bodies: [{kind: 'bubble', az: 150, el: 26, size: 4.5, color: 0xf8e0b0, color2: 0xfff4e0},
+      {kind: 'bubble', az: 250, el: 14, size: 3.2, color: 0xf0d0a8, color2: 0xffffff},
+      {kind: 'bubble', az: 215, el: 40, size: 2.0, color: 0xf8e8c8, color2: 0xffffff}]}};
+  const sky = {
+    snake_way: {sky: {top: 0xe04cc4, horizon: 0xf6a8e0, bottom: 0xf2b840}, fog: [0xf2b0dc, 0.0014],
+      cloudSea: {color: 0xf6c23a, y: -18}, cloudLayers: [{y: -70, color: 0xe89a20, coverage: 0.3, scale: 0.003, opacity: 0.95}]},
+    king_kai: {sky: {top: 0xd84cc0, horizon: 0xf2a0da, bottom: 0xf0b040}, fog: [0xf0a8d8, 0.0018], cloudSea: {color: 0xf6c23a, y: -45}},
+    kai_world: {sky: {zenith: 0x6c5cc8, horizon: 0xf2c8dc, bodies: [
+      {kind: 'bubble', az: 170, el: 38, size: 6, color: 0xd8d0f8, color2: 0xffffff},
+      {kind: 'bubble', az: 205, el: 22, size: 3.5, color: 0xe0d8ff, color2: 0xffffff},
+      {kind: 'bubble', az: 228, el: 46, size: 4.5, color: 0xd0c8f0, color2: 0xffffff},
+      {kind: 'bubble', az: 148, el: 18, size: 2.4, color: 0xe8e0ff, color2: 0xffffff},
+      {kind: 'bubble', az: 250, el: 28, size: 2, color: 0xe0d8ff, color2: 0xffffff},
+      {kind: 'bubble', az: 188, el: 56, size: 1.6, color: 0xe8e0ff, color2: 0xffffff}]}, cloudColor: 0xfff0ff},
+    kae_shrine: {sky: {zenith: 0x6c5cc8, horizon: 0xf2c8dc}},
+    namek: {sky: NAMEK_SKY, fog: [0xb8e0a0, 0.0009]}, new_namek: {sky: NAMEK_SKY, fog: [0xb8e0a0, 0.0009]},
+    nameck_east: {sky: NAMEK_SKY}, nameck_south: {sky: NAMEK_SKY}, nameck_west: {sky: NAMEK_SKY},
+    new_nameck_east: {sky: NAMEK_SKY}, new_nameck_south: {sky: NAMEK_SKY}, new_nameck_west: {sky: NAMEK_SKY},
+    future_earth: FUTURE, future_ruins: FUTURE,
+    world_of_void: {sky: {elevation: 30, sunHalo: false, nebula: {colors: [0x3a1650, 0xa8306e, 0x50e0a0], amount: 0.95, scale: 1.0},
+      bodies: [{kind: 'eclipse', az: 200, el: 30, size: 13, color: 0xfff2dc, color2: 0x040306}]}},
+    time_nexus: {sky: {top: 0x0e3036, horizon: 0x3cae86, nebula: {colors: [0x0c4a40, 0x3ccb8c, 0xe8f0a0], amount: 0.55, scale: 0.8},
+      bodies: [{kind: 'moon', az: 160, el: 34, size: 4, color: 0xf0e0b0, color2: 0xc8b080},
+        {kind: 'moon', az: 238, el: 20, size: 2.6, color: 0xf4ecd8, color2: 0xb8b0a0},
+        {kind: 'moon', az: 196, el: 52, size: 1.6, color: 0xf0e0c0, color2: 0xc0a880}]}},
+    echo_prison: {clouds: false, sky: {top: 0x0a1638, horizon: 0x2a5ab0, nebula: {colors: [0x0c2a6a, 0x3c8ce0, 0xc8f0ff], amount: 0.85, scale: 1.1},
+      bodies: [{kind: 'planet', az: 228, el: 30, size: 9, color: 0xd04020, color2: 0xf09040},
+        {kind: 'ringed', az: 244, el: 38, size: 5, color: 0xe0b850, color2: 0xd8b070, tilt: 0.28, roll: -18},
+        {kind: 'planet', az: 236, el: 22, size: 5.5, color: 0x2a64c8, color2: 0xe8f0ff},
+        {kind: 'moon', az: 214, el: 24, size: 3, color: 0x488060, color2: 0x203828}]}},
+    beerus_planet: BEEROS, beeros_gardens: BEEROS,
+    earth_plains: {cloudLayers: [{y: 260, color: 0xffffff, coverage: 0.52, scale: 0.0016, opacity: 0.9}], waterShallow: 0x3ad8cc, waterClarity: 6.0},
+    mt_paozu: {cloudLayers: [{y: 18, mist: true, color: 0xf4f8ff, coverage: 0.42, scale: 0.004},
+      {y: 230, color: 0xffffff, coverage: 0.55, scale: 0.0016, opacity: 0.9}]},
+    korrin_tower: {cloudLayers: [{y: 22, mist: true, color: 0xf4f8ff, coverage: 0.45, scale: 0.004},
+      {y: 260, color: 0xffffff, coverage: 0.5, scale: 0.0016, opacity: 0.9}]},
+    muscle_tower: {weather: {type: 'snow', density: 0.5}, cloudLayers: [{y: 40, mist: true, color: 0xe8f4f8, coverage: 0.4, scale: 0.004}]},
+    broly_glacier: {weather: {type: 'snow', density: 0.8}},
+    snowpeak_village: {weather: {type: 'snow', density: 0.5}},
+    gizard_wasteland: {weather: {type: 'dust', density: 0.6},
+      cloudLayers: [{y: 12, mist: true, color: 0xe8dcc8, coverage: 0.48, scale: 0.004, opacity: 0.4}]},
+    pilav_castle: {weather: {type: 'dust', density: 1.0}},
+    fire_mountain: {weather: {type: 'embers', density: 1.0}},
+    kamu_lookout: {cloudSea: {color: 0xffffff, y: -60}},   // B1 audit 041: clouds below the platform, like the Lookout
+  };
+  for (const [id, b] of Object.entries(sky)) if (zones[id]) biome(id, b);
+
+  // --- B1 Origins leftover (map_data_requests_origins.md) --------------------------------------------------------
+  swap('kame_island', 'kamehouse', {type: 'kamecottage', rot: PI, collide: 5, flatten: 12});
+
+  // --- B2 Z-era Earth (map_data_requests_earth.md) ---------------------------------------------------------------
+  swap('cell_games', 'cellarena', {type: 'cellring', flatten: 40});
+  swap('west_city', 'capsulecorp', {type: 'capsulehq', rot: PI, collide: 17, flatten: 34});
+  for (const l of Z('west_city').landmarks) if (l.type === 'dome') Object.assign(l, {type: 'capsulehouse', rot: PI, collide: 7, flatten: 10});
+  add('west_city', {type: 'town', name: 'West Capital', x: 0, z: -165, style: 'city', radius: 90, seed: 23, flatten: 90},
+    {type: 'town', name: 'West Capital west', x: -165, z: 60, style: 'city', radius: 85, seed: 29, flatten: 85});
+  swap('htc', 'htcroom', {type: 'htcpalace', z: 16, rot: PI, collide: 8});
+  swap('babidi_ship', 'babidiship', {type: 'babidihatch', rot: PI, collide: 20, flatten: 40});
+  swap('red_ribbon', 'hangar', {type: 'rrhangar', rot: PI, collide: 16, flatten: 30}, [0, 20]);
+  swap('red_ribbon', 'hangar', {type: 'rrhangar', rot: 1.5708, collide: 10, flatten: 18}, [-50, -10]);
+  add('red_ribbon', {type: 'rrtower', name: 'Crimson Ribbon tower', x: -70, z: 60, rot: 0.4, collide: 11, flatten: 26},
+    {type: 'archbridge', x: -70, z: 15, rot: 1.5708});
+  swap('future_earth', 'ruin', {type: 'brokentower', scale: 1.2, collide: 8, flatten: 16}, [-40, 30]);
+  swap('future_earth', 'ruin', {type: 'brokentower', scale: 1.4, collide: 9, flatten: 18}, [70, 10]);
+  // the old collide-12 ruin at (10,100) swallowed Goku Black (10,90) and the m31 quest point (16,90): moved away
+  swap('future_earth', 'ruin', {type: 'brokentower', x: -20, z: 130, scale: 1.6, collide: 10, flatten: 20}, [10, 100]);
+  swap('gero_lab', 'ruin', {type: 'gingertower', z: -88, collide: 5.5, flatten: 26}, [-60, -80]);
+  swap('gero_lab', 'ruin', {type: 'gingerhouse', scale: undefined, rot: 1.2, collide: 8, flatten: 18}, [-84, -62]);
+  add('gero_lab', {type: 'gingerhouse', x: -40, z: -96, scale: 0.9, rot: -0.5, collide: 7, flatten: 16});
+  swap('papaya_island', 'budokai', {type: 'budokaihall', flatten: 50});
+  add('broly_glacier', {type: 'seracs', x: -60, z: 40, rot: 0.3, collide: 9},
+    {type: 'seracs', x: 140, z: -10, scale: 1.3, rot: 2.2, collide: 11}, {type: 'seracs', x: -20, z: 170, scale: 1.5, rot: 3.6, collide: 13});
+  add('amber_city', {type: 'herostatue', name: "Champion's statue", x: 18, z: 18, rot: -2.36, collide: 4});
+  add('gizard_wasteland', {type: 'crater', name: 'Saiyar pod', x: 40, z: 40, dig: {radius: 9, depth: 2.6}},
+    {type: 'crater', name: 'Saiyar pod', x: 58, z: 52, dig: {radius: 9, depth: 2.6}});
+
+  // --- B3 Other World & divine (map_data_requests_divine.md) -----------------------------------------------------
+  // snake_way: checkinhall / kaiorb are set in checkInStation above
+  Z('snake_way').terrain.path = {...zones.snake_way.terrain.path, serpent: true};
+  zones.snake_way.landmarks = zones.snake_way.landmarks.filter(l => l.type !== 'snakehead');
+  add('snake_way', {type: 'serpenthead', name: 'Serpent Road gate', x: 38, z: -392},
+    {type: 'serpentcoils', x: -110, z: -260, alt: 6}, {type: 'serpentcoils', x: 90, z: 20, alt: 4, span: 180},
+    {type: 'serpentcoils', x: -120, z: 260, alt: 8, loops: 2});
+  add('king_kai', {type: 'kaiband', x: 0, z: 0});
+  add('world_of_void', {type: 'toparena', x: 0, z: 0});
+  // beerus_planet: NOT the floating-platform terrain (it is a region of the 1600 m beeros planet map, where the
+  // platform's void would become a 290 m pit); the temple + great tree stand on the existing ground instead.
+  swap('beerus_planet', 'pyramid', {type: 'beeruscastle', collide: 10, flatten: 30});
+  add('beerus_planet', {type: 'godtree', name: 'The great tree', x: -45, z: 60, collide: 4});
+  // nameless_planet: B3's arena set (u6arena + Gods' box + 6 cup stands); B4's `floatcups` would sit on the
+  // same arc as the Gods' box and the cup stands, so it is left out
+  swap('nameless_planet', 'cellarena', {type: 'u6arena'});
+  zones.nameless_planet.landmarks = zones.nameless_planet.landmarks.filter(l => l.type !== 'stands');
+  add('nameless_planet', {type: 'shieldbox', name: "Gods' box", x: 0, z: 58, rot: PI},
+    ...[[-50, 40], [50, 40], [-62, -5], [62, -5], [-48, -50], [48, -50]].map(([x, z], k) => ({type: 'cupstand', x, z, top: k % 2 ? 'seats' : 'dome'})));
+  biome('nameless_planet', {tints: {dirt: [1.25, 0.55, 0.62]}, fog: [0xe8a0a8, 0.0011]});
+
+  // --- B4 alien planets (map_data_requests_alien.md) -------------------------------------------------------------
+  const NAMEK_GRASS = {root: 0x1a3f8a, tip: 0x49b4e6, dry: 0x8acfe0, forest: 0x1d4f96};
+  biome('namek', {trees: 'ajisa_tall', grassColors: NAMEK_GRASS, tints: {rock: [1.15, 0.82, 0.95]}});
+  swap('namek', 'namekhouse', {type: 'namekdome', rot: 0.6, collide: 4.5, flatten: 8}, [-20, 22]);
+  swap('namek', 'namekhouse', {type: 'namekdome', rot: 1.2, collide: 4, flatten: 7}, [-34, 8]);
+  swap('namek', 'namekhouse', {type: 'namekdome', rot: 0.1, collide: 4, flatten: 7}, [-8, 38]);
+  swap('namek', 'gurutower', {type: 'elderspire'});
+  swap('namek', 'friezaship', {type: 'tyrantship', collide: 15, flatten: 28});
+  // new_namek: its own layout instead of a copy of namek (audit 142)
+  const nn = Z('new_namek');
+  nn.terrain = {size: nn.terrain.size, spawn: {x: 0, z: 0}, hills: {amp: 6, scale: 110}, lake: {x: -40, z: 60, radius: 55, level: 0.4},
+    edge: 'mountains', mesas: [{x: 150, z: -60, r: 10, h: 46}, {x: -170, z: -120, r: 8, h: 36}, {x: 200, z: 160, r: 12, h: 58}, {x: -220, z: 150, r: 9, h: 40}]};
+  biome('new_namek', {trees: 'ajisa_tall', treeCount: 200, grassColors: NAMEK_GRASS, tints: {rock: [1.15, 0.82, 0.95]}, bushes: 120, rocks: 100, water: 0x2aa79b});
+  nn.landmarks = [{type: 'namekvillage', name: 'New Nameck village', x: 30, z: -20, count: 3, flatten: 16},
+    {type: 'namekdome', x: -10, z: 0, collide: 4.5, flatten: 8}, {type: 'elderspire', name: "Elder's house", x: 150, z: -60}];
+  nn.travelPoint = {x: 20, z: -45};
+  biome('planet_cereal', {trees: 'purple_spire', treeCount: 520, tints: {rock: [1.25, 1.1, 0.85]}});
+  swap('planet_cereal', 'farmhouse', {type: 'cerealhut', rot: 1.57, collide: 5, flatten: 14});
+  add('planet_cereal', {type: 'heetersship', name: "Elek's landing ship", x: 70, z: -30, rot: -0.4, flatten: 26, collide: 14});
+  biome('grain_market', {trees: 'purple_spire'});
+  // yardrat: the two huts become a village, centred 18 m further north than asked so no hut lands on the
+  // villagers standing at (-12,14) / (-24,26) / (8,22)
+  Z('yardrat').landmarks = zones.yardrat.landmarks.filter(l => l.type !== 'yardrathut');
+  add('yardrat', {type: 'yardratvillage', name: 'Yardran village', x: -10, z: 42, huts: 4, flatten: 18});
+  return [...touched];
+}
+
 export function applyGodotAdditions(tables) {
   const zones = structuredClone(tables.zones);
   const npcs = structuredClone(tables.npcs);
@@ -226,6 +395,7 @@ export function applyGodotAdditions(tables) {
   const childhood = childhoodPlaces(zones);
   for (const id of childhood) if (!zoneOrder.includes(id)) zoneOrder.push(id);
   const changed = [...checkInStation(zones, npcs), ...interiors(zones), ...childhood, ...timeNexus(zones)];
+  changed.push(...mapPass008(zones));   // 0.0.8 map pass: builder batches' zone data (see mapPass008)
   // giant, seated behind the desk: red skin, black beard, judge's hat (Parts.costume "yemmo")
   Object.assign(characters.king_yemma, {scale: 4.2, look: {race: 'Human', skin: 0, skinHex: 0xc8463c, face: 'Fierce', hair: 'None',
     hairColor: 0, build: 'Muscular', outfit: 'CraneGi', outfitTint: 2, costume: 'yemmo'}});
@@ -452,6 +622,144 @@ export function applyGodotAdditions(tables) {
     };
     for (const [id, look] of Object.entries(b3)) if (characters[id]?.look) characters[id].look = {...characters[id].look, ...look};
     if (characters.golden_frieza) characters.golden_frieza.scale = 0.9;
+  }
+  // Cast batch B4 (Claude, 2026-11-10; cast_audit.md): Boo saga, Cyborgs, Cel, Red Ribbon. New look fields (outfits.gd
+  // header, characters/cast_b4.gd): outfit RRUniform, outfitParts badge/epaulettes/cape_collar, skinPattern (spots /
+  // plates / majin) + patternRgb, faceRgb, mark 'majin', wingRgb, B4 gear ids. Cel's stages are look-only form_looks.
+  {
+    const FL = form_looks;
+    Object.assign(FL, {
+      CellImperfect: {hair: null, skin: 0x5e8c3a, eyes: 0x8a1a5a, gear: ['cell_tail', 'cell_beak'], bulk: [0.94, 1.04, 0.94],
+        aura: {color: 0x8ad84a, core: 0xe8ffd0, size: 1.0, flicker: 0.7, sparks: 0}},
+      CellSemiPerfect: {hair: null, skin: 0x84c03a, gear: ['cell_tail'], bulk: [1.26, 1.06, 1.26],
+        aura: {color: 0x9ae04a, core: 0xf0ffd8, size: 1.1, flicker: 0.8, sparks: 0}},
+      CellPerfect: {hair: null, aura: {color: 0xffe060, core: 0xfff8d0, size: 1.05, flicker: 0.6, sparks: 0}},
+      CellSuperPerfect: {hair: null, scale: 1.03, aura: {color: 0xffc81e, core: 0xfff2b0, size: 1.12, flicker: 1, sparks: 1, sparkColor: 0x8ad8ff}},
+    });
+    const PURPLE = 0x3a2e6a, CELL_FACE = 0xeceaf2, WHITE = 0xf2f2f2, BLACK = 0x1a1a1e, GOLD = 0xe0b040;
+    const CELL = {raceParts: false, shells: true, shellRgb: PURPLE, skinPattern: 'spots', faceRgb: CELL_FACE, outfit: 'FrostBody',
+      costume: ['cell_crest', 'cell_wings'], wingRgb: PURPLE, outfitParts: {shoes: PURPLE, boot_trim: GOLD, laces: PURPLE, sash: 0x2a1a3a}};
+    const BOO = {skinPattern: 'majin', costume: ['m_belt']};
+    const BARE_BOO = {...BOO, eyeRgb: 0xc81e1e, outfitParts: {top: 'skin', sleeves: false, vest: false, pants: 0xf2f0ea, wrist: BLACK, shoes: BLACK, boot_trim: GOLD, sash: BLACK}};
+    const RR = 'RRUniform';
+    const b4 = {
+      // Cel and his family: spotted carapace skin, white face, crest horns, purple shoulder/chest shells and wings
+      cell: {...CELL, skinHex: 0x9ad040, patternRgb: 0x1e3a12, eyeRgb: 0xb0207a},
+      cell_jr: {...CELL, skinHex: 0x4a9ad8, patternRgb: 0x1a3a7a, shellRgb: 0x2a2a5a, wingRgb: 0x2a2a5a, eyeRgb: 0x5a1a6a},
+      cell_max: {...CELL, skinHex: 0x6ab04a, patternRgb: 0x24401a, faceRgb: null, shellRgb: 0xa8242a, costume: ['cell_crest'], eyeRgb: 0xe8e0c0,
+        outfitParts: {top: 0xa8242a, wrist: 0xa8242a, shoes: 0xa8242a, boot_trim: 0xa8242a, laces: 0xa8242a}},
+      // Boo: soft glossy pink, gold M buckle; Kid/Super are bare-chested with red eyes, Fat Boo keeps the vest + purple cape
+      fat_buu: {...BOO, outfitParts: {cape: 0x5a2a8a, gloves: 0xe8c040, wrist: 0xe8c040, shoes: 0xe8c040, boot_trim: 0xe8c040}},
+      kid_buu: {...BARE_BOO, skinHex: 0xf0a0c0},
+      super_buu: {...BARE_BOO},
+      babidi: {raceParts: false, ears: 'pointed', skinHex: 0xd8c040, eyeRgb: 0x2a1d14, sculpt: {head_w: 1.5, head_h: 1.42, head_d: 1.45},
+        outfit: 'AngelRobe', outfitRgb: BLACK, outfitParts: {pants: 0x6ac0c8, collar: false, sash: false, cape: 0xe8662a, cape_collar: 0xe8662a, shoes: 0x6a4a2a, boot_trim: 0x6a4a2a}},
+      dabura: {raceParts: false, ears: 'pointed', skinHex: 0xc83a3a, eyeRgb: 0x2a1d14, costume: ['dabura_horns'], outfit: 'CraneGi', outfitRgb: 0x2a4a9a,
+        outfitParts: {pants: 0x2a4a9a, cape: WHITE, shoes: WHITE, boot_trim: WHITE, sash: BLACK}},
+      pui_pui: {costume: ['pui_helmet'], skinHex: 0xc8b8e0, outfitParts: {top: 0x2a4ab0, pants: 0x2a4ab0, plate: WHITE, trim: WHITE, shoes: WHITE, boot_trim: WHITE}},
+      yakon: {raceParts: false, skinHex: 0x3a6a3a, eyeRgb: 0xe8d820, mark: 'majin', costume: ['head_spikes'], outfit: 'FrostBody', outfitParts: {gloves: BLACK}},
+      spopovich: {mark: 'majin', outfitParts: {top: BLACK, vest: true, pants: BLACK, sash: BLACK, wrist: 0xe8c030, shoes: WHITE}},
+      majin_vegeta: {mark: 'majin'},
+      // Cyborgs
+      android_16: {hair: 'Mohawk', hairRgb: 0xd8502a, eyeRgb: 0x3a7ad0, outfitParts: {top: 0x1a1a1e, plate: 0x3a7a3a, trim: 0x3a7a3a, pads: false, sleeves: false,
+        pants: 0x7a6a8a, shoes: 0x2a4a2a, boot_trim: 0x1a1a1e, badge: 0xc8202a}},
+      android_17: {hair: 'ShoulderStraight', eyeRgb: 0x3a7ad0, costume: ['scarf_orange'], outfitRgb: BLACK, outfitParts: {pants: 0x6a9ad0, shoes: WHITE, sash: 0x5a3a2a, badge: 0xc8202a}},
+      android_18: {hair: 'Bob', hairRgb: 0xf0d070, eyeRgb: 0x3a7ad0, costume: ['hoops'], outfitRgb: 0x3a5a9a, outfitParts: {pants: BLACK, shoes: 0x6a4a2a, boot_trim: 0x6a4a2a}},
+      android_19: {raceParts: false, skinHex: 0xf0f0f4, skinPattern: 'plates', patternRgb: 0xa8a8b4, eyeRgb: 0x1a1a1a, physique: 'boo_fat', costume: ['android_dome'],
+        outfit: RR, outfitRgb: 0xe8c030, outfitParts: {pants: 0xe07a2a, sash: 0xc8202a, shoes: WHITE, boot_trim: WHITE}},
+      gero: {hair: 'Long', hairRgb: 0xf2f2f2, skinHex: 0xf0dccc, costume: ['rr_cap', 'gero_beard'], outfit: RR, outfitRgb: BLACK,
+        outfitParts: {pants: 0x6a4a2a, sash: 0xc8202a, shoes: WHITE, boot_trim: WHITE}},
+      hedo: {build: 'Short', sculpt: {belly: 0.06, waist: 1.18}, outfitParts: {pants: 0x2a4a8a, shoes: 0xe8c030}},
+      gamma1: {raceParts: false, hair: 'None', skinHex: 0xa8a8b4, skinPattern: 'plates', patternRgb: 0x7a7a88, eyeRgb: 0xe8d820, costume: ['gamma_helmet'],
+        outfit: RR, outfitRgb: 0xe8b020, outfitParts: {pants: 0xe8b020, gloves: 0x2a2a34, shoes: 0x2a2a34, boot_trim: 0x2a2a34, sash: 0x3a2a2a, cape: 0xc8202a}},
+      gamma2: {raceParts: false, hair: 'None', skinHex: 0xa8a8b4, skinPattern: 'plates', patternRgb: 0x7a7a88, eyeRgb: 0xe8d820, costume: ['gamma_helmet2'],
+        outfit: RR, outfitRgb: 0xe8b020, outfitParts: {pants: 0xe8b020, gloves: 0x2a2a34, shoes: 0x2a2a34, boot_trim: 0x2a2a34, sash: 0x3a2a2a, cape: 0x2a4ac8}},
+      magenta: {hairRgb: 0x141414, skinHex: 0xd8a070, costume: ['mustache', 'shades'], outfitRgb: 0xb02a7a, outfitParts: {pants: 0xb02a7a, shoes: BLACK}},
+      // Red Ribbon officers
+      android_8: {hairRgb: 0x141414, outfit: RR, outfitRgb: 0x3a6a3a},
+      red: {costume: ['eyepatch'], outfit: RR, outfitRgb: 0xb8202a, outfitParts: {epaulettes: GOLD}},
+      blue: {eyeRgb: 0x3a7ad0, outfit: RR, outfitRgb: 0x2a4ab0},
+      white: {hair: 'Short', hairRgb: 0xd8c8a0, costume: ['rr_cap', 'scarf_red'], outfit: RR, outfitRgb: 0x6a7a5a},
+      silver: {hairRgb: 0xd8702a, costume: ['scarf_red'], outfit: RR, outfitRgb: 0x5a3a8a, outfitParts: {shoes: 0x6a4a2a, boot_trim: 0x6a4a2a}},
+      // leftover Buu antenna (race Majin) on non-Majin looks
+      ginyu: {raceParts: false},
+    };
+    for (const [id, look] of Object.entries(b4)) if (characters[id]?.look) characters[id].look = {...characters[id].look, ...look};
+  }
+  // Cast batch B5 (Claude, 2026-11-10; cast_audit.md): Earth humans. New look fields (outfits.gd header): hair styles
+  // CenterPart/Bob/TwinTails/Afro/BigCurly/Topknot/SidePonytail/ShoulderStraight/Slick, moustache/beard/facialHairRgb
+  // (Parts.facial_hair), glasses, hat, thirdEye, faceMarks, jewellery, neckwear (+ colours; characters/face_gear.gd).
+  {
+    const WHITE = 0xf2f2f2, BLACK = 0x1e1e22, BLUE_EYES = 0x3a7ad0, RED = 0xc8322a;
+    const b5 = {
+      krillin: {faceMarks: ['dots']},
+      krillin_kid: {faceMarks: ['dots']},
+      yamcha: {hair: 'Spiky', faceMarks: ['scar_cheek', 'scar_eye']},
+      tien: {thirdEye: true, outfitParts: {sash: RED}},
+      tien_young: {thirdEye: true, hat: 'skullcap', hatRgb: BLACK},
+      chiaotzu: {faceMarks: ['cheek_circles'], hat: 'pompom', hatRgb: BLACK, hatRgb2: 0xd8202a, outfitRgb: 0x1e9a8a,
+        outfitParts: {pants: 0x2a8a3a, sash: RED, wrist: 0x2a8a3a}},
+      roshi: {moustache: 'bushy', beard: 'long', glasses: 'sunglasses', costume: ['prop_turtle_shell', 'prop_cane'], outfit: 'CraneGi',
+        outfitParts: {top: 0xf2f0ea, sleeves: false, pants: 0xc8a870, sash: false, shoes: 0x8a5a3a}},
+      jackie_chun: {moustache: 'bushy', beard: 'short', glasses: 'round', outfitRgb: BLACK, outfitParts: {pants: BLACK, sash: WHITE}},
+      grandpa_gohan: {moustache: 'bushy', hat: 'pompom', hatRgb: 0x2a2a30, hatRgb2: 0xd8202a, outfitRgb: 0xe8782a, outfitParts: {pants: 0x2a2a30, sash: 0x2a2a30}},
+      bulma: {hair: 'Bob', hairRgb: 0x3ac0c0, eyeRgb: BLUE_EYES, neckwear: 'scarf', neckRgb: 0xf0c832, outfitRgb: 0xc8202a,
+        outfitParts: {pants: 0xc8202a, sleeves: false, shoes: 0xc8202a}},
+      bulma_young: {hair: 'SidePonytail', hairRgb: 0x3ab8b0, eyeRgb: BLUE_EYES, hat: 'ribbon', hatRgb: 0xd8202a, outfitRgb: 0xe878a8, outfitParts: {pants: 0xe878a8}},
+      chichi: {hair: 'Bun', outfitRgb: 0xd83a5a, outfitParts: {pants: 0x7a1a2a, sash: false, shoes: 0xc8202a}},
+      dr_brief: {hairRgb: 0xb8b0c8, moustache: 'bushy', glasses: 'round', outfitRgb: WHITE, outfitParts: {pants: 0x8a8a90}},
+      videl: {hair: 'TwinTails', eyeRgb: BLUE_EYES, outfit: 'CapsuleCorp', outfitRgb: WHITE, outfitParts: {pants: 0x1a1a1e, gloves: 0x1a1a1e, shoes: WHITE}},
+      mr_satan: {hair: 'Afro', moustache: 'bushy', jewellery: ['champion_belt'], outfitRgb: 0x3a1e4a,
+        outfitParts: {pants: 0xe8c040, sash: false, shoes: WHITE, cape: 0xd8405a}},
+      ox_king: {beard: 'full', glasses: 'round'},
+      tao: {hair: 'Slick', moustache: 'long', outfitRgb: 0xe890b0, outfitParts: {pants: 0x1e2a5a, sash: 0x1e2a5a}},
+      tao_cyborg: {hair: 'Slick', moustache: 'long', skinMetal: 0.5, outfitParts: {top: 0xc84a6a, pants: 0x1e2a5a}},
+      murasaki: {hat: 'bandana', hatRgb: 0x5a2e7a, outfitRgb: 0x6a3a8a, outfitParts: {pants: 0x6a3a8a, sash: 0x2a1a3a}},
+      nam: {hat: 'turban', hatRgb: 0xf2f0ea, skinHex: 0xc89060, outfitParts: {top: 'skin', sleeves: false, pants: 0x7a4a9a, sash: 0xf2f0ea}},
+      yajirobe: {costume: ['prop_katana'], outfitRgb: 0xe08a2a, outfitParts: {pants: 0x6a5a4a, sash: 0x2a2a30}},
+      baba: {hair: 'BigCurly', hairRgb: 0xd890c8, outfitRgb: BLACK},
+      mai: {hair: 'Long', hat: 'beanie', hatRgb: 0x3a7a3a, outfitRgb: 0x2a4a8a, outfitParts: {pants: 0x1a1a1e, shoes: 0x1a1a1e}},
+      princess_snake: {skinHex: 0x7ac8a0, hair: 'BigCurly', hairRgb: 0xe8782a, neckwear: 'fur_collar', neckRgb: 0xf4f2ee,
+        jewellery: ['earrings'], jewelRgb: 0x9a3ad8},
+      trunks: {hair: 'CenterPart'},
+      trunks_kid: {hair: 'CenterPart'},
+    };
+    for (const [id, look] of Object.entries(b5)) if (characters[id]?.look) characters[id].look = {...characters[id].look, ...look};
+  }
+  // Cast batch B6 (Claude, 2026-11-10; cast_audit.md): Namekians, demons, animals and creatures. New costume ids in
+  // godot/characters/creature_bodies.gd (turbans/hats/hood, animal-head pieces, bat wings, props, the Battle Walker
+  // and Oracle Fish bodies); reuses B4 skinPattern and B5 neckwear. The wish dragons are WishDragon models (no change).
+  {
+    const WHITE = 0xf4f2ee, DARK_EYES = 0x1a1a1a, DEMON = {raceParts: false, ears: 'pointed'};
+    const b6 = {
+      piccolo: {antenna: false, costume: ['namek_turban']},
+      piccolo_jr: {antenna: false, costume: ['namek_turban']},
+      nail: {outfitParts: {cape: false}},
+      kami: {outfit: 'NamekRobe', outfitRgb: WHITE, outfitParts: {cape: 0x3a4ab0, sash: 0x3a4ab0, wrist: false}, costume: ['prop_cane']},
+      king_piccolo: {outfitRgb: WHITE, outfitParts: {sash: 0xc8322a, wrist: 0xc8322a}},
+      dende: {outfitRgb: WHITE, outfitParts: {sash: 0x6a3aa8, wrist: false, cape: false}},
+      guru: {outfitRgb: WHITE, neckwear: 'scarf', neckRgb: 0xe88aae, outfitParts: {cape: false, sash: false, wrist: false},
+        sculpt: {belly: 0.12, waist: 1.35, hips: 1.2}},
+      moori: {outfitRgb: WHITE, outfitParts: {top: 0xb8322a, vest: true, cape: false, sash: WHITE, wrist: false}},
+      monaito: {outfit: 'NamekRobe', outfitRgb: 0x6a3a9a, outfitParts: {cape: 0x8a6ab8, wrist: false}, costume: ['prop_cane']},
+      tambourine: {...DEMON, costume: ['bat_wings'], outfitParts: {cape: false}},
+      cymbal: {...DEMON, outfit: 'FrostBody', skinPattern: 'spots', patternRgb: 0x2a5a2a, costume: ['bat_wings', 'demon_crest'], sculpt: {belly: 0.06}},
+      drum: {...DEMON, skinPattern: 'spots', patternRgb: 0x4a6a2a, sculpt: {belly: 0.08},
+        outfitParts: {top: 'skin', sleeves: false, pants: 0x2a4aa8, sash: 0xe8862a, wrist: false, cape: false}},
+      oolong: {costume: ['pig_head', 'suspenders'], outfitParts: {top: WHITE, pants: 0x3a7a3a, undershirt: false, sash: false, wrist: false, shoes: 0x2a2a2a}},
+      puar: {tail: 'cat', outfit: 'FrostBody', eyeRgb: DARK_EYES, costume: ['cat_head']},
+      korin: {tail: 'cat', outfit: 'FrostBody', eyeRgb: DARK_EYES, costume: ['cat_head', 'prop_staff']},
+      bubbles: {outfit: 'FrostBody', skinHex: 0x4a3226, faceRgb: 0xd8b48c, eyeRgb: DARK_EYES, costume: ['monkey_head']},
+      shu: {skinHex: 0xe8902a, eyeRgb: DARK_EYES, costume: ['dog_head', 'ninja_hood', 'prop_katana'], outfitRgb: 0x3a2a6e,
+        outfitParts: {pants: 0x3a2a6e, sash: 0xc8c8f0, shoes: 0x1a1a1e}},
+      pilaf: {ears: 'pointed', eyeRgb: DARK_EYES, costume: ['pilaf_hat'], outfitRgb: 0xe8c832, outfitParts: {pants: 0x3a3a6a}},
+      pilav_robot: {costume: ['battle_walker']},
+      oracle_fish: {raceParts: false, costume: ['oracle_fish']},
+      toppo: {costume: ['big_mustache']},
+      saibaman: {costume: ['plant_head']},
+    };
+    for (const [id, look] of Object.entries(b6)) if (characters[id]?.look) characters[id].look = {...characters[id].look, ...look};
+    for (const [id, scale] of [['monaito', 0.85], ['oracle_fish', 0.8]]) if (characters[id]) characters[id].scale = scale;
   }
   // Every character's own face (FaceShape): seeded by the character id, so identical looks still differ
   for (const [id, c] of Object.entries(characters)) if (c.look && c.look.faceSeed == null) c.look.faceSeed = id;

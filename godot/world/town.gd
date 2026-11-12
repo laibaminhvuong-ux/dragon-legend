@@ -98,6 +98,8 @@ static func build(g: Node3D, zone: RefCounted, l: Dictionary) -> void:
 			"ruin": _ruin(n, b)
 			"shrine": _shrine(n, b)
 			_: _house(n, b)
+	if style == "city":
+		_monorail(g, zone, l, base_y, lay)
 	# one mesh per material for the whole town (thousands of pieces -> a few draw calls), faded out far away
 	var holder := Node3D.new()
 	holder.name = "TownMeshes"
@@ -168,11 +170,24 @@ static func _tower(n: Node3D, b: Dictionary) -> void:
 	var r := float(b.w) * 0.5
 	var h := float(b.h)
 	var wall := _mat(int(b.color), {"rough": 0.4})
-	_cyl(n, r, r * 1.08, h, wall, Vector3(0, h * 0.5, 0), 24)
-	_cyl(n, r * 1.12, r * 1.12, 0.6, _mat(0x8a96a8, {"metal": 0.5, "rough": 0.3}), Vector3(0, h * 0.62, 0), 24)
-	_dome(n, r * 1.05, _mat(0x5a8ad0, {"rough": 0.3, "metal": 0.2}), Vector3(0, h, 0), 0.8)
-	_cyl(n, 0.15, 0.15, 5, _mat(0xcccccc, {"metal": 0.8}), Vector3(0, h + r * 0.8 + 2.5, 0), 6)
-	_windows(n, r * 1.01, 3.0, int(h / 4.5), 10, 4.5)
+	# West Capital look (map batch B2): white drum with horizontal window bands and a coloured dome cap; some
+	# carry a wide saucer top. Cap colour / variant are picked from the position (same every build).
+	var pick := absi(int(float(b.x) * 7.0 + float(b.z) * 13.0))
+	var cap := _mat([0x6a5ac8, 0x9a4aa8, 0xa83a46, 0x3a9a9a, 0x4a6ad0][pick % 5], {"rough": 0.3, "metal": 0.15})
+	_cyl(n, r, r * 1.04, h, wall, Vector3(0, h * 0.5, 0), 24)
+	var band := _mat(0x6a9ac8, {"rough": 0.15, "metal": 0.3, "emissive": 0x1a3450, "glow": 0.5})
+	for row in int((h - 4.0) / 3.2):
+		var y := 2.6 + row * 3.2
+		_cyl(n, r * 1.025 + 0.04, r * 1.025 + 0.04, 1.1, band, Vector3(0, y, 0), 24)
+	if pick % 4 == 0 and h > 40.0:   # saucer-topped tower
+		var saucer := SphereMesh.new(); saucer.radius = r * 1.9; saucer.height = r * 3.8; saucer.radial_segments = 28; saucer.rings = 10
+		_put(n, saucer, wall, Vector3(0, h + r * 0.35, 0)).scale = Vector3(1, 0.22, 1)
+		_cyl(n, r * 1.9 * 0.97, r * 1.9 * 0.97, 0.7, band, Vector3(0, h + r * 0.35, 0), 28)
+		_dome(n, r * 1.1, cap, Vector3(0, h + r * 0.6, 0), 0.55)
+	else:
+		_cyl(n, r * 1.06, r * 1.06, 0.5, cap, Vector3(0, h, 0), 24)
+		_dome(n, r * 1.05, cap, Vector3(0, h + 0.25, 0), 0.8)
+		_cyl(n, 0.15, 0.15, 4, _mat(0xcccccc, {"metal": 0.8}), Vector3(0, h + r * 0.84 + 2.0, 0), 6)
 
 static func _office(n: Node3D, b: Dictionary) -> void:
 	var w := float(b.w); var h := float(b.h)
@@ -280,6 +295,34 @@ static func _shrine(n: Node3D, b: Dictionary) -> void:
 	var top := CylinderMesh.new(); top.top_radius = 0.0; top.bottom_radius = w * 0.62; top.height = h * 0.75; top.radial_segments = 4
 	var mi := _put(n, top, stone, Vector3(0, h * 0.25 + h * 0.375, 0)); mi.rotation.y = PI / 4
 	_cyl(n, w * 0.08, w * 0.08, 1.0, _mat(0x8f5ad8, {"emissive": 0x6a30c0, "glow": 1.4}), Vector3(0, h + 0.5, 0), 8)
+
+## West Capital monorail (map batch B2): a glassy tube on pylons above the ring road (15 m) and one crossing the
+## city along the east-west avenue (22 m). Visual only: pylons stand on the road centre line, the tube is overhead.
+static func _monorail(g: Node3D, zone: RefCounted, l: Dictionary, base_y: float, lay: Dictionary) -> void:
+	var tube := _mat(0xc8dde8, {"rough": 0.2, "metal": 0.35})
+	var pylon := _mat(0xe8ecf0, {"rough": 0.5})
+	var line := _mat(0x6a9ac8, {"rough": 0.15, "metal": 0.3, "emissive": 0x1a3450, "glow": 0.5})
+	var spans: Array = []   # [Vector3 a, Vector3 b] town-local, y above the town base
+	var radius := float(l.get("radius", 120))
+	for rd: Dictionary in lay.roads:
+		if absf(float(rd.w) - 9.0) > 0.01:   # the ring road pieces
+			continue
+		spans.append([Vector3(rd.x1, _ground(zone, l, rd.x1, rd.z1) - base_y + 15.0, rd.z1), Vector3(rd.x2, _ground(zone, l, rd.x2, rd.z2) - base_y + 15.0, rd.z2)])
+	var steps := maxi(2, int(radius * 1.8 / 40.0))
+	for i in steps:   # the east-west line
+		var x0 := lerpf(-radius * 0.9, radius * 0.9, float(i) / steps); var x1 := lerpf(-radius * 0.9, radius * 0.9, float(i + 1) / steps)
+		spans.append([Vector3(x0, _ground(zone, l, x0, 0.0) - base_y + 22.0, 0.0), Vector3(x1, _ground(zone, l, x1, 0.0) - base_y + 22.0, 0.0)])
+	for s: Array in spans:
+		var a: Vector3 = s[0]; var b: Vector3 = s[1]
+		var dir := b - a
+		var piece := _cyl(g, 1.3, 1.3, dir.length() + 0.6, tube, (a + b) * 0.5, 14)
+		piece.basis = Basis(Quaternion(Vector3.UP, dir.normalized()))
+		var stripe := _cyl(g, 1.34, 1.34, dir.length() + 0.6, line, (a + b) * 0.5 + Vector3(0, 0.0, 0), 14)
+		stripe.basis = Basis(Quaternion(Vector3.UP, dir.normalized())) * Basis.from_scale(Vector3(1, 1, 0.25))
+		var gy := _ground(zone, l, a.x, a.z) - base_y
+		if Vector2(a.x, a.z).length() > 30.0:
+			_cyl(g, 0.45, 0.6, a.y - gy, pylon, Vector3(a.x, gy + (a.y - gy) * 0.5 - 1.2, a.z), 10)
+			_box(g, Vector3(3.2, 0.8, 3.2), pylon, Vector3(a.x, a.y - 1.4, a.z))
 
 # --- roads and extras -----------------------------------------------------------------------------------
 static func _road(g: Node3D, zone: RefCounted, l: Dictionary, base_y: float, rd: Dictionary, m: Material) -> void:

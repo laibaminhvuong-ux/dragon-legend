@@ -3,6 +3,7 @@ extends Node3D
 # Grass blades streamed around a target (the camera or the player): 16 m chunks of MultiMesh clumps within a
 # radius, placed on grass/forest ground from the terrain grid, swaying in the wind and shrinking away with
 # distance (no popping). Density comes from the quality preset and the world's biome.grass (default 1).
+# Optional biome.grassColors {root, tip, dry, forest} (0xRRGGBB) sets the blade colours outright (default: green + tint).
 
 const CHUNK := 16.0
 const PRESET := {"low": {"density": 1.0, "radius": 40.0}, "medium": {"density": 2.2, "radius": 60.0}, "high": {"density": 3.6, "radius": 75.0}}
@@ -31,7 +32,14 @@ static func create(terrain: Node3D, zone: RefCounted, quality := "high") -> Worl
 	g._material.shader = SHADER
 	g._material.set_shader_parameter("fade_end", g._radius)
 	var tints: Dictionary = zone.biome.get("tints", {})
-	if tints.get("grass") is Array:
+	var cols: Variant = zone.biome.get("grassColors")
+	if cols is Dictionary and not (cols as Dictionary).is_empty():
+		# Batch B4: literal blade colours (0xRRGGBB ints; keys root/tip/dry/forest, any subset) for alien grass that a
+		# multiplicative tint on green cannot reach (Nameck blue-turquoise, Nameless crimson). Replaces tints.grass.
+		for key: String in ["root", "tip", "dry", "forest"]:
+			if (cols as Dictionary).has(key):
+				g._material.set_shader_parameter(key + "_color", Color.hex((int(cols[key]) << 8) | 0xff))
+	elif tints.get("grass") is Array:
 		var t: Array = tints.grass
 		g._material.set_shader_parameter("tint", Color(float(t[0]), float(t[1]), float(t[2])))
 	return g

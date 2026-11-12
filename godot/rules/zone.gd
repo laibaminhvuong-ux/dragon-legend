@@ -240,7 +240,8 @@ func surface_at(x: float, z: float) -> String:
 
 ## Landmarks with an interior map, entered through a door in front of them.
 const LANDMARK_INTERIORS := {"capsulecorp": "interior_lab", "kamehouse": "interior_home", "farmhouse": "interior_home", "hangar": "interior_hangar",
-	"bunker": "interior_lab", "radartower": "interior_tower", "labdoor": "interior_lab"}
+	"bunker": "interior_lab", "radartower": "interior_tower", "labdoor": "interior_lab",
+	"capsulehq": "interior_lab", "rrhangar": "interior_hangar", "kamecottage": "interior_home"}   # 0.0.8 map pass builders
 var _doors: Variant = null
 
 ## Building doors on this map: [{x, z, yaw, interior, name}] (the interact key enters); in an interior, its exit.

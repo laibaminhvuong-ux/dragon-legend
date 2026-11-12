@@ -730,9 +730,19 @@ func _cast(out: String, ids: Array) -> void:
 			l.faceSeed = id
 			if entry.contains(":"): l.form = entry.get_slice(":", 1)
 			row.append([str(c.get("name", id)) + (" " + str(l.form) if entry.contains(":") else ""), l, minf(float(c.get("scale", 1.0)) if c.get("scale") != null else 1.0, 2.2)])
-		_row(row, 1.0)
+		var head := "--head" in OS.get_cmdline_user_args()   # cast batch B5: head close-ups (everyone at scale 1)
+		if head:
+			for r: Array in row: r[2] = 1.0
+		_row(row, 0.5 if head else 1.0)
 		_turn(yaw)
 		await _settle()
+		if head:
+			var w := float(vp.size.x) * cam.size / float(H)
+			cam.size = 0.75
+			vp.size = Vector2i(roundi(700 * w / cam.size), 700)
+			cam.position = Vector3(0, 1.62, 8)
+			for a in OS.get_cmdline_user_args():
+				if a.begins_with("--heady="): cam.position.y = float(a.substr(8))   # taller builds (cast batch B6)
 		_paint(null, Color(0.3, 0.33, 0.4))
 		n += 1
 		await _shot("%s_cast%d.png" % [out, n])
