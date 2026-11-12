@@ -721,11 +721,12 @@ class D extends LandmarksOrigins.B:
 					_quad(st, a0, a1, b1, b0, nn)
 			prev = cur
 			if i % 6 == 0:
-				box(w * 2.1, th * 1.1, R * 0.006, edge, o.x * rr, cy - th * 0.5, o.z * rr, a + PI / 2)
+				box(w * 2.1, th * 1.1, R * 0.006, edge, o.x * rr, cy - th * 0.5, o.z * rr, a + PI / 2).set_meta("no_collision", true)
 		st.index()   # MeshMerge needs indexed surfaces
 		var mi := MeshInstance3D.new()
 		mi.mesh = st.commit()
 		mi.material_override = m
+		mi.set_meta("no_collision", true)   # a hollow ribbon round the arena: its box would cover the whole floor
 		g.add_child(mi)
 
 	## Grand Zenno's palace / the Grand Minister's realm (audit 122): white palace with gold trims, three stepped

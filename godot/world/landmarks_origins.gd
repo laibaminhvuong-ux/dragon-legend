@@ -40,12 +40,16 @@ class B extends RefCounted:
 	var zone: RefCounted
 	var l: Dictionary
 	var no_shadow: Array[Material] = []
+	## Materials whose pieces never collide (LandmarkCollision); no_shadow ones (glow, water, cloud) never do either.
+	## A single piece can opt out with mi.set_meta("no_collision", true).
+	var no_collision: Array[Material] = []
 
 	func _init(group: Node3D, z: RefCounted, landmark: Dictionary) -> void:
 		g = group; zone = z; l = landmark
 
 	## Merge every static piece into one mesh per material; glow/water/cloud surfaces don't cast shadows.
 	func finish() -> void:
+		g.set_meta("no_collision_mats", no_shadow + no_collision)
 		MeshMerge.merge(g)
 		for c in g.get_children():
 			var mi := c as MeshInstance3D

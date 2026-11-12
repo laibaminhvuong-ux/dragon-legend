@@ -3,7 +3,7 @@ extends RefCounted
 # The buildings, ships and arenas that make each world recognisable, ported from web/src/world/landmarks.js:
 # same shapes, sizes and colours, placed by Codex's RuleZone (dug craters sit on the dug ground, flattened
 # sites on their base height). Stone and concrete get the CC0 rock scan projected triplanar instead of flat
-# colour. Landmarks with `collide` get a collision cylinder (as the JS game: radius * scale, 12 m * scale tall).
+# colour. Collision comes from the built pieces (LandmarkCollision; the old `collide` circle only as a fallback).
 
 const BUILDERS := ["pod", "crater", "crashpod", "farmhouse", "kamehouse", "snakehead", "kingkaihouse", "car",
 	"namekhouse", "gurutower", "friezaship", "capsuleship", "timemachine", "yardrathut", "capsulecorp", "dome",
@@ -27,6 +27,7 @@ static func build(zone: RefCounted) -> Node3D:
 	var root := Node3D.new()
 	root.name = "Landmarks"
 	var towns: Array = []
+	var built: Array = []
 	for l: Dictionary in zone.landmarks:
 		if str(l.type) == "town":   # towns and hamlets stream in like chunks (TownStream)
 			towns.append(l)
@@ -34,37 +35,36 @@ static func build(zone: RefCounted) -> Node3D:
 		if not has_builder(l.type):
 			push_warning("Landmarks: no builder for '%s'" % l.type)
 			continue
-		var g := Node3D.new()
+		var g := build_one(zone, l)
 		g.name = "%s_%d" % [l.type, root.get_child_count()]
-		g.set_meta("landmark", l)
-		var y: float = zone.height_at(l.x, l.z) if l.get("dig") != null else (float(l.base) if l.get("flatten") != null else zone.height_at(l.x, l.z))
-		g.position = Vector3(l.x, y, l.z)
-		g.rotation.y = float(l.get("rot", 0.0))
-		g.scale = Vector3.ONE * float(l.get("scale", 1.0))
-		var gr: Variant = _group_for(str(l.type))
-		if gr != null:
-			gr.build(str(l.type), g, zone, l)
-		else:
-			var b := Builder.new(g, zone, l)
-			b.call("_" + l.type)
 		root.add_child(g)
-		if l.get("collide") != null:
-			var body := StaticBody3D.new()
-			var shape := CollisionShape3D.new()
-			var cyl := CylinderShape3D.new()
-			var s := float(l.get("scale", 1.0))
-			cyl.radius = float(l.collide) * s
-			cyl.height = 12.0 * s
-			shape.shape = cyl
-			shape.position.y = 6.0 * s
-			body.add_child(shape)
-			body.position = Vector3(l.x, zone.height_at(l.x, l.z), l.z)
-			root.add_child(body)
+		built.append([g, l])
+	# solid buildings from their real pieces (replaces the single `collide` circle; see LandmarkCollision)
+	if zone is RuleZone:
+		LandmarkCollision.apply(zone, root, built)
 	if not towns.is_empty():
 		var stream := TownStream.create(zone, towns)
 		root.add_child(stream)
 		root.set_meta("towns", stream)
 	return root
+
+## One landmark's node, placed and built (no collision yet: LandmarkCollision.apply / colliders).
+static func build_one(zone: RefCounted, l: Dictionary) -> Node3D:
+	var g := Node3D.new()
+	g.name = str(l.type)
+	g.set_meta("landmark", l)
+	var y: float = zone.height_at(l.x, l.z) if l.get("dig") != null else (float(l.base) if l.get("flatten") != null else zone.height_at(l.x, l.z))
+	g.position = Vector3(l.x, y, l.z)
+	g.rotation.y = float(l.get("rot", 0.0))
+	g.scale = Vector3.ONE * float(l.get("scale", 1.0))
+	g.set_meta("collect_pieces", true)   # MeshMerge records the pieces for LandmarkCollision
+	var gr: Variant = _group_for(str(l.type))
+	if gr != null:
+		gr.build(str(l.type), g, zone, l)
+	else:
+		var b := Builder.new(g, zone, l)
+		b.call("_" + l.type)
+	return g
 
 class Builder extends RefCounted:
 	var g: Node3D

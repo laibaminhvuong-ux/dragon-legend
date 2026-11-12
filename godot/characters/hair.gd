@@ -15,6 +15,60 @@ const BASE := {"Spiky": "goku", "Wild": "wild", "Swept": "flame", "LongSpiky": "
 const FORM_STYLES := ["ssj1", "ssj2", "ssj3", "ssj4", "grade3", "legendary", "ego", "beast"]
 static var _cache: Dictionary = {}
 
+## Hair secondary motion (one per fighter; no allocations per frame): a damped spring for the offset of a free hair
+## tip (world space, metres). Moving air pulls the tip along: the wind minus the fighter's own velocity, so hair trails
+## behind when running / flying / jumping, overshoots a little and springs back when the fighter stops, and leans
+## with the wind. The shaders (hair_motion.gdshaderinc) bend each spike or lock by this offset, more towards its tip.
+class Motion:
+	const FREQ := 3.0        # Hz: how fast it springs back
+	const DAMPING := 0.35    # < 1: a little overshoot
+	const REACH := 0.11      # m: largest tip offset (a strong headwind / full-speed flight)
+	const RESPONSE := 0.11   # per m/s of air speed, before saturating at REACH
+	const TELEPORT := 60.0   # m/s: faster than this between frames is a teleport, not motion
+	var offset := Vector3.ZERO
+	var velocity := Vector3.ZERO
+	var air := Vector3.ZERO       # smoothed air speed relative to the fighter (m/s)
+	var _last := Vector3.ZERO
+	var _has_last := false
+
+	## Where the free tip wants to sit for this relative air speed (saturating: it never stretches past REACH).
+	static func target_for(rel_air: Vector3) -> Vector3:
+		var s := rel_air.length()
+		if s < 0.0001:
+			return Vector3.ZERO
+		var mag := REACH * tanh(s * RESPONSE)
+		var t := rel_air * (mag / s)
+		t.y *= 0.7
+		return t
+
+	## One step: `pos` is the fighter's world position now, `wind` the moving air (WorldWind.vector()).
+	func step(dt: float, pos: Vector3, wind: Vector3) -> Vector3:
+		if dt <= 0.0:
+			return offset
+		var v := Vector3.ZERO
+		if _has_last:
+			v = (pos - _last) / dt
+			if v.length() > TELEPORT:
+				v = Vector3.ZERO
+		_last = pos
+		_has_last = true
+		air = air.lerp(wind - v, 1.0 - exp(-dt * 25.0))   # light smoothing (frame jitter) that keeps the bounce
+		var target := target_for(air)
+		var w := TAU * FREQ
+		var left := minf(dt, 0.1)
+		while left > 0.0:   # semi-implicit Euler in <= 1/60 s steps: stable at any frame rate
+			var h := minf(left, 1.0 / 60.0)
+			velocity += ((target - offset) * w * w - velocity * (2.0 * DAMPING * w)) * h
+			offset += velocity * h
+			left -= h
+		if offset.length() > REACH * 1.4:
+			offset = offset.limit_length(REACH * 1.4)
+		return offset
+
+	## Back to rest at once (teleports, re-enabling after being far from the camera).
+	func reset() -> void:
+		offset = Vector3.ZERO; velocity = Vector3.ZERO; air = Vector3.ZERO; _has_last = false
+
 ## The base hair style for a look (or "" for bald / races without hair).
 static func base_style(look: Dictionary, race: Dictionary) -> String:
 	var h := str(look.get("hair", "Spiky"))

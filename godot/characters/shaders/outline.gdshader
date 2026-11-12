@@ -4,11 +4,13 @@
 shader_type spatial;
 render_mode unshaded, cull_front, depth_draw_opaque;
 
+#include "res://characters/shaders/hair_motion.gdshaderinc"   // hair_sway: the line follows moving hair (zero elsewhere)
+
 uniform float width = 0.0052;
 uniform vec4 ink : source_color = vec4(0.06, 0.05, 0.08, 1.0);
 
 void vertex() {
-	vec4 view_pos = MODELVIEW_MATRIX * vec4(VERTEX, 1.0);
+	vec4 view_pos = MODELVIEW_MATRIX * vec4(hair_motion(VERTEX), 1.0);
 	float k = clamp(-view_pos.z / 4.0, 0.6, 4.0);
 	vec3 n = normalize((MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);
 	view_pos.xyz += n * width * k;

@@ -63,8 +63,13 @@ var cloth: Dictionary = {}          # Cloth.params: how loose this outfit's clot
 var sash_tails: MeshInstance3D      # the sash knot's hanging tails (sway with movement)
 var sash_base: Transform3D
 var _sash_spring := Vector2.ZERO
+const HAIR_MOTION_RANGE := 25.0     # m from the camera: closer fighters' hair moves (Hair.Motion), farther holds still
+var hair_motion: Hair.Motion        # created on first use
+var _hair_motion_on := false
+var _wind_local := Vector3.ZERO     # the wind in the fighter's own frame this frame (zero when motion is off)
 
 static func create(l: Dictionary) -> Fighter:
+	WorldWind.ensure_globals()   # the hair shaders read wind_time
 	var f := Fighter.new()
 	f.name = "Fighter"
 	f.look = l
@@ -211,16 +216,57 @@ func update(dt: float, a: Dictionary = {}) -> void:
 		_hair_spring = MotionStyle.spring(_hair_spring.x,_hair_spring.y,target,dt,20)
 		if absf(_hair_spring.x)<0.00001 and _charge_time==0: _hair_spring = Vector2.ZERO
 		hair.transform = hair_rest*Transform3D(Basis.from_euler(Vector3(0,0,_hair_spring.x)),Vector3.ZERO)
+	_secondary_motion(dt)
 	if cape != null:
 		var target := minf(0.9,float(a.get("speed",0))*0.08)+sin(_t*(14 if _charge_time>0 else 3))*(0.07 if _charge_time>0 else 0.03)
+		target += _wind_lift(0.05, 3.1)   # a headwind lifts the cape back, a tailwind presses it forward
 		_cape_spring = MotionStyle.spring(_cape_spring.x,_cape_spring.y,target,dt,10)
 		cape.transform = cape_base*Transform3D(Basis.from_euler(Vector3(_cape_spring.x,0,0)),Vector3.ZERO)
 	if sash_tails != null:   # the sash tails lift and flutter with speed (pivot: the knot)
 		var sp := float(a.get("speed",0))
 		var target := minf(0.75,sp*0.07)+sin(_t*(9.0 if sp>2.0 else 2.2))*(0.06 if sp>2.0 else 0.025)+(0.12 if _charge_time>0 else 0.0)*sin(_t*16)
+		target += _wind_lift(0.04, 4.3)
 		_sash_spring = MotionStyle.spring(_sash_spring.x,_sash_spring.y,target,dt,12)
 		var flutter := sin(_t*(11.0 if sp>2.0 else 2.6)+0.7)*(0.1 if sp>2.0 else 0.03)
 		sash_tails.transform = sash_base*Transform3D(Basis.from_euler(Vector3(-_sash_spring.x,0,flutter)),Vector3.ZERO)   # lifts away from the thighs
+
+## Hair secondary motion (Hair.Motion -> the hair shaders' hair_sway): hair lags the fighter's motion and leans with
+## the wind. Off on the "low" graphics quality and beyond HAIR_MOTION_RANGE from the camera (crowds stay cheap).
+func _secondary_motion(dt: float) -> void:
+	var on := WorldWind.hair_motion_enabled() and _near_camera()
+	_wind_local = Vector3.ZERO
+	if not on:
+		if _hair_motion_on:
+			_hair_motion_on = false
+			if hair_motion != null:
+				hair_motion.reset()
+			if hair != null:
+				hair.set_instance_shader_parameter("hair_sway", Vector4.ZERO)
+		return
+	_hair_motion_on = true
+	var wind := WorldWind.vector()
+	var inside := is_inside_tree()
+	if wind != Vector3.ZERO:
+		_wind_local = (global_transform.basis if inside else transform.basis).inverse() * wind
+	if hair == null:
+		return
+	if hair_motion == null:
+		hair_motion = Hair.Motion.new()
+	var off := hair_motion.step(dt, global_position if inside else position, wind)
+	var local := hair.global_transform.basis.inverse() * off if inside else off   # into the hair mesh's own space
+	hair.set_instance_shader_parameter("hair_sway", Vector4(local.x, local.y, local.z, minf(wind.length() / WorldWind.AIR_SPEED, 1.5)))
+
+func _near_camera() -> bool:
+	if not is_inside_tree():
+		return true
+	var cam := get_viewport().get_camera_3d()
+	return cam == null or cam.global_position.distance_squared_to(global_position) < HAIR_MOTION_RANGE * HAIR_MOTION_RANGE
+
+## Cape / sash lift from the wind along the fighter's back (radians): `k` per m/s, fluttering at `rate`.
+func _wind_lift(k: float, rate: float) -> float:
+	if _wind_local == Vector3.ZERO:
+		return 0.0
+	return clampf(-_wind_local.z * k, -0.25, 0.5) + sin(_t * rate * (1.0 + _wind_local.length() * 0.08)) * minf(_wind_local.length(), 10.0) * 0.006
 
 static func hair_material() -> ShaderMaterial:
 	if _hair_material == null:

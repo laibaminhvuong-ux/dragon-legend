@@ -4,8 +4,14 @@
 shader_type spatial;
 render_mode cull_disabled, unshaded;
 
+#include "res://characters/shaders/hair_motion.gdshaderinc"   // first instance uniform: hair_sway (secondary motion)
+
 instance uniform vec4 hair_color : source_color = vec4(0.08, 0.07, 0.07, 1.0);
 instance uniform float glow = 0.0;
+
+void vertex() {
+	VERTEX = hair_motion(VERTEX);
+}
 
 void fragment() {
 	vec3 c = hair_color.rgb;

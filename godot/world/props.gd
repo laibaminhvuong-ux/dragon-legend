@@ -11,8 +11,12 @@ extends RefCounted
 const MODELS := "res://assets/models"
 const FOLIAGE := preload("res://world/shaders/foliage.gdshader")
 const ROCK_IDS := ["boulder_01", "namaqualand_boulder_04", "rock_moss_set_01"]
+# Wind (WorldWind globals, see world/wind.gd): foliage sways with height; bushes (scanned shrub) sway via BUSH_WIND.
+const BUSH_WIND := preload("res://world/shaders/foliage_scan.gdshader")
+const SWAY := {"crystal": 0.0, "mushroom": 0.15, "giant": 0.6}
 
 static func build(zone: RefCounted, quality := "high") -> Node3D:
+	WorldWind.ensure_globals()
 	var root := Node3D.new()
 	root.name = "Props"
 	var p: RefCounted = zone.props()
@@ -20,7 +24,7 @@ static func build(zone: RefCounted, quality := "high") -> Node3D:
 	var far := 700.0 if quality == "high" else 400.0
 	_trees(root, p.trees, kind, far)
 	_scanned(root, p.rocks, _rock_meshes(), far * 0.7, true)
-	_scanned(root, p.bushes, _model_meshes("shrub_03"), far * 0.5, false)
+	_scanned(root, p.bushes, _model_meshes("shrub_03"), far * 0.5, false, 2.0, true)
 	if zone.ground != "stone":  # pebbles look wrong on polished tile floors (they're decoration only)
 		_stones(root, p.stones)
 	return root
@@ -196,6 +200,7 @@ static func tree_mesh(kind: String, variant: int) -> ArrayMesh:
 	lm.shader = FOLIAGE
 	lm.set_shader_parameter("leaf_color", leaf_col)
 	lm.set_shader_parameter("glow", 0.8 if kind == "crystal" else 0.0)
+	lm.set_shader_parameter("sway", float(SWAY.get(kind, 1.0)))   # rigid crystals and mushroom caps
 	mesh.surface_set_material(mesh.get_surface_count() - 1, lm)
 	return mesh
 
@@ -248,8 +253,9 @@ static func _frond(st: SurfaceTool, top: Vector3, a: float, rng: RandomNumberGen
 		var w0 := 0.45 * (1.0 - float(s) / 5.0) + 0.05
 		var w1 := 0.45 * (1.0 - t) + 0.05
 		var q := [prev_c - side * w0, prev_c + side * w0, c + side * w1, c - side * w1]
+		var flex := [float(s) / 5.0, float(s) / 5.0, t, t]   # foliage shader: COLOR.b = 1 -> COLOR.g is the flex (wind)
 		for k in [0, 1, 2, 0, 2, 3]:
-			st.set_normal(Vector3.UP); st.set_color(Color(1, 0, 0)); st.add_vertex(q[k])
+			st.set_normal(Vector3.UP); st.set_color(Color(fposmod(a, TAU) / TAU, flex[k], 1)); st.add_vertex(q[k])
 		prev_c = c
 
 static func _prism(st: SurfaceTool, base: Vector3, up: Vector3, h: float, r: float) -> void:
@@ -329,7 +335,8 @@ static func _rock_meshes() -> Array:
 	return all
 
 ## Rocks and bushes from scanned models, one MultiMesh per model per tile, sized from the prop's scale.
-static func _scanned(root: Node3D, items: Array, meshes: Array, far: float, tilt: bool, size := 2.0) -> void:
+## `wind`: the leafy models sway (BUSH_WIND copies each mesh's textures into a wind shader).
+static func _scanned(root: Node3D, items: Array, meshes: Array, far: float, tilt: bool, size := 2.0, wind := false) -> void:
 	if items.is_empty():
 		return
 	if meshes.is_empty():
@@ -351,7 +358,31 @@ static func _scanned(root: Node3D, items: Array, meshes: Array, far: float, tilt
 		for vi in meshes.size():
 			var xfs: Array[Transform3D] = per_mesh[vi]
 			if not xfs.is_empty():
-				group.add_child(_multi("Scan_%d_%d_%d" % [vi, key.x, key.y], meshes[vi].mesh, xfs, far, tilt))
+				var mmi := _multi("Scan_%d_%d_%d" % [vi, key.x, key.y], meshes[vi].mesh, xfs, far, tilt)
+				if wind:
+					mmi.material_override = _wind_material(meshes[vi].mesh)
+				group.add_child(mmi)
+
+## A wind-swaying copy of a scanned leafy mesh's material (albedo/normal textures, alpha cut-out), cached per mesh.
+static var _wind_mats: Dictionary = {}
+static func _wind_material(mesh: Mesh) -> Material:
+	var src: Material = mesh.surface_get_material(0) if mesh.get_surface_count() > 0 else null
+	if not (src is BaseMaterial3D) or (mesh.get_surface_count() > 1):
+		return null   # unknown layout: keep the model's own material (no sway)
+	if _wind_mats.has(src):
+		return _wind_mats[src]
+	var b: BaseMaterial3D = src
+	var m := ShaderMaterial.new()
+	m.shader = BUSH_WIND
+	m.set_shader_parameter("albedo_tex", b.albedo_texture)
+	m.set_shader_parameter("albedo", b.albedo_color)
+	m.set_shader_parameter("use_normal", b.normal_texture != null)
+	m.set_shader_parameter("normal_tex", b.normal_texture)
+	m.set_shader_parameter("alpha_cut", b.alpha_scissor_threshold if b.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR else 0.0)
+	m.set_shader_parameter("height", maxf(mesh.get_aabb().size.y, 0.1))
+	m.set_shader_parameter("bottom", mesh.get_aabb().position.y)
+	_wind_mats[src] = m
+	return m
 
 static func _stones(root: Node3D, stones: Array) -> void:
 	if stones.is_empty():

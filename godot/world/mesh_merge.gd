@@ -17,6 +17,11 @@ static func merge(root: Node3D, visibility_end := 0.0) -> int:
 				groups[m] = [PackedVector3Array(), PackedVector3Array(), PackedInt32Array()]
 			_append(groups[m], mi.mesh, s, xf)
 		done.append(mi)
+	if root.has_meta("collect_pieces"):   # LandmarkCollision builds the collision from the pieces before they go
+		var pieces: Array = root.get_meta("pieces", [])
+		for mi in done:
+			pieces.append(LandmarkCollision.piece(mi, root))
+		root.set_meta("pieces", pieces)
 	for mi in done:
 		mi.get_parent().remove_child(mi)
 		mi.free()

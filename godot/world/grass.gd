@@ -3,6 +3,7 @@ extends Node3D
 # Grass blades streamed around a target (the camera or the player): 16 m chunks of MultiMesh clumps within a
 # radius, placed on grass/forest ground from the terrain grid, swaying in the wind and shrinking away with
 # distance (no popping). Density comes from the quality preset and the world's biome.grass (default 1).
+# Wind: WorldWind (world/wind.gd) shader globals; this node applies the zone's wind and advances its clock.
 # Optional biome.grassColors {root, tip, dry, forest} (0xRRGGBB) sets the blade colours outright (default: green + tint).
 
 const CHUNK := 16.0
@@ -22,6 +23,7 @@ var _towns: Array = []   # town landmarks: no grass in a city, nor on village ro
 static func create(terrain: Node3D, zone: RefCounted, quality := "high") -> WorldGrass:
 	var g := WorldGrass.new()
 	g.name = "Grass"
+	WorldWind.apply(zone, quality)   # every world has grass: it sets the map's wind (biome.wind or the biome default)
 	var p: Dictionary = PRESET.get(quality, PRESET.high)
 	g._grid = terrain.get_meta("grid")
 	g._towns = zone.landmarks.filter(func(l: Dictionary) -> bool: return l.get("type") == "town")
@@ -45,6 +47,7 @@ static func create(terrain: Node3D, zone: RefCounted, quality := "high") -> Worl
 	return g
 
 func _process(delta: float) -> void:
+	WorldWind.advance(delta)   # the one place the wind clock moves
 	if target == null or _density <= 0.0:
 		return
 	_timer -= delta
