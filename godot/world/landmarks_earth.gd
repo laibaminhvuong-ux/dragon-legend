@@ -112,8 +112,9 @@ class E extends LandmarksOrigins.B:
 		var base := mat(0xb4b0bc, {"rough": 0.85}); var rim := mat(0xe6e4ee, {"rough": 0.5})
 		var tile := mat(0xd8cfee, {"rough": 0.55}); var seam := mat(0xbcb0d8, {"rough": 0.6})
 		var white := mat(0xf6f6fb, {"rough": 0.3}); var shade := mat(0xc6cae0, {"rough": 0.35})
+		g.position.y -= 0.95   # the ring top sits flush with the ground: fighters stand at terrain height and must not sink into a raised slab
 		if flag("apron"):
-			box(70, 0.06, 70, mat(0xa88a62, {"rough": 1.0}), 0, 0.03, 0)
+			box(70, 0.06, 70, mat(0xa88a62, {"rough": 1.0}), 0, 0.98, 0)
 		box(60, 0.4, 60, base, 0, 0.2, 0)
 		box(53, 0.36, 53, rim, 0, 0.58, 0)
 		box(50.4, 0.06, 50.4, rim, 0, 0.79, 0)

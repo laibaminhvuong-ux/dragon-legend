@@ -786,12 +786,10 @@ void fragment() {
 		var ochre := mat(0xe8c070, {"rough": 0.8}); var brick := mat(0xb0503a, {"rough": 0.85}); var white := mat(0xf2ece0, {"rough": 0.7})
 		var thatch := mat(0xa88a4a, {"rough": 1.0}); var green := mat(0x3a7a4a, {"rough": 0.6}); var red := mat(0xb8322a, {"rough": 0.5})
 		var gold := mat(0xd8b04a, {"metal": 0.6, "rough": 0.35}); var dark := mat(0x2a2a30)
-		box(40, 1.6, 40, stone, 0, 0.8, 0)
+		box(40, 1.6, 40, stone, 0, -0.75, 0)   # top 0.05: flush with the ground (fighters stand at terrain height, so a raised slab swallowed them)
 		for i in range(-16, 17, 8):
-			box(40, 0.05, 0.2, line, 0, 1.62, i)
-			box(0.2, 0.05, 40, line, i, 1.62, 0)
-		for s in [-1.0, 1.0]:   # steps up the ring on the gate side
-			box(6.0, 0.8, 1.2, stone, s * 12.0, 0.4, 20.6)
+			box(40, 0.02, 0.2, line, 0, 0.06, i)
+			box(0.2, 0.02, 40, line, i, 0.06, 0)
 		box(4.5, 0.08, 12.0, mat(0xe8e0d0), 0, 0.04, 26.0)   # walkway to the gate
 		box(96, 0.06, 14, mat(0x5aa83e, {"rough": 0.95}), 0, 0.03, 27.0)   # lawn
 		# the wall, with brick bands stepped like the reference
