@@ -22,11 +22,9 @@
 - Last commit includes the building-by-building audit (30+ fixes), stand-on surfaces (`RuleZone.add_surface/surface_top/ground_at(x,z,reach_y)`, `world/landmark_collision.gd`), King Kae road painted on terrain, planets re-baked, 385 tests passing; that build is installed on the user's PC.
 - Four subagents were launched on the leftovers (see below). Their results are NOT yet integrated unless a later commit says so.
 
-## Where Claude stopped
-Remaining work ("do everything left"), in order:
-1. **Privacy / co-op consent**: consent dialog before co-op Join (what is sent: fighter name, look, stats, items, zeni; to the host), send minimum data, UPnP "map router" warning and off by default, tests, re-grep for OS.execute/HTTP/file access outside user://.
-2. **Story data**: Tournament Island bout fighters (Giran, Jackie Chung, Chaozo, Cyborg Tau, Namu) stand at (+-24,0) beside the 40 m ring centred (0,20): move NPC + quest coordinates onto the ring; Papaya Island dragon orb (70,70) is 4.4 m under water; new forms (look.formLooks display only, not in forms data, bosses never transform); re-run quests-real/story-play after the map changes; re-measure fps (Amber City ~35, earth_plains ~39 baseline).
-3. **Characters**: Brolo dark chest arc, hair floating on hairless races, Piccor giant forms, dress outfits for Bulma/Chi-Chi etc., approximate animal heads, check big/seated NPCs (King Yemmo, Zeno...).
-4. **World**: stairs for stand-on platforms taller than 1.35 m (West City, Future Earth, Nameless Planet), Beerus tower door (4 m tier), Capsule house entrances, dome window slabs, thin lines on King Kae dome, GPU checks of Earth towns/hamlets (grids are baked now).
-5. Then: full tests, commit own files, export + install (backup save first), report to the user in Vietnamese.
-6. **Only when the user says**: version 0.0.8 intro video (vertical 9:16 + landscape from in-game captures with ffmpeg, to Windows Downloads for Instagram and to the website), release notes, `tools/publish_site.sh`, `gh release`/workflow, push.
+## Where Claude stopped (updated 2026-11-13 ~13:10 ET)
+Done by subagents, NOT yet committed or installed (working tree is dirty, tests were 406-410 passing): co-op consent + updater consent, story data (Tournament bouts on the ring, Papaya orb on land, Rift boss phase forms, Kaioken looks), world leftovers (stairs, Capsule/Ginger doors, hamlet roads, grass spots).
+Still running: **character leftovers agent** (Brolo chest arc, hair on hairless races, Piccor giant forms, dresses, animal heads, large/seated NPCs). It hit the 5-hour limit (resets 4:20 pm ET); 2 tests were failing mid-edit: `characters/test_cast_fixes.gd` and `characters/fighter.gd:510`.
+Next steps: 1) let that agent finish (or finish it yourself), 2) `flock /tmp/dl_test.lock tools/godot_test.sh --check-data` until 0 failures, 3) commit own files (`git add -A godot tools web COLLABORATION.md CODEX_HANDOFF.md`), 4) back up the save, check tasklist, export and install, 5) report to the user in Vietnamese: what was fixed and what was not (King Kae dome shading line, Ginger houses not walked in game, story bosses/NPCs never transform, no new player forms in forms.json, shadow acne on Harbor Town roofs).
+Only when the user says: 0.0.8 intro video (9:16 + landscape), release notes, website (`tools/publish_site.sh`), GitHub release/workflow, push.
+VS Code is set up for the user: `code ~/dragon-ball/dragon-legend.code-workspace` (WSL extension + Godot Tools installed).
