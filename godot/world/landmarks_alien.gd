@@ -142,6 +142,8 @@ class A extends LandmarksOrigins.B:
 		var pv := pivot(0, gy(0, 0), 0)
 		pv.scale = Vector3.ONE * float(l.get("houseScale", 2.5))
 		namek_house(pv)
+		# a footing under the rim: the pillar top is bumpy (+-0.5 m), the skirt showed gaps over its dips
+		cyl(3.66, 3.7, 1.2, mat(0xd2dae2, {"rough": 0.45}), 0, -0.5, 0, 28, pv).scale = Vector3(1, 1, 1.35)
 
 	## The tyrant's saucer (ref 140): dark grey-purple hull, a light trim line, silver dome studs in two rows and a
 	## big one at the front, red slatted panels, a ring of yellow lobed skirt pods, an open hatch on top. 28 m wide.
@@ -158,7 +160,7 @@ class A extends LandmarksOrigins.B:
 		torus(12.4, 0.12, trim, 0, hy.call(12.4) + 0.05, 0)
 		torus(R - 0.05, 0.22, hull2, 0, CY + 0.6, 0)
 		# lower band with windows, then the yellow pods hanging round it
-		cyl(12.2, 11.0, 1.8, hull2, 0, 2.2, 0, 40)
+		cyl(12.2, 10.35, 3.6, hull2, 0, 1.3, 0, 40)   # down into the ground: the saucer stood 1.3 m in the air on nothing
 		for i in 24:
 			var a := float(i) / 24 * TAU
 			on_ring(0, 0, 11.75, a, 2.2, 0.9, 0.7, 0.2, win)

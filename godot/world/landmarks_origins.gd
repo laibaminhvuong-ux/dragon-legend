@@ -341,7 +341,7 @@ void fragment() {
 		# round doorway with a wooden ring and curtain
 		var door := cyl(1.05, 1.05, 0.12, dark, 0, 1.95, 3.04, 20); door.rotation.x = PI / 2
 		var ring := torus(1.12, 0.12, plank, 0, 1.95, 3.1); ring.rotation.x = PI / 2
-		box(1.6, 0.9, 0.1, mat(0x3a6ab0, {"rough": 0.8}), 0, 2.55, 3.12)
+		box(1.2, 0.6, 0.1, mat(0x3a6ab0, {"rough": 0.8}), 0, 2.45, 3.12)   # curtain inside the ring (1.6 x 0.9 stuck out past it)
 		# diamond charms and windows either side
 		for sx in [-1.0, 1.0]:
 			var dmd := box(0.9, 0.9, 0.08, red, sx * 2.3, 2.6, 3.06); dmd.rotation.z = PI / 4
@@ -448,13 +448,13 @@ void fragment() {
 		var y := 0.0
 		for t: Array in tiers:
 			var tw: float = t[0]; var td: float = t[1]; var th: float = t[2]
-			box(tw, th, td, sand, 0, y + th * 0.5, 0)
-			box(tw + 0.6, 0.4, td + 0.6, wall_m, 0, y + th - 0.2, 0)
+			box(tw, th, td, sand, 0, y + th * 0.5, 0).set_meta("stand_on", true)   # terraces you can land and walk on
+			box(tw + 0.6, 0.4, td + 0.6, wall_m, 0, y + th - 0.25, 0)   # cornice just under the top (was flush: z-fighting)
 			y += th
-		# grand stair up the front (+z) from the ground to the terrace, with a dark gate under it
-		for i in 24:
-			var sh := y * float(i + 1) / 24.0
-			box(10.0, sh, 1.0, sand, 0, sh * 0.5, 36.5 - float(i))
+		# grand stair up the front (+z) from the ground to the terrace (0.57 m risers: walkable), a dark gate under it
+		for i in 30:
+			var sh := y * float(i + 1) / 30.0
+			box(10.0, sh, 0.8, sand, 0, sh * 0.5, 36.6 - float(i) * 0.8).set_meta("stand_on", true)
 		box(4.0, 4.0, 0.3, dark, -8.0, 2.0, 21.16); box(4.0, 4.0, 0.3, dark, 8.0, 2.0, 21.16)
 		for k in 14:   # arcade band round the top tier
 			box(1.2, 2.0, 0.2, dark, -15.6 + k * 2.4, 14.2, 13.06)
@@ -600,12 +600,13 @@ void fragment() {
 		var tile := mat(0xf4f2ec, {"rough": 0.4}); var seam := mat(0xc8d0dc, {"rough": 0.5}); var white := mat(0xf8f6f0, {"rough": 0.55})
 		var gold := mat(0xe8b830, {"metal": 0.55, "rough": 0.3}); var pink := mat(0xd8409a, {"rough": 0.45})
 		var glass := mat(0x5a8ad8, {"rough": 0.1, "metal": 0.2}); var blue := mat(0x3a6ac8, {"rough": 0.4})
-		cyl(40, 40, 1.0, tile, 0, -0.5, 0, 48)
-		var under := dome(40, mat(0xd8d2c4, {"rough": 0.7}), 0, -1.0, 0, 40); under.rotation.x = PI
+		# the tiled disc's top sits 4 cm over the platform terrain (both at y 0 z-fought in grey/white blotches)
+		cyl(40, 40, 1.0, tile, 0, -0.46, 0, 48)
+		var under := dome(40, mat(0xd8d2c4, {"rough": 0.7}), 0, -0.96, 0, 40); under.rotation.x = PI
 		for i in range(-36, 37, 6):   # tile seams
 			var half := sqrt(maxf(0.0, 40.0 * 40.0 - float(i * i))) - 0.5
-			box(half * 2.0, 0.03, 0.12, seam, 0, 0.01, i)
-			box(0.12, 0.03, half * 2.0, seam, i, 0.01, 0)
+			box(half * 2.0, 0.03, 0.12, seam, 0, 0.05, i)
+			box(0.12, 0.03, half * 2.0, seam, i, 0.05, 0)
 		const PZ := 16.0
 		# central hall, gold dome, upper drum and cupola
 		cyl(9.0, 9.0, 6.0, white, 0, 3.0, PZ, 36)

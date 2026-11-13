@@ -45,7 +45,8 @@ static func piece(mi: MeshInstance3D, root: Node3D) -> Dictionary:
 		m = mi.mesh.surface_get_material(0)
 	return {"xf": MeshMerge._relative(mi, root), "aabb": local_aabb(mi.mesh), "mat": m,
 		"round": mi.mesh is CylinderMesh or mi.mesh is SphereMesh or mi.mesh is CapsuleMesh,
-		"flat": mi.mesh is BoxMesh or mi.mesh is CylinderMesh, "skip": _opted_out(mi, root)}
+		"flat": mi.mesh is BoxMesh or mi.mesh is CylinderMesh, "skip": _opted_out(mi, root),
+		"stand_on": mi.has_meta("stand_on")}   # builder-marked terraces / tall stairs: a surface at any height
 
 static func _opted_out(n: Node, root: Node) -> bool:
 	var c := n
@@ -148,7 +149,7 @@ static func build(g: Node3D) -> Array:
 	var cands: Array = []
 	for inf: Dictionary in infos:
 		var top: float = inf.hi.y - base
-		if not bool(inf.p.get("flat", false)) or top <= SURFACE_MIN_TOP or top > SURFACE_TOP:
+		if not bool(inf.p.get("flat", false)) or top <= SURFACE_MIN_TOP or (top > SURFACE_TOP and not inf.p.get("stand_on", false)):
 			continue
 		if absf((inf.full.basis.y as Vector3).normalized().y) < 0.985:
 			continue
@@ -187,7 +188,7 @@ static func build(g: Node3D) -> Array:
 		if maxf(size.x, maxf(size.y, size.z)) < MIN_SIZE or hi.y - base < WALK_TOP:
 			continue
 		var rect := Rect2(lo.x, lo.z, size.x, size.z)
-		if lo.y - base > GROUNDED:
+		if lo.y - base > GROUNDED and not _on_terrace(accepted, lo.y, rect):   # a building on a stand-on terrace is solid itself
 			resting.append([lo.y, hi.y, rect])
 			continue
 		var c := _shape2d(full, aabb, bool(p.round), yaw)
@@ -215,6 +216,13 @@ static func build(g: Node3D) -> Array:
 	for s: Array in solid:
 		out.append(s[0])
 	return [out, surfaces]
+
+## Does a piece with this bottom and footprint stand on a builder-marked (stand_on) terrace?
+static func _on_terrace(accepted: Array, bottom: float, rect: Rect2) -> bool:
+	for a: Dictionary in accepted:
+		if a.p.get("stand_on", false) and absf(float(a.hi.y) - bottom) <= 0.3 and (a.rect as Rect2).grow(0.05).intersects(rect):
+			return true
+	return false
 
 ## PropSet.near finds colliders by their centre's 16 m cell within radius + 26 m: big boxes are cut into tiles
 ## no wider than MAX_HALF each way, and every box carries its bounding `radius` (near() reads it).

@@ -19,6 +19,11 @@ var _mesh: ArrayMesh
 var _material: ShaderMaterial
 var _timer := 0.0
 var _towns: Array = []   # town landmarks: no grass in a city, nor on village roads
+## Landmarks whose ground is covered by low floors or water (tops under the ~0.5 m blades): no grass inside this radius
+## (m, landmark-centred, times its scale; a landmark's own "noGrass" overrides). Baaba's moat and arena (top 0.16-0.3 m)
+## had blades growing up through the water and the tiles.
+const NO_GRASS := {"baabaisle": 60.0, "capsulehq": 28.0, "budokaihall": 34.0}   # Baaba: moat r 54 round local (0, -6); Kapsule HQ: lawn and paths (tops 0.08-0.12); tournament hall: gate walkway (top 0.08, z 20-32)
+var _bare: Array = []    # Vector3(x, radius, z)
 
 static func create(terrain: Node3D, zone: RefCounted, quality := "high") -> WorldGrass:
 	var g := WorldGrass.new()
@@ -27,6 +32,10 @@ static func create(terrain: Node3D, zone: RefCounted, quality := "high") -> Worl
 	var p: Dictionary = PRESET.get(quality, PRESET.high)
 	g._grid = terrain.get_meta("grid")
 	g._towns = zone.landmarks.filter(func(l: Dictionary) -> bool: return l.get("type") == "town")
+	for l: Dictionary in zone.landmarks:
+		var r := float(l.get("noGrass", NO_GRASS.get(str(l.get("type", "")), 0.0))) * float(l.get("scale", 1.0))
+		if r > 0.0:
+			g._bare.append(Vector3(float(l.x), r, float(l.z)))
 	g._density = float(p.density) * float(zone.biome.get("grass", 1.0))
 	g._radius = p.radius
 	g._mesh = _clump_mesh()
@@ -95,12 +104,16 @@ func _build_chunk(k: Vector2i) -> MultiMeshInstance3D:
 	var half: float = _grid.half
 	var towns: Array = _towns.filter(func(l: Dictionary) -> bool:
 		return Vector2((k.x + 0.5) * CHUNK - float(l.x), (k.y + 0.5) * CHUNK - float(l.z)).length() < float(l.radius) + CHUNK)
+	var bare: Array = _bare.filter(func(b: Vector3) -> bool:
+		return Vector2((k.x + 0.5) * CHUNK - b.x, (k.y + 0.5) * CHUNK - b.z).length() < b.y + CHUNK)
 	for t in tries:
 		var x := (k.x + rng.randf()) * CHUNK
 		var z := (k.y + rng.randf()) * CHUNK
 		if absf(x) > half - 1.0 or absf(z) > half - 1.0:
 			continue
 		if not towns.is_empty() and _paved(towns, x, z):
+			continue
+		if not bare.is_empty() and _bare_at(bare, x, z):
 			continue
 		var s := WorldTerrain.sample(_grid, x, z)
 		var green: float = s.grass * (1.0 - s.snow)
@@ -155,6 +168,12 @@ static func _clump_mesh() -> ArrayMesh:
 				st.add_vertex(quad[idx])
 	return st.commit()
 
+static func _bare_at(bare: Array, x: float, z: float) -> bool:
+	for b: Vector3 in bare:
+		if (x - b.x) * (x - b.x) + (z - b.z) * (z - b.z) < b.y * b.y:
+			return true
+	return false
+
 static func _paved(towns: Array, x: float, z: float) -> bool:
 	for l: Dictionary in towns:
 		var lx := x - float(l.x)
@@ -164,8 +183,33 @@ static func _paved(towns: Array, x: float, z: float) -> bool:
 			continue
 		if str(l.get("style", "")) == "city":
 			return true
-		if RuleTown._on_road(RuleTown.layout(l), lx, lz, 0.6):
+		# town-local frame (hamlets are rotated, as RuleTown.surface_at)
+		var lr := float(l.get("rot", 0.0))
+		var tx := lx * cos(lr) - lz * sin(lr)
+		var tz := lx * sin(lr) + lz * cos(lr)
+		var lay := RuleTown.layout(l)
+		if RuleTown._on_road(lay, tx, tz, 0.6):
 			return true
+		for e: Dictionary in lay.extras:   # building audit: grass grew through the village plazas and crop fields
+			match str(e.get("kind", "")):
+				"plaza":
+					if Vector2(tx - float(e.x), tz - float(e.z)).length() < float(e.r) + 0.3:
+						return true
+				"field":
+					var fr := float(e.rot)
+					var fx := tx - float(e.x); var fz := tz - float(e.z)
+					if absf(fx * cos(fr) - fz * sin(fr)) < float(e.w) * 0.5 + 0.2 and absf(fx * sin(fr) + fz * cos(fr)) < float(e.d) * 0.5 + 0.2:
+						return true
 		if not RuleTown.inside(l, x, z).is_empty():   # no grass on the floor of a walk-in building
 			return true
+		for b: Dictionary in lay.buildings:   # nor on a building's footing: RuleTown.inside only covers the square inside
+			if str(b.kind) in RuleTown.NO_STRUCTURE:   # a dome's walls (0.78 r), so blades grew between it and the round wall (audit)
+				continue
+			var br := float(b.rot)
+			var bx := tx - float(b.x); var bz := tz - float(b.z)
+			if str(b.kind) in ["dome", "tower", "lighthouse", "windmill"]:
+				if Vector2(bx, bz).length() < float(b.w) * 0.5 + 0.3:
+					return true
+			elif absf(bx * cos(br) - bz * sin(br)) < float(b.w) * 0.5 + 0.3 and absf(bx * sin(br) + bz * cos(br)) < float(b.d) * 0.5 + 0.3:
+				return true
 	return false

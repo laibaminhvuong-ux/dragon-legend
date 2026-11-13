@@ -10,7 +10,7 @@ const CELL := {"low": 4.0, "medium": 3.0, "high": 2.0}
 const SHADER := preload("res://world/shaders/terrain.gdshader")
 
 ## Bump when the grid format or the splat weights change: old caches/bakes are then ignored.
-const GRID_VERSION := 2
+const GRID_VERSION := 3   # 3: travel pads keep the town/site flattening they sit in (RuleZone._tp_base)
 const BAKED_DIR := "res://world/baked"
 static var cache_dir := "user://cache/terrain"
 

@@ -47,7 +47,7 @@
     "tools/skill_presentation.mjs": "447b6907ff183affbc451f0cfc6ea987c0e928256f7a3c5f988cc01a5636b322",
     "tools/rift_patrol.mjs": "2b19a29e7e0ee9b7757ec9974abcb2797c92c6d6b14a644178acd5b9081314c1",
     "tools/origins.mjs": "53193315419770fe6a6308fe9183180f3acdf2437facc73f7e7fff97554faeb4",
-    "tools/godot_additions.mjs": "2dbb3ae77644299bd196a28af0d06539c270e7879436350b1575b074acfcdfab",
+    "tools/godot_additions.mjs": "1cd5bada0d4fdaf574063e8d8cdbe70d90a89b5f08dd7ccb3b42b30f870d5a50",
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
   "files": {
@@ -64,8 +64,8 @@
       "entries": 134
     },
     "npcs.json": {
-      "sha256": "2a70e07f5eb8bb9734d77178a31d994314a2fc16b009ece0c3c7fd454649ed49",
-      "bytes": 33421,
+      "sha256": "07aa54a787130b3245cb2c423277a3a0d8dd284bd78f813302a4d883b3efbd23",
+      "bytes": 33406,
       "kind": "array",
       "entries": 208
     },
@@ -148,8 +148,8 @@
       "entries": 5
     },
     "zones.json": {
-      "sha256": "f8e42c948ed1c8710ca7288862ca56f828be7eac712bdbe6d180507d33e02efa",
-      "bytes": 85697,
+      "sha256": "fc9b42b60350bf04938aa9699f5e7e7c918a210081a8a070b29daed7112a285e",
+      "bytes": 85836,
       "kind": "object",
       "entries": 57
     },

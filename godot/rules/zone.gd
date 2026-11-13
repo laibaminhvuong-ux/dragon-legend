@@ -64,8 +64,11 @@ func _init(zone_id: String = "earth_plains", data: Object = null) -> void:
 		landmarks.append(landmark)
 	spawn = _on_road(_terrain.spawn)
 	if def.get("travelPoint") != null:
-		travel_point = _on_road(def.travelPoint)
-		_tp_base = raw_height(travel_point.x, travel_point.z)
+		var tp: Dictionary = _on_road(def.travelPoint)
+		# the landing pad keeps the ground it is on, a town's or site's flattening included (raw_height dug a pit
+		# into the town square where the island under it falls away: nameck/new_nameck villages, harbor_town)
+		_tp_base = height_at(tp.x, tp.z)
+		travel_point = tp
 		travel_point.y = height_at(travel_point.x, travel_point.z)
 
 # ---- planet-map API (open world): a single area is a map with one region, itself (RulePlanet overrides) ----
@@ -243,7 +246,8 @@ func surface_at(x: float, z: float) -> String:
 ## Landmarks with an interior map, entered through a door in front of them.
 const LANDMARK_INTERIORS := {"capsulecorp": "interior_lab", "kamehouse": "interior_home", "farmhouse": "interior_home", "hangar": "interior_hangar",
 	"bunker": "interior_lab", "radartower": "interior_tower", "labdoor": "interior_lab",
-	"capsulehq": "interior_lab", "rrhangar": "interior_hangar", "kamecottage": "interior_home"}   # 0.0.8 map pass builders
+	"capsulehq": "interior_lab", "rrhangar": "interior_hangar", "kamecottage": "interior_home",   # 0.0.8 map pass builders
+	"paozucabin": "interior_home"}   # building audit: the hut's round doorway led nowhere
 var _doors: Variant = null
 
 ## Building doors on this map: [{x, z, yaw, interior, name}] (the interact key enters); in an interior, its exit.

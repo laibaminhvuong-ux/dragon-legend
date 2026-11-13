@@ -98,6 +98,8 @@ static func build(g: Node3D, zone: RefCounted, l: Dictionary) -> void:
 			"ruin": _ruin(n, b)
 			"shrine": _shrine(n, b)
 			_: _house(n, b)
+		if RuleTown.INTERIOR.has(str(b.kind)):
+			_entry_door(n, b)
 	if style == "city":
 		_monorail(g, zone, l, base_y, lay)
 	# one mesh per material for the whole town (thousands of pieces -> a few draw calls), faded out far away
@@ -271,6 +273,15 @@ static func _windmill(n: Node3D, b: Dictionary) -> void:
 		blade.rotation.z = i * PI / 2
 		blade.position = Vector3(sin(i * PI / 2) * -4.5, cos(i * PI / 2) * 4.5, 0)
 
+## The door of a building with an interior map (RuleTown.doors puts its Enter point in front of the +z side):
+## building audit, the lighthouse / towers / windmills / shrines had none drawn, only an invisible spot to press.
+static func _entry_door(n: Node3D, b: Dictionary) -> void:
+	var w := float(b.w)
+	var front: float = {"tower": w * 0.5 * 1.04 - 0.02, "office": w * 0.4 + 0.1, "lighthouse": 2.37, "windmill": 2.9,
+		"shrine": w * 0.5}.get(str(b.kind), w * 0.5)
+	_box(n, Vector3(2.0, 2.8, 0.2), _mat(0xd8d0c0, {"rough": 0.7}), Vector3(0, 1.4, front))
+	_box(n, Vector3(1.5, 2.4, 0.2), _mat(0x3a2c22, {"rough": 0.6}), Vector3(0, 1.2, front + 0.06))
+
 static func _lighthouse(n: Node3D, b: Dictionary) -> void:
 	var h := float(b.h)
 	for i in 4:
@@ -312,15 +323,24 @@ static func _monorail(g: Node3D, zone: RefCounted, l: Dictionary, base_y: float,
 	for i in steps:   # the east-west line
 		var x0 := lerpf(-radius * 0.9, radius * 0.9, float(i) / steps); var x1 := lerpf(-radius * 0.9, radius * 0.9, float(i + 1) / steps)
 		spans.append([Vector3(x0, _ground(zone, l, x0, 0.0) - base_y + 22.0, 0.0), Vector3(x1, _ground(zone, l, x1, 0.0) - base_y + 22.0, 0.0)])
+	var last: Vector3 = spans[-1][1]   # the east-west line's far end had no pylon: its tube ended in mid-air
+	spans.append([last, last])
 	for s: Array in spans:
 		var a: Vector3 = s[0]; var b: Vector3 = s[1]
 		var dir := b - a
+		if dir.length() < 0.01:   # the end post only
+			var ge := _ground(zone, l, a.x, a.z) - base_y
+			_cyl(g, 0.45, 0.6, a.y - ge, pylon, Vector3(a.x, ge + (a.y - ge) * 0.5 - 1.2, a.z), 10)
+			_box(g, Vector3(3.2, 0.8, 3.2), pylon, Vector3(a.x, a.y - 1.4, a.z))
+			continue
 		var piece := _cyl(g, 1.3, 1.3, dir.length() + 0.6, tube, (a + b) * 0.5, 14)
 		piece.basis = Basis(Quaternion(Vector3.UP, dir.normalized()))
 		var stripe := _cyl(g, 1.34, 1.34, dir.length() + 0.6, line, (a + b) * 0.5 + Vector3(0, 0.0, 0), 14)
 		stripe.basis = Basis(Quaternion(Vector3.UP, dir.normalized())) * Basis.from_scale(Vector3(1, 1, 0.25))
 		var gy := _ground(zone, l, a.x, a.z) - base_y
-		if Vector2(a.x, a.z).length() > 30.0:
+		# no ring pylon in the middle of the north-south avenue (building audit: it stood in the street at both
+		# crossings; the east-west line's pylons run along its avenue's centre by design)
+		if Vector2(a.x, a.z).length() > 30.0 and absf(a.x) > 7.0:
 			_cyl(g, 0.45, 0.6, a.y - gy, pylon, Vector3(a.x, gy + (a.y - gy) * 0.5 - 1.2, a.z), 10)
 			_box(g, Vector3(3.2, 0.8, 3.2), pylon, Vector3(a.x, a.y - 1.4, a.z))
 

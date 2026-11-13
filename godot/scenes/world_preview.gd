@@ -54,6 +54,9 @@ func _ready() -> void:
 		grass.target = cam
 		grass.update_around(cam.global_position)
 		print("grass clumps %d" % grass.instance_count())
+	if world.has_meta("towns"):   # towns stream in around the player in the game: build the ones near the camera
+		var ts: TownStream = world.get_meta("towns")
+		ts.update_around(cam.global_position)   # the first call builds the towns within PRIME at once; the rest stream
 	if args.shot != "":
 		await get_tree().create_timer(4.0).timeout
 		print("fps %d build %.1f" % [Engine.get_frames_per_second(), build_s])

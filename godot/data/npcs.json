@@ -251,16 +251,16 @@
     "who": "guru",
     "zone": "namek",
     "x": 160,
-    "z": 92,
+    "z": 99.6,
     "onTop": true,
-    "rot": 3.141592653589793
+    "rot": 0
   },
   {
     "id": "dodoria",
     "who": "dodoria",
     "zone": "namek",
-    "x": -60,
-    "z": 30,
+    "x": -46,
+    "z": 21,
     "boss": true,
     "after": "m08_namek",
     "before": "m09_village"
@@ -299,8 +299,8 @@
     "id": "burter",
     "who": "burter",
     "zone": "namek",
-    "x": 10,
-    "z": -148,
+    "x": 14,
+    "z": -151,
     "boss": true,
     "after": "m11_dragon_balls",
     "before": "m12_ginyu"
@@ -309,8 +309,8 @@
     "id": "jeice",
     "who": "jeice",
     "zone": "namek",
-    "x": 0,
-    "z": -152,
+    "x": 8,
+    "z": -160,
     "boss": true,
     "after": "m11_dragon_balls",
     "before": "m12_ginyu"
@@ -339,8 +339,8 @@
     "id": "vegeta_namek",
     "who": "vegeta",
     "zone": "namek",
-    "x": 60,
-    "z": -40,
+    "x": 42,
+    "z": -22,
     "rot": 2,
     "after": "m09_village",
     "before": "m13_frieza"
@@ -972,7 +972,7 @@
     "who": "grand_priest",
     "zone": "world_of_void",
     "x": 0,
-    "z": 120,
+    "z": 94,
     "rot": 3.141592653589793,
     "offPlatform": true,
     "y": 30
@@ -982,7 +982,7 @@
     "who": "zeno",
     "zone": "world_of_void",
     "x": 0,
-    "z": 160,
+    "z": 112,
     "rot": 3.141592653589793,
     "offPlatform": true,
     "y": 34

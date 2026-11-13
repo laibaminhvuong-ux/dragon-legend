@@ -105,7 +105,7 @@
         "rot": 0.6,
         "name": "Farmer's house",
         "flatten": 14,
-        "collide": 5
+        "collide": 2.6
       }
     ],
     "travelPoint": {
@@ -134,7 +134,7 @@
         {
           "x": 0,
           "z": 0,
-          "r": 34,
+          "r": 62,
           "h": 2.2
         }
       ],
@@ -166,8 +166,8 @@
       }
     ],
     "travelPoint": {
-      "x": -12,
-      "z": -18
+      "x": 10,
+      "z": -12
     }
   },
   "snake_way": {
@@ -568,7 +568,7 @@
         {
           "x": 160,
           "z": 90,
-          "r": 9,
+          "r": 13,
           "h": 70
         },
         {
@@ -721,7 +721,8 @@
         "type": "elderspire",
         "x": 160,
         "z": 90,
-        "name": "Grand Elder Gura's house"
+        "name": "Grand Elder Gura's house",
+        "houseScale": 1.5
       },
       {
         "type": "tyrantship",
@@ -741,8 +742,8 @@
       }
     ],
     "travelPoint": {
-      "x": 8,
-      "z": -30
+      "x": -8,
+      "z": -28
     }
   },
   "yardrat": {
@@ -1013,7 +1014,7 @@
         "z": 81,
         "rot": 3.141592653589793,
         "name": "Dr. Gerro's lab",
-        "collide": 4
+        "collide": 2
       },
       {
         "type": "gingertower",
@@ -1927,8 +1928,9 @@
       {
         "type": "zenobox",
         "x": 0,
-        "z": 160,
-        "name": "Grand Zenno's stand"
+        "z": 112,
+        "name": "Grand Zenno's stand",
+        "alt": 6.5
       },
       {
         "type": "toparena",
@@ -2098,7 +2100,7 @@
         "x": 0,
         "z": 20,
         "name": "Crimson Ribbon base",
-        "collide": 16,
+        "collide": 11,
         "flatten": 30,
         "rot": 3.1416
       },
@@ -2109,7 +2111,8 @@
         "scale": 0.6,
         "collide": 10,
         "flatten": 18,
-        "rot": 1.5708
+        "rot": 1.5708,
+        "name": "Crimson Ribbon hangar"
       },
       {
         "type": "radartower",
@@ -2164,7 +2167,7 @@
         {
           "x": 150,
           "z": -60,
-          "r": 10,
+          "r": 15,
           "h": 46
         },
         {
@@ -2275,7 +2278,8 @@
         "type": "elderspire",
         "name": "Elder's house",
         "x": 150,
-        "z": -60
+        "z": -60,
+        "houseScale": 2
       }
     ],
     "travelPoint": {
@@ -2599,7 +2603,8 @@
         "type": "echoprison",
         "name": "Echo Prison",
         "x": 0,
-        "z": 20
+        "z": 20,
+        "flatten": 92
       }
     ],
     "travelPoint": {
@@ -4331,7 +4336,7 @@
         "x": 0,
         "z": 30,
         "collide": 7,
-        "flatten": 20
+        "flatten": 36
       }
     ],
     "travelPoint": {

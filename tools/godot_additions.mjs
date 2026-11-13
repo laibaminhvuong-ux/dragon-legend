@@ -168,7 +168,7 @@ function childhoodPlaces(zones) {
     area('muscle_tower', 'Muscle Tower', 'broly_glacier', [{type: 'musclefort', name: 'Muscle Tower', x: 0, z: 40, rot: Math.PI, collide: 13, flatten: 30}]),
     area('baaba_palace', "Fortuneteller Baaba's Palace", 'earth_plains', [{type: 'baabaisle', name: "Baaba's Palace", x: 0, z: 40, collide: 8, flatten: 56}],
       {biome: {treeCount: 40}}),
-    area('korrin_tower', 'Korrin Tower', 'earth_plains', [{type: 'korrinspire', name: 'Korrin Tower', x: 0, z: 30, collide: 7, flatten: 20}],
+    area('korrin_tower', 'Korrin Tower', 'earth_plains', [{type: 'korrinspire', name: 'Korrin Tower', x: 0, z: 30, collide: 7, flatten: 36}],   // 36: the tepee camp reaches 42 m out (trees grew through it)
       {biome: {treeCount: 220}}),
     area('piccor_castle', "King Piccor's Castle", 'gizard_wasteland', [{type: 'kingcastle', name: "King Piccor's Castle", x: 0, z: 45, rot: Math.PI, collide: 19, flatten: 42}]),
     area('tournament_island', 'Tournament Island', 'earth_plains', [{type: 'budokaihall', name: 'World Tournament Arena', x: 0, z: 20, flatten: 50}],
@@ -205,7 +205,7 @@ function timeNexus(zones) {
   };
   // Echo Prison (Codex's Rift map): Warden Morrigath's prison world, walls and cell blocks round the arena
   if (zones.echo_prison) {
-    zones.echo_prison.landmarks = [...zones.echo_prison.landmarks, {type: 'echoprison', name: 'Echo Prison', x: 0, z: 20}];
+    zones.echo_prison.landmarks = [...zones.echo_prison.landmarks, {type: 'echoprison', name: 'Echo Prison', x: 0, z: 20, flatten: 92}];   // flatten: keeps trees/rocks out of the r-85 wall ring (flat map)
     zones.echo_prison.biome = {...zones.echo_prison.biome,
       sky: {type: 'gradient', top: 0x1a0f1e, horizon: 0x5a2a3a, bottom: 0x0f0a10, elevation: 25, azimuth: 240, sunColor: 0xff9a7a, stars: true},
       fog: [0x3a1a26, 0.0016]};
@@ -308,6 +308,15 @@ function mapPass008(zones) {
 
   // --- B1 Origins leftover (map_data_requests_origins.md) --------------------------------------------------------
   swap('kame_island', 'kamehouse', {type: 'kamecottage', rot: PI, collide: 5, flatten: 12});
+  // the pilot's pad at (-12,-18) was off the island's edge: its 22 m flat disc sank the south-west of the island
+  // (and the spawn) to -0.4 m, under the sea. On the island's high ground instead.
+  Z('kame_island').travelPoint = {x: 10, z: -12};
+  // the Origins milk round / training rock (k02, -30,-20 / 30,-25 / 24,28 / -25,25) were 10-13 m under the sea off the
+  // r-34 island (its land ends ~25 m out): a wider island brings its shore out to them
+  Z('kame_island').terrain.islands = [{x: 0, z: 0, r: 62, h: 2.2}];
+  // namek's pad (8,-30) was 13 m from the Kapsule Corp ship: its disc overrode the ship's flattening, the legs hung
+  // 0.3 m in the air. Moved 25 m off.
+  Z('namek').travelPoint = {x: -8, z: -28};
 
   // --- B2 Z-era Earth (map_data_requests_earth.md) ---------------------------------------------------------------
   swap('cell_games', 'cellarena', {type: 'cellring', flatten: 40});
@@ -345,6 +354,10 @@ function mapPass008(zones) {
   add('king_kai', {type: 'kaiband', x: 0, z: 0});
   Z('king_kai').terrain.planetoid = {...zones.king_kai.terrain.planetoid, road: 6.4};   // the white road is painted on the terrain (rules surface_at), not a floating strip
   add('world_of_void', {type: 'toparena', x: 0, z: 0});
+  // building audit 2026-11-12: Grand Zenno's stand at z 160 was outside the 260 m map (fighters are clamped to |z| < 129),
+  // built in the void at -400, and Zenno was pushed 32 m off it into the air: the stand floats inside the map, alt 6.5
+  // puts its top (27.5 up) under Zenno's authored y 34 (NPCs moved with it in applyGodotAdditions)
+  swap('world_of_void', 'zenobox', {type: 'zenobox', z: 112, alt: 6.5});
   // beerus_planet: NOT the floating-platform terrain (it is a region of the 1600 m beeros planet map, where the
   // platform's void would become a 290 m pit); the temple + great tree stand on the existing ground instead.
   swap('beerus_planet', 'pyramid', {type: 'beeruscastle', collide: 10, flatten: 30});
@@ -363,15 +376,20 @@ function mapPass008(zones) {
   swap('namek', 'namekhouse', {type: 'namekdome', rot: 0.6, collide: 4.5, flatten: 8}, [-20, 22]);
   swap('namek', 'namekhouse', {type: 'namekdome', rot: 1.2, collide: 4, flatten: 7}, [-34, 8]);
   swap('namek', 'namekhouse', {type: 'namekdome', rot: 0.1, collide: 4, flatten: 7}, [-8, 38]);
-  swap('namek', 'gurutower', {type: 'elderspire'});
+  swap('namek', 'gurutower', {type: 'elderspire', houseScale: 1.5});
+  // building audit: the x2.5 house (18 x 24 m) sat on a r-9 pillar whose top is ~7 m across the radius: it hung 4-5 m
+  // over the cliff with its door in the air. Wider pillar (top ~10.5 m) and the x1.5 house (11 x 14.6 m) fit, with a
+  // ledge in front of the door where the Grand Elder stands (npcs patch below).
+  Z('namek').terrain.mesas = Z('namek').terrain.mesas.map(m => (m.x === 160 && m.z === 90 ? {...m, r: 13} : m));
   swap('namek', 'friezaship', {type: 'tyrantship', collide: 15, flatten: 28});
   // new_namek: its own layout instead of a copy of namek (audit 142)
   const nn = Z('new_namek');
   nn.terrain = {size: nn.terrain.size, spawn: {x: 0, z: 0}, hills: {amp: 6, scale: 110}, lake: {x: -40, z: 60, radius: 55, level: 0.4},
-    edge: 'mountains', mesas: [{x: 150, z: -60, r: 10, h: 46}, {x: -170, z: -120, r: 8, h: 36}, {x: 200, z: 160, r: 12, h: 58}, {x: -220, z: 150, r: 9, h: 40}]};
+    edge: 'mountains', mesas: [{x: 150, z: -60, r: 15, h: 46}, {x: -170, z: -120, r: 8, h: 36}, {x: 200, z: 160, r: 12, h: 58}, {x: -220, z: 150, r: 9, h: 40}]};
   biome('new_namek', {trees: 'ajisa_tall', treeCount: 200, grassColors: NAMEK_GRASS, tints: {rock: [1.15, 0.82, 0.95]}, bushes: 120, rocks: 100, water: 0x2aa79b});
   nn.landmarks = [{type: 'namekvillage', name: 'New Nameck village', x: 30, z: -20, count: 3, flatten: 16},
-    {type: 'namekdome', x: -10, z: 0, collide: 4.5, flatten: 8}, {type: 'elderspire', name: "Elder's house", x: 150, z: -60}];
+    {type: 'namekdome', x: -10, z: 0, collide: 4.5, flatten: 8}, {type: 'elderspire', name: "Elder's house", x: 150, z: -60, houseScale: 2.0}];
+  // building audit: the x2.5 house (24 m long) overhung the r-10 mesa top by 2-4 m, its door 40 m over the ground
   nn.travelPoint = {x: 20, z: -45};
   biome('planet_cereal', {trees: 'purple_spire', treeCount: 520, tints: {rock: [1.25, 1.1, 0.85]}});
   swap('planet_cereal', 'farmhouse', {type: 'cerealhut', rot: 1.57, collide: 5, flatten: 14});
@@ -381,6 +399,18 @@ function mapPass008(zones) {
   // villagers standing at (-12,14) / (-24,26) / (8,22)
   Z('yardrat').landmarks = zones.yardrat.landmarks.filter(l => l.type !== 'yardrathut');
   add('yardrat', {type: 'yardratvillage', name: 'Yardran village', x: -10, z: 42, huts: 4, flatten: 18});
+  // --- building audit (2026-11-12): a landmark's door point is `collide` + 1.5 m in front of its centre (RuleZone.doors)
+  // and is used within 2.6 m. The farmhouse (front wall 2.5 m out) and Gerro's lab door panel (0.9 m) had theirs
+  // 4-4.6 m out in the open, so pressing Enter at the actual door did nothing.
+  for (const [id, type, collide] of [['earth_plains', 'farmhouse', 2.6], ['gero_lab', 'labdoor', 2]])
+    for (const l of Z(id).landmarks) if (l.type === type) l.collide = collide;
+  // building audit 2026-11-12: the big Crimson Ribbon hangar's door point sat 17.5 m out (collide 16) but its sliding
+  // door is 11.35 m from the centre, so Enter at the door did nothing (6 m of apron away); collide 11 puts it 1.2 m in
+  // front of the door (the scale-0.6 hangar's was already right). The unnamed one was labelled "Rrhangar".
+  for (const l of Z('red_ribbon').landmarks) if (l.type === 'rrhangar') {
+    if ((l.scale ?? 1) === 1) l.collide = 11;
+    else if (!l.name) l.name = 'Crimson Ribbon hangar';
+  }
   return [...touched];
 }
 
@@ -397,6 +427,15 @@ export function applyGodotAdditions(tables) {
   for (const id of childhood) if (!zoneOrder.includes(id)) zoneOrder.push(id);
   const changed = [...checkInStation(zones, npcs), ...interiors(zones), ...childhood, ...timeNexus(zones)];
   changed.push(...mapPass008(zones));   // 0.0.8 map pass: builder batches' zone data (see mapPass008)
+  // building audit 2026-11-12: Zenno on his stand (moved to z 112 in mapPass008), the Grand Priest just in front of it
+  for (const [id, z] of [['zeno', 112], ['grand_priest', 94]]) { const n = npcs.find(v => v.id === id); if (n) n.z = z; }
+  // building audit (namek): the Grand Elder stood inside his solid dome (hidden, collider carved round him): out on
+  // the pillar top in front of his door, facing out (the x1.5 house leaves ~3 m of ledge there)
+  { const n = npcs.find(v => v.id === 'guru'); if (n) Object.assign(n, {z: 99.6, rot: 0}); }
+  // namek fighters authored in the sea between the islands (stood 2-14 m under the water): nearest dry ground
+  for (const [id, x, z] of [['dodoria', -46, 21], ['jeice', 8, -160], ['burter', 14, -151], ['vegeta_namek', 42, -22]]) {
+    const n = npcs.find(v => v.id === id); if (n) Object.assign(n, {x, z});
+  }
   // giant, seated behind the desk: red skin, black beard, judge's hat (Parts.costume "yemmo")
   Object.assign(characters.king_yemma, {scale: 4.2, look: {race: 'Human', skin: 0, skinHex: 0xc8463c, face: 'Fierce', hair: 'None',
     hairColor: 0, build: 'Muscular', outfit: 'CraneGi', outfitTint: 2, costume: 'yemmo'}});

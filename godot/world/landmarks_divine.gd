@@ -466,7 +466,7 @@ class D extends LandmarksOrigins.B:
 		var lime := mat(0x9cc23a, {"rough": 0.8})
 		var planet := sphere(r, lime, 0, 0, 0, 48)
 		planet.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		_band(Vector3.ZERO, r, 0.0)
+		_band(Vector3.ZERO, r, 0.06, false)   # all round the sphere (there is no planetoid terrain under a floating orb)
 		for i in 7:
 			var a := float(i) / 7.0 * TAU + 0.4
 			var el := -0.35 + (i % 3) * 0.3
@@ -474,17 +474,24 @@ class D extends LandmarksOrigins.B:
 			if absf(out.x) < 0.2:
 				continue   # keep the band clear
 			ring_tree(out * (r - 0.3), out, r * 0.09)
-		var top := pivot(0, r - 0.4, 0)
-		top.scale = Vector3.ONE * 1.6
-		dome(4, mat(0xf3eadb), 6, 0, 2, 24, top)
-		torus(4, 0.3, mat(0xc83228), 6, 0.1, 2, top)
-		sphere(0.8, mat(0xc83228), 6, 4, 2, 12, top)
-		box(1.4, 2.2, 0.2, mat(0x6a4a2a), 6, 1.1, 5.9, 0.0, top)
-		var car := pivot(-6, 0, 5, 1.2, top)
-		box(3, 0.7, 1.6, mat(0xc8322a, {"metal": 0.5, "rough": 0.3}), 0, 0.7, 0, 0.0, car)
-		box(1.6, 0.6, 1.4, mat(0xddeeff, {"opacity": 0.5, "rough": 0.1}), -0.2, 1.3, 0, 0.0, car)
-		cyl(0.35, 0.5, 6, mat(0x6a4a2a), -6, 3, -5, 10, top)
-		sphere(3.2, mat(0x2f8a3a, {"rough": 0.8}), -6, 7.5, -5, 20, top)
+		# house, car and tree each stand on the curved top, upright along the sphere's normal (a flat 1.6x pivot at the
+		# pole left the house, car and tree floating up to 3.6 m over the curve; audit 2026-11-12)
+		var on_top := func(px: float, pz: float, ry := 0.0) -> Node3D:
+			var up := Vector3(px * 1.6, sqrt(maxf(r * r - (px * px + pz * pz) * 2.56, 0.0)), pz * 1.6).normalized()
+			var n := pivot(0, 0, 0)
+			n.transform = Transform3D(basis_y(up) * Basis(Vector3.UP, ry) * Basis.from_scale(Vector3.ONE * 1.6), up * (r - 0.25))
+			return n
+		var house: Node3D = on_top.call(6.0, 2.0)
+		dome(4, mat(0xf3eadb), 0, 0, 0, 24, house)
+		torus(4, 0.3, mat(0xc83228), 0, 0.1, 0, house)
+		sphere(0.8, mat(0xc83228), 0, 4, 0, 12, house)
+		box(1.4, 2.2, 0.2, mat(0x6a4a2a), 0, 1.1, 3.9, 0.0, house)
+		var car: Node3D = on_top.call(-6.0, 5.0, 1.2)
+		box(3, 0.7, 1.6, mat(0xc8322a, {"metal": 0.5, "rough": 0.3}), 0, 0.4, 0, 0.0, car)   # on the ground (was 0.35 m up)
+		box(1.6, 0.6, 1.4, mat(0xddeeff, {"opacity": 0.5, "rough": 0.1}), -0.2, 1.0, 0, 0.0, car)
+		var tree: Node3D = on_top.call(-6.0, -5.0)
+		cyl(0.35, 0.5, 6, mat(0x6a4a2a), 0, 2.8, 0, 10, tree)
+		sphere(3.2, mat(0x2f8a3a, {"rough": 0.8}), 0, 7.3, 0, 20, tree)
 		if flag("clouds", false):
 			var cloud := mat(0xfff0c0, {"rough": 1.0, "emissive": 0x806030, "glow": 0.4})
 			no_shadow.append(cloud)
@@ -497,7 +504,10 @@ class D extends LandmarksOrigins.B:
 	## The white road round King Kae's planetoid: a strip mesh (not a cylinder, whose flat facets and seams stood
 	## proud of the terrain and let the grass through). The top half follows the terrain's own height (zone.height_at,
 	## so it lies on the ground even with the noise); the underside and the horizon follow the sphere.
-	func _band(c: Vector3, r: float, lift: float) -> void:
+	## on_terrain false (kaiorb, a floating orb): the whole ring follows the sphere. True (kaiband) leaves the top half to
+	## the planetoid terrain; on the orb that bent the ring's top ends down onto the zone's ground (a white pillar from
+	## Serpent Road's end up to the orb, audit 2026-11-12).
+	func _band(c: Vector3, r: float, lift: float, on_terrain := true) -> void:
 		var w := clampf(r * 0.11, 2.0, 7.0)
 		var off := g.position.y / maxf(g.scale.y, 0.01)
 		var R := r + lift
@@ -508,12 +518,12 @@ class D extends LandmarksOrigins.B:
 			st.begin(Mesh.PRIMITIVE_TRIANGLES)
 			for i in steps:
 				var a0 := float(i) / steps * TAU; var a1 := float(i + 1) / steps * TAU
-				if cos(a0) > 0.1 and cos(a1) > 0.1 and absf(sin(a0) * R) < R - 2.0 and absf(sin(a1) * R) < R - 2.0:
+				if on_terrain and cos(a0) > 0.1 and cos(a1) > 0.1 and absf(sin(a0) * R) < R - 2.0 and absf(sin(a1) * R) < R - 2.0:
 					continue   # the top half is painted on the terrain itself (zone.surface_at, terrain.planetoid.road)
-				var q := [_band_pt(c, R, off, float(part[0]), a0, float(part[2])), _band_pt(c, R, off, float(part[1]), a0, float(part[2])),
-					_band_pt(c, R, off, float(part[1]), a1, float(part[2])), _band_pt(c, R, off, float(part[0]), a1, float(part[2]))]
+				var q := [_band_pt(c, R, off, float(part[0]), a0, float(part[2]), on_terrain), _band_pt(c, R, off, float(part[1]), a0, float(part[2]), on_terrain),
+					_band_pt(c, R, off, float(part[1]), a1, float(part[2]), on_terrain), _band_pt(c, R, off, float(part[0]), a1, float(part[2]), on_terrain)]
 				for k in [0, 2, 1, 0, 3, 2]:
-					st.set_normal(Vector3.UP if cos(a0) > 0.0 else (q[k] - c).normalized())
+					st.set_normal(Vector3.UP if on_terrain and cos(a0) > 0.0 else (q[k] - c).normalized())
 					st.add_vertex(q[k])
 			var mi := MeshInstance3D.new()
 			st.index()
@@ -525,10 +535,10 @@ class D extends LandmarksOrigins.B:
 			g.add_child(mi)
 
 	## One band vertex at lateral offset x and angle a (0 = the top): on the terrain over the top, else on the sphere.
-	func _band_pt(c: Vector3, R: float, off: float, x: float, a: float, up: float) -> Vector3:
+	func _band_pt(c: Vector3, R: float, off: float, x: float, a: float, up: float, on_terrain := true) -> Vector3:
 		var z := sin(a) * R
 		var y := c.y + cos(a) * R
-		if zone != null and cos(a) > 0.1 and absf(z) < R - 2.0 and zone.has_method("height_at"):
+		if on_terrain and zone != null and cos(a) > 0.1 and absf(z) < R - 2.0 and zone.has_method("height_at"):
 			y = zone.height_at(x, z) + 0.05 - off
 		return Vector3(x, y + up, z)
 
@@ -545,8 +555,10 @@ class D extends LandmarksOrigins.B:
 		var c := Vector3(0, cy, 0)
 		_band(c, r, 0.12)
 		if flag("underside"):
+			# only below 50° from the top: a full sphere 0.35 m under the dome came up through every flattened site
+			# (King Kae's house pad cuts the dome ~1 m down on its uphill side: a lime disc showed beside the house)
 			var lime := mat(0x8fb83a, {"rough": 0.85})
-			var s := sphere(r - 0.35, lime, c.x, c.y, c.z, 64)
+			var s := _sphere_below(c, r - 0.35, deg_to_rad(50.0), lime)
 			s.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		if flag("trees"):
 			for i in 6:
@@ -554,6 +566,31 @@ class D extends LandmarksOrigins.B:
 				var el := -0.45 + (i % 2) * 0.2
 				var out := Vector3(sin(a) * cos(el), sin(el), cos(a) * cos(el))
 				ring_tree(c + out * (r - 0.6), out, 3.2)
+
+	## The part of a sphere (centre c, radius rad) more than theta0 from its top: smooth normals, open at the top.
+	func _sphere_below(c: Vector3, rad: float, theta0: float, m: Material, seg := 64, rings := 40) -> MeshInstance3D:
+		var st := SurfaceTool.new()
+		st.begin(Mesh.PRIMITIVE_TRIANGLES)
+		var pt := func(i: int, j: int) -> Vector3:
+			var th := lerpf(theta0, PI, float(j) / rings)
+			var ph := float(i) / seg * TAU
+			return Vector3(sin(th) * cos(ph), cos(th), sin(th) * sin(ph))
+		for j in rings:
+			for i in seg:
+				var q: Array = [pt.call(i, j), pt.call(i + 1, j), pt.call(i + 1, j + 1), pt.call(i, j + 1)]
+				for t: Array in [[q[0], q[1], q[2]], [q[0], q[2], q[3]]]:
+					var a: Vector3 = t[0]; var b: Vector3 = t[1]; var d: Vector3 = t[2]
+					if (b - a).cross(d - a).dot(a + b + d) > 0:   # Godot front faces are clockwise: face outward
+						var tmp := b; b = d; d = tmp
+					for v: Vector3 in [a, b, d]:
+						st.set_normal(v); st.add_vertex(c + v * rad)
+		st.index()   # MeshMerge needs indexed surfaces
+		var mi := MeshInstance3D.new()
+		mi.mesh = st.commit()
+		mi.material_override = m
+		mi.set_meta("no_collision", true)   # under the terrain dome: never a wall
+		g.add_child(mi)
+		return mi
 
 	## Beeros's planet (audit 118): a floating INVERTED stepped pyramid of purple metal, teal foliage hanging over
 	## each tier, a stepped spike underneath. Top face is at local y 0 (sits under a `platform` terrain disc; the
@@ -661,8 +698,9 @@ class D extends LandmarksOrigins.B:
 		var win := mat(0x1e1430, {"rough": 0.3}); var glow := mat(0xffe6a0, {"emissive": 0xc08a20, "glow": 1.0})
 		box(30, 2, 30, stone, 0, 1, 0)
 		box(24, 2, 24, stone, 0, 3, 0)
-		box(8, 1, 6, stone, 0, 0.5, 16.5)
-		box(8, 1, 4, stone, 0, 1.5, 14.0)
+		for k in range(1, 5):   # front stairs up to the 2 m terrace: 0.5 m risers (were two 1 m blocks, the upper one
+			var top := 0.5 * k  # sunk into the terrace with its top flush on it: z-fighting)
+			box(8, top, 0.9, stone, 0, top * 0.5, 15.0 + (4 - k) * 0.9 + 0.45)
 		var y := 4.0
 		var tiers := [[9.0, 9.0], [7.5, 8.0], [6.0, 7.5], [4.6, 7.0], [3.2, 6.0]]
 		for i in tiers.size():
@@ -889,6 +927,7 @@ class D extends LandmarksOrigins.B:
 		limb(Vector3(0, 1.2, 0), Vector3(0, 0.0, 0.0), 0.8, 0.3, gold, 8, root)
 		box(6, 0.8, 3, blue, 0, 1.8, -3.0, 0.0, root)
 		box(6.4, 0.3, 3.4, gold, 0, 1.4, -3.0, 0.0, root)
+		box(5.6, 1.3, 2.9, dark, 0, 0.6, -3.0, 0.0, root)   # plinth: the bench floated 1.25 m over the ground (audit)
 		box(6, 2.4, 0.6, blue, 0, 3.0, -4.3, 0.0, root)
 
 	## Hell's needle mountain (audit 113, batch 6 Hell zone): a cluster of tall needle spikes on a rock mound.

@@ -354,13 +354,25 @@ class Builder extends RefCounted:
 		var stone := mat(0x2a2840, {"rough": 0.6, "metal": 0.2}); var trim := mat(0xd8c890, {"metal": 0.8, "rough": 0.25})
 		var glow := mat(0x9a7aff, {"emissive": 0x7a5aff, "glow": 2.4, "rough": 0.3})
 		var cyan := mat(0x7ae8ff, {"emissive": 0x40c8ff, "glow": 2.0, "rough": 0.2})
+		# the outer ring and the pillars follow the floor's edge: round the platform's centre (the Nexus stands 10 m off
+		# it, so pillars centred on the Nexus at 64 m stood out over the void on the far side)
+		var pc := Vector3.ZERO
+		var edge := 70.0
+		var t: Dictionary = zone.get("def").terrain if zone != null and zone.get("def") != null else {}
+		if t.has("platform"):
+			pc = g.basis.inverse() * Vector3(-float(l.x), 0, -float(l.z))
+			edge = float(t.platform.radius)
 		# rings inlaid in the floor
-		for r in [20.0, 38.0, 60.0]:
+		for r in [20.0, 38.0]:
 			torus(r, 0.25, glow, 0, 0.05, 0)
+		torus(edge - 10.0, 0.25, glow, pc.x, 0.05, pc.z)
+		if t.has("platform"):   # a stone rim just under the floor: the terrain's edge cells are stair-stepped
+			var rim := cyl(edge, edge - 1.5, 3.0, stone, pc.x, -1.52, pc.z, null, 72)
+			rim.set_meta("no_collision", true)
 		# rune pillars round the edge
 		for i in 12:
 			var a := float(i) / 12.0 * TAU
-			var x := sin(a) * 64.0; var z := cos(a) * 64.0
+			var x := pc.x + sin(a) * (edge - 6.0); var z := pc.z + cos(a) * (edge - 6.0)
 			cyl(1.6, 2.0, 14.0, stone, x, 7.0, z, null, 8)
 			box(0.3, 9.0, 0.6, glow, x - sin(a) * 1.7, 7.0, z - cos(a) * 1.7).rotation.y = a
 			cyl(2.3, 2.3, 0.8, trim, x, 14.2, z, null, 8)
@@ -591,6 +603,10 @@ class Builder extends RefCounted:
 		box(1.4, 2.2, 0.2, mat(0x6a4a2a), 0, 1.1, 3.9)
 
 	func _car() -> void:
+		# stand on all four wheels on sloped ground (King Kae's planetoid: ~11° where it is parked; level, one side floated)
+		var n: Vector3 = zone.normal_at(float(l.x), float(l.z)) if zone != null and zone.has_method("normal_at") else Vector3.UP
+		if n.y > 0.5 and n.y < 0.9995:
+			g.basis = Basis(Vector3.UP.cross(n).normalized(), Vector3.UP.angle_to(n)) * g.basis
 		box(3, 0.7, 1.6, mat(0xc8322a, {"metal": 0.5, "rough": 0.3}), 0, 0.7, 0)
 		box(1.6, 0.6, 1.4, mat(0xddeeff, {"opacity": 0.5, "rough": 0.1}), -0.2, 1.3, 0)
 		for w in [[-1, -0.8], [1, -0.8], [-1, 0.8], [1, 0.8]]:
@@ -667,13 +683,16 @@ class Builder extends RefCounted:
 		box(0.4, 4.4, 0.4, mat(0xb03a2a), 0, 2.3, 0.9)
 
 	func _ruin() -> void:  # broken concrete buildings
-		var conc := mat(0x8c8a84, {"rough": 0.9, "stone": true}); var dark := mat(0x3a3a3c, {"rough": 0.9})
+		# building audit: the brokentowers' concrete (the rock scan made them near-black slabs), 1 m into the ground (they stand on
+		# unflattened slopes and lean), windows on the box itself (they floated off its turned / leaning face)
+		var conc := mat(0x8e9088, {"rough": 0.9}); var dark := mat(0x3a3a3c, {"rough": 0.9})
 		for i in 4:
 			var w := 4 + rng.randf() * 6; var h := 4 + rng.randf() * 14; var d := 4 + rng.randf() * 6
-			var b := box(w, h, d, conc, (rng.randf() - 0.5) * 14, h / 2 - 0.5, (rng.randf() - 0.5) * 14)
+			var b := box(w, h + 0.5, d, conc, (rng.randf() - 0.5) * 14, h / 2 - 0.75, (rng.randf() - 0.5) * 14)
 			b.rotation = Vector3(0, rng.randf() * 0.4, (rng.randf() - 0.5) * 0.15)
 			for k in 3:
-				box(w * 0.2, 1, 0.1, dark, b.position.x + (rng.randf() - 0.5) * w * 0.6, 2 + rng.randf() * (h - 3), b.position.z + d / 2 + 0.06)
+				var wx := (rng.randf() - 0.5) * w * 0.6
+				box(w * 0.2, 1, 0.1, dark, wx, 2 + rng.randf() * (h - 3) - (h / 2 - 0.75), d / 2 + 0.06, b)
 		for i in 8:
 			box(1 + rng.randf() * 2, 0.6 + rng.randf(), 1 + rng.randf() * 2, conc, (rng.randf() - 0.5) * 20, 0.3, (rng.randf() - 0.5) * 20).rotation = Vector3(rng.randf(), rng.randf(), rng.randf())
 
@@ -690,7 +709,7 @@ class Builder extends RefCounted:
 			var a := float(i) / 4 * TAU + PI / 4
 			cyl(1.6, 1.6, 10, white, cos(a) * 12, 5, sin(a) * 12, null, 20)
 			cone(1.8, 3, gold, cos(a) * 12, 11.5, sin(a) * 12, null, 20)
-		box(4, 4.4, 0.4, mat(0x7a5a3a), 0, 2.2, 10)
+		box(4, 4.4, 0.4, mat(0x7a5a3a), 0, 2.2, 9.68).rotation.x = -0.165   # flush on the tapered wall (stood off it up to 0.5 m)
 
 	func _htcdoor() -> void:
 		var white := mat(0xf7f5ef, {"rough": 0.35})
@@ -768,6 +787,8 @@ class Builder extends RefCounted:
 		torus(2.5, 0.25, glow, 0, 6, 0)
 
 	func _zenobox() -> void:  # Grand Zenno's floating viewing stand
+		if g.position.y <= -399.0 or l.has("alt"):   # over the void (ground -400) it floats at "alt" (audit 2026-11-12)
+			g.position.y = float(l.get("alt", 6.5))
 		var gold := mat(0xd8c070, {"metal": 0.7, "rough": 0.3}); var white := mat(0xf2f0ff, {"rough": 0.3})
 		cyl(12, 9, 3, white, 0, 26, 0, null, 36)
 		torus(12, 0.6, gold, 0, 27.5, 0)

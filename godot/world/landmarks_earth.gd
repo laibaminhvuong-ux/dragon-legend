@@ -118,9 +118,9 @@ class E extends LandmarksOrigins.B:
 		box(53, 0.36, 53, rim, 0, 0.58, 0)
 		box(50.4, 0.06, 50.4, rim, 0, 0.79, 0)
 		box(50, 0.24, 50, tile, 0, 0.88, 0)   # top at 1.0
-		for i in range(-20, 21, 5):   # tile seams
-			box(50, 0.02, 0.1, seam, 0, 1.005, i)
-			box(0.1, 0.02, 50, seam, i, 1.005, 0)
+		for i in range(-20, 21, 5):   # tile seams, 4 cm proud (1.5 cm z-fought into dashed lines beyond ~20 m)
+			box(50, 0.06, 0.1, seam, 0, 1.01, i)
+			box(0.1, 0.06, 50, seam, i, 1.01, 0)
 		for c: Vector2 in [Vector2(-28, -28), Vector2(28, -28), Vector2(-28, 28), Vector2(28, 28)]:
 			# turned foot: base disc, bulb, neck
 			cyl(1.7, 1.9, 0.5, shade, c.x, 0.65, c.y, 16)
@@ -301,7 +301,15 @@ class E extends LandmarksOrigins.B:
 		var hull := mat(0xc6a87a, {"rough": 0.75}); var band := mat(0x8a7454, {"rough": 0.7})
 		var dark := mat(0x2a1e16); var metal := mat(0x9a8a6a, {"metal": 0.5, "rough": 0.45})
 		var mound := sphere(24, hull, 0, -0.4, 0, 48); mound.scale = Vector3(1, 0.14, 1)
-		torus(19.5, 0.35, band, 0, 1.15, 0)
+		# building audit: the mound was one solid 24 m circle, an invisible wall at its ground-level rim. Walk up it
+		# instead: hidden 0.3 m terraces just under its surface carry you to the hatch.
+		mound.set_meta("no_collision", true)
+		var t := 0.3
+		while t < 3.0:
+			var tr := 24.0 * sqrt(1.0 - pow((minf(t, 2.9) + 0.4) / 3.36, 2)) * 0.98
+			cyl(tr, tr, minf(t, 2.9) + 0.6, hull, 0, (minf(t, 2.9) - 0.6) * 0.5, 0, 32).set_meta("stand_on", true)
+			t += 0.3
+		torus(19.5, 0.35, band, 0, 1.45, 0)   # on the mound's surface (at 1.15 it was buried)
 		for k in 8:   # vents round the mound
 			var a := float(k) / 8.0 * TAU + 0.39
 			var v := box(3.0, 0.5, 1.2, dark, sin(a) * 14.0, 2.2, cos(a) * 14.0, a)
@@ -315,9 +323,9 @@ class E extends LandmarksOrigins.B:
 		box(2.4, 3.0, 2.0, hull, 0, 4.5, 4.0)
 		box(1.7, 2.5, 0.2, dark, 0, 4.25, 5.02)
 		var lip := cyl(1.25, 1.25, 2.2, hull, 0, 6.0, 4.0, 16); lip.rotation.x = PI / 2
-		for sx in [-1.0, 1.0]:   # little ramp down from the doorway
-			box(0.3, 0.4, 7.0, band, sx * 1.0, 2.2, 7.6).rotation.x = 0.28
-		box(1.9, 0.2, 7.0, metal, 0, 2.1, 7.6).rotation.x = 0.28
+		for sx in [-1.0, 1.0]:   # little ramp down from the doorway, on the mound (was steeper than it: 5 of its 7 m sank in)
+			var rail := box(0.3, 0.4, 7.0, band, sx * 1.0, 2.9, 8.5); rail.rotation.x = 0.07; rail.set_meta("no_collision", true)
+		var ramp := box(1.9, 0.2, 7.0, metal, 0, 2.8, 8.5); ramp.rotation.x = 0.07; ramp.set_meta("no_collision", true)
 		if flag("trees"):
 			rubble(0, 0, 25, 34, 18, mat(0x8a7454, {"rough": 0.95}), 2.2)
 			for k in 6:   # cracks radiating out of the ground
@@ -462,7 +470,7 @@ class E extends LandmarksOrigins.B:
 					box(0.9, fh - 0.5, 0.9, conc, ox + float(cx) * (w - 1.0), y + fh * 0.5, sz * (d * 0.5 - 0.3), 0.0, t)
 			box(0.9, fh - 0.5, d - 0.4, conc, ox - w * 0.5 + 0.45, y + fh * 0.5, 0, 0.0, t)
 			box(0.9, fh - 0.5, d - 0.4, conc, ox + w * 0.5 - 0.45, y + fh * 0.5, 0, 0.0, t)
-		box(13.4, 1.2, 10.4, conc, 0, 0.6, 0, 0.0, t)
+		box(13.4, 3.0, 10.4, conc, 0, -0.3, 0, 0.0, t)   # footing reaches 1.8 m down: the tower's tilt lifted one edge 0.4 m off the ground
 		var top := float(floors) * fh
 		for i in 7:   # rebar
 			var r := cyl(0.06, 0.06, rng.randf_range(1.5, 3.5), rebar, rng.randf_range(-4.0, 4.0) + cut * 6.0, top - 1.5, rng.randf_range(-4.0, 4.0), 4, t)
@@ -502,12 +510,16 @@ class E extends LandmarksOrigins.B:
 		var wall := mat(0xece6d6, {"rough": 0.7}); var dark := mat(0x2e3036, {"rough": 0.6}); var trim := mat(0xc8c0ac, {"rough": 0.7})
 		var win := mat(0x30343c, {"rough": 0.4})
 		cyl(5.0, 5.2, 16, wall, 0, 8, 0, 28)
+		# the wall tapers 5.2 -> 5.0 m: trim and windows sit on its surface at their height (audit: at a fixed 5.05 m
+		# they were buried in the wall, only slivers and a zig-zag trim line showed between the facets)
+		var rw := func(y: float) -> float: return 5.2 - 0.2 * y / 16.0 + 0.04
 		for row in 4:
-			torus(5.05, 0.12, trim, 0, 3.6 + row * 3.6, 0)
+			torus(rw.call(3.6 + row * 3.6), 0.12, trim, 0, 3.6 + row * 3.6, 0)
 			for k in 6:
 				var a := float(k) / 6.0 * TAU + row * 0.5
-				on_ring(0, 0, 5.05, a, 1.9 + row * 3.6, 0.8, 1.3, 0.12, win)
-				var arc := cyl(0.4, 0.4, 0.12, win, sin(a) * 5.08, 2.55 + row * 3.6, cos(a) * 5.08, 10)
+				on_ring(0, 0, rw.call(1.9 + row * 3.6), a, 1.9 + row * 3.6, 0.8, 1.3, 0.12, win)
+				var ar: float = rw.call(2.55 + row * 3.6) + 0.02
+				var arc := cyl(0.4, 0.4, 0.12, win, sin(a) * ar, 2.55 + row * 3.6, cos(a) * ar, 10)
 				arc.basis = Basis(Vector3.UP, a) * Basis(Vector3.RIGHT, PI / 2)
 		cyl(5.3, 5.3, 0.5, trim, 0, 16.2, 0, 28)
 		dome(5.1, dark, 0, 16.4, 0, 28)
@@ -516,7 +528,7 @@ class E extends LandmarksOrigins.B:
 			on_ring(0, 0, 4.0, a, 18.2, 1.2, 1.6, 1.2, wall)
 			on_ring(0, 0, 4.62, a, 18.2, 0.7, 1.0, 0.1, win)
 		cyl(0.12, 0.2, 3.2, trim, 0, 23.0, 0, 6)
-		box(1.6, 2.4, 0.2, mat(0x5a4a3a), 0, 1.2, 5.12)
+		box(1.6, 2.4, 0.2, mat(0x5a4a3a), 0, 1.2, 5.22)
 		if flag("trees"):
 			picket_fence(-9, 9, 9.0, mat(0xf2f0e8, {"rough": 0.7}))
 			hook_lamp(7.0, 7.0, 0.5)
@@ -533,8 +545,8 @@ class E extends LandmarksOrigins.B:
 			var a := (float(k) + 0.5) / 10.0 * TAU
 			if absf(wrapf(a, -PI, PI)) < 0.4:
 				continue
-			on_ring(0, 0, 9.05, a, 1.4, 1.0, 1.4, 0.12, win)
-			var arc := cyl(0.5, 0.5, 0.12, win, sin(a) * 9.08, 2.1, cos(a) * 9.08, 10)
+			on_ring(0, 0, 9.14, a, 1.4, 1.0, 1.4, 0.12, win)   # the wall is 9.09 m out at this height
+			var arc := cyl(0.5, 0.5, 0.12, win, sin(a) * 9.12, 2.1, cos(a) * 9.12, 10)
 			arc.basis = Basis(Vector3.UP, a) * Basis(Vector3.RIGHT, PI / 2)
 		box(4.0, 3.6, 2.4, wall, 0, 1.8, 9.0)
 		var porch := cyl(2.0, 2.0, 2.4, wall, 0, 3.6, 9.0, 16); porch.rotation.x = PI / 2
