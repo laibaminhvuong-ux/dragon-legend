@@ -22,9 +22,13 @@
 - Last commit includes the building-by-building audit (30+ fixes), stand-on surfaces (`RuleZone.add_surface/surface_top/ground_at(x,z,reach_y)`, `world/landmark_collision.gd`), King Kae road painted on terrain, planets re-baked, 385 tests passing; that build is installed on the user's PC.
 - Four subagents were launched on the leftovers (see below). Their results are NOT yet integrated unless a later commit says so.
 
-## Where Claude stopped (updated 2026-11-13 ~13:10 ET)
-Done by subagents, NOT yet committed or installed (working tree is dirty, tests were 406-410 passing): co-op consent + updater consent, story data (Tournament bouts on the ring, Papaya orb on land, Rift boss phase forms, Kaioken looks), world leftovers (stairs, Capsule/Ginger doors, hamlet roads, grass spots).
-Still running: **character leftovers agent** (Brolo chest arc, hair on hairless races, Piccor giant forms, dresses, animal heads, large/seated NPCs). It hit the 5-hour limit (resets 4:20 pm ET); 2 tests were failing mid-edit: `characters/test_cast_fixes.gd` and `characters/fighter.gd:510`.
-Next steps: 1) let that agent finish (or finish it yourself), 2) `flock /tmp/dl_test.lock tools/godot_test.sh --check-data` until 0 failures, 3) commit own files (`git add -A godot tools web COLLABORATION.md CODEX_HANDOFF.md`), 4) back up the save, check tasklist, export and install, 5) report to the user in Vietnamese: what was fixed and what was not (King Kae dome shading line, Ginger houses not walked in game, story bosses/NPCs never transform, no new player forms in forms.json, shadow acne on Harbor Town roofs).
+## Where Claude stopped (updated 2026-11-13 ~15:00 ET)
+Committed and installed: commit e5718a6 (412 tests passing): privacy/consent (co-op and updater), story data fixes, world leftovers, character leftovers. The user said to skip co-op from now on.
+In flight (4 subagents launched on the remaining items; results NOT yet integrated, working tree may be dirty):
+- A. Story boss phase system (rules/combat.gd, data `phases`, combat_view) for Frieza/Cell/Broly/Buu/Jiren etc.
+- B. New player forms in forms data (SSJRose, SSJKefla, Frieza forms, ...) with unlock paths.
+- C. Visual leftovers: King Kae dome shading line, Meros/Chelai hair, skirt slit at stride, Harbor Town roof shadow acne, New Nameck dome footing.
+- D. In-game verification (doors/interiors/stairs, updater first-run prompt screenshot, fps in 6 heavy zones, full session smoke, exe --smoke).
+Next steps: wait for the four reports (resume any that stop on a rate limit with SendMessage), run `flock /tmp/dl_test.lock tools/godot_test.sh --check-data` until 0 failures, commit own files (`git add -A godot tools web COLLABORATION.md CODEX_HANDOFF.md`), back up the save, check tasklist, export + install, and report to the user in Vietnamese (done / not done / not verified).
 Only when the user says: 0.0.8 intro video (9:16 + landscape), release notes, website (`tools/publish_site.sh`), GitHub release/workflow, push.
-VS Code is set up for the user: `code ~/dragon-ball/dragon-legend.code-workspace` (WSL extension + Godot Tools installed).
+VS Code is set up for the user: `code ~/dragon-ball/dragon-legend.code-workspace`.
