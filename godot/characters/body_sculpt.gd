@@ -103,7 +103,9 @@ static func shape(p: Vector3, n: Vector3, pr: Dictionary) -> Vector3:
 		q = q.lerp(HEAD_C + d, wh)
 
 	# neck
-	var wn := _band(1.44, 1.48, 1.53, 1.57, p.y) * (1.0 - arm)
+	# (only round the neck itself: the trapezius slope at the same height was pushed out as far as the shoulders,
+	# a flat shelf with a sharp corner on thick-necked builds such as Brolo)
+	var wn := _band(1.44, 1.48, 1.53, 1.57, p.y) * (1.0 - arm) * (1.0 - smoothstep(0.08, 0.15, ax))
 	if wn > 0.0:
 		var c := Vector3(0, p.y, -0.01)
 		var off := (q - c) * Vector3(g.call("neck"), 1.0, g.call("neck"))
@@ -133,14 +135,23 @@ static func shape(p: Vector3, n: Vector3, pr: Dictionary) -> Vector3:
 	if arm > 0.0:
 		var s := lerpf(g.call("upper_arm"), g.call("forearm"), smoothstep(0.42, 0.52, ax))
 		var a := q
-		a.y = ARM_Y + (q.y - ARM_Y) * s
+		var sy := s
+		if q.y > ARM_Y and s > 1.0:   # the top of the shoulder root swells less (thick arms lifted it into a box over the trapezius)
+			sy = lerpf(1.0 + (s - 1.0) * 0.35, s, smoothstep(0.2, 0.34, ax))
+		a.y = ARM_Y + (q.y - ARM_Y) * sy
 		a.z = ARM_Z + (q.z - ARM_Z) * s
 		var hand := smoothstep(0.72, 0.76, ax)
 		if hand > 0.0:
 			var wrist := Vector3(signf(p.x) * 0.74, ARM_Y, ARM_Z)
 			a = a.lerp(wrist + (a - wrist) * g.call("hands"), hand)
-		# shoulders follow the trunk's shoulder width where the arm joins
-		a.x *= lerpf(g.call("shoulders"), 1.0, smoothstep(0.24, 0.40, ax))
+		# shoulders follow the trunk's shoulder width where the arm joins: inside the joint the arm scales with the
+		# trunk, further out it is shifted by the same amount, fading out before the elbow. (A scale that faded over
+		# 0.24..0.40 was not monotonic for broad builds: Brolo's deltoid folded over itself into a dark shelf.)
+		var sh := clampf(float(g.call("shoulders")) - 1.0, -0.4, 0.55)
+		if ax <= 0.24:
+			a.x *= 1.0 + sh
+		else:
+			a.x += signf(p.x) * 0.24 * sh * (1.0 - smoothstep(0.24, 0.46, ax))
 		q = q.lerp(a, arm)
 
 	# legs: thickness round each leg's axis (thigh, calf), feet scaled round the ankle
@@ -212,7 +223,7 @@ const NAMED := {
 		"upper_arm": 1.18, "forearm": 1.16, "hands": 1.1},
 	"recume": {"head_w": 0.94, "neck": 1.3, "shoulders": 1.18, "chest": 1.2, "back": 1.14, "belly": 0.02, "waist": 1.1, "upper_arm": 1.24,
 		"forearm": 1.18, "thigh": 1.16, "calf": 1.1},
-	"brolo": {"head_w": 1.04, "jaw": 1.12, "neck": 1.35, "shoulders": 1.2, "chest": 1.22, "back": 1.16, "waist": 1.02, "upper_arm": 1.3,
+	"brolo": {"head_w": 1.04, "jaw": 1.12, "neck": 1.35, "shoulders": 1.14, "chest": 1.22, "back": 1.16, "waist": 1.02, "upper_arm": 1.3,
 		"forearm": 1.22, "thigh": 1.2, "calf": 1.12, "hands": 1.1},
 	"jiran": {"head_w": 1.08, "cranium": 0.94, "neck": 1.3, "shoulders": 1.14, "chest": 1.12, "back": 1.12, "waist": 1.0, "upper_arm": 1.16,
 		"forearm": 1.1, "thigh": 1.08},

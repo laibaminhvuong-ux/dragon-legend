@@ -432,7 +432,7 @@
     }
   },
   "Giant": {
-    "scale": 1.9,
+    "scale": 3,
     "hair": null,
     "eyes": null,
     "aura": {
@@ -455,7 +455,13 @@
       "flicker": 0.8,
       "sparks": 1,
       "sparkColor": 16767136
-    }
+    },
+    "robeOff": true,
+    "bulk": [
+      1.4,
+      1.3,
+      1.36
+    ]
   },
   "FinalForm": {
     "hair": null,

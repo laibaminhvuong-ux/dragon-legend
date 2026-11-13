@@ -212,7 +212,8 @@
     "kiDrain": 5,
     "auraColor": 7923320,
     "hairColor": null,
-    "unlockQuest": "Form_Giant"
+    "unlockQuest": "Form_Giant",
+    "size": 3
   },
   "Orange": {
     "id": "Orange",

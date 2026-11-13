@@ -40,6 +40,8 @@ export function applyOrigins(input) {
  const reach=(zone,x,z,text)=>({type:'reach',zone,x,z,r:7,text});
  const train=(zone,mode,seconds,text)=>({type:'train',zone,x:0,z:-35,r:55,mode,seconds,text});
  const collect=(zone,item,spots,text)=>({type:'collect',zone,item,spots:spots.map(([x,z])=>({x,z})),text});
+ // Tournament bouts (2026-11-13) stand ON the 40 m ring (centre 0,20, x -20..20, z 0..40, top 1.6 m up); the
+ // registration line (0,-35) and Tamburin's ambush (30,-25) stay off it. Step x,z is also the boss NPC's spot.
  const fight=(enemy,zone,x,z,enemyLevel,text)=>({type:'defeat',enemy,zone,x,z,r:9,count:1,enemyLevel,text});
  const qs=[];
  function chapter(i,title,giver,level,offer,done,steps,xp,zeni,extra={}){
@@ -83,9 +85,9 @@ export function applyOrigins(input) {
    talk('origins_roshi',"The rock moved! We train body and spirit together. Now test your effort in the ring."),
    travel('tournament_island','Enter the 21st World Tournament'),
    reach('tournament_island',0,-35,'Complete the tournament preliminaries at the registration line'),
-   fight('giran','tournament_island',-24,0,3,'Win the quarterfinal against Gyran'),
-   fight('nam','tournament_island',0,0,3,'Win the semifinal against Namu'),
-   fight('jackie_chun','tournament_island',24,0,4,'Face Jackie Chung in the final'),
+   fight('giran','tournament_island',-10,20,3,'Win the quarterfinal against Gyran'),
+   fight('nam','tournament_island',0,26,3,'Win the semifinal against Namu'),
+   fight('jackie_chun','tournament_island',10,20,4,'Face Jackie Chung in the final'),
    travel('kame_island','Return to Kame House after the final'),
    talk('krillin_kid',"Jackie Chung was amazing. We don't have to win every time to grow stronger. Let's keep going!")
   ],600,180);
@@ -131,9 +133,9 @@ export function applyOrigins(input) {
   'The Crane School has arrived. Tenzo and Chaozo have tricks we have never seen, and an old enemy is back with a metal body.',
   'The Crane students have chosen their own path. Victory is sweeter when a rival can become a friend.',[
    travel('tournament_island','Register for the 22nd World Tournament'),
-   fight('chiaotzu','tournament_island',-24,0,7,'Overcome Chaozo’s Crane School techniques'),
-   fight('tao_cyborg','tournament_island',24,0,8,'Stop Cyborg Tau’s revenge in the exhibition bout'),
-   fight('tien_young','tournament_island',0,15,8,'Face Tenzo in the tournament final'),
+   fight('chiaotzu','tournament_island',-10,24,7,'Overcome Chaozo’s Crane School techniques'),
+   fight('tao_cyborg','tournament_island',10,24,8,'Stop Cyborg Tau’s revenge in the exhibition bout'),
+   fight('tien_young','tournament_island',0,18,8,'Face Tenzo in the tournament final'),
    talk('tien_young',"I won't be an assassin. You fought fairly, even when we didn't. From now on, I choose my own way."),
    travel('kame_island','Tell Roshu what the Crane students decided'),
    talk('origins_roshi',"That choice is worth more than a trophy. Rest now; your next test may not have rules or a referee.")
@@ -166,7 +168,7 @@ export function applyOrigins(input) {
    talk('origins_kamu',"You are ready to face him. Win without hatred; the life you save may change the future."),
    travel('tournament_island','Return for the 23rd World Tournament'),
    reach('tournament_island',0,-35,'Pass the final tournament registration'),
-   fight('piccolo_jr','tournament_island',0,5,10,'Face Piccor Jr. in the 23rd Tournament final'),
+   fight('piccolo_jr','tournament_island',0,20,10,'Face Piccor Jr. in the 23rd Tournament final'),
    talk('piccolo_jr',"You won, and you still offered mercy. I won't forget this. Next time, I'll be stronger."),
    travel('earth_plains','Begin the adult journey in the Earth Plains'),
    talk('goku_plains',"Those old adventures taught me why we fight. A new journey is beginning. Come talk to me when you're ready.")

@@ -380,7 +380,8 @@
                   "at": 0.33,
                   "name": "Collapse",
                   "damage": 1.4,
-                  "speed": 1.2
+                  "speed": 1.2,
+                  "form": "ZarbonMonster"
                 }
               ]
             },
@@ -546,7 +547,8 @@
                   "at": 0.33,
                   "name": "Collapse",
                   "damage": 1.4,
-                  "speed": 1.2
+                  "speed": 1.2,
+                  "form": "FullPower"
                 }
               ]
             }
@@ -1082,13 +1084,15 @@
                   "at": 0.66,
                   "name": "Fracture",
                   "damage": 1.2,
-                  "speed": 1.1
+                  "speed": 1.1,
+                  "form": "SSJ"
                 },
                 {
                   "at": 0.33,
                   "name": "Collapse",
                   "damage": 1.4,
-                  "speed": 1.2
+                  "speed": 1.2,
+                  "form": "SSJ3"
                 }
               ]
             },
@@ -1111,13 +1115,15 @@
                   "at": 0.66,
                   "name": "Fracture",
                   "damage": 1.2,
-                  "speed": 1.1
+                  "speed": 1.1,
+                  "form": "SSJ"
                 },
                 {
                   "at": 0.33,
                   "name": "Collapse",
                   "damage": 1.4,
-                  "speed": 1.2
+                  "speed": 1.2,
+                  "form": "SSJ2"
                 }
               ]
             }
@@ -1380,13 +1386,15 @@
                   "at": 0.66,
                   "name": "Fracture",
                   "damage": 1.2,
-                  "speed": 1.1
+                  "speed": 1.1,
+                  "form": "SSJ"
                 },
                 {
                   "at": 0.33,
                   "name": "Collapse",
                   "damage": 1.4,
-                  "speed": 1.2
+                  "speed": 1.2,
+                  "form": "SSJ3"
                 }
               ]
             },
@@ -1531,13 +1539,15 @@
                   "at": 0.66,
                   "name": "Fracture",
                   "damage": 1.2,
-                  "speed": 1.1
+                  "speed": 1.1,
+                  "form": "SSJ"
                 },
                 {
                   "at": 0.33,
                   "name": "Collapse",
                   "damage": 1.4,
-                  "speed": 1.2
+                  "speed": 1.2,
+                  "form": "SSJ2"
                 }
               ]
             },
@@ -1697,13 +1707,15 @@
                   "at": 0.66,
                   "name": "Fracture",
                   "damage": 1.2,
-                  "speed": 1.1
+                  "speed": 1.1,
+                  "form": "SSJ"
                 },
                 {
                   "at": 0.33,
                   "name": "Collapse",
                   "damage": 1.4,
-                  "speed": 1.2
+                  "speed": 1.2,
+                  "form": "SSJ3"
                 }
               ]
             },
@@ -1726,13 +1738,15 @@
                   "at": 0.66,
                   "name": "Fracture",
                   "damage": 1.2,
-                  "speed": 1.1
+                  "speed": 1.1,
+                  "form": "SSJ"
                 },
                 {
                   "at": 0.33,
                   "name": "Collapse",
                   "damage": 1.4,
-                  "speed": 1.2
+                  "speed": 1.2,
+                  "form": "SSJ2"
                 }
               ]
             },

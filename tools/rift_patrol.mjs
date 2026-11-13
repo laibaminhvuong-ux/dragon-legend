@@ -9,6 +9,9 @@ export function applyRiftPatrol(input){
   t.zone_order.push(id);
  }
  const missions=[];const cards={};
+ // Boss phases that transform (2026-11-13): the form id shown from that phase on (Fighter.form_look: the character's
+ // look.formLooks variant, else form_looks). Display only; the phase's damage/speed stay the same for everyone.
+ const phaseForms={frieza:[null,null,'FullPower'],zarbon:[null,null,'ZarbonMonster'],hollow_gokan:[null,'SSJ','SSJ3'],hollow_vegara:[null,'SSJ','SSJ2']};
  const effectList=[{ki_regen:.02},{damage:.02},{health:.02},{ally_health:.03}];
  const add=(id,arc,name,zone,enemies,allies,protect=false)=>{
   const index=missions.length;const card=id+'_hero', rare=id+'_prismatic';
@@ -16,7 +19,7 @@ export function applyRiftPatrol(input){
   cards[card]={id:card,name:t.characters[hero].name+' · '+name,character:hero,rarity:'rare',effect:effectList[index%4]};
   cards[rare]={id:rare,name:name+' · Prismatic',character:enemies.at(-1),rarity:'legendary',effect:{cosmetic:'rift_prismatic'}};
   const waves=[{spawns:Array.from({length:4},(_,i)=>({character:'shardling',x:-18+i*12,z:-15,level:2000,healthScale:.45,damageScale:.55}))},
-   {spawns:enemies.map((character,i)=>({character,x:(i-(enemies.length-1)/2)*16,z:10,level:2000,healthScale:character==='zero_origin'?3:1.5,damageScale:.85,boss:true,phases:[{at:1,name:'Breach',damage:1,speed:1},{at:.66,name:'Fracture',damage:1.2,speed:1.1},{at:.33,name:'Collapse',damage:1.4,speed:1.2}]}))}];
+   {spawns:enemies.map((character,i)=>({character,x:(i-(enemies.length-1)/2)*16,z:10,level:2000,healthScale:character==='zero_origin'?3:1.5,damageScale:.85,boss:true,phases:[{at:1,name:'Breach',damage:1,speed:1},{at:.66,name:'Fracture',damage:1.2,speed:1.1},{at:.33,name:'Collapse',damage:1.4,speed:1.2}].map((ph,k)=>phaseForms[character]?.[k]!=null?{...ph,form:phaseForms[character][k]}:ph)}))}];
   missions.push({id,arc,name,zone,level:2000,after:index?[missions[index-1].id]:[],corrupted:true,arena:name,spawn:{x:0,z:-50},waves,
    allies:allies.map((character,i)=>({character,id:'rift_ally_'+i,x:-8+i*16,z:-42,health:32000,damage:1800,cooldown:1.1,protect:protect&&i===0})),
    objectives:[{type:'defeat',text:'Defeat the corrupted patrol',count:4},{type:'defeat',text:'Defeat '+enemies.map(c=>t.characters[c].name).join(' and '),count:enemies.length},...(protect?[{type:'protect',text:'Keep '+t.characters[hero].name+' standing',ally:'rift_ally_0'}]:[])],

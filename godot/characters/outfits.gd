@@ -71,6 +71,14 @@ extends RefCounted
 #   thirdEye: true.   faceMarks: ["dots", "cheek_circles", "scar_cheek", "scar_eye"] (+ markRgb).
 #   jewellery: ["champion_belt", "earrings", "bracelets", "necklace"] (+ jewelRgb, default gold).
 #   neckwear: "scarf" | "fur_collar" (+ neckRgb).
+# Cast fixes (2026-11-13; characters/skirt.gd, NPC-only outfits, not in ALL):
+#   outfit "Dress":             a sleeveless knee-length dress (Bulna): outfitRgb = the dress, bare legs, outfitRgb2 =
+#                               the shoes. outfitParts sleeves: true gives it sleeves (young Bulna).
+#   outfit "LongDress":         a long side-slit dress over trousers (Chi-Mei): outfitRgb = the dress, outfitRgb2 = the
+#                               sash; outfitParts pants = the trousers ("skin" = bare legs).
+#   outfitParts skirt: colour | false   a skirt on any outfit (two halves worn on the thighs, so the hem follows the
+#                               legs); skirtLen: metres below the hip joint (0.42 knee, 0.66 mid-shin, 0.84 ankle).
+#   form_looks robeOff: true    the cape and look.costume pieces are hidden during that form (Orange Piccor).
 # ------------------------------------------------------------------------------------------------
 # What each outfit is made of (ported from web/src/character/cage_model.js outfitParts): colours for the
 # body regions plus extra pieces (armour plate/pads, cape, collar, gloves). `tint` is the player's outfit colour.
@@ -108,6 +116,10 @@ static func parts(outfit: String, tint: int) -> Dictionary:
 			return {"top": tint, "pants": 0x2a3a5a, "shoes": 0x2a2a2a, "sleeves": true, "cloth": 0.35, "boot_trim": 0xf2f2f2, "laces": 0x2a2a2a}
 		"MajinVest":
 			return {"top": 0x241a2e, "pants": 0xf2f0ea, "shoes": 0x1a1a1a, "sash": 0x111111, "wrist": 0xd8b04a, "vest": true, "cloth": 0.9}
+		"Dress":   # 2026-11-13: sleeveless knee-length dress, bare legs (NPC only)
+			return {"top": tint, "pants": SKIN, "shoes": 0xc8323a, "skirt": tint, "skirtLen": 0.42, "vest": true, "cloth": 0.0, "boot_trim": 0x3a4a8a, "laces": 0xf2f2f2}
+		"LongDress":   # 2026-11-13: long side-slit dress over trousers, sash at the waist (NPC only)
+			return {"top": tint, "pants": _shade(tint, 0.6), "shoes": 0xc8323a, "sash": _shade(tint, 0.45), "skirt": tint, "skirtLen": 0.7, "vest": true, "cloth": 0.0, "boot_trim": 0xf2f2f2}
 		"CraneGi":
 			return {"top": tint, "pants": _shade(tint, 0.75), "shoes": 0x1a1a1a, "sash": 0x1a1a1a, "cloth": 0.9}
 		"WeightedGi":
@@ -121,6 +133,8 @@ static func _shade(hex: int, k: float) -> int:
 
 ## Accent parts that look.outfitRgb2 recolours.
 const ACCENT := ["sash", "wrist", "undershirt"]
+## Outfits whose accent colour (outfitRgb2) is the shoes instead (they have no sash/wristbands).
+const ACCENT_SHOES := ["Dress"]
 
 ## The outfit parts for a look: its palette tint or own colours (look.outfitRgb / outfitRgb2 / outfitParts, see the top).
 static func for_look(look: Dictionary, palette_tint: int) -> Dictionary:
@@ -130,6 +144,7 @@ static func for_look(look: Dictionary, palette_tint: int) -> Dictionary:
 	if accent >= 0:
 		for k: String in ACCENT:
 			if p.has(k): p[k] = accent
+		if str(look.get("outfit", "")) in ACCENT_SHOES: p.shoes = accent
 		if p.has("armor"): p.armor.trim = accent
 	var over: Variant = look.get("outfitParts")
 	if over is Dictionary:
@@ -146,6 +161,8 @@ static func for_look(look: Dictionary, palette_tint: int) -> Dictionary:
 					p[k] = v is bool and v
 				"cloth":
 					if v is int or v is float: p[k] = clampf(float(v), 0.0, 1.0)
+				"skirtLen":
+					if v is int or v is float: p[k] = clampf(float(v), 0.15, 0.9)
 				_:
 					if v is bool and not v: p.erase(k)
 					elif v is String and v == "skin": p[k] = SKIN

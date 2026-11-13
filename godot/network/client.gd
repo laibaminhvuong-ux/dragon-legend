@@ -22,11 +22,19 @@ var _save := 0.0
 var _closing := false
 var _saved_zeni_revision := 0
 var _zeni_save_failed := false
+## Privacy: a remote join needs the player's explicit consent (ServerMenu dialog); one-shot, reset by begin().
+var consent := false
+## Local-only slot fields that are never sent to a remote host; merged back into the saved slot.
+var _local_private: Dictionary = {}
 func begin(url: String,mode: String,invite: String,index: int,name: String) -> String:
 	if local_host==null and url!="" and not CoopCodec.endpoint_valid(url): return "Enter a valid ws:// or wss:// host address."
 	if mode=="join" and not CoopCodec.code_valid(invite): return "Enter exactly six digits."
 	var slot: Variant = SaveStore.load_slot(index)
 	if not slot is Dictionary: return "Choose an existing fighter slot first."
+	var remote := local_host==null
+	if remote and not consent: return "Confirm what is shared with the host before joining."
+	consent = false
+	_local_private = {"createdAt":slot.get("createdAt"),"playTime":float(slot.get("playTime",0)) if RuleSchema._number(slot.get("playTime")) else 0.0} if remote else {}
 	var token := CoopCodec.secret()
 	if token=="": return "Could not save your private-server identity."
 	DirAccess.make_dir_recursive_absolute(backup_directory)
@@ -35,7 +43,7 @@ func begin(url: String,mode: String,invite: String,index: int,name: String) -> S
 	backup.store_string(JSON.stringify(slot)); backup.flush(); backup.close()
 	slot_index = index
 	endpoint = url
-	pending = {"type":mode,"version":CoopCodec.VERSION,"token":token,"code":invite,"slot_index":index,"slot":slot,"name":name.left(24)}
+	pending = CoopCodec.join_message(mode,invite,index,slot,name,token,not remote)
 	_time = 0; _sent = false; _closing = false
 	_saved_zeni_revision = 0; _zeni_save_failed = false
 	if local_host!=null:
@@ -123,7 +131,12 @@ func inputs(it: Dictionary) -> void:
 	send({"type":"input","sequence":_sequence,"intents":it})
 func save_progress() -> bool:
 	if slot_index>=0 and latest.get("slot") is Dictionary:
-		return SaveStore.save_slot(slot_index,RuleSchema.new().normalize(latest.slot))
+		var slot: Dictionary = RuleSchema.new().normalize(latest.slot)
+		if not _local_private.is_empty():
+			if _local_private.createdAt!=null: slot.createdAt = _local_private.createdAt
+			slot.playTime = float(_local_private.playTime)+(float(latest.slot.get("playTime",0)) if RuleSchema._number(latest.slot.get("playTime")) else 0.0)
+			slot.playedAt = int(Time.get_unix_time_from_system()*1000)
+		return SaveStore.save_slot(slot_index,slot)
 	return false
 func close() -> void:
 	_closing = true

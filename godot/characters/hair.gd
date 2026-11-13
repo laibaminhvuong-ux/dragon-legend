@@ -72,12 +72,53 @@ class Motion:
 ## The base hair style for a look (or "" for bald / races without hair).
 static func base_style(look: Dictionary, race: Dictionary) -> String:
 	var h := str(look.get("hair", "Spiky"))
-	var allowed: Array = race.get("hairStyles", [])
 	# races with hair draw every style (a Saiyan with Short hair); hairless races (Namekian, Frost Demon, Majin)
 	# only when the look says so with hairAnyRace (Kais, angels, aliens with hair)
-	if not allowed.has(h) and allowed.size() <= 1 and look.get("hairAnyRace", false) != true:
+	if not race_has_hair(look, race) and not (race.get("hairStyles", []) as Array).has(h):
 		return ""
 	return str(BASE.get(h, ""))
+
+## Whether a fighter of this race can have hair at all: races with a hair style list, or a hairless race's look
+## with hairAnyRace. Forms never grow hair on the others (a Namekian in a form keeps a bare head).
+static func race_has_hair(look: Dictionary, race: Dictionary) -> bool:
+	var any: Variant = look.get("hairAnyRace", false)
+	return (race.get("hairStyles", []) as Array).size() > 1 or (any is bool and any)
+
+## Hairless races have their own skull (tall Namekian cranium, narrow deep Frost Demon head): hair made for the
+## human head sat on it like a hat lifted off the scalp. The skull of a rest-pose body mesh: crown height, half
+## width and front/back at the hair line (cached per mesh; read once when a fighter is built).
+static var _skulls: Dictionary = {}
+static func skull(mesh: Mesh) -> Dictionary:
+	var key := mesh.get_instance_id()
+	if _skulls.has(key):
+		return _skulls[key]
+	var v: PackedVector3Array = mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	var top := -9.0
+	for p in v:
+		if p.y > 1.55 and absf(p.x) < 0.2:
+			top = maxf(top, p.y)
+	var s := {"top": top, "w": 0.0, "z0": 9.0, "z1": -9.0}
+	for p in v:
+		if p.y > top - 0.09 and p.y < top - 0.035:   # the band the hair line runs round (above the ears)
+			if absf(p.z) < 0.05:
+				s.w = maxf(s.w, absf(p.x))
+			if absf(p.x) < 0.05:
+				s.z0 = minf(s.z0, p.z); s.z1 = maxf(s.z1, p.z)
+	if s.w <= 0.0 or s.z1 <= s.z0:   # nothing measured: no correction
+		s = {}
+	_skulls[key] = s
+	return s
+
+## Model-space transform taking hair fitted to skull `from` onto skull `to` (identity when either is unknown):
+## widths and depths in proportion, heights from the brow line up to the crown.
+static func skull_fit(from: Dictionary, to: Dictionary) -> Transform3D:
+	if from.is_empty() or to.is_empty():
+		return Transform3D.IDENTITY
+	var yb := float(from.top) - 0.12
+	var sc := Vector3(float(to.w) / float(from.w), (float(to.top) - yb) / (float(from.top) - yb), (float(to.z1) - float(to.z0)) / (float(from.z1) - float(from.z0)))
+	var a := Vector3(0, yb, (float(from.z0) + float(from.z1)) * 0.5)
+	var b := Vector3(0, yb, (float(to.z0) + float(to.z1)) * 0.5)
+	return Transform3D(Basis.from_scale(sc), b - Basis.from_scale(sc) * a)
 
 ## The hair a form shows on top of a base style ("" = keep the base hair).
 static func form_style(form_hair: String, base: String) -> String:

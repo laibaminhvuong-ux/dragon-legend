@@ -596,11 +596,13 @@ class Builder extends RefCounted:
 			puff.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 	func _kingkaihouse() -> void:
-		dome(4, mat(0xf3eadb), 0, 0, 0)
+		# matte plaster: at 0.6 roughness the dome mirrored the sky / cloud-sea horizon as a hard line across it (task 4)
+		dome(4, mat(0xf3eadb, {"rough": 0.95}), 0, 0, 0)
 		var roof := mat(0xc83228)
 		torus(4, 0.3, roof, 0, 0.1, 0)
 		sphere(0.8, roof, 0, 4, 0)
-		box(1.4, 2.2, 0.2, mat(0x6a4a2a), 0, 1.1, 3.9)
+		box(1.8, 2.5, 1.2, mat(0xf3eadb, {"rough": 0.95}), 0, 1.25, 3.55)   # entry: the door slab stood 0.5 m off the curve
+		box(1.4, 2.2, 0.2, mat(0x6a4a2a), 0, 1.1, 4.2)
 
 	func _car() -> void:
 		# stand on all four wheels on sloped ground (King Kae's planetoid: ~11° where it is parked; level, one side floated)

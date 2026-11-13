@@ -276,6 +276,24 @@ static func ground(zone: RefCounted, l: Dictionary, x: float, z: float) -> float
 	return zone.height_at(float(l.x) + x * cos(r) + z * sin(r), float(l.z) - x * sin(r) + z * cos(r))
 
 const ROAD_TOP := 0.11
+const ROAD_SLOPE := 0.35   # road pieces tilt with the ground up to this slope (task 4: flat 8 m pieces stood 0.3-0.5 m
+                           # proud of the downhill side of hamlet roads on hills, a floating slab with a visible side)
+
+## Road piece i of road rd (8 m pieces, as world/town.gd draws them): its centre `mid`, ground height `y` there, unit
+## direction `dir` and side `side` (town frame) and the slopes of its top along / across it.
+static func road_piece(zone: RefCounted, l: Dictionary, rd: Dictionary, i: int) -> Dictionary:
+	var a := Vector2(rd.x1, rd.z1); var e := Vector2(rd.x2, rd.z2)
+	var length := a.distance_to(e)
+	var steps := maxi(1, int(length / 8.0))
+	var p0 := a.lerp(e, float(i) / steps); var p1 := a.lerp(e, float(i + 1) / steps)
+	var mid := (p0 + p1) * 0.5
+	var dir := (e - a) / maxf(length, 0.001)
+	var side := Vector2(dir.y, -dir.x)
+	var hw := float(rd.w) * 0.5
+	var along := (ground(zone, l, p1.x, p1.y) - ground(zone, l, p0.x, p0.y)) / maxf(p0.distance_to(p1), 0.001)
+	var across := (ground(zone, l, mid.x + side.x * hw, mid.y + side.y * hw) - ground(zone, l, mid.x - side.x * hw, mid.y - side.y * hw)) / maxf(hw * 2.0, 0.001)
+	return {"mid": mid, "y": ground(zone, l, mid.x, mid.y), "dir": dir, "side": side,
+		"along": clampf(along, -ROAD_SLOPE, ROAD_SLOPE), "across": clampf(across, -ROAD_SLOPE, ROAD_SLOPE)}
 const FIELD_TOP := 0.08
 const PLINTH_TOP := 0.02
 const FLOOR_TOP := 0.1
@@ -319,8 +337,9 @@ static func surface_at(zone: RefCounted, l: Dictionary, wx: float, wz: float) ->
 			continue
 		var steps := maxi(1, int(length / 8.0))
 		var i := clampi(int(floor(tc * steps)), 0, steps - 1)
-		var mid := a.lerp(e, (float(i) + 0.5) / steps)
-		best = maxf(best, ground(zone, l, mid.x, mid.y) + ROAD_TOP)
+		var pl := road_piece(zone, l, rd, i)
+		var rel := Vector2(x, z) - (pl.mid as Vector2)
+		best = maxf(best, float(pl.y) + ROAD_TOP + float(pl.along) * rel.dot(pl.dir) + float(pl.across) * rel.dot(pl.side))
 	for ex: Dictionary in lay.extras:
 		match str(ex.kind):
 			"plaza":

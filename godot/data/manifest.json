@@ -24,7 +24,7 @@
     "web/src/data/races.js": "02da0ebd96c5256634cbff5fac98bcdc6997037e6ea45f7fc758c99fcf3eff5a",
     "web/src/data/rpg.js": "7033d6c4c6f624f11272d41fcf105c9cf41f80fbf1fffc7737a14361f1bafbae",
     "web/src/data/stats.js": "cbca3fce0bfb5b52143535a57d41aa7e345c8337cbe1948b30c0456ee8836568",
-    "web/src/data/story.js": "fe4e6b29ecacecd955d5a2e6ec297762fbcd0da719acff75d9daa157e3895201",
+    "web/src/data/story.js": "c16ea37c6bd573785b354812224e443be8d804b52007c259bc73c0f6b749a81f",
     "web/src/data/zones.js": "67ba14f66057180d12423cb1a48fc3727863d54a2e8f1ff74f585530a447efcf",
     "web/src/game/collision.js": "fa078daa6d133fcd154f956442ce5e648d6ec3d216f4c6f5d08280a3a13945c5",
     "web/src/game/combat.js": "1732d621761bd00788cbc9898d56d82008197eb425e212805f7ec1d8eabe4f70",
@@ -45,9 +45,9 @@
     "web/src/game/zones.js": "c38525cfada5f1496007b9e0555d13926ef1ec944abbc238832901109696e0e4",
     "tools/fighting_styles.mjs": "3fe9a62f1f9aa477f68fffd3688a500f9b5f5f0caf96681904030b3c8fd07907",
     "tools/skill_presentation.mjs": "447b6907ff183affbc451f0cfc6ea987c0e928256f7a3c5f988cc01a5636b322",
-    "tools/rift_patrol.mjs": "2b19a29e7e0ee9b7757ec9974abcb2797c92c6d6b14a644178acd5b9081314c1",
-    "tools/origins.mjs": "53193315419770fe6a6308fe9183180f3acdf2437facc73f7e7fff97554faeb4",
-    "tools/godot_additions.mjs": "1cd5bada0d4fdaf574063e8d8cdbe70d90a89b5f08dd7ccb3b42b30f870d5a50",
+    "tools/rift_patrol.mjs": "9a8f75eb2680280575ec3e9ebc89abc47290abb7a979cc945b8eaf5a1594ca20",
+    "tools/origins.mjs": "97858b7fdf33c5a81fa201c40e16bd6bc96606f26584eee3347806f7260a6a8e",
+    "tools/godot_additions.mjs": "c5bf4dc3cc546dd62c4f2adb18846ba0a34b9c87588d9baad10c12661f044e29",
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
   "files": {
@@ -58,20 +58,20 @@
       "entries": 5
     },
     "quests.json": {
-      "sha256": "4a063ba82598a0ddacf2ddc937f7dc90234b8cea0721dc8a66e458cdcb3afeb8",
-      "bytes": 137398,
+      "sha256": "f4f2e9c8c5f9916eac3c0218c80d31d7778dab23b4778d7a71ff96cbf44341bc",
+      "bytes": 137404,
       "kind": "array",
       "entries": 134
     },
     "npcs.json": {
-      "sha256": "07aa54a787130b3245cb2c423277a3a0d8dd284bd78f813302a4d883b3efbd23",
-      "bytes": 33406,
+      "sha256": "cb8a2ec877e5371a03d31ee64fb260d0be0d2f7c52b1e54e9f4bfb987a68cfcb",
+      "bytes": 33429,
       "kind": "array",
       "entries": 208
     },
     "characters.json": {
-      "sha256": "e15aa1efe15633329bf3c7a0696f6a20177d52abe55bc1f67e52d7ac406ded2a",
-      "bytes": 80138,
+      "sha256": "7aea2eaeaa23a3c31d6511f5454a8d2bc9451d4a5275f9aca6b2729e49206bd1",
+      "bytes": 80698,
       "kind": "object",
       "entries": 155
     },
@@ -88,8 +88,8 @@
       "entries": 2
     },
     "forms.json": {
-      "sha256": "4a8f0ab82fafc2a9d530ecedf2f8bc175344cc190aed703945ff398b42f2df74",
-      "bytes": 11030,
+      "sha256": "ebd8d9479f885f3918501a6462fb729813aa93bb03a17eb442ee85da059f19fe",
+      "bytes": 11045,
       "kind": "object",
       "entries": 35
     },
@@ -190,8 +190,8 @@
       "entries": 74
     },
     "form_looks.json": {
-      "sha256": "2e29ec94d64d12690cf064a467db52b48ff0f0f32b21eaaced4c6aeb249a82af",
-      "bytes": 16861,
+      "sha256": "2cfc9e2a0290fb04437851c14691b9022e653845939fc9613ce352a29944adfe",
+      "bytes": 16934,
       "kind": "object",
       "entries": 59
     },
@@ -274,8 +274,8 @@
       "entries": 6
     },
     "rift_missions.json": {
-      "sha256": "12fb694a54e3ae01e8ac802ce3265852f81b202b38078530f4dee3fb686c80e1",
-      "bytes": 54662,
+      "sha256": "34a34306c8239b855c0936aa93da3800a99527776579e073761c20cc5617163b",
+      "bytes": 55146,
       "kind": "object",
       "entries": 4
     },

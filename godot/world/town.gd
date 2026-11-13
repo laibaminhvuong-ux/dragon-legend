@@ -349,12 +349,15 @@ static func _road(g: Node3D, zone: RefCounted, l: Dictionary, base_y: float, rd:
 	var a := Vector2(rd.x1, rd.z1); var b := Vector2(rd.x2, rd.z2)
 	var length := a.distance_to(b)
 	var steps := maxi(1, int(length / 8.0))
-	for i in steps:   # short flat pieces so the road follows the ground
+	for i in steps:   # short pieces tilted with the ground (RuleTown.road_piece: the rules stand you on the same plane)
 		var p0 := a.lerp(b, float(i) / steps); var p1 := a.lerp(b, float(i + 1) / steps)
-		var mid := (p0 + p1) * 0.5
-		var y := _ground(zone, l, mid.x, mid.y) - base_y + 0.06
+		var pl := RuleTown.road_piece(zone, l, rd, i)
+		var mid: Vector2 = pl.mid
+		var y := float(pl.y) - base_y + 0.06
 		var piece := _box(g, Vector3(float(rd.w), 0.6, p0.distance_to(p1) + 0.4), m, Vector3(mid.x, y - 0.25, mid.y))
-		piece.rotation.y = atan2(b.x - a.x, b.y - a.y)
+		# sheared basis: local x along the side, z along the road, each rising with its slope; y stays vertical
+		var sd: Vector2 = pl.side; var dr: Vector2 = pl.dir
+		piece.basis = Basis(Vector3(sd.x, float(pl.across), sd.y), Vector3.UP, Vector3(dr.x, float(pl.along), dr.y))
 		piece.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 static func _extra(g: Node3D, zone: RefCounted, l: Dictionary, base_y: float, e: Dictionary, style: String) -> void:

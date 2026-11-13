@@ -21,6 +21,10 @@ const SCHEMA := {
 	"vsync": {"default": false, "type": "bool"},
 	# overrides on top of Controls' defaults: { action: [ "key:<physical keycode>" | "mouse:<button>" ] }
 	"bindings": {"default": {}, "type": "dict"},
+	# co-op servers the player ticked "don't ask again" for: { server key: true } (CoopConsent). Nothing else is remembered.
+	"coopTrusted": {"default": {}, "type": "dict"},
+	# "" = never asked, "on" = the title screen may ask GitHub for the latest release, "off" = never (Updater.choice)
+	"updateCheck": {"default": "", "type": "enum", "options": ["", "on", "off"]},
 }
 var path := PATH
 var _values: Dictionary = {}

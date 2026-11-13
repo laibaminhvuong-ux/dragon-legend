@@ -106,23 +106,22 @@ static func dress(f: Fighter, parts: Dictionary, race_id: String, skin: Color) -
 		var cape := f.add_piece("DEF-spine.003", Transform3D(Basis.from_euler(Vector3(0.06, 0, 0)), Vector3(0, 1.47, -0.155)), _mesh("cape", func(g: Geo) -> void:
 			g.sheet(Transform3D.IDENTITY, 0.46, 1.05)), material(hx(parts.cape), 0.8, 0.0, true))
 		f.cape = cape
+		cape.set_meta("robe", true)   # form_looks robeOff hides it (Orange Piccor fights without cape and turban)
 		f.add_piece("DEF-spine.003", Transform3D.IDENTITY, _mesh("cape_pads", func(g: Geo) -> void:
 			for s in [1, -1]:
 				var h := SphereMesh.new(); h.radius = 0.07; h.height = 0.07; h.is_hemisphere = true
-				g.add_primitive(h, Transform3D(Basis.from_scale(Vector3(1.4, 0.6, 1.2)), Vector3(s * 0.17, 1.47, -0.02)))), material(hx(parts.cape), 0.8))
+				g.add_primitive(h, Transform3D(Basis.from_scale(Vector3(1.4, 0.6, 1.2)), Vector3(s * 0.17, 1.47, -0.02)))), material(hx(parts.cape), 0.8)).set_meta("robe", true)
 	if f.hero_body_kind() == "":   # the Universal Base Characters heads have their own nose and ears
 		face(f, race_id, skin)
 	facial_hair(f)   # cast batch B5: look.moustache / beard, then glasses, hats, marks, jewellery (FaceGear)
 	FaceGear.dress(f)
+	Skirt.dress(f, parts)   # Dress / LongDress outfits, outfitParts skirt (characters/skirt.gd)
 	var rp := features(race_id, f.look)
 	if rp.tail == "saiyan":
 		f.add_piece("DEF-hips", Transform3D.IDENTITY, _mesh("saiyan_tail", func(g: Geo) -> void:
 			g.tube(_offset([Vector3(0, 0, 0), Vector3(0, -0.12, -0.12), Vector3(0.12, -0.28, -0.18), Vector3(0.22, -0.32, -0.05), Vector3(0.18, -0.22, 0.04)], Vector3(0, 0.9, -0.12)), 0.032, 0.022)), material(Color.hex(0x4a2e1cff), 0.85))
 	if rp.antenna == "namek":
-		f.add_skin_piece(f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("antennae", func(g: Geo) -> void:
-			for s in [1, -1]:
-				g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.02, 0.06, 0.02), Vector3(s * 0.05, 0.12, 0.0)], Vector3(s * 0.03, 0.135, 0.07)), 0.009, 0.006, 12, 8)
-				g.sphere(Transform3D(Basis.IDENTITY, Vector3(s * 0.08, 0.255, 0.07)), 0.011, 8, 10)), material(skin * 0.9, 0.55)), 0.9)
+		namek_antennae(f, skin)
 	elif rp.antenna == "long":   # two long thin feelers swept back (King Kae)
 		f.add_skin_piece(f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("antennae_long", func(g: Geo) -> void:
 			for s in [1, -1]:
@@ -320,6 +319,16 @@ static func gear_b3(f: Fighter, id: String) -> void:
 			f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("four_pupils", func(g: Geo) -> void:
 				for s in [1, -1]:
 					g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 0.5)), Vector3(s * 0.034, 0.087, 0.105)), 0.0065, 6, 8)), material(Color.hex(0x141414ff), 0.3))
+
+## The two Namekian antennae (also shown by form_looks robeOff when a turban had them tucked away: Orange Piccor).
+static func namek_antennae(f: Fighter, skin: Color, recolour := true) -> MeshInstance3D:
+	var mi := f.add_piece("DEF-head", Hair.HEAD_SPACE, _mesh("antennae", func(g: Geo) -> void:
+		for s in [1, -1]:
+			g.tube(_offset([Vector3(0, 0, 0), Vector3(s * 0.02, 0.06, 0.02), Vector3(s * 0.05, 0.12, 0.0)], Vector3(s * 0.03, 0.135, 0.07)), 0.009, 0.006, 12, 8)
+			g.sphere(Transform3D(Basis.IDENTITY, Vector3(s * 0.08, 0.255, 0.07)), 0.011, 8, 10)), material(skin * 0.9, 0.55))
+	if recolour:   # (form-only copies are not: they leave with the form)
+		f.add_skin_piece(mi, 0.9)
+	return mi
 
 ## The race features a look wears (see the field list at the top of outfits.gd): each race has its defaults and
 ## look.tail / dome / shells / antenna / ears / patches override them one by one; look.raceParts = false starts from none.

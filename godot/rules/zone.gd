@@ -247,7 +247,13 @@ func surface_at(x: float, z: float) -> String:
 const LANDMARK_INTERIORS := {"capsulecorp": "interior_lab", "kamehouse": "interior_home", "farmhouse": "interior_home", "hangar": "interior_hangar",
 	"bunker": "interior_lab", "radartower": "interior_tower", "labdoor": "interior_lab",
 	"capsulehq": "interior_lab", "rrhangar": "interior_hangar", "kamecottage": "interior_home",   # 0.0.8 map pass builders
-	"paozucabin": "interior_home"}   # building audit: the hut's round doorway led nowhere
+	"paozucabin": "interior_home",   # building audit: the hut's round doorway led nowhere
+	"capsulehouse": "interior_home", "gingerhouse": "interior_home", "gingertower": "interior_tower"}   # task 4: their doors led nowhere
+## Door point distance from the landmark's centre (local m, times its scale) where `collide` + 1.5 is wrong: the
+## Ginger domes' porch / door stand out past their collide circle (the point would be inside the porch).
+const LANDMARK_DOOR_AT := {"gingerhouse": 11.7, "gingertower": 6.7}
+## Door names for unnamed landmarks (names stay off the data, which would make the baked planet terrain stale).
+const LANDMARK_DOOR_NAMES := {"capsulehouse": "Dome home", "gingerhouse": "Dome house", "gingertower": "Round tower"}
 var _doors: Variant = null
 
 ## Building doors on this map: [{x, z, yaw, interior, name}] (the interact key enters); in an interior, its exit.
@@ -264,9 +270,11 @@ func doors() -> Array:
 			out.append({"x": float(l.x) + float(e.x), "z": float(l.z) + float(e.z), "yaw": 0.0, "interior": "", "exit": true, "name": "Exit"})
 		elif LANDMARK_INTERIORS.has(t):
 			var r := float(l.get("collide", 4.0)) * float(l.get("scale", 1.0)) + 1.5
+			if LANDMARK_DOOR_AT.has(t):
+				r = float(LANDMARK_DOOR_AT[t]) * float(l.get("scale", 1.0))
 			var rot := float(l.get("rot", 0.0))
 			out.append({"x": float(l.x) + sin(rot) * r, "z": float(l.z) + cos(rot) * r, "yaw": rot, "interior": LANDMARK_INTERIORS[t],
-				"name": str(l.get("name", t.capitalize()))})
+				"name": str(l.get("name", LANDMARK_DOOR_NAMES.get(t, t.capitalize())))})
 	_doors = out
 	return out
 

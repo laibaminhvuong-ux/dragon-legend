@@ -15,6 +15,9 @@ var fighters: OptionButton
 var enter: Button
 var code_label: Label
 var actions: Array[Button] = []
+var router_warning: Label
+var consent_layer: Control
+var consent_remember: CheckBox
 func _init(m: Node) -> void:
 	main = m; name = "Server"
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -32,7 +35,11 @@ func _init(m: Node) -> void:
 	panel.add_child(fighters)
 	nickname = LineEdit.new(); nickname.placeholder_text = "Your name"; nickname.text = "Friend"; nickname.max_length = 24; panel.add_child(nickname)
 	invite = LineEdit.new(); invite.placeholder_text = "Six-digit invite code"; invite.max_length = 6; panel.add_child(invite)
-	router = CheckBox.new(); router.text = "Try automatic router setup for Internet friends"; panel.add_child(router)
+	# Privacy/safety (2026-11-13): UPnP is off by default and explains that it opens a port to the Internet.
+	router = CheckBox.new(); router.text = "Map router port with UPnP when I create a server (opens TCP 8910 to the Internet)"; router.button_pressed = false; panel.add_child(router)
+	router_warning = UiKit.label("Warning: while you host, this asks your router to open TCP port 8910 on your public Internet address. Anyone on the Internet can then reach the game's server port (they still need the six-digit code to join). Leave it off for same-network play; the mapping is removed when the room closes.","Muted",true)
+	router_warning.add_theme_color_override("font_color",Color(1.0,0.72,0.3)); router_warning.visible = false; panel.add_child(router_warning)
+	router.toggled.connect(func(on: bool) -> void: router_warning.visible = on)
 	var row := HBoxContainer.new(); panel.add_child(row)
 	for mode: String in ["join","create"]:
 		var button := UiKit.button("Join server" if mode=="join" else "Create server",func() -> void: connect_server(mode),true)
@@ -51,8 +58,12 @@ func _init(m: Node) -> void:
 		if client!=null: client.close()
 		if host!=null: host.stop()
 		queue_free()))
-func connect_server(mode: String) -> void:
+func connect_server(mode: String,consented: bool = false) -> void:
 	if fighters.item_count==0: message.text = "Create a fighter slot first, then return to Server."; return
+	# A join sends the chosen fighter to another machine: ask first (creating keeps it on this machine).
+	if mode=="join" and not consented:
+		var key := CoopConsent.server_key(address.text,invite.text)
+		if not CoopConsent.remembered(key): ask_consent(key); return
 	if client!=null: client.close(); remove_child(client); client.queue_free()
 	if host!=null: host.stop(); host.queue_free(); host = null
 	client = CoopClient.new(); add_child(client)
@@ -75,6 +86,7 @@ func connect_server(mode: String) -> void:
 		code = host.code
 		host_address.text = "Local host address: "+(", ".join(host.addresses) if not host.addresses.is_empty() else "127.0.0.1:8910")
 		host.address_ready.connect(func(ip: String) -> void: host_address.text = "Internet host address: "+ip)
+	client.consent = mode=="join"
 	var error := client.begin(url,"join",code,fighters.get_selected_id(),nickname.text.strip_edges())
 	if error!="":
 		message.text = error
@@ -82,6 +94,24 @@ func connect_server(mode: String) -> void:
 		return
 	message.text = "Connecting…"
 	for button in actions: button.disabled = true
+func ask_consent(key: String) -> void:
+	if consent_layer!=null: consent_layer.queue_free()
+	consent_layer = Control.new(); consent_layer.set_anchors_preset(Control.PRESET_FULL_RECT); add_child(consent_layer)
+	var dim := ColorRect.new(); dim.color = Color(0,0,0,0.7); dim.set_anchors_preset(Control.PRESET_FULL_RECT); consent_layer.add_child(dim)
+	var center := CenterContainer.new(); center.set_anchors_preset(Control.PRESET_FULL_RECT); consent_layer.add_child(center)
+	var box := PanelContainer.new(); box.custom_minimum_size.x = 600; center.add_child(box)
+	var col := VBoxContainer.new(); col.add_theme_constant_override("separation",12); box.add_child(col)
+	col.add_child(UiKit.label("Share this fighter with the host?","HeaderLarge"))
+	col.add_child(UiKit.label(CoopConsent.summary(address.text,nickname.text.strip_edges()),"",true))
+	consent_remember = CheckBox.new(); consent_remember.text = "Don't ask again for this server"; consent_remember.button_pressed = false; col.add_child(consent_remember)
+	var row := HBoxContainer.new(); row.add_theme_constant_override("separation",12); col.add_child(row)
+	row.add_child(UiKit.button("Cancel",func() -> void:
+		consent_layer.queue_free(); consent_layer = null
+		message.text = "Join cancelled. Nothing was sent."))
+	row.add_child(UiKit.button("Accept and join",func() -> void:
+		if consent_remember.button_pressed: CoopConsent.remember(key)
+		consent_layer.queue_free(); consent_layer = null
+		connect_server("join",true),true))
 func start_play() -> void:
 	if client==null or not client.connected or client.latest.is_empty(): message.text = "Waiting for the server world…"; return
 	visible = false

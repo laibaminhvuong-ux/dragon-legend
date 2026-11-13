@@ -11,6 +11,7 @@ var _upd_text: Label
 var _restart: Button
 var _upd_msg := ""
 var _upd_ready := false
+var _offered := ""
 
 func _init(m: Node) -> void:
 	main = m
@@ -31,11 +32,19 @@ func _init(m: Node) -> void:
 	center.add_child(_root)
 	draw()
 	Updater.status.connect(_on_update)
+	Updater.offer.connect(_on_offer)
 	Updater.check()
 
 func _exit_tree() -> void:
 	if Updater.status.is_connected(_on_update):
 		Updater.status.disconnect(_on_update)
+	if Updater.offer.is_connected(_on_offer):
+		Updater.offer.disconnect(_on_offer)
+
+func _on_offer(version: String) -> void:
+	_offered = version
+	_upd_msg = "Update v%s is available." % version
+	draw()
 
 func _on_update(t: String, ready: bool) -> void:
 	_upd_msg = t
@@ -88,6 +97,14 @@ func draw() -> void:
 	_restart = UiKit.button("Restart now", func() -> void: Updater.restart(), true)
 	_restart.visible = _upd_ready
 	upd.add_child(_restart)
+	if Updater.choice() == "":   # first run: ask before the game contacts anyone
+		_upd_text.text = "Updates: the game can ask GitHub whether a newer version exists (GitHub sees your IP address; no player data is sent)."
+		upd.add_child(UiKit.button("Check for updates", func() -> void: Updater.set_choice("on"); _upd_msg = ""; Updater.check(); draw(), true))
+		upd.add_child(UiKit.button("Not now", func() -> void: Updater.set_choice("off"); _upd_msg = ""; draw()))
+	elif Updater.choice() == "off":
+		upd.add_child(UiKit.button("Check for updates", func() -> void: Updater.set_choice("on"); Updater.check(); draw()))
+	elif _offered != "" and not _upd_ready:
+		upd.add_child(UiKit.button("Download v%s" % _offered, func() -> void: _offered = ""; Updater.download(), true))
 	_root.add_child(upd)
 	var hint := UiKit.label("WASD walk · tap Shift to run · mouse look · Space jump · Esc pause", "Muted")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

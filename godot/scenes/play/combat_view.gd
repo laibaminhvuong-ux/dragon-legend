@@ -202,6 +202,8 @@ func update_view(dt: float) -> void:
 		f.rotation.y = float(e.yaw)
 		f.set_terrain(combat.zone)
 		f.presentation = _presentation(e)
+		if e.has("form"):   # a boss phase transformation (rules/rift_patrol.gd); set_form is a no-op when unchanged
+			f.set_form(str(e.form))
 		f.update(dt, {"yaw":e.yaw,"speed": Vector2(vel.x, vel.z).length(), "onGround": e.get("onGround", true), "attackSerial": e.attackSerial,
 			"attackKind": e.attackKind, "hurt": float(e.get("hurtUntil", 0.0)) > combat.clock})
 		var height := 2.2 * float(e.get("scale", 1.0))

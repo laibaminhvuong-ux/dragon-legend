@@ -6,6 +6,15 @@ extends Node
 # built-in game (only if it was built for this exact engine version).
 
 signal status(text: String, ready: bool)
+signal offer(version: String)   # a newer release exists; nothing is downloaded until the player agrees (download())
+
+## Settings "updateCheck": "" = never asked, "on" = may ask GitHub for the latest release on the title screen, "off".
+## Nothing leaves the machine until the player says "on" (GitHub then sees the IP address and the "DragonLegend"
+## user agent; no player data), and a newer pack is downloaded only after the player presses Download.
+static func choice() -> String:
+	return str(Settings.get_value("updateCheck")) if Settings.get_value("updateCheck") != null else ""
+static func set_choice(value: String) -> void:
+	Settings.set_value("updateCheck", value)
 
 const REPO := "laibaminhvuong-ux/dragon-legend"
 const DIR := "user://updates"
@@ -14,6 +23,8 @@ var loaded_version := ""   # the patch running now, "" for the built-in game
 var latest := ""
 var _http: HTTPRequest
 var _checked := false
+var _pending_url := ""
+var _pending_size := 0
 
 func _init() -> void:
 	built_version = str(ProjectSettings.get_setting("application/config/version", "0.0.0"))
@@ -46,7 +57,7 @@ static func newer(a: String, b: String) -> bool:
 
 ## Looks for a newer release once per run (title screen). Quietly does nothing offline or without releases.
 func check() -> void:
-	if _checked or OS.has_feature("editor") or DisplayServer.get_name() == "headless":
+	if _checked or choice() != "on" or OS.has_feature("editor") or DisplayServer.get_name() == "headless":
 		return
 	_checked = true
 	_http = HTTPRequest.new()
@@ -66,8 +77,15 @@ func _on_release(result: int, code: int, _headers: PackedStringArray, body: Pack
 	var want := "Dragon-Legend-android.pck" if OS.has_feature("android") else ("Dragon-Legend-mac.pck" if OS.has_feature("macos") else "Dragon-Legend.pck")
 	for a: Dictionary in r.get("assets", []):
 		if str(a.get("name", "")) == want:
-			_download(str(a.get("browser_download_url", "")), int(a.get("size", 0)))
+			_pending_url = str(a.get("browser_download_url", ""))
+			_pending_size = int(a.get("size", 0))
+			offer.emit(latest)
 			return
+
+## The player pressed Download for the release offered by `offer`.
+func download() -> void:
+	if _pending_url != "":
+		_download(_pending_url, _pending_size)
 
 func _download(url: String, size: int) -> void:
 	DirAccess.make_dir_recursive_absolute(DIR)

@@ -431,10 +431,17 @@ export function applyGodotAdditions(tables) {
   for (const [id, z] of [['zeno', 112], ['grand_priest', 94]]) { const n = npcs.find(v => v.id === id); if (n) n.z = z; }
   // building audit (namek): the Grand Elder stood inside his solid dome (hidden, collider carved round him): out on
   // the pillar top in front of his door, facing out (the x1.5 house leaves ~3 m of ledge there)
-  { const n = npcs.find(v => v.id === 'guru'); if (n) Object.assign(n, {z: 99.6, rot: 0}); }
+  { const n = npcs.find(v => v.id === 'guru'); if (n) Object.assign(n, {z: 99.6, rot: 0, sit: true}); }   // (seated on his stool: cast fixes 2026-11-13)
   // namek fighters authored in the sea between the islands (stood 2-14 m under the water): nearest dry ground
   for (const [id, x, z] of [['dodoria', -46, 21], ['jeice', 8, -160], ['burter', 14, -151], ['vegeta_namek', 42, -22]]) {
     const n = npcs.find(v => v.id === id); if (n) Object.assign(n, {x, z});
+  }
+  // the Oracle Fish (quest giver, now a fish bowl on a stand, B6) stood 1.5 m under Beeros' lake (60,40 r 30): on the shore
+  { const n = npcs.find(v => v.id === 'oracle_fish'); if (n) Object.assign(n, {x: 38, z: 14}); }
+  // ...and their quest markers with them (the defeat steps still pointed at the sea; the boss spawns at the NPC)
+  const quests = structuredClone(tables.quests);
+  for (const [qid, enemy, x, z] of [['m09_village', 'dodoria', -46, 21], ['m12_ginyu', 'jeice', 8, -160], ['m12_ginyu', 'burter', 14, -151]]) {
+    const s = quests.find(q => q.id === qid)?.steps.find(t => t.type === 'defeat' && t.enemy === enemy); if (s) Object.assign(s, {x, z});
   }
   // giant, seated behind the desk: red skin, black beard, judge's hat (Parts.costume "yemmo")
   Object.assign(characters.king_yemma, {scale: 4.2, look: {race: 'Human', skin: 0, skinHex: 0xc8463c, face: 'Fierce', hair: 'None',
@@ -801,6 +808,36 @@ export function applyGodotAdditions(tables) {
     for (const [id, look] of Object.entries(b6)) if (characters[id]?.look) characters[id].look = {...characters[id].look, ...look};
     for (const [id, scale] of [['monaito', 0.85], ['oracle_fish', 0.8]]) if (characters[id]) characters[id].scale = scale;
   }
+  // Cast fixes (Claude, 2026-11-13): Namekian size forms. Giant Form is a real giant like the Great Ape (form size feeds
+  // the follow camera, Ki blast origin and melee reach: it had no size, so a 1.9x body fought at human reach);
+  // Orange Piccor drops cape and turban (robeOff) and is bulkier than he is taller.
+  const forms = structuredClone(tables.forms);
+  {
+    const GIANT = 3.0;
+    if (forms.Giant) forms.Giant.size = GIANT;
+    if (form_looks.Giant) form_looks.Giant = {...form_looks.Giant, scale: GIANT};
+    if (form_looks.Orange) form_looks.Orange = {...form_looks.Orange, robeOff: true, bulk: [1.4, 1.3, 1.36]};
+    // dresses (outfits Dress / LongDress, characters/skirt.gd) per the cast reference
+    const dresses = {
+      bulma: {outfit: 'Dress', outfitRgb: 0xd8303c, outfitRgb2: 0xc8323a, outfitParts: {boot_trim: 0x3a4a8a}, jewellery: ['earrings', 'bracelets']},
+      bulma_young: {outfit: 'Dress', outfitParts: {sleeves: true, vest: false, shoes: 0x8a5a3a, boot_trim: 0xf2f2f2}},
+      chichi: {outfit: 'LongDress', outfitRgb: 0xe0604e, outfitRgb2: 0x3a2040, outfitParts: {pants: 0x7a1a2a, shoes: 0xc8202a},
+        neckwear: 'scarf', neckRgb: 0x8a1a3a},
+      princess_snake: {outfit: 'LongDress', outfitRgb: 0x3a5ad0, outfitRgb2: 0x2a3a8a, outfitParts: {pants: 0x3a5ad0, skirtLen: 0.84}},
+      baba: {outfit: 'LongDress', outfitRgb: 0x1e1e22, outfitRgb2: 0x1e1e22, outfitParts: {pants: 0x1e1e22, shoes: 0x1e1e22, skirtLen: 0.84}},
+    };
+    // the two cats as round cat creatures (CreatureBodies cat_body) instead of a cat face on a grown man's body
+    Object.assign(dresses, {
+      puar: {costume: ['cat_body'], skinHex: 0x3a78a6, faceRgb: 0xecd8b6},
+      korin: {costume: ['cat_body', 'prop_staff'], faceRgb: 0xfaf6ee},
+      guru: {costume: ['seat_stool']},   // the Grand Elder sits (npcs row sit: true) on a cushioned stool
+    });
+    for (const [id, look] of Object.entries(dresses)) {
+      if (!characters[id]?.look) continue;
+      const {outfitParts: _drop, ...base} = characters[id].look;   // a new outfit: the old outfit's part overrides do not apply
+      characters[id].look = look.outfit ? {...base, ...look} : {...characters[id].look, ...look};
+    }
+  }
   // Every character's own face (FaceShape): seeded by the character id, so identical looks still differ
   for (const [id, c] of Object.entries(characters)) if (c.look && c.look.faceSeed == null) c.look.faceSeed = id;
   const fighting_styles = fightingStyles(tables.combat);
@@ -809,7 +846,7 @@ export function applyGodotAdditions(tables) {
     ['muscle_tower', 650, 1290, 160], ['baaba_palace', -1320, 650, 150], ['korrin_tower', -550, 900, 150], ['piccor_castle', 920, -800, 170],
     ['tournament_island', -150, -575, 150]]) world.planets.earth.regions.push({zone, x, z, radius, blend: 80});
   return {
-    ...tables, zones, npcs, characters, appearance, races, form_looks, zone_order: zoneOrder, planets: world.planets,
+    ...tables, zones, npcs, quests, characters, appearance, races, form_looks, forms, zone_order: zoneOrder, planets: world.planets,
     fighting_styles, schema:{...tables.schema, version:Math.max(7,tables.schema.version), slots:10},
     skill_presentation: skillPresentation(tables.moves,tables.combat.starterMove),
     godot_additions: {zones: [...new Set(changed)].sort(), note: 'Zones changed for the Godot game only; JS parity skips them.'},

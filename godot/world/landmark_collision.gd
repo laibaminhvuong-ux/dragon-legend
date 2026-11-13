@@ -46,7 +46,8 @@ static func piece(mi: MeshInstance3D, root: Node3D) -> Dictionary:
 	return {"xf": MeshMerge._relative(mi, root), "aabb": local_aabb(mi.mesh), "mat": m,
 		"round": mi.mesh is CylinderMesh or mi.mesh is SphereMesh or mi.mesh is CapsuleMesh,
 		"flat": mi.mesh is BoxMesh or mi.mesh is CylinderMesh, "skip": _opted_out(mi, root),
-		"stand_on": mi.has_meta("stand_on")}   # builder-marked terraces / tall stairs: a surface at any height
+		"stand_on": mi.has_meta("stand_on"),   # builder-marked terraces / tall stairs: a surface at any height
+		"wall": mi.has_meta("wall")}   # builder-marked walls: never stood on, solid even when low and wide (a house's drum)
 
 static func _opted_out(n: Node, root: Node) -> bool:
 	var c := n
@@ -149,7 +150,7 @@ static func build(g: Node3D) -> Array:
 	var cands: Array = []
 	for inf: Dictionary in infos:
 		var top: float = inf.hi.y - base
-		if not bool(inf.p.get("flat", false)) or top <= SURFACE_MIN_TOP or (top > SURFACE_TOP and not inf.p.get("stand_on", false)):
+		if not bool(inf.p.get("flat", false)) or inf.p.get("wall", false) or top <= SURFACE_MIN_TOP or (top > SURFACE_TOP and not inf.p.get("stand_on", false)):
 			continue
 		if absf((inf.full.basis.y as Vector3).normalized().y) < 0.985:
 			continue
@@ -199,7 +200,7 @@ static func build(g: Node3D) -> Array:
 			w2 = float(c.hw) * 2.0; d2 = float(c.hd) * 2.0
 		if maxf(w2, d2) < POST or (minf(w2, d2) < THIN and size.y < LOW_WALL):
 			continue
-		if hi.y - base < PLATFORM_TOP and minf(w2, d2) > PLATFORM_MIN:
+		if hi.y - base < PLATFORM_TOP and minf(w2, d2) > PLATFORM_MIN and not p.get("wall", false):
 			continue
 		c.top = hi.y
 		c.landmark = true

@@ -383,6 +383,9 @@ class D extends LandmarksOrigins.B:
 		# dais and chair (dais top 1.4 = the NPC's authored y; seat as the old station)
 		box(15, 1.4, 10, mat(0x8a7d68, {"stone": true}), 0, 0.7, 10.5)
 		box(15.4, 0.2, 10.4, green, 0, 1.45, 10.5)
+		for k in 2:   # side steps up the dais on the right (task 4: its 1.55 m top was a ledge nobody could walk up; King
+			var st_top := 0.5 * (k + 1)   # Yemmo stands at its left edge)
+			box(0.8, st_top, 4.0, mat(0x8a7d68, {"stone": true}), 7.7 + 0.4 + (1 - k) * 0.8, st_top * 0.5, 10.5)
 		var seat := mat(0x6a4aa0, {"rough": 0.6})
 		box(9, 1.8, 5.5, seat, 0, 1.4 + 0.9, 10.2)
 		box(9.4, 0.3, 5.9, gold, 0, 1.4 + 1.85, 10.2)
@@ -482,10 +485,11 @@ class D extends LandmarksOrigins.B:
 			n.transform = Transform3D(basis_y(up) * Basis(Vector3.UP, ry) * Basis.from_scale(Vector3.ONE * 1.6), up * (r - 0.25))
 			return n
 		var house: Node3D = on_top.call(6.0, 2.0)
-		dome(4, mat(0xf3eadb), 0, 0, 0, 24, house)
+		dome(4, mat(0xf3eadb, {"rough": 0.95}), 0, 0, 0, 32, house)   # matte, no mirrored horizon line (task 4)
 		torus(4, 0.3, mat(0xc83228), 0, 0.1, 0, house)
 		sphere(0.8, mat(0xc83228), 0, 4, 0, 12, house)
-		box(1.4, 2.2, 0.2, mat(0x6a4a2a), 0, 1.1, 3.9, 0.0, house)
+		box(1.8, 2.5, 1.2, mat(0xf3eadb, {"rough": 0.95}), 0, 1.25, 3.55, 0.0, house)   # entry: the door slab stood off the curve
+		box(1.4, 2.2, 0.2, mat(0x6a4a2a), 0, 1.1, 4.2, 0.0, house)
 		var car: Node3D = on_top.call(-6.0, 5.0, 1.2)
 		box(3, 0.7, 1.6, mat(0xc8322a, {"metal": 0.5, "rough": 0.3}), 0, 0.4, 0, 0.0, car)   # on the ground (was 0.35 m up)
 		box(1.6, 0.6, 1.4, mat(0xddeeff, {"opacity": 0.5, "rough": 0.1}), -0.2, 1.0, 0, 0.0, car)
@@ -696,11 +700,14 @@ class D extends LandmarksOrigins.B:
 		var stone := mat(0xb8a8d0, {"rough": 0.6, "stone": true}); var wall := mat(0x5a3a8a, {"rough": 0.45})
 		var gold := mat(0xd8b048, {"metal": 0.75, "rough": 0.3}); var roof := mat(0x2a9a8a, {"rough": 0.4})
 		var win := mat(0x1e1430, {"rough": 0.3}); var glow := mat(0xffe6a0, {"emissive": 0xc08a20, "glow": 1.0})
-		box(30, 2, 30, stone, 0, 1, 0)
-		box(24, 2, 24, stone, 0, 3, 0)
+		box(30, 2, 30, stone, 0, 1, 0).set_meta("stand_on", true)   # its 2.0 m top sat right on SURFACE_TOP: a wall or not by float noise
+		box(24, 2, 24, stone, 0, 3, 0).set_meta("stand_on", true)   # the 4 m tier the tower and its door stand on
 		for k in range(1, 5):   # front stairs up to the 2 m terrace: 0.5 m risers (were two 1 m blocks, the upper one
 			var top := 0.5 * k  # sunk into the terrace with its top flush on it: z-fighting)
-			box(8, top, 0.9, stone, 0, top * 0.5, 15.0 + (4 - k) * 0.9 + 0.45)
+			box(8, top, 0.9, stone, 0, top * 0.5, 15.0 + (4 - k) * 0.9 + 0.45).set_meta("stand_on", true)
+		for k in range(1, 5):   # and on up to the 4 m tier at the door (task 4: the door was on a tier you could not walk up to)
+			var up := 0.5 * k
+			box(6, up, 0.8, stone, 0, 2.0 + up * 0.5, 12.0 + (4 - k) * 0.8 + 0.4).set_meta("stand_on", true)   # 0.8 deep: SURFACE_MIN
 		var y := 4.0
 		var tiers := [[9.0, 9.0], [7.5, 8.0], [6.0, 7.5], [4.6, 7.0], [3.2, 6.0]]
 		for i in tiers.size():
@@ -926,8 +933,9 @@ class D extends LandmarksOrigins.B:
 			limb(Vector3(sx * 1.6, 1.4, 0), Vector3(sx * 2.8, 0.0, 0.6), 0.4, 0.1, gold, 6, root)
 		limb(Vector3(0, 1.2, 0), Vector3(0, 0.0, 0.0), 0.8, 0.3, gold, 8, root)
 		box(6, 0.8, 3, blue, 0, 1.8, -3.0, 0.0, root)
-		box(6.4, 0.3, 3.4, gold, 0, 1.4, -3.0, 0.0, root)
-		box(5.6, 1.3, 2.9, dark, 0, 0.6, -3.0, 0.0, root)   # plinth: the bench floated 1.25 m over the ground (audit)
+		box(6.4, 0.3, 3.4, gold, 0, 1.4, -3.0, 0.0, root).set_meta("wall", true)
+		box(5.6, 1.3, 2.9, dark, 0, 0.6, -3.0, 0.0, root).set_meta("wall", true)   # plinth: the bench floated 1.25 m over the ground (audit)
+		# plinth and trim are walls on purpose (task 4): the bench box covers them, only a 0.2 m rim was "stand-on"
 		box(6, 2.4, 0.6, blue, 0, 3.0, -4.3, 0.0, root)
 
 	## Hell's needle mountain (audit 113, batch 6 Hell zone): a cluster of tall needle spikes on a rock mound.

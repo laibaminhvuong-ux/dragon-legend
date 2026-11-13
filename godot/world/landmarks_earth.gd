@@ -42,15 +42,34 @@ class E extends LandmarksOrigins.B:
 		rng.seed = int(floor(float(landmark.get("x", 0)) * 13.0 + float(landmark.get("z", 0)) * 7.0)) + 17
 
 	# --- shared pieces --------------------------------------------------------------------------------------
-	## A flat panel lying on a flattened dome (radius r, vertical squash s, base at y0): latitude phi, longitude a
-	## (from +z). Used for the long band windows of the Capsule domes.
+	## A curved pane lying on a flattened dome (radius r, vertical squash s, base at y0): centred on latitude phi and
+	## longitude a (from +z), w m along the band and h m up the slope, 3 cm proud of the dome. Used for the long band
+	## windows of the Capsule domes (task 4 2026-11-13: they were flat 22 cm boxes, slabs standing off the curve).
 	func dome_panel(r: float, s: float, y0: float, phi: float, a: float, w: float, h: float, m: Material, cx := 0.0, cz := 0.0) -> MeshInstance3D:
-		var hr := r * cos(phi) + 0.06
-		var y := y0 + s * r * sin(phi)
-		var tilt := atan2(sin(phi), s * cos(phi))   # surface normal of the squashed sphere
-		var p := box(w, h, 0.22, m, cx + sin(a) * hr, y, cz + cos(a) * hr)
-		p.basis = Basis(Vector3.UP, a) * Basis(Vector3.RIGHT, -tilt)
-		return p
+		var da := w / maxf(r * cos(phi), 0.1)
+		var dphi := h / (r * sqrt(sin(phi) * sin(phi) + s * s * cos(phi) * cos(phi)))
+		var nu := maxi(2, int(ceil(w / 0.5))); var nv := 3
+		var st := SurfaceTool.new()
+		st.begin(Mesh.PRIMITIVE_TRIANGLES)
+		for j in nv + 1:
+			for i in nu + 1:
+				var ph := phi - dphi * 0.5 + dphi * j / nv
+				var aa := a - da * 0.5 + da * i / nu
+				var nrm := Vector3(cos(ph) * sin(aa), sin(ph) / s, cos(ph) * cos(aa)).normalized()
+				st.set_normal(nrm)
+				st.set_uv(Vector2(float(i) / nu, float(j) / nv))
+				st.add_vertex(Vector3(cx + sin(aa) * r * cos(ph), y0 + s * r * sin(ph), cz + cos(aa) * r * cos(ph)) + nrm * 0.03)
+		for j in nv:
+			for i in nu:
+				var k := j * (nu + 1) + i
+				for idx in [k, k + nu + 1, k + nu + 2, k, k + nu + 2, k + 1]:   # clockwise seen from outside: Godot's front
+					st.add_index(idx)
+		var mi := MeshInstance3D.new()
+		mi.mesh = st.commit()
+		mi.material_override = m
+		mi.set_meta("no_collision", true)   # a skin on the dome, which is the solid
+		g.add_child(mi)
+		return mi
 
 	## A row of band windows round a dome at latitude phi, leaving a gap round the front (+z) if `gap` > 0.
 	func dome_band(r: float, s: float, y0: float, phi: float, count: int, fill: float, h: float, m: Material, gap := 0.0, cx := 0.0, cz := 0.0, off := 0.0) -> void:
@@ -216,7 +235,7 @@ class E extends LandmarksOrigins.B:
 		var acc := mat(int(accents[rng.randi_range(0, accents.size() - 1)]), {"rough": 0.4})
 		var wall := mat(0xf2ead2 if rng.randf() < 0.5 else 0xf4f4f0, {"rough": 0.5})
 		var glass := mat(0x6fb6e6, {"rough": 0.1, "metal": 0.25, "emissive": 0x163a56, "glow": 0.4})
-		cyl(6.0, 6.0, 1.6, wall, 0, 0.8, 0, 28)
+		cyl(6.0, 6.0, 1.6, wall, 0, 0.8, 0, 28).set_meta("wall", true)   # the house's drum is a wall, not a 1.3-1.8 m ledge to climb
 		dome(6.0, wall, 0, 1.6, 0, 28).scale = Vector3(1, 0.8, 1)
 		torus(6.02, 0.22, acc, 0, 1.6, 0)
 		dome_band(6.0, 0.8, 1.6, 0.25, 7, 0.55, 0.8, glass, 0.5)
@@ -225,6 +244,7 @@ class E extends LandmarksOrigins.B:
 		box(2.6, 2.6, 1.6, wall, 0, 1.3, 6.0)
 		box(1.4, 2.2, 0.12, mat(0x3a4a6a), 0, 1.1, 6.82)
 		var awn := cyl(1.0, 1.0, 1.3, acc, 0, 2.55, 7.2, 14); awn.rotation.x = PI / 2; awn.scale = Vector3(1, 1, 0.45)
+		awn.set_meta("no_collision", true)   # overhead: its box was an invisible wall 1 m in front of the door (task 4)
 		if flag("trees"):
 			globe_lamp(2.6, 8.4, 3.0)
 
@@ -470,7 +490,7 @@ class E extends LandmarksOrigins.B:
 					box(0.9, fh - 0.5, 0.9, conc, ox + float(cx) * (w - 1.0), y + fh * 0.5, sz * (d * 0.5 - 0.3), 0.0, t)
 			box(0.9, fh - 0.5, d - 0.4, conc, ox - w * 0.5 + 0.45, y + fh * 0.5, 0, 0.0, t)
 			box(0.9, fh - 0.5, d - 0.4, conc, ox + w * 0.5 - 0.45, y + fh * 0.5, 0, 0.0, t)
-		box(13.4, 3.0, 10.4, conc, 0, -0.3, 0, 0.0, t)   # footing reaches 1.8 m down: the tower's tilt lifted one edge 0.4 m off the ground
+		box(13.4, 3.0, 10.4, conc, 0, -0.3, 0, 0.0, t).set_meta("wall", true)   # footing reaches 1.8 m down: the tower's tilt lifted one edge 0.4 m off the ground; a wall, not a 1.8-2 m ledge round the ruin (task 4)
 		var top := float(floors) * fh
 		for i in 7:   # rebar
 			var r := cyl(0.06, 0.06, rng.randf_range(1.5, 3.5), rebar, rng.randf_range(-4.0, 4.0) + cut * 6.0, top - 1.5, rng.randf_range(-4.0, 4.0), 4, t)

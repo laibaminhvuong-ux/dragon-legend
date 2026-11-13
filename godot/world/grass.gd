@@ -24,6 +24,9 @@ var _towns: Array = []   # town landmarks: no grass in a city, nor on village ro
 ## had blades growing up through the water and the tiles.
 const NO_GRASS := {"baabaisle": 60.0, "capsulehq": 28.0, "budokaihall": 34.0}   # Baaba: moat r 54 round local (0, -6); Kapsule HQ: lawn and paths (tops 0.08-0.12); tournament hall: gate walkway (top 0.08, z 20-32)
 var _bare: Array = []    # Vector3(x, radius, z)
+## Small bare spots in a landmark's own frame [local x, local z, radius] (times its scale): stepping stones and paths
+## lower than the blades (Grandpa Gohin's hut: 12 cm stones to the door had grass growing through them, task 4).
+const NO_GRASS_SPOTS := {"paozucabin": [[0.0, 5.0, 0.95], [0.0, 6.6, 0.95], [0.0, 8.2, 0.95], [0.0, 9.8, 0.95], [0.0, 11.4, 0.95], [0.0, 13.0, 0.95]]}
 
 static func create(terrain: Node3D, zone: RefCounted, quality := "high") -> WorldGrass:
 	var g := WorldGrass.new()
@@ -36,6 +39,7 @@ static func create(terrain: Node3D, zone: RefCounted, quality := "high") -> Worl
 		var r := float(l.get("noGrass", NO_GRASS.get(str(l.get("type", "")), 0.0))) * float(l.get("scale", 1.0))
 		if r > 0.0:
 			g._bare.append(Vector3(float(l.x), r, float(l.z)))
+		g._bare.append_array(bare_spots(l))
 	g._density = float(p.density) * float(zone.biome.get("grass", 1.0))
 	g._radius = p.radius
 	g._mesh = _clump_mesh()
@@ -167,6 +171,15 @@ static func _clump_mesh() -> ArrayMesh:
 				st.set_uv(uvs[idx])
 				st.add_vertex(quad[idx])
 	return st.commit()
+
+## A landmark's NO_GRASS_SPOTS in world space: [Vector3(x, radius, z)], local -> world as the landmark node (rotation.y = rot).
+static func bare_spots(l: Dictionary) -> Array:
+	var out: Array = []
+	var sc := float(l.get("scale", 1.0)); var rot := float(l.get("rot", 0.0))
+	for sp: Array in NO_GRASS_SPOTS.get(str(l.get("type", "")), []):
+		var lx := float(sp[0]) * sc; var lz := float(sp[1]) * sc
+		out.append(Vector3(float(l.x) + lx * cos(rot) + lz * sin(rot), float(sp[2]) * sc, float(l.z) - lx * sin(rot) + lz * cos(rot)))
+	return out
 
 static func _bare_at(bare: Array, x: float, z: float) -> bool:
 	for b: Vector3 in bare:

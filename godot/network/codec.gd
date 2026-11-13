@@ -28,6 +28,22 @@ static func token_valid(token: String) -> bool:
 	return true
 static func secret() -> String:
 	return Crypto.new().generate_random_bytes(32).hex_encode()
+
+## Privacy (user rule 2026-11-13): a join sends ONLY these top-level keys, and only these slot fields
+## (what the host's room needs to run the fighter: look, level/stats, forms/moves/outfits, quests/story items, cards, zeni).
+## Never local paths, timestamps, play time, location or other slots. The owner (same machine) also keeps its location.
+const JOIN_KEYS: Array[String] = ["type","version","token","code","slot_index","slot","name"]
+const SLOT_KEYS: Array[String] = ["race","style","appearance","level","xp","statPoints","stats","zeni","outfits","forms","moves","loadout","formMastery","quests","story","rift"]
+const OWNER_SLOT_KEYS: Array[String] = ["zone","position","mapSpace","returnTo","returnYaw","createdAt","playedAt","playTime"]
+static func shareable_slot(slot: Dictionary,owner: bool = false) -> Dictionary:
+	var out := {}
+	var keys: Array[String] = SLOT_KEYS.duplicate()
+	if owner: keys.append_array(OWNER_SLOT_KEYS)
+	for key: String in keys:
+		if slot.has(key): out[key] = slot[key].duplicate(true) if slot[key] is Dictionary or slot[key] is Array else slot[key]
+	return out
+static func join_message(mode: String,invite: String,index: int,slot: Dictionary,name: String,token: String,owner: bool = false) -> Dictionary:
+	return {"type":mode,"version":VERSION,"token":token,"code":invite,"slot_index":index,"slot":shareable_slot(slot,owner),"name":name.left(24)}
 static func intents(raw: Dictionary) -> Dictionary:
 	var out := RuleGame.empty_intents()
 	for key: String in out:

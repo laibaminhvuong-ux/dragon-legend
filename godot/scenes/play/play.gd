@@ -414,8 +414,9 @@ func render(frame_dt: float, alpha: float) -> void:
 	player.visible = float(p.health) > 0.0
 	player.position = pos
 	player.rotation.y = float(p.yaw)
-	if _last_form != str(p.form):
-		_last_form = str(p.form)
+	var shown_form := Fighter.shown_form(str(p.form), float(p.get("kaioken", 0)))
+	if _last_form != shown_form:
+		_last_form = shown_form
 		player.set_form(_last_form)
 	var vel: Vector3 = p.vel
 	player.update(anim_dt, {"speed": Vector2(vel.x, vel.z).length(), "vy": vel.y, "onGround": p.onGround, "flying": p.flying, "sprint": p.get("sprinting", true),

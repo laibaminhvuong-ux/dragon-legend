@@ -191,7 +191,10 @@ func update(dt: float) -> void:
 		phase=maxi(phase,int(e.get("riftPhase",0)))
 		if phase>int(e.get("riftPhase",-1)):
 			e.riftPhase=phase;e.runSpeed=game().combat.c.enemySpeed*e.phases[phase].speed
-			game().emit("riftBossPhase",{"id":e.id,"character":e.character,"phase":phase,"name":e.phases[phase].name,"pos":e.pos})
+			for k: int in range(phase,-1,-1):   # a phase may transform the boss (display only: the view shows e.form)
+				if e.phases[k].has("form"):
+					e.form=str(e.phases[k].form);break
+			game().emit("riftBossPhase",{"id":e.id,"character":e.character,"phase":phase,"name":e.phases[phase].name,"pos":e.pos,"form":str(e.get("form",""))})
 		e.damageMultiplier=float(e.damageScale)*float(e.phases[phase].damage)
 func snapshot() -> Dictionary:
 	if run.is_empty():return {}

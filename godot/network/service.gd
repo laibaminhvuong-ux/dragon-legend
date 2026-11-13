@@ -29,7 +29,8 @@ func authenticate(connection: String,address: String,message: Dictionary,now: fl
 	else: return fail("Choose Join server or Create server.")
 	var room: CoopRoom = rooms[code]
 	if room.saved.members.size()>=64 and not room.saved.members.has(identity): return fail("This server has reached its saved-fighter limit.")
-	var joined := room.add(identity,str(message.get("name","Friend")),message.slot)
+	# Keep only what the room needs (privacy); a remote peer's location/timestamps/extra fields are dropped.
+	var joined := room.add(identity,str(message.get("name","Friend")),CoopCodec.shareable_slot(message.slot,connection=="owner"))
 	if joined.has("error"): return fail(joined.error)
 	sessions[connection] = {"room":code,"identity":identity,"last":now,"window":now,"packets":0}
 	return {"type":"welcome","code":code,"self":joined.id,"limit":CoopRoom.LIMIT}

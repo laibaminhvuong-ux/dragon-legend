@@ -109,6 +109,24 @@ func tube(points: PackedVector3Array, r0: float, r1: float, seg := 24, sides := 
 	for s in sides:
 		_i.append_array([last + s, last + s + 1, tip_c])
 
+## A grid surface from rows of points (`cols` + 1 points per row, row after row), normals from the grid
+## (draw it with a two-sided material: skirts are open shells).
+func grid(pts: PackedVector3Array, cols: int, rows: int, xf := Transform3D.IDENTITY) -> void:
+	var base := _v.size()
+	var nb := xf.basis.inverse().transposed()
+	for r in rows + 1:
+		for c in cols + 1:
+			var p := pts[r * (cols + 1) + c]
+			var du := pts[r * (cols + 1) + mini(c + 1, cols)] - pts[r * (cols + 1) + maxi(c - 1, 0)]
+			var dv := pts[mini(r + 1, rows) * (cols + 1) + c] - pts[maxi(r - 1, 0) * (cols + 1) + c]
+			var n := dv.cross(du)
+			_v.append(xf * p); _n.append((nb * (n.normalized() if n.length() > 1e-8 else Vector3.UP)).normalized())
+	for r in rows:
+		for c in cols:
+			var a0 := base + r * (cols + 1) + c
+			var b0 := a0 + cols + 1
+			_i.append_array([a0, b0, a0 + 1, a0 + 1, b0, b0 + 1])
+
 ## A gently curved, double-sided sheet hanging down from its top edge (capes).
 func sheet(xf: Transform3D, width: float, height: float, cols := 6, rows := 10) -> void:
 	for side in [1.0, -1.0]:

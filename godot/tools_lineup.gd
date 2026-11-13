@@ -71,12 +71,12 @@ func _row(entries: Array, spacing: float) -> void:
 	var n := entries.size()
 	var total := 0.0
 	for e: Array in entries:
-		total += spacing * maxf(1.0, float(e[2]) * 0.85)
+		total += spacing * maxf(1.0, _vis(e) * 0.85)
 	var x := -total / 2.0
 	for i in n:
 		var e: Array = entries[i]
 		var f := Fighter.create(e[1])
-		var w := spacing * maxf(1.0, float(e[2]) * 0.85)
+		var w := spacing * maxf(1.0, _vis(e) * 0.85)
 		f.position = Vector3(x + w / 2.0, 0, 0)
 		x += w
 		f.scale = Vector3.ONE * float(e[2])
@@ -96,7 +96,7 @@ func _row(entries: Array, spacing: float) -> void:
 	stage.add_child(floor)
 	var tallest := 1.0
 	for e: Array in entries:
-		tallest = maxf(tallest, float(e[2]))
+		tallest = maxf(tallest, _vis(e))
 	cam.size = 2.45 * tallest
 	for l: Label3D in stage.find_children("*", "Label3D", true, false):
 		l.pixel_size = 0.004 * sqrt(tallest)
@@ -104,6 +104,10 @@ func _row(entries: Array, spacing: float) -> void:
 	vp.size = Vector2i(roundi(H * (total + 0.3) / cam.size), H)
 	cam.position = Vector3(0, cam.size * 0.5 - 0.3 * tallest, 8)
 	cam.rotation = Vector3.ZERO
+
+## An entry's drawn size: its scale times its form's (entries may carry the form look's scale as a 4th value).
+func _vis(e: Array) -> float:
+	return float(e[2]) * (float(e[3]) if e.size() > 3 else 1.0)
 
 func _paint(mat: Material, bg: Color) -> void:
 	env.environment.background_color = bg
@@ -126,9 +130,13 @@ func _paint(mat: Material, bg: Color) -> void:
 	light.visible = true
 
 func _settle() -> void:
+	var sit := "--sit" in OS.get_cmdline_user_args()   # seated NPCs (the story view's "sitting")
+	var speed := 0.0   # --speed=4: a walk / run frame (skirts, capes)
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--speed="): speed = float(a.substr(8))
 	for f: Fighter in stage.find_children("*", "Fighter", true, false):
 		for i in 30:
-			f.update(1.0 / 30.0, {"speed": 0.0, "onGround": true})
+			f.update(1.0 / 30.0, {"speed": speed, "onGround": true, "sitting": sit})
 	for i in 6:
 		await process_frame
 
@@ -729,7 +737,9 @@ func _cast(out: String, ids: Array) -> void:
 			var l: Dictionary = (c.get("look", {}) as Dictionary).duplicate()
 			l.faceSeed = id
 			if entry.contains(":"): l.form = entry.get_slice(":", 1)
-			row.append([str(c.get("name", id)) + (" " + str(l.form) if entry.contains(":") else ""), l, minf(float(c.get("scale", 1.0)) if c.get("scale") != null else 1.0, 2.2)])
+			var fl: Dictionary = root.get_node("Data").form_looks.get(str(l.get("form", "")), {})
+			var fs := float(fl.scale) if fl.get("scale") != null else (float(fl.bulk[1]) if fl.get("bulk") is Array else 1.0)
+			row.append([str(c.get("name", id)) + (" " + str(l.form) if entry.contains(":") else ""), l, minf(float(c.get("scale", 1.0)) if c.get("scale") != null else 1.0, 2.2), fs])
 		var head := "--head" in OS.get_cmdline_user_args()   # cast batch B5: head close-ups (everyone at scale 1)
 		if head:
 			for r: Array in row: r[2] = 1.0

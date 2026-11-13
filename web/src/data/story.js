@@ -323,7 +323,7 @@ const level = (lv, text) => ({ type: "level", level: lv, text });
 /** Earth's seven Dragon Balls, one per Earth world. */
 const EARTH_DRAGON_BALLS = [
   { zone: "earth_plains", x: -180, z: -30 }, { zone: "kame_island", x: 14, z: -16 }, { zone: "west_city", x: 110, z: 90 },
-  { zone: "gizard_wasteland", x: -90, z: -200 }, { zone: "gero_lab", x: -170, z: 150 }, { zone: "papaya_island", x: 70, z: 70 },
+  { zone: "gizard_wasteland", x: -90, z: -200 }, { zone: "gero_lab", x: -170, z: 150 }, { zone: "papaya_island", x: 50, z: 50 },
   { zone: "cell_games", x: 160, z: -120 },
 ];
 

@@ -11,13 +11,16 @@ extends RefCounted
 #   demons:    bat_wings (skin-coloured membrane wings), demon_crest (fin over the skull), oni_horns (two short forehead horns)
 #   props:     prop_cane (right hand), prop_staff (long, right hand), prop_katana (on the back), prop_turtle_shell,
 #              suspenders
-#   bodies:    battle_walker (pink mech round the hidden body), oracle_fish (fish in a bowl on a stand; static)
+#   bodies:    battle_walker (pink mech round the hidden body), oracle_fish (fish in a bowl on a stand; static),
+#              cat_body (2026-11-13: Puir / Korrin as the small round cats they are, on the rig: fur = the skin colour,
+#              face / belly / inner ears / tail tuft = look.faceRgb)
+#   seat_stool: a round cushioned stool under a seated NPC's hips (npcs row sit: true; the Grand Elder), stands still
 # Head pieces are in Hair.HEAD_SPACE (head centre about (0, 0.06, 0), radius about 0.105, +Z is the face; eyes at
 # y 0.04, nose y 0, mouth y -0.03); body pieces in model rest space (T-pose, arms along ±X, hands at x ±0.8, y 1.44).
 
 const IDS := ["namek_turban", "pilaf_hat", "ninja_hood", "pig_head", "cat_head", "dog_head", "monkey_head",
 	"big_mustache", "plant_head", "bat_wings", "demon_crest", "oni_horns", "prop_cane", "prop_staff",
-	"prop_katana", "prop_turtle_shell", "suspenders", "battle_walker", "oracle_fish"]
+	"prop_katana", "prop_turtle_shell", "suspenders", "battle_walker", "oracle_fish", "cat_body", "seat_stool"]
 const HEAD_C := Vector3(0, 0.06, 0)
 
 static func _m(key: String, build: Callable) -> ArrayMesh:
@@ -219,6 +222,52 @@ static func gear(f: Fighter, id: String) -> void:
 					g.cylinder(Transform3D(Basis.from_scale(Vector3(1.0, 1.0, 1.25)), Vector3(s * 0.12, 0.27, 0.0)), 0.085, 0.13, 0.46, 18)), pink)
 				f.add_piece("DEF-foot." + side, Transform3D.IDENTITY, _m("walker_foot%d" % s, func(g: Geo) -> void:
 					g.sphere(Transform3D(Basis.from_scale(Vector3(1.1, 0.32, 2.0)), Vector3(s * 0.12, 0.04, 0.08)), 0.12, 10, 14)), pink)
+		"cat_body":   # Puir, Korrin: a small round cat on the rig (the humanoid hidden): pear body with a pale belly,
+			# a big round head with a pale face, tall ears, dot eyes, pink nose, whiskers, paws, stubby legs and a tufted tail
+			_hide_humanoid(f)
+			var head_down := Transform3D(Basis.IDENTITY, Vector3(0, -0.1, 0))   # the head sits low on the body (no neck)
+			var pale := _mat(Outfits.rgb(f.look.get("faceRgb")) if Outfits.rgb(f.look.get("faceRgb")) >= 0 else 0xf4ecdc, 0.75)
+			_skin(f, "DEF-spine.001", Transform3D.IDENTITY, _m("cat_body", func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 1.12, 0.9)), Vector3(0, 0.6, 0.0)), 0.4, 16, 22)), 1.0)
+			f.add_piece("DEF-spine.001", Transform3D.IDENTITY, _m("cat_belly", func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.from_scale(Vector3(0.92, 1.05, 0.55)), Vector3(0, 0.55, 0.17)), 0.33, 14, 20)), pale)
+			_skin(f, "DEF-neck", head_down, _m("cat_head", func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.15, 0.95, 1.0)), Vector3(0, 1.38, 0.02)), 0.3, 16, 22)
+				for s in [1, -1]:
+					g.spike(Vector3(s * 0.17, 1.55, -0.01), 0.32, 0.11, Vector3(s * 0.35, 1, 0.0))), 1.0)
+			f.add_piece("DEF-neck", head_down, _m("cat_face", func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.05, 0.82, 0.5)), Vector3(0, 1.33, 0.22)), 0.24, 14, 20)), pale)
+			var light := (f.skin.r + f.skin.g + f.skin.b) / 3.0 > 0.8   # a white cat (Korrin) has pink inner ears
+			f.add_piece("DEF-neck", head_down, _m("cat_inner_ears", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.spike(Vector3(s * 0.17, 1.57, 0.04), 0.25, 0.07, Vector3(s * 0.35, 1, 0.12))), _mat(0xe89aa4, 0.7) if light else pale)
+			f.add_piece("DEF-neck", head_down, _m("cat_eyes", func(g: Geo) -> void:
+				for s in [1, -1]:
+					g.sphere(Transform3D(Basis.from_scale(Vector3(0.8, 1.0, 0.5)), Vector3(s * 0.075, 1.4, 0.335)), 0.026, 8, 10)), _mat(0x141414, 0.3))
+			f.add_piece("DEF-neck", head_down, _m("cat_nose_big", func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.3, 0.9, 0.8)), Vector3(0, 1.345, 0.35)), 0.018, 8, 10)), _mat(0xd85a6a, 0.5))
+			f.add_piece("DEF-neck", head_down, _m("cat_whiskers", func(g: Geo) -> void:
+				for s in [1, -1]:
+					for k in 3:
+						var y := 1.32 - float(k) * 0.022
+						g.tube(_pts([Vector3(s * 0.1, y, 0.33), Vector3(s * 0.26, y + 0.01 - float(k) * 0.012, 0.3), Vector3(s * 0.42, y + 0.02 - float(k) * 0.035, 0.22)]), 0.004, 0.002, 6, 4)), _mat(0x2a2a2a, 0.6))
+			for s in [1, -1]:
+				var side := "L" if s > 0 else "R"
+				_skin(f, "DEF-hand." + side, Transform3D.IDENTITY, _m("cat_paw%d" % s, func(g: Geo) -> void:
+					g.sphere(Transform3D(Basis.IDENTITY, Vector3(s * 0.76, 1.44, -0.065)), 0.09, 10, 12)), 1.0)
+				_skin(f, "DEF-shin." + side, Transform3D.IDENTITY, _m("cat_leg%d" % s, func(g: Geo) -> void:
+					g.cylinder(Transform3D(Basis.IDENTITY, Vector3(s * 0.1, 0.13, 0.0)), 0.09, 0.08, 0.18, 12)), 1.0)
+				_skin(f, "DEF-foot." + side, Transform3D.IDENTITY, _m("cat_foot%d" % s, func(g: Geo) -> void:
+					g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 0.45, 1.5)), Vector3(s * 0.095, 0.05, 0.05)), 0.1, 10, 12)), 1.0)
+			_skin(f, "DEF-hips", Transform3D.IDENTITY, _m("cat_tail", func(g: Geo) -> void:
+				g.tube(_pts([Vector3(0, 0.5, -0.32), Vector3(0.15, 0.42, -0.5), Vector3(0.35, 0.55, -0.55), Vector3(0.45, 0.8, -0.5)]), 0.045, 0.035, 18, 8)), 1.0)
+			f.add_piece("DEF-hips", Transform3D.IDENTITY, _m("cat_tail_tuft", func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 1.4, 1.0)), Vector3(0.46, 0.86, -0.5)), 0.075, 10, 12)), pale)
+		"seat_stool":   # a low round stool with a cushion where the Sitting_Idle pose puts the hips (stands still)
+			_fixed(f, _m("seat_stool", func(g: Geo) -> void:
+				g.cylinder(Transform3D(Basis.IDENTITY, Vector3(0, 0.235, -0.14)), 0.24, 0.28, 0.47, 20)), _mat(0x8a5a32, 0.7))
+			_fixed(f, _m("seat_cushion", func(g: Geo) -> void:
+				g.sphere(Transform3D(Basis.from_scale(Vector3(1.0, 0.28, 1.0)), Vector3(0, 0.49, -0.14)), 0.27, 10, 18)), _mat(0xc8a04a, 0.8))
 		"oracle_fish":   # the Oracle Fish: a blue fish rising from a green-water glass bowl on a gold stand (stands still)
 			_hide_humanoid(f)
 			_fixed(f, _m("fish_stand", func(g: Geo) -> void:

@@ -220,19 +220,22 @@
       "hair": "Bob",
       "hairColor": 2,
       "build": "Slim",
-      "outfit": "CapsuleCorp",
+      "outfit": "Dress",
       "outfitTint": 4,
       "female": true,
       "hairRgb": 3850432,
       "eyeRgb": 3832528,
       "neckwear": "scarf",
       "neckRgb": 15779890,
-      "outfitRgb": 13115434,
+      "outfitRgb": 14168124,
+      "outfitRgb2": 13120058,
       "outfitParts": {
-        "pants": 13115434,
-        "sleeves": false,
-        "shoes": 13115434
+        "boot_trim": 3820170
       },
+      "jewellery": [
+        "earrings",
+        "bracelets"
+      ],
       "faceSeed": "bulma"
     },
     "style": "turtle"
@@ -268,15 +271,17 @@
       "hair": "Bun",
       "hairColor": 0,
       "build": "Slim",
-      "outfit": "CraneGi",
+      "outfit": "LongDress",
       "outfitTint": 2,
       "female": true,
-      "outfitRgb": 14170714,
+      "outfitRgb": 14704718,
+      "outfitRgb2": 3809344,
       "outfitParts": {
         "pants": 8002090,
-        "sash": false,
         "shoes": 13115434
       },
+      "neckwear": "scarf",
+      "neckRgb": 9050682,
       "faceSeed": "chichi"
     },
     "style": "turtle"
@@ -515,7 +520,7 @@
       "hair": "BigCurly",
       "hairColor": 4,
       "build": "Slim",
-      "outfit": "AngelRobe",
+      "outfit": "LongDress",
       "outfitTint": 5,
       "female": true,
       "skinHex": 8046752,
@@ -526,6 +531,12 @@
         "earrings"
       ],
       "jewelRgb": 10107608,
+      "outfitRgb": 3824336,
+      "outfitRgb2": 2767498,
+      "outfitParts": {
+        "pants": 3824336,
+        "skirtLen": 0.84
+      },
       "faceSeed": "princess_snake"
     },
     "style": "turtle"
@@ -617,6 +628,9 @@
         "waist": 1.35,
         "hips": 1.2
       },
+      "costume": [
+        "seat_stool"
+      ],
       "faceSeed": "guru"
     },
     "scale": 2.3,
@@ -2727,7 +2741,7 @@
       "hair": "SidePonytail",
       "hairColor": 2,
       "build": "Slim",
-      "outfit": "CapsuleCorp",
+      "outfit": "Dress",
       "outfitTint": 5,
       "female": true,
       "faceSeed": "bulma_young",
@@ -2738,7 +2752,10 @@
       "hatRgb": 14164010,
       "outfitRgb": 15235240,
       "outfitParts": {
-        "pants": 15235240
+        "sleeves": true,
+        "vest": false,
+        "shoes": 9067066,
+        "boot_trim": 15921906
       }
     },
     "style": "speedster",
@@ -2792,7 +2809,7 @@
       "outfit": "FrostBody",
       "outfitTint": 4,
       "faceSeed": "puar",
-      "skinHex": 9094382,
+      "skinHex": 3831974,
       "sculpt": {
         "head_w": 1.15,
         "head_h": 1.1
@@ -2800,8 +2817,9 @@
       "tail": "cat",
       "eyeRgb": 1710618,
       "costume": [
-        "cat_head"
-      ]
+        "cat_body"
+      ],
+      "faceRgb": 15521974
     },
     "scale": 0.5,
     "style": "speedster",
@@ -3162,14 +3180,20 @@
       "hair": "BigCurly",
       "hairColor": 5,
       "build": "Short",
-      "outfit": "CraneGi",
+      "outfit": "LongDress",
       "outfitTint": 2,
       "faceSeed": "baba",
       "female": true,
       "skinHex": 16047304,
       "costume": "witchhat",
       "hairRgb": 14192840,
-      "outfitRgb": 1973794
+      "outfitRgb": 1973794,
+      "outfitRgb2": 1973794,
+      "outfitParts": {
+        "pants": 1973794,
+        "shoes": 1973794,
+        "skirtLen": 0.84
+      }
     },
     "scale": 0.7,
     "style": "crane",
@@ -3395,9 +3419,10 @@
       "tail": "cat",
       "eyeRgb": 1710618,
       "costume": [
-        "cat_head",
+        "cat_body",
         "prop_staff"
-      ]
+      ],
+      "faceRgb": 16447214
     },
     "scale": 0.6,
     "style": "speedster",

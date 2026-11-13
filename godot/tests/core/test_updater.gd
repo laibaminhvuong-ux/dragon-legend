@@ -11,3 +11,17 @@ func test_version_order() -> void:
 
 func test_built_version_matches_the_project() -> void:
 	eq(str(ProjectSettings.get_setting("application/config/version")), GameVersion.VERSION, "project.godot and version.gd agree")
+
+## Privacy: the game contacts GitHub only after the player chose "on"; a newer pack is offered, never fetched on its own.
+func test_update_check_needs_the_players_consent() -> void:
+	var old: Variant = Settings.get_value("updateCheck")
+	for v in ["", "off", "bogus"]:
+		Settings.set_value("updateCheck", v)
+		eq(Updater.choice() if v != "bogus" else Updater.choice(), v if v != "bogus" else "", "choice '%s' is stored (unknown values fall back to unasked)" % v)
+	Settings.set_value("updateCheck", "")
+	var U: Node = load("res://core/updater.gd").new()
+	U.check()
+	ok(U._http == null, "no request is made before the player agrees")
+	ok(U._pending_url == "", "nothing is queued for download")
+	U.free()
+	Settings.set_value("updateCheck", old if old != null else "")

@@ -57,11 +57,13 @@ var _form_nodes: Array[Node] = []
 var sculpt: Dictionary = {}       # BodySculpt profile for this look
 var face_params: Dictionary = {}  # FaceShape: this character's own face
 var _head_xform := Transform3D.IDENTITY
+var _hair_fit := Transform3D.IDENTITY   # Hair.skull_fit: hairAnyRace hair on a hairless race's skull
 var _joint_shift: Dictionary = {}   # HeroBody: how far each joint moved from the original mannequin
 var hero: Dictionary = {}           # HeroBody.wear() result (empty on the original mannequin)
 var cloth: Dictionary = {}          # Cloth.params: how loose this outfit's clothes are
 var sash_tails: MeshInstance3D      # the sash knot's hanging tails (sway with movement)
 var sash_base: Transform3D
+var skirt: Array = []               # Skirt halves: [MeshInstance3D, rest transform, thigh bone, hips bone]
 var _sash_spring := Vector2.ZERO
 const HAIR_MOTION_RANGE := 25.0     # m from the camera: closer fighters' hair moves (Hair.Motion), farther holds still
 var hair_motion: Hair.Motion        # created on first use
@@ -146,15 +148,21 @@ func _build() -> void:
 	Parts.dress(self, parts, str(race.get("id", "")), skin)
 	CastB4.dress(self, parts)   # Red Ribbon badge, epaulettes, wizard cape collar (outfitParts)
 	var costumes: Variant = look.get("costume", "")
+	var before := skeleton.find_children("*", "MeshInstance3D", true, false)
 	for c: Variant in (costumes if costumes is Array else [costumes]):
 		Parts.costume(self, str(c))
+	for mi: Node in skeleton.find_children("*", "MeshInstance3D", true, false):
+		if not before.has(mi):   # costume pieces (turbans, hats, props) count as the robe: form_looks robeOff hides them
+			mi.set_meta("robe", true)
 	if cape != null:
 		cape_base = cape.transform
 	if sash_tails != null:
 		sash_base = sash_tails.transform
 	hair_base = Hair.base_style(look, race)
+	if not (race.get("hairStyles", []) as Array).size() > 1 and hair_base != "":   # hairAnyRace on a hairless race's skull
+		_hair_fit = Hair.skull_fit(Hair.skull(unsculpted), Hair.skull(body_mesh.mesh))
 	if hair_base != "":
-		hair = add_piece("DEF-head", Hair.HEAD_SPACE, Hair.mesh(hair_base), hair_material())
+		hair = _add_hair(hair_base)
 		_set_hair(hair_color, 0.0)
 	if not anim_player.has_animation_library("pro"):   # Universal Animation Library Pro clips on our rig (tools_bake_anims.gd)
 		anim_player.add_animation_library("pro", PRO_ANIMS)
@@ -217,6 +225,8 @@ func update(dt: float, a: Dictionary = {}) -> void:
 		if absf(_hair_spring.x)<0.00001 and _charge_time==0: _hair_spring = Vector2.ZERO
 		hair.transform = hair_rest*Transform3D(Basis.from_euler(Vector3(0,0,_hair_spring.x)),Vector3.ZERO)
 	_secondary_motion(dt)
+	if not skirt.is_empty():
+		Skirt.update(self)
 	if cape != null:
 		var target := minf(0.9,float(a.get("speed",0))*0.08)+sin(_t*(14 if _charge_time>0 else 3))*(0.07 if _charge_time>0 else 0.03)
 		target += _wind_lift(0.05, 3.1)   # a headwind lifts the cape back, a tailwind presses it forward
@@ -332,6 +342,24 @@ func add_piece(bone: String, frame: Transform3D, mesh: Mesh, mat: Material) -> M
 	_attachment(bone).add_child(mi)
 	return mi
 
+## The hair piece for a style, refitted to a hairless race's own skull (_hair_fit, model space) when it has one.
+func _add_hair(style: String) -> MeshInstance3D:
+	var mi := add_piece("DEF-head", Hair.HEAD_SPACE, Hair.mesh(style), hair_material())
+	if _hair_fit != Transform3D.IDENTITY:
+		var rest := skeleton.get_bone_global_rest(skeleton.find_bone("DEF-head"))
+		var h: Transform3D = hero.head if not hero.is_empty() else Transform3D.IDENTITY
+		# placed = H * hx * frame; refitted = fit * H * frame (the skull fit replaces the sculpt's rough head scale)
+		var placed := rest * mi.transform
+		mi.transform = rest.affine_inverse() * _hair_fit * h * _head_xform.affine_inverse() * h.affine_inverse() * placed
+	return mi
+
+var _robe_hidden := false
+func _show_robe(on: bool) -> void:
+	_robe_hidden = not on
+	for mi: Node in skeleton.find_children("*", "MeshInstance3D", true, false):
+		if mi.has_meta("robe"):
+			(mi as MeshInstance3D).visible = on
+
 ## Marks a piece as skin-coloured (shade = its brightness relative to the skin), so forms recolour it.
 func add_skin_piece(mi: MeshInstance3D, shade: float) -> void:
 	_skin_pieces.append([mi, shade])
@@ -424,6 +452,12 @@ func set_hair_color(hex: Variant) -> void:
 	if form_id == "" or not (form_look(form_id).get("hair") is Dictionary):
 		_set_hair(hair_color, 0.0)
 
+## Kaiyoken stacked on a form shows that form's Kaiyoken look (both are unlockable in the base game; display only,
+## the rules multiply as before). Other forms keep their own look while Kaiyoken is on.
+const KAIOKEN_LOOKS := {"SSJ": "SuperKaioken", "SSJBlue": "SSJBlueKaioken"}
+static func shown_form(form: String, kaioken: float) -> String:
+	return str(KAIOKEN_LOOKS.get(form, form)) if kaioken > 0.0 else form
+
 ## The form look this fighter shows for a form id: look.formLooks may point a form at its own variant entry
 ## (e.g. {"SSJ": "SSJBroly"}: Brolo's green-gold Super Saiyan), else the shared form_looks entry.
 func form_look(id: String) -> Dictionary:
@@ -454,10 +488,10 @@ func set_form(id: String) -> void:
 	var fh: Variant = F.get("hair")
 	if fh is Dictionary:
 		var style := Hair.form_style(str(fh.get("style", "same")), hair_base)
-		if hair == null:
-			hair = add_piece("DEF-head", Hair.HEAD_SPACE, Hair.mesh(style), hair_material())
+		if hair == null and Hair.race_has_hair(look, race):   # hairless races never grow form hair
+			hair = _add_hair(style)
 			_form_nodes.append(hair)
-		else:
+		elif hair != null:
 			hair.mesh = Hair.mesh(style)
 		_set_hair(Parts.hx(fh.color), float(fh.get("glow", 0.3)))
 	if F.get("eyes") != null:
@@ -471,6 +505,15 @@ func set_form(id: String) -> void:
 	if F.get("dome") != null and dome != null:
 		dome.material_override = Parts.material(Parts.hx(F.dome), 0.15, 0.1)
 	_form_nodes.append_array(Parts.form_extras(self, F))   # shells / chitin colours, form-only gear (horns)
+	var robe_off: Variant = F.get("robeOff", false)
+	if robe_off is bool and robe_off:   # fights without cape and costume pieces (Orange Piccor drops cape and turban)
+		_show_robe(false)
+		var antenna: Variant = look.get("antenna", "namek")
+		if str(race.get("id", "")) == "Namekian" and antenna is bool and not antenna:   # the turban had them tucked in
+			var ant := Parts.namek_antennae(self, skin, false)
+			if F.get("skin") != null:
+				ant.material_override = Parts.material(Parts.hx(F.skin) * 0.9, 0.55)
+			_form_nodes.append(ant)
 	_toonify()
 	var sc := base_scale
 	if F.get("scale") != null: sc = base_scale * float(F.scale)
@@ -526,6 +569,8 @@ func _clear_form() -> void:
 	_set_eyes(base_eyes())
 	material.set_shader_parameter("brows", 1.0)
 	Parts.form_reset(self)   # own dome/shell colours, outfit colours, look.skinMetal
+	if _robe_hidden:
+		_show_robe(true)
 	body.scale = base_scale
 
 func dispose() -> void:
