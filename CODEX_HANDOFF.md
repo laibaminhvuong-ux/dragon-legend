@@ -22,13 +22,13 @@
 - Last commit includes the building-by-building audit (30+ fixes), stand-on surfaces (`RuleZone.add_surface/surface_top/ground_at(x,z,reach_y)`, `world/landmark_collision.gd`), King Kae road painted on terrain, planets re-baked, 385 tests passing; that build is installed on the user's PC.
 - Four subagents were launched on the leftovers (see below). Their results are NOT yet integrated unless a later commit says so.
 
-## Where Claude stopped (updated 2026-11-13 ~15:00 ET)
-Committed and installed: commit e5718a6 (412 tests passing): privacy/consent (co-op and updater), story data fixes, world leftovers, character leftovers. The user said to skip co-op from now on.
-In flight (4 subagents launched on the remaining items; results NOT yet integrated, working tree may be dirty):
-- A. Story boss phase system (rules/combat.gd, data `phases`, combat_view) for Frieza/Cell/Broly/Buu/Jiren etc.
-- B. New player forms in forms data (SSJRose, SSJKefla, Frieza forms, ...) with unlock paths.
-- C. Visual leftovers: King Kae dome shading line, Meros/Chelai hair, skirt slit at stride, Harbor Town roof shadow acne, New Nameck dome footing.
-- D. In-game verification (doors/interiors/stairs, updater first-run prompt screenshot, fps in 6 heavy zones, full session smoke, exe --smoke).
-Next steps: wait for the four reports (resume any that stop on a rate limit with SendMessage), run `flock /tmp/dl_test.lock tools/godot_test.sh --check-data` until 0 failures, commit own files (`git add -A godot tools web COLLABORATION.md CODEX_HANDOFF.md`), back up the save, check tasklist, export + install, and report to the user in Vietnamese (done / not done / not verified).
-Only when the user says: 0.0.8 intro video (9:16 + landscape), release notes, website (`tools/publish_site.sh`), GitHub release/workflow, push.
+## Where Claude stopped (updated 2026-11-13 evening)
+Everything requested so far is committed and installed: commit 8dd371e (431 tests passing, data check OK). The user said to skip co-op.
+Open items (none blocking):
+- King Yemmo's dais steps: in a real game session the player stopped at the foot of the steps twice although the headless test passes (maybe a wrong start point on that road map): verify in game with `--door`/`--at` flags.
+- Gyran looked waist-deep on the Tournament ring in one cutscene frame (unverified).
+- In-game Earth plains runs ~41 fps with ~244 lights and 67 enemies (combat_view 10-12 ms); the world preview alone is ~105 fps. A quiet-machine profile could find savings (light count, enemy updates).
+- Not playable on purpose: Cell stages, Jiren Full Power, Toppo GoD, Zarbon Monster (no Android/Pride Trooper race); SSJ Kefla, SSJ4 Gogeta (fusion only).
+- Known small visuals: Ginger tower has a walk-through fence across its path; hair caps are drawn inside out (darker than locks); skirt stretches between legs in a full stride; Harbor Town roofs shaded faces are dark.
+Only when the user says: 0.0.8 intro video (9:16 + landscape from in-game captures with ffmpeg, to Windows Downloads and the website), release notes, website (`tools/publish_site.sh`), GitHub release/workflow, push.
 VS Code is set up for the user: `code ~/dragon-ball/dragon-legend.code-workspace`.
