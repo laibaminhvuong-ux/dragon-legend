@@ -102,6 +102,8 @@ static func _shape(mesh: Mesh, s: int) -> Array:
 		return [_unit(key, func() -> PrimitiveMesh:
 			var u := SphereMesh.new(); u.radius = 1.0; u.height = hk; u.radial_segments = sp.radial_segments
 			u.rings = sp.rings; u.is_hemisphere = sp.is_hemisphere; return u), Vector3(sp.radius, sp.radius, sp.radius), false]
+	if mesh.has_meta("unit_shape"):   # a shared builder mesh that carries its own [verts, normals, indices] (no readback)
+		return [mesh.get_meta("unit_shape"), Vector3.ONE, false]
 	var a: Array = mesh.surface_get_arrays(s)
 	return [[a[Mesh.ARRAY_VERTEX], a[Mesh.ARRAY_NORMAL], a[Mesh.ARRAY_INDEX]], Vector3.ONE, false]
 

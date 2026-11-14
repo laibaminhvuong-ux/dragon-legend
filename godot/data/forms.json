@@ -524,5 +524,123 @@
       "to": "SSJGrade3",
       "required": 500
     }
+  },
+  "SSJRose": {
+    "id": "SSJRose",
+    "race": "Saiyan",
+    "name": "Super Saiyar Rosé",
+    "unlockLevel": 1250,
+    "multiplier": 4,
+    "kiDrain": 9,
+    "auraColor": 16730800,
+    "hairColor": 15753370,
+    "unlockQuest": "Form_SSJRose",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ]
+  },
+  "Wrathful": {
+    "id": "Wrathful",
+    "race": "Saiyan",
+    "name": "Wrathful",
+    "unlockLevel": 1150,
+    "multiplier": 3.5,
+    "kiDrain": 6,
+    "auraColor": 3856458,
+    "hairColor": null,
+    "unlockQuest": "Form_Wrathful",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ]
+  },
+  "SSJBroly": {
+    "id": "SSJBroly",
+    "race": "Saiyan",
+    "name": "Wrathful Super Saiyar",
+    "unlockLevel": 1300,
+    "multiplier": 4.1,
+    "kiDrain": 7,
+    "auraColor": 10149946,
+    "hairColor": 15907084,
+    "unlockQuest": "Form_SSJBroly",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "mastery": {
+      "from": "Wrathful",
+      "key": "Wrathful",
+      "to": "SSJBroly",
+      "required": 1000
+    }
+  },
+  "SSJBlueEvolved": {
+    "id": "SSJBlueEvolved",
+    "race": "Saiyan",
+    "name": "Super Saiyar Blue Evolved",
+    "unlockLevel": 1400,
+    "multiplier": 4.4,
+    "kiDrain": 10,
+    "auraColor": 1731327,
+    "hairColor": 1731288,
+    "unlockQuest": "Form_SSJBlueEvolved",
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "mastery": {
+      "from": "SSJBlue",
+      "key": "SSJBlue",
+      "to": "SSJBlueEvolved",
+      "required": 1500,
+      "after": "m38_granolah"
+    }
+  },
+  "FirstForm": {
+    "id": "FirstForm",
+    "race": "FrostDemon",
+    "name": "First Form",
+    "unlockLevel": 100,
+    "multiplier": 1.15,
+    "kiDrain": 1,
+    "auraColor": 13138175,
+    "hairColor": null,
+    "unlockQuest": "Form_FirstForm"
+  },
+  "SecondForm": {
+    "id": "SecondForm",
+    "race": "FrostDemon",
+    "name": "Second Form",
+    "unlockLevel": 150,
+    "multiplier": 1.25,
+    "kiDrain": 1,
+    "auraColor": 13138175,
+    "hairColor": null,
+    "unlockQuest": "Form_SecondForm",
+    "mastery": {
+      "from": "FirstForm",
+      "key": "FirstForm",
+      "to": "SecondForm",
+      "required": 500
+    }
+  },
+  "ThirdForm": {
+    "id": "ThirdForm",
+    "race": "FrostDemon",
+    "name": "Third Form",
+    "unlockLevel": 200,
+    "multiplier": 1.35,
+    "kiDrain": 1,
+    "auraColor": 13138175,
+    "hairColor": null,
+    "unlockQuest": "Form_ThirdForm",
+    "mastery": {
+      "from": "SecondForm",
+      "key": "SecondForm",
+      "to": "ThirdForm",
+      "required": 1000
+    }
   }
 }

@@ -63,7 +63,7 @@ var hero: Dictionary = {}           # HeroBody.wear() result (empty on the origi
 var cloth: Dictionary = {}          # Cloth.params: how loose this outfit's clothes are
 var sash_tails: MeshInstance3D      # the sash knot's hanging tails (sway with movement)
 var sash_base: Transform3D
-var skirt: Array = []               # Skirt halves: [MeshInstance3D, rest transform, thigh bone, hips bone]
+var skirt: Array = []               # Skirt: the skinned skirt MeshInstance3D (follows the thighs on the GPU)
 var _sash_spring := Vector2.ZERO
 const HAIR_MOTION_RANGE := 25.0     # m from the camera: closer fighters' hair moves (Hair.Motion), farther holds still
 var hair_motion: Hair.Motion        # created on first use
@@ -225,8 +225,6 @@ func update(dt: float, a: Dictionary = {}) -> void:
 		if absf(_hair_spring.x)<0.00001 and _charge_time==0: _hair_spring = Vector2.ZERO
 		hair.transform = hair_rest*Transform3D(Basis.from_euler(Vector3(0,0,_hair_spring.x)),Vector3.ZERO)
 	_secondary_motion(dt)
-	if not skirt.is_empty():
-		Skirt.update(self)
 	if cape != null:
 		var target := minf(0.9,float(a.get("speed",0))*0.08)+sin(_t*(14 if _charge_time>0 else 3))*(0.07 if _charge_time>0 else 0.03)
 		target += _wind_lift(0.05, 3.1)   # a headwind lifts the cape back, a tailwind presses it forward

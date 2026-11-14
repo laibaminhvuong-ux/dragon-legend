@@ -19,7 +19,9 @@ func test_all_race_level_and_form_derived_stats_match_js() -> void:
 		for key: String in row.derived:
 			ok(is_finite(float(got[key])),key+" finite")
 			near(float(got[key]),float(row.derived[key]),1e-8,"%s/%s/%s/%s" % [row.slot.race,row.slot.level,row.form,key])
-		eq(rules.forms_at_level(row.slot.race,int(row.slot.level)),row.forms)
+		# forms added for the Godot game only (tools/godot_additions.mjs playerFormLines) are not in the classic JS list
+		var godot_only: Array = Tables.table("godot_additions").get("forms", [])
+		eq(rules.forms_at_level(row.slot.race,int(row.slot.level)).filter(func(id: String) -> bool: return id not in godot_only),row.forms)
 	ok(fixtures.size()>500)
 
 func test_level_up_cap_and_stat_spending() -> void:

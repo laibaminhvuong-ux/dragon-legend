@@ -274,7 +274,23 @@
     "z": 60,
     "boss": true,
     "after": "m10_guru",
-    "before": "m11_dragon_balls"
+    "before": "m11_dragon_balls",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.5,
+        "form": "ZarbonMonster",
+        "damage": 1.15,
+        "speed": 1.05,
+        "name": "Monster Form",
+        "text": "Zarvon drops his beauty: Monster Form!"
+      }
+    ]
   },
   {
     "id": "ginyu_force",
@@ -334,7 +350,40 @@
     "z": -160,
     "boss": true,
     "after": "m12_ginyu",
-    "before": "m13_frieza"
+    "before": "m13_frieza",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1,
+        "form": "SecondForm"
+      },
+      {
+        "at": 0.75,
+        "form": "ThirdForm",
+        "damage": 1.05,
+        "speed": 1,
+        "name": "Third Form",
+        "text": "Frigor sheds his horns: Third Form!"
+      },
+      {
+        "at": 0.5,
+        "form": "FinalForm",
+        "damage": 1.12,
+        "speed": 1.05,
+        "name": "Final Form",
+        "text": "Frigor reveals his Final Form!"
+      },
+      {
+        "at": 0.25,
+        "form": "FullPower",
+        "damage": 1.25,
+        "speed": 1.1,
+        "name": "100% Full Power",
+        "text": "Frigor unleashes 100% Full Power!"
+      }
+    ]
   },
   {
     "id": "vegeta_namek",
@@ -540,7 +589,24 @@
     "z": -70,
     "boss": true,
     "after": "m16_17_18",
-    "before": "m17_imperfect_cell"
+    "before": "m17_imperfect_cell",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1,
+        "form": "CellImperfect"
+      },
+      {
+        "at": 0.4,
+        "form": "CellSemiPerfect",
+        "damage": 1.15,
+        "speed": 1.05,
+        "name": "Semi-Perfect Form",
+        "text": "Cel absorbs more energy: Semi-Perfect Form!"
+      }
+    ]
   },
   {
     "id": "piccolo_gero",
@@ -617,7 +683,24 @@
     "z": 0,
     "boss": true,
     "after": "m18_time_chamber",
-    "before": "m20_cell_games"
+    "before": "m20_cell_games",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1,
+        "form": "CellPerfect"
+      },
+      {
+        "at": 0.35,
+        "form": "CellSuperPerfect",
+        "damage": 1.2,
+        "speed": 1.1,
+        "name": "Super Perfect Form",
+        "text": "Cel regenerates: Super Perfect Form!"
+      }
+    ]
   },
   {
     "id": "cell_juniors",
@@ -761,7 +844,23 @@
     "z": -60,
     "boss": true,
     "after": "m24_z_sword",
-    "before": "m25_kid_buu"
+    "before": "m25_kid_buu",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.4,
+        "form": "SuperMajin",
+        "damage": 1.15,
+        "speed": 1.05,
+        "name": "Super Majinn",
+        "text": "Super Boo boils over: Super Majinn!"
+      }
+    ]
   },
   {
     "id": "supreme_kai_world",
@@ -809,7 +908,23 @@
     "z": 30,
     "boss": true,
     "after": "m24_z_sword",
-    "before": "m25_kid_buu"
+    "before": "m25_kid_buu",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.35,
+        "form": "PureMajin",
+        "damage": 1.2,
+        "speed": 1.1,
+        "name": "Pure Majinn",
+        "text": "Kid Boo howls: Pure Majinn!"
+      }
+    ]
   },
   {
     "id": "goku_kai",
@@ -896,7 +1011,31 @@
     "x": -4,
     "z": 16,
     "boss": true,
-    "before": "m29_u6"
+    "before": "m29_u6",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.66,
+        "form": "FinalForm",
+        "damage": 1.1,
+        "speed": 1.05,
+        "name": "Final Form",
+        "text": "Frosk drops the act: Final Form!"
+      },
+      {
+        "at": 0.33,
+        "form": "FullPower",
+        "damage": 1.22,
+        "speed": 1.1,
+        "name": "100% Full Power",
+        "text": "Frosk goes all out: 100% Full Power!"
+      }
+    ]
   },
   {
     "id": "magetta",
@@ -914,7 +1053,23 @@
     "x": 10,
     "z": 12,
     "boss": true,
-    "before": "m29_u6"
+    "before": "m29_u6",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.5,
+        "form": "SSJ",
+        "damage": 1.12,
+        "speed": 1.05,
+        "name": "Super Saiyar",
+        "text": "Kabba awakens: Super Saiyar!"
+      }
+    ]
   },
   {
     "id": "hit",
@@ -957,7 +1112,23 @@
     "x": 10,
     "z": 90,
     "boss": true,
-    "before": "m30_goku_black"
+    "before": "m30_goku_black",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.5,
+        "form": "SSJBlue",
+        "damage": 1.18,
+        "speed": 1.08,
+        "name": "Super Saiyar Rosé",
+        "text": "Gokan Black ascends: Super Saiyar Rosé!"
+      }
+    ]
   },
   {
     "id": "zamasu",
@@ -1027,7 +1198,23 @@
     "x": 40,
     "z": 20,
     "boss": true,
-    "before": "m32_tournament"
+    "before": "m32_tournament",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.4,
+        "form": "ToppoGoD",
+        "damage": 1.2,
+        "speed": 1.08,
+        "name": "Destroyer Mode",
+        "text": "Toppa awakens his Destroyer power!"
+      }
+    ]
   },
   {
     "id": "kefla",
@@ -1036,7 +1223,31 @@
     "x": -40,
     "z": 30,
     "boss": true,
-    "before": "m32_tournament"
+    "before": "m32_tournament",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.7,
+        "form": "SSJ",
+        "damage": 1.1,
+        "speed": 1.05,
+        "name": "Super Saiyar",
+        "text": "Kafla powers up: Super Saiyar!"
+      },
+      {
+        "at": 0.35,
+        "form": "SSJ2",
+        "damage": 1.22,
+        "speed": 1.1,
+        "name": "Super Saiyar 2",
+        "text": "Kafla pushes further: Super Saiyar 2!"
+      }
+    ]
   },
   {
     "id": "jiren",
@@ -1045,7 +1256,23 @@
     "x": 0,
     "z": 50,
     "boss": true,
-    "before": "m32_tournament"
+    "before": "m32_tournament",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.4,
+        "form": "JirenFullPower",
+        "damage": 1.22,
+        "speed": 1.1,
+        "name": "Full Power",
+        "text": "Jiran stops holding back: Full Power!"
+      }
+    ]
   },
   {
     "id": "cheelai",
@@ -1078,7 +1305,31 @@
     "x": 40,
     "z": 60,
     "boss": true,
-    "before": "m33_broly"
+    "before": "m33_broly",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.7,
+        "form": "Wrathful",
+        "damage": 1.1,
+        "speed": 1.05,
+        "name": "Wrathful",
+        "text": "Brolo's rage takes over: Wrathful!"
+      },
+      {
+        "at": 0.35,
+        "form": "SSJ",
+        "damage": 1.25,
+        "speed": 1.1,
+        "name": "Super Saiyar Full Power",
+        "text": "Brolo explodes into Super Saiyar Full Power!"
+      }
+    ]
   },
   {
     "id": "broly_after",

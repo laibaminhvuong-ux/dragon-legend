@@ -1,5 +1,6 @@
 import {fightingStyles} from './fighting_styles.mjs';
 import {skillPresentation} from './skill_presentation.mjs';
+import {xpForLevels} from '../web/src/game/progression.js';
 // Content that exists only in the Godot game (the classic web game in web/ stays as it was).
 // export_godot_data.mjs applies these on top of the evaluated JS tables before writing godot/data/.
 // Every zone changed here is listed in godot_additions.json so the JS-parity tests skip it and test
@@ -414,6 +415,104 @@ function mapPass008(zones) {
   return [...touched];
 }
 
+// Player forms from look-only form_looks (Claude, 2026-11-13). Cast batches drew these forms for NPCs only; the ones a
+// playable race can reach become real forms here (Godot only: listed in godot_additions.forms so the JS parity checks
+// skip them). Every multiplier sits between existing tiers of its race (no new top tier):
+//   Saiyar line: SSJGod 3.2 < Wrathful 3.5 < SSJBlue = SSJRose 4.0 < SSJBroly 4.1 < SSJBlueEvolved 4.4 < Legendary 4.5
+//   Frost Fiend: base < FirstForm 1.15 < SecondForm 1.25 < ThirdForm 1.35 < FinalForm 1.5 (the suppressed shapes)
+// Skipped on purpose (no playable race or not a separate form): Cel stages (bio-cyborg), JirenFullPower / ToppoGoD
+// (Pride Trooper), ZarbonMonster, SSJKefla / SSJ4Gogeta (fusion only), SSJ4Daima / SSJ2Majin / SSJRestrained /
+// FinalFormFrost / FullPowerFrost / FrostAssault (per-character looks of forms players already have), SSJBlueKaioken /
+// SuperKaioken (already shown when Kaiyoken stacks on SSJ / SSJBlue: Fighter.KAIOKEN_LOOKS).
+function playerFormLines(forms, races, quests, evolutions, looks) {
+  const FAMILY = ['Saiyan', 'HalfSaiyan'];
+  const add = (id, race, name, unlockLevel, multiplier, kiDrain, auraColor, hairColor, extra = {}) => {
+    if (!looks[id]) throw new Error(`player form ${id} has no form look`);
+    forms[id] = {id, race, name, unlockLevel, multiplier, kiDrain, auraColor, hairColor, unlockQuest: 'Form_' + id, ...extra};
+  };
+  const train = (zone, seconds, text, mode = 'charge') => ({type: 'train', zone, seconds, text, mode});
+  // a trainer quest (same shape as endgame.js unlock(): xp = 6 levels' worth at the unlock level)
+  const quest = (id, giver, after, zone, offer, done, text, seconds = 45) => quests.push({id: 'Form_' + id, saga: 'Transformations',
+    title: forms[id].name, giver, level: forms[id].unlockLevel, races: forms[id].races ?? [forms[id].race], after, offer, done,
+    steps: [train(zone, seconds, text)], rewards: {forms: [id], xp: xpForLevels(forms[id].unlockLevel, 6)}});
+  // a mastery evolution (like SSJ -> Grade 2): automatic quest, unlocked by mastery points in the `from` form
+  const evolve = (from, to, required, after = null) => {
+    const edge = {from, key: from, to, required, ...(after ? {after} : {})};
+    evolutions.push(edge);
+    forms[to].mastery = edge;
+    quests.push({id: 'Form_' + to, title: forms[to].name, giver: 'king_kai', level: forms[to].unlockLevel, races: forms[to].races ?? [forms[to].race],
+      saga: 'Transformations', after: ['Form_' + from, ...(after ? [after] : [])], offer: 'This form evolves automatically through mastery.',
+      done: `Unlocked ${forms[to].name}.`, steps: [train('king_kai', 45, `Train to unlock ${forms[to].name}`)], rewards: {forms: [to]}, automatic: true});
+  };
+  const added = [];
+  const place = (race, ids, before) => {
+    const list = races[race].forms.filter(id => !ids.includes(id));
+    const at = before ? list.indexOf(before) : 0;
+    list.splice(at < 0 ? list.length : at, 0, ...ids);
+    races[race].forms = list;
+  };
+  // --- Saiyar / Half-Saiyar ---
+  const fam = {races: [...FAMILY]};
+  add('SSJRose', 'Saiyan', 'Super Saiyar Rosé', 1250, 4, 9, 0xff4ab0, 0xf0609a, fam);
+  add('Wrathful', 'Saiyan', 'Wrathful', 1150, 3.5, 6, 0x3ad84a, null, fam);
+  add('SSJBroly', 'Saiyan', 'Wrathful Super Saiyar', 1300, 4.1, 7, 0x9ae03a, 0xf2b90c, fam);
+  add('SSJBlueEvolved', 'Saiyan', 'Super Saiyar Blue Evolved', 1400, 4.4, 10, 0x1a6aff, 0x1a6ad8, fam);
+  quest('SSJRose', 'trunks_future', ['m31_zamasu', 'Form_SSJGod'], 'future_earth',
+    'The impostor in the ruined future pushed god ki through a Saiyar body and it burned pink. Learn to do it on purpose.',
+    'Super Saiyar Rosé. Elegant, and every bit as strong as Blue.', 'Push god ki through your Super Saiyar form (hold Charge)');
+  quest('Wrathful', 'broly_after', ['m33_broly'], 'broly_glacier',
+    'Before the gold, there is the rage of the Great Ape. Let it fill your body without losing your mind.',
+    'Wrathful. Hold on to yourself in there.', 'Call up the Great Ape fury without transforming (hold Charge)');
+  evolve('Wrathful', 'SSJBroly', 1000);
+  evolve('SSJBlue', 'SSJBlueEvolved', 1500, 'm38_granolah');
+  for (const race of FAMILY) { place(race, ['SSJRose', 'SSJBlueEvolved', 'Wrathful', 'SSJBroly'], 'LegendarySSJ'); }
+  added.push('SSJRose', 'Wrathful', 'SSJBroly', 'SSJBlueEvolved');
+  // --- Frost Fiend: the suppressed shapes before the Final Form ---
+  add('FirstForm', 'FrostDemon', 'First Form', 100, 1.15, 1, 0xc878ff, null);
+  add('SecondForm', 'FrostDemon', 'Second Form', 150, 1.25, 1, 0xc878ff, null);
+  add('ThirdForm', 'FrostDemon', 'Third Form', 200, 1.35, 1, 0xc878ff, null);
+  quest('FirstForm', 'king_kai', ['m04_kaioken'], 'king_kai',
+    'Your kind keeps its strength locked in shells. Crack the first one open here, where the gravity fights back.',
+    'Horns and all. That is only the first of them.', 'Break your first shell (hold Charge)');
+  evolve('FirstForm', 'SecondForm', 500);
+  evolve('SecondForm', 'ThirdForm', 1000);
+  place('FrostDemon', ['FirstForm', 'SecondForm', 'ThirdForm'], 'FinalForm');
+  added.push('FirstForm', 'SecondForm', 'ThirdForm');
+  return added;
+}
+
+// Story boss phases (2026-11-13): npcs rows of single story bosses get `phases` [{at, form?, damage, speed, name, text}],
+// read by rules/combat.gd boss_phase (same row fields/event as the Rift bosses). Only bosses whose form has a look
+// (form_looks, or the character's look.formLooks variant) transform. Phase 0 (at 1) is the opening form; later phases
+// are modest: at most +25% damage and +10% speed. Announce texts use the renamed names only.
+const BOSS_PHASES = {
+  frieza: [['SecondForm'], [.75, 'ThirdForm', 1.05, 1.0, 'Third Form', 'Frigor sheds his horns: Third Form!'],
+    [.5, 'FinalForm', 1.12, 1.05, 'Final Form', 'Frigor reveals his Final Form!'],
+    [.25, 'FullPower', 1.25, 1.1, '100% Full Power', 'Frigor unleashes 100% Full Power!']],
+  zarbon: [[], [.5, 'ZarbonMonster', 1.15, 1.05, 'Monster Form', 'Zarvon drops his beauty: Monster Form!']],
+  frost: [[], [.66, 'FinalForm', 1.1, 1.05, 'Final Form', 'Frosk drops the act: Final Form!'],
+    [.33, 'FullPower', 1.22, 1.1, '100% Full Power', 'Frosk goes all out: 100% Full Power!']],
+  imperfect_cell: [['CellImperfect'], [.4, 'CellSemiPerfect', 1.15, 1.05, 'Semi-Perfect Form', 'Cel absorbs more energy: Semi-Perfect Form!']],
+  perfect_cell: [['CellPerfect'], [.35, 'CellSuperPerfect', 1.2, 1.1, 'Super Perfect Form', 'Cel regenerates: Super Perfect Form!']],
+  super_buu: [[], [.4, 'SuperMajin', 1.15, 1.05, 'Super Majinn', 'Super Boo boils over: Super Majinn!']],
+  kid_buu: [[], [.35, 'PureMajin', 1.2, 1.1, 'Pure Majinn', 'Kid Boo howls: Pure Majinn!']],
+  cabba: [[], [.5, 'SSJ', 1.12, 1.05, 'Super Saiyar', 'Kabba awakens: Super Saiyar!']],
+  goku_black: [[], [.5, 'SSJBlue', 1.18, 1.08, 'Super Saiyar Rosé', 'Gokan Black ascends: Super Saiyar Rosé!']],
+  toppo: [[], [.4, 'ToppoGoD', 1.2, 1.08, 'Destroyer Mode', 'Toppa awakens his Destroyer power!']],
+  kefla: [[], [.7, 'SSJ', 1.1, 1.05, 'Super Saiyar', 'Kafla powers up: Super Saiyar!'],
+    [.35, 'SSJ2', 1.22, 1.1, 'Super Saiyar 2', 'Kafla pushes further: Super Saiyar 2!']],
+  jiren: [[], [.4, 'JirenFullPower', 1.22, 1.1, 'Full Power', 'Jiran stops holding back: Full Power!']],
+  broly: [[], [.7, 'Wrathful', 1.1, 1.05, 'Wrathful', 'Brolo\'s rage takes over: Wrathful!'],
+    [.35, 'SSJ', 1.25, 1.1, 'Super Saiyar Full Power', 'Brolo explodes into Super Saiyar Full Power!']],
+};
+function storyBossPhases(npcs) {
+  for (const [id, [[open], ...rest]] of Object.entries(BOSS_PHASES)) {
+    const n = npcs.find(v => v.id === id); if (!n) continue;
+    n.phases = [{at: 1, name: 'Opening', damage: 1, speed: 1, ...(open ? {form: open} : {})},
+      ...rest.map(([at, form, damage, speed, name, text]) => ({at, form, damage, speed, name, text}))];
+  }
+}
+
 export function applyGodotAdditions(tables) {
   const zones = structuredClone(tables.zones);
   const npcs = structuredClone(tables.npcs);
@@ -438,6 +537,7 @@ export function applyGodotAdditions(tables) {
   }
   // the Oracle Fish (quest giver, now a fish bowl on a stand, B6) stood 1.5 m under Beeros' lake (60,40 r 30): on the shore
   { const n = npcs.find(v => v.id === 'oracle_fish'); if (n) Object.assign(n, {x: 38, z: 14}); }
+  storyBossPhases(npcs);   // story bosses transform mid-fight (RuleCombat.boss_phase)
   // ...and their quest markers with them (the defeat steps still pointed at the sea; the boss spawns at the NPC)
   const quests = structuredClone(tables.quests);
   for (const [qid, enemy, x, z] of [['m09_village', 'dodoria', -46, 21], ['m12_ginyu', 'jeice', 8, -160], ['m12_ginyu', 'burter', 14, -151]]) {
@@ -530,7 +630,9 @@ export function applyGodotAdditions(tables) {
     whis: {...ANGEL, outfit: 'AngelRobe', outfitRgb: 0x7a1e3a, outfitParts: {plate: 0x18181c, trim: 0xe88a2a}},
     vados: {...ANGEL, outfit: 'AngelRobe', outfitRgb: 0x1e5a58, outfitParts: {plate: 0x18181c, trim: 0xe88a2a}},
     grand_priest: {...ANGEL, eyeRgb: DARK_EYES, outfit: 'AngelRobe', outfitRgb: 0x3a7ab8, outfitRgb2: 0xc8322a},
-    merus: {raceParts: false, hairAnyRace: true, hair: 'Short', hairRgb: WHITE_HAIR, eyeRgb: DARK_EYES, outfit: 'SaiyanSuit', outfitRgb: 0x3a54b0, outfitParts: {sash: 0xf2f2f2}},
+    // Meros and Chelai have a human head under their hair: on the Frost Demon / Namekian skull (tall, narrow) any hair
+    // read as a cap on top (task C, 2026-11-13). Human body + their own skin colour; voices only use the race for pitch.
+    merus: {race: 'Human', skinHex: 0xa9b6ea, raceParts: false, hairAnyRace: true, hair: 'RoundBob', hairRgb: WHITE_HAIR, eyeRgb: DARK_EYES, outfit: 'SaiyanSuit', outfitRgb: 0x3a54b0, outfitParts: {sash: 0xf2f2f2}},
     beerus: {raceParts: false, tail: 'cat', eyeRgb: 0xe8c030, costume: ['cat_ears'], outfit: 'AngelRobe', outfitRgb: 0x1a1a1e, outfitParts: {pants: 0x2a9e9a, wrist: 0xd8b04a}},
     champa: {raceParts: false, tail: 'cat', eyeRgb: 0xe8c030, costume: ['cat_ears'], outfit: 'AngelRobe', outfitRgb: 0x1a1a1e, outfitParts: {pants: 0xd8542a, wrist: 0xd8b04a}},
     king_kai: {raceParts: false, antenna: 'long', eyeRgb: DARK_EYES, costume: ['shades'], outfit: 'AngelRobe', outfitRgb: 0x1a1a1e, outfitRgb2: 0xc8324a},
@@ -547,7 +649,7 @@ export function applyGodotAdditions(tables) {
     saganbo: {raceParts: false},
     moro: {raceParts: false, skinHex: 0x8a9ab0, costume: ['ramhorns'], outfitParts: {pants: 0x5a3a7a, shoes: 0x1a1a1a, plate: 0xe8e4d8}},
     granolah: {hairRgb: 0x6ad8c0, outfit: 'CapsuleCorp', outfitRgb: 0x3a6a3a, outfitParts: {pants: 0x3a5a3a, shoes: 0x6a4a2a, gloves: 0x6a4a2a}},
-    cheelai: {raceParts: false, hairAnyRace: true, hair: 'Short', hairRgb: WHITE_HAIR, eyeRgb: 0xc81e1e, outfitParts: {top: 0x5a2a7a, pants: 0x5a2a7a}},
+    cheelai: {race: 'Human', skinHex: 0x9fd24a, raceParts: false, hairAnyRace: true, hair: 'Pixie', hairRgb: WHITE_HAIR, eyeRgb: 0xc81e1e, outfitParts: {top: 0x5a2a7a, pants: 0x5a2a7a}},
   };
   for (const [id, look] of Object.entries(b1)) if (characters[id]?.look) characters[id].look = {...characters[id].look, ...look};
   // Cast batch B2 (Claude, 2026-11-10; cast_audit.md): Saiyans, fusions and their forms. Adults lose the tail; outfits
@@ -838,6 +940,8 @@ export function applyGodotAdditions(tables) {
       characters[id].look = look.outfit ? {...base, ...look} : {...characters[id].look, ...look};
     }
   }
+  const mastery_evolutions = structuredClone(tables.mastery_evolutions);
+  const playerForms = playerFormLines(forms, races, quests, mastery_evolutions, form_looks);
   // Every character's own face (FaceShape): seeded by the character id, so identical looks still differ
   for (const [id, c] of Object.entries(characters)) if (c.look && c.look.faceSeed == null) c.look.faceSeed = id;
   const fighting_styles = fightingStyles(tables.combat);
@@ -846,9 +950,10 @@ export function applyGodotAdditions(tables) {
     ['muscle_tower', 650, 1290, 160], ['baaba_palace', -1320, 650, 150], ['korrin_tower', -550, 900, 150], ['piccor_castle', 920, -800, 170],
     ['tournament_island', -150, -575, 150]]) world.planets.earth.regions.push({zone, x, z, radius, blend: 80});
   return {
-    ...tables, zones, npcs, quests, characters, appearance, races, form_looks, forms, zone_order: zoneOrder, planets: world.planets,
+    ...tables, zones, npcs, quests, characters, appearance, races, form_looks, forms, mastery_evolutions, zone_order: zoneOrder, planets: world.planets,
     fighting_styles, schema:{...tables.schema, version:Math.max(7,tables.schema.version), slots:10},
     skill_presentation: skillPresentation(tables.moves,tables.combat.starterMove),
-    godot_additions: {zones: [...new Set(changed)].sort(), note: 'Zones changed for the Godot game only; JS parity skips them.'},
+    godot_additions: {zones: [...new Set(changed)].sort(), forms: playerForms,
+      note: 'Zones and player forms changed for the Godot game only; JS parity skips them.'},
   };
 }

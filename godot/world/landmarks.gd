@@ -91,6 +91,9 @@ class Builder extends RefCounted:
 			m.albedo_color.a = o.opacity
 		if o.get("double", false):
 			m.cull_mode = BaseMaterial3D.CULL_DISABLED
+		if o.get("wrap", false):   # soft terminator on big smooth pale shapes (King Kae's dome, task C)
+			m.diffuse_mode = BaseMaterial3D.DIFFUSE_LAMBERT_WRAP
+			m.disable_receive_shadows = true   # its own shadow-map edge would cut the wrapped light in a mottled line
 		if o.get("stone", false):  # photo-scanned rock, tinted by the colour
 			var rock: Dictionary = WorldMaterials.ground("rock")
 			if rock.albedo != null:
@@ -596,12 +599,16 @@ class Builder extends RefCounted:
 			puff.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 	func _kingkaihouse() -> void:
-		# matte plaster: at 0.6 roughness the dome mirrored the sky / cloud-sea horizon as a hard line across it (task 4)
-		dome(4, mat(0xf3eadb, {"rough": 0.95}), 0, 0, 0)
+		# The diagonal line across the dome (task C) was the sun's terminator, not the mesh (normals, seam and winding of
+		# the hemisphere check out; it stays with shadows/SSAO/fog/specular off and turns black with ambient off): a
+		# near-white plaster under the 1.6 sun saturates through the tonemapper until the last few degrees, so the
+		# falloff collapsed into a hard edge. Lambert-wrap diffuse and a slightly less white plaster spread it out.
+		var plaster := mat(0xe9e0d0, {"rough": 0.95, "wrap": true})
+		dome(4, plaster, 0, 0, 0)
 		var roof := mat(0xc83228)
 		torus(4, 0.3, roof, 0, 0.1, 0)
 		sphere(0.8, roof, 0, 4, 0)
-		box(1.8, 2.5, 1.2, mat(0xf3eadb, {"rough": 0.95}), 0, 1.25, 3.55)   # entry: the door slab stood 0.5 m off the curve
+		box(1.8, 2.5, 1.2, plaster, 0, 1.25, 3.55)   # entry: the door slab stood 0.5 m off the curve
 		box(1.4, 2.2, 0.2, mat(0x6a4a2a), 0, 1.1, 4.2)
 
 	func _car() -> void:
@@ -680,9 +687,11 @@ class Builder extends RefCounted:
 		portholes(5.3, 2.4, 10, 0.5, mat(0x8fbfdf, {"rough": 0.1}))
 
 	func _labdoor() -> void:
-		box(6, 5, 1.2, mat(0x8a9098, {"metal": 0.85, "rough": 0.35}), 0, 2.5, 0)
-		box(5.4, 4.4, 0.3, mat(0x50565e, {"metal": 0.8, "rough": 0.4}), 0, 2.3, 0.7)
-		box(0.4, 4.4, 0.4, mat(0xb03a2a), 0, 2.3, 0.9)
+		# in-game check 2026-11-13: the door sits against Gerro's cliff, and the drawn terrain (coarser than height_at)
+		# rose over a 1.2 m slab at the centre; it is now a 4.5 m deep portal block whose face stands 2.5 m out front
+		box(6.4, 5.6, 4.5, mat(0x8a9098, {"metal": 0.85, "rough": 0.35}), 0, 2.8, 0.25)
+		box(5.4, 4.4, 0.3, mat(0x50565e, {"metal": 0.8, "rough": 0.4}), 0, 2.3, 2.65)
+		box(0.4, 4.4, 0.4, mat(0xb03a2a), 0, 2.3, 2.85)
 
 	func _ruin() -> void:  # broken concrete buildings
 		# building audit: the brokentowers' concrete (the rock scan made them near-black slabs), 1 m into the ground (they stand on

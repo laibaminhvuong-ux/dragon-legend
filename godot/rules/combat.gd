@@ -54,6 +54,7 @@ func _init(owner_game: RefCounted,bus: Object = null) -> void:
 	# three trainees near each area's start (on a planet map: every area, with its own key and level)
 	for area: String in zone.region_ids():
 		if RuleTables.table("zones").get(area,{}).get("saga","")=="Rift Patrol":continue
+		if str(RuleTables.table("zones").get(area,{}).get("kind",""))=="interior":continue   # no trainees inside a building (in-game check 2026-11-13)
 		var base: Dictionary = camp_in(zone,area)
 		for i in 3:
 			spawn({"key":"patrol_"+area,"name":"Hostile Trainee","level":rpg.ZONE_LEVELS.get(area,1),"look":game.schema.default_look("Human").merged({"outfitTint":3},true),
@@ -142,7 +143,35 @@ func spawn(definition: Dictionary,index: int = 0) -> Dictionary:
 		"cooldown":0.0,"windup":0.0,"attackSerial":0,"attackKind":"jab","deadUntil":0.0,"hurtUntil":0.0},true)
 	enemies.append(enemy)
 	game.entities.append(enemy)
+	boss_phase(enemy)   # a story boss starts in its first phase (and form)
 	return enemy
+## Story boss phases (2026-11-13): a boss row's `phases` [{at, form?, damage, speed, name, text}] (npcs data, copied onto the
+## row by RuleStory.encounters) step forward as its health falls; a phase never goes back during a fight (regen does not undo
+## it, only a full reset in reset_boss_phase). Same row fields as the Rift bosses (riftPhase, form, damageMultiplier, runSpeed)
+## and the same riftBossPhase event, so combat_view and co-op peers show the form without anything new.
+func boss_phase(e: Dictionary) -> void:
+	var phases: Array = e.get("phases",[])
+	if phases.is_empty() or str(e.key).begins_with("rift:"):return   # Rift bosses: rules/rift_patrol.gd
+	var ratio: float = float(e.health)/maxf(1.0,float(e.maxHealth))
+	var phase:=0
+	for i: int in phases.size():
+		if ratio<=float(phases[i].get("at",1)):phase=i
+	if phase<=int(e.get("riftPhase",-1)):return
+	e.riftPhase = phase
+	var ph: Dictionary = phases[phase]
+	e.runSpeed = c.enemySpeed*float(ph.get("speed",1))
+	e.damageMultiplier = float(e.get("damageScale",1))*float(ph.get("damage",1))
+	for k: int in range(phase,-1,-1):
+		if phases[k].has("form"):
+			e.form = str(phases[k].form);break
+	if phase>0:
+		emit("riftBossPhase",{"id":e.id,"character":str(e.get("name",e.key)),"phase":phase,"name":str(ph.get("name","")),"text":str(ph.get("text","")),"pos":e.pos,"form":str(e.get("form","")),"story":true})
+## A boss back at full health after a reset (the player was knocked out) starts its fight again from the first phase.
+func reset_boss_phase(e: Dictionary) -> void:
+	if e.get("phases",[]).is_empty() or str(e.key).begins_with("rift:"):return
+	e.erase("riftPhase")
+	if e.has("form"):e.form = ""   # "" (not erased) so the view switches the fighter back to its base look
+	boss_phase(e)
 func set_story(story: RefCounted) -> void:
 	_story = weakref(story)
 	sync()
@@ -431,6 +460,7 @@ func update(dt: float,it: Dictionary) -> void:
 				e.health = e.maxHealth
 				e.windup = 0.0
 				e.cooldown = 0.0
+				reset_boss_phase(e)
 			notify("Recovered. Return to your quest when you are ready.")
 		return
 	var lock: Dictionary = locked()
@@ -521,7 +551,9 @@ func update(dt: float,it: Dictionary) -> void:
 				e.pos = e.home
 				e.stun = 0.0
 				e.windup = 0.0
+				reset_boss_phase(e)
 			continue
+		boss_phase(e)
 		var distance: float = e.pos.distance_to(victim.pos)
 		var home_distance: float = e.pos.distance_to(e.home)
 		# trainees (patrols) leave you alone until you hit them (user request 2026-11-04); quest enemies always fight

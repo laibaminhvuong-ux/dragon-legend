@@ -214,7 +214,8 @@ func travel_options() -> Array:
 		out.append({"zone":z,"story":z in next,"name":worlds[z].name,"planet":worlds[z].planet,"level":need,"locked":int(slot.level)<need})
 	return out
 func travel_guide() -> Variant:
-	if travel_options().is_empty():
+	# no pilot inside a building (in-game check 2026-11-13: he stood in the room and took the exit door's interact)
+	if str(zone.def.get("kind",""))=="interior" or travel_options().is_empty():
 		return null
 	if guide_pos==null or guide_area!=here():
 		guide_area = here()
@@ -310,10 +311,11 @@ func interaction() -> Variant:
 		if d<best and absf(n.y-player.pos.y)<4 and not n.boss:
 			best = d
 			nearest = {"id":n.id,"name":n.name,"action":"Travel" if n.get("guide",false) else "Quests" if n.marker=="!" else "Talk","distance":d}
-	if nearest==null:   # people first; a building door when nobody is near
-		var door: Variant = door_here()
-		if door!=null:
-			nearest = {"id":"door","name":str(door.name),"action":"Leave" if door.get("exit",false) else "Enter","distance":distance(door)}
+	# a building door when nobody is near, or when you stand closer to the door than to anyone (in-game check
+	# 2026-11-13: Master Roshu 3 m from Kama House's door took the key, so the house could not be entered)
+	var door: Variant = door_here()
+	if door!=null and (nearest==null or distance(door)<float(nearest.distance)):
+		nearest = {"id":"door","name":str(door.name),"action":"Leave" if door.get("exit",false) else "Enter","distance":distance(door)}
 	return nearest
 func shop() -> Array:
 	var out: Array = []
@@ -406,7 +408,9 @@ func encounters() -> Array:
 			if s.enemy.begins_with("patrol_"):
 				continue
 			var p: Dictionary = npc_pos(n) if not n.is_empty() and visible(n) else at(s)
-			out.append(row.merged({"uid":s.enemy,"x":p.x,"y":p.get("y",zone.height_at(p.x,p.z)),"z":p.z,"boss":true},true))
+			var boss_row: Dictionary = row.merged({"uid":s.enemy,"x":p.x,"y":p.get("y",zone.height_at(p.x,p.z)),"z":p.z,"boss":true},true)
+			if n.has("phases"):boss_row.phases = (n.phases as Array).duplicate(true)   # story boss phases (RuleCombat.boss_phase)
+			out.append(boss_row)
 			continue
 		var total: int = maxi(GROUP_MIN,count)
 		for i in total:

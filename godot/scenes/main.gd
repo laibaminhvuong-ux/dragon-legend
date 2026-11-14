@@ -42,11 +42,14 @@ func _ready() -> void:
 			dr.zone = "time_nexus"; dr.position = null; dr.level = 2000
 			dr.quests["m34_super_hero"] = {"status": "done", "step": 0, "completions": 1}
 			SaveStore.save_slot(i, dr)
-		if _args.has("zone") or _args.has("forms"):
+		if _args.has("zone") or _args.has("forms") or _args.has("quest"):
 			var dev: Dictionary = SaveStore.load_slot(i)
 			if _args.has("zone"):
 				dev.zone = str(_args.zone)
 				dev.position = null
+			if _args.has("quest"):   # dev: --quest=<id>:<step> makes that quest active at that step (in-game checks)
+				var qs: PackedStringArray = str(_args.quest).split(":")
+				dev.quests[qs[0]] = {"status": "active", "step": int(qs[1]) if qs.size() > 1 else 0, "t": 0.0, "count": 0, "collected": [], "completions": 0}
 			if _args.has("forms"):
 				dev.level = 2000
 				dev.forms = (Data.races.get(str(dev.race), {}).get("forms", []) as Array).duplicate()
@@ -55,10 +58,14 @@ func _ready() -> void:
 		start_game(i)
 	else:
 		go_menu()
-	if _args.has("noui") or _args.has("walk"):
+	if _args.has("noui") or _args.has("walk") or _args.has("at"):
 		_dev_shot_setup()
 	if _args.has("rift"):
 		_dev_rift()
+	if _args.has("door"):
+		_dev_door()
+	if _args.has("tour"):
+		_dev_tour()
 	match str(_args.get("screen", "")):   # GPU checks of each screen
 		"creator": open_creator(2)
 		"server":   # dev: the co-op Server screen over the title menu
@@ -66,6 +73,11 @@ func _ready() -> void:
 			if menu != null:
 				var sel := ui.find_children("*", "SlotSelect", true, false)
 				if not sel.is_empty(): sel[0].add_child(ServerMenu.new(self))
+		"settings":   # dev: the Settings screen over the title menu
+			await get_tree().create_timer(1.0).timeout
+			if menu != null:
+				var sel := ui.find_children("*", "SlotSelect", true, false)
+				if not sel.is_empty(): sel[0].add_child(PauseMenu.new(self, true))
 		"forms":
 			await get_tree().create_timer(2.0).timeout
 			if play != null: play_ui.forms.open()
@@ -238,7 +250,12 @@ func loading_card(zone_id: String) -> void:
 	card.add_child(v)
 	ui.add_child(card)
 
+var _start_gen := 0
 func start_game(i: int) -> void:
+	# a second start while this one waits for its loading card (e.g. two travel requests in one frame) wins; this one
+	# stops, or both would build a play session and the first would stay in the scene forever (in-game check 2026-11-13)
+	_start_gen += 1
+	var gen := _start_gen
 	_end_play()
 	if menu != null:
 		menu.queue_free()
@@ -249,6 +266,8 @@ func start_game(i: int) -> void:
 		loading_card(str(slot.get("zone", "earth_plains")))
 		await get_tree().process_frame
 		await get_tree().process_frame
+	if gen != _start_gen:
+		return
 	_clear_ui()
 	play = PlaySession.new()
 	play.name = "Play"
@@ -300,6 +319,148 @@ func _dev_rift() -> void:
 	await get_tree().create_timer(1.0).timeout
 	print("RIFT launch: ", play.game.start_rift_mission(str(_args.rift)))
 
+## Dev (in-game door checks): --door=<name or interior text> [--doorshot=<png path base>]: stands 2 m in front of the
+## nearest matching building door, screenshots it, presses interact, screenshots the interior, leaves by its exit,
+## screenshots outside again and quits. Prints DOOR lines (prompt, zone, distance back to the door).
+func _dev_door() -> void:
+	var base := str(_args.get("doorshot", "C:/Users/Public/dl_door"))
+	while play == null or play_ui == null:
+		await get_tree().process_frame
+	await get_tree().create_timer(2.0).timeout
+	var g: RuleGame = play.game
+	var want := str(_args.door).to_lower()
+	var door: Dictionary = {}
+	var bd := INF
+	for d: Dictionary in g.zone.doors():
+		if want not in str(d.name).to_lower() and want not in str(d.interior):
+			continue
+		var dd := Vector2(float(d.x) - g.player.pos.x, float(d.z) - g.player.pos.z).length()
+		if dd < bd:
+			bd = dd; door = d
+	if door.is_empty():
+		print("DOOR none matches '%s'" % want)
+		get_tree().quit(1)
+		return
+	var yaw := float(door.yaw)
+	var sx := float(door.x) + sin(yaw) * 2.0
+	var sz := float(door.z) + cos(yaw) * 2.0
+	g.player.pos = Vector3(sx, g.zone.ground_at(sx, sz, g.zone.height_at(sx, sz) + 1.4) + 0.1, sz)
+	play.prev_pos = g.player.pos
+	g.player.yaw = yaw + PI
+	play.follow.set_yaw(yaw + PI)
+	await get_tree().create_timer(2.0).timeout
+	print("DOOR at %s (%.1f, %.1f) zone %s · player %s · prompt %s" % [door.name, door.x, door.z, g.zone.id, g.player.pos, play.story.interaction()])
+	await _dev_snap(base + "_1door.png")
+	play.forced = {"interact": true}
+	await get_tree().create_timer(0.2).timeout
+	if play != null: play.forced = {}
+	var t := 0.0
+	while t < 60.0 and (play == null or play_ui == null or not str(play.game.zone.id).begins_with("interior_")):
+		await get_tree().process_frame
+		t += get_process_delta_time()
+	if play == null or not str(play.game.zone.id).begins_with("interior_"):
+		print("DOOR FAIL: no interior after interact (zone %s)" % (play.game.zone.id if play != null else "none"))
+		get_tree().quit(1)
+		return
+	await get_tree().create_timer(2.5).timeout
+	g = play.game
+	print("DOOR inside %s · player %s · prompt %s" % [g.zone.id, g.player.pos, play.story.interaction()])
+	print("DOOR people inside: %s · enemies %s" % [play.story.npcs().map(func(n: Dictionary) -> String: return "%s@(%.0f,%.0f)" % [n.id, n.x, n.z]),
+		g.combat.enemies.map(func(e: Dictionary) -> String: return "%s@%s" % [e.id, e.pos])])
+	for f: Node in get_tree().root.find_children("*", "Fighter", true, false):
+		print("DOOR fighter node %s · %s · visible %s" % [f.get_path(), (f as Node3D).global_position, (f as Node3D).is_visible_in_tree()])
+	await _dev_snap(base + "_2in.png")
+	for d: Dictionary in g.zone.doors():
+		if d.get("exit", false):
+			g.player.pos = Vector3(float(d.x), g.zone.height_at(float(d.x), float(d.z)) + 0.1, float(d.z) - 0.8)
+			play.prev_pos = g.player.pos
+	await get_tree().create_timer(0.5).timeout
+	print("DOOR at exit · prompt %s" % [play.story.interaction()])
+	play.forced = {"interact": true}
+	await get_tree().create_timer(0.2).timeout
+	if play != null: play.forced = {}
+	t = 0.0
+	while t < 60.0 and (play == null or play_ui == null or str(play.game.zone.id).begins_with("interior_")):
+		await get_tree().process_frame
+		t += get_process_delta_time()
+	if play == null or str(play.game.zone.id).begins_with("interior_"):
+		print("DOOR FAIL: still inside after the exit")
+		get_tree().quit(1)
+		return
+	await get_tree().create_timer(2.5).timeout
+	g = play.game
+	print("DOOR back outside in %s · player %s · %.1f m from the door" % [g.current_region(), g.player.pos, Vector2(g.player.pos.x - float(door.x), g.player.pos.z - float(door.z)).length()])
+	await _dev_snap(base + "_3out.png")
+	print("DOOR PASS")
+	get_tree().quit(0)
+
+func _dev_snap(path: String) -> void:
+	await RenderingServer.frame_post_draw
+	get_viewport().get_texture().get_image().save_png(path)
+	print("SNAP %s · fps %d" % [path, Engine.get_frames_per_second()])
+
+## Dev (session smoke): --tour=<zone,zone,...> [--doorshot=<png base>]: travels through those worlds in play (a
+## screenshot in each), fights the nearest enemy, pauses (which saves) and resumes, reloads the slot and checks it
+## comes back in the same world at the same spot. Prints TOUR lines and quits (exit 1 on a failure).
+func _dev_tour() -> void:
+	var base := str(_args.get("doorshot", "C:/Users/Public/dl_tour"))
+	for zid: String in str(_args.tour).split(","):
+		var t0 := Time.get_ticks_msec()
+		while play == null or play_ui == null:
+			await get_tree().process_frame
+		if play.game.current_region() != zid and play.game.zone.id != zid:
+			play.travel(zid)
+		while Time.get_ticks_msec() - t0 < 120000 and (play == null or play_ui == null or (play.game.current_region() != zid and play.game.zone.id != zid)):
+			await get_tree().process_frame
+		if play == null or (play.game.current_region() != zid and play.game.zone.id != zid):
+			print("TOUR FAIL: never arrived in %s" % zid)
+			get_tree().quit(1)
+			return
+		print("TOUR arrived in %s (%s) after %d ms" % [zid, play.game.zone.id, Time.get_ticks_msec() - t0])
+		await get_tree().create_timer(3.0).timeout
+		await _dev_snap("%s_%s.png" % [base, zid])
+	var g: RuleGame = play.game
+	if g.combat.enemies.is_empty():
+		print("TOUR no enemy in %s to fight" % g.zone.id)
+	else:
+		var e: Dictionary = g.combat.enemies[0]
+		for c: Dictionary in g.combat.enemies:
+			if (c.pos as Vector3).distance_to(g.player.pos) < (e.pos as Vector3).distance_to(g.player.pos): e = c
+		var hp0 := float(e.health)
+		var ep: Vector3 = e.pos
+		g.player.pos = Vector3(ep.x + 2.2, g.zone.height_at(ep.x + 2.2, ep.z) + 0.1, ep.z)
+		play.prev_pos = g.player.pos
+		play.forced = {"lock_on": true}
+		await get_tree().create_timer(0.2).timeout
+		for k in 8:
+			play.forced = {"melee": true}
+			await get_tree().create_timer(0.15).timeout
+			play.forced = {"melee": false}
+			await get_tree().create_timer(0.25).timeout
+		await _dev_snap(base + "_fight.png")
+		play.forced = {}
+		print("TOUR fight %s: health %.0f -> %.0f (player health %.0f)" % [e.get("name", e.id), hp0, float(e.health), float(g.player.health)])
+	set_paused(true)
+	await get_tree().create_timer(1.0).timeout
+	await _dev_snap(base + "_pause.png")
+	set_paused(false)
+	await get_tree().create_timer(0.5).timeout
+	var where: String = play.game.current_region()
+	var at: Vector3 = play.game.player.pos
+	var idx: int = play.slot_index
+	play.save_now()
+	start_game(idx)   # load the slot again, as from the title screen
+	var t1 := Time.get_ticks_msec()
+	while Time.get_ticks_msec() - t1 < 120000 and (play == null or play_ui == null or play.game.player.pos == Vector3.ZERO):
+		await get_tree().process_frame
+	await get_tree().create_timer(2.0).timeout
+	var back: String = play.game.current_region()
+	var moved: float = (play.game.player.pos as Vector3).distance_to(at)
+	print("TOUR reloaded slot %d: %s -> %s, %.1f m from the saved spot" % [idx, where, back, moved])
+	await _dev_snap(base + "_reload.png")
+	print("TOUR PASS" if back == where and moved < 3.0 else "TOUR FAIL: the reload is not where the game was saved")
+	get_tree().quit(0 if back == where and moved < 3.0 else 1)
+
 func _dev_shot_setup() -> void:
 	while play == null or play_ui == null:
 		await get_tree().process_frame
@@ -312,11 +473,18 @@ func _dev_shot_setup() -> void:
 		await get_tree().create_timer(0.8).timeout
 		play.game.player.ki = play.game.player.maxKi
 		play.game.select_form(str(_args.form))
-	if _args.has("at"):   # dev: --at=<road z> on a road world, or x,z: stand there (and --pitch=<rad> to look up)
-		var c: PackedStringArray = str(_args.at).split(",")
-		var p: Dictionary = play.game.zone.place(float(c[0]) if c.size() > 1 else 0.0, float(c[-1]))
+	if _args.has("at"):   # dev: --at=<road z> on a road world, or x,z[,yawDeg]: stand there (and --pitch=<rad> to look up);
+		var c: PackedStringArray = str(_args.at).split(",")   # --local=1: x,z in the --zone area's own frame on a planet
+		var ax := float(c[0]) if c.size() > 1 else 0.0
+		var az := float(c[1]) if c.size() > 1 else float(c[0])
+		var p: Dictionary = play.game.zone.place(ax, az)
+		if _args.has("local") and _args.has("zone"):
+			p = play.game.zone.place_in(str(_args.zone), ax, az)
 		play.game.player.pos = Vector3(p.x, play.game.zone.height_at(p.x, p.z) + 0.1, p.z)
 		play.prev_pos = play.game.player.pos
+		if c.size() > 2:
+			play.follow.set_yaw(deg_to_rad(float(c[2])))
+			play.game.player.yaw = play.follow.yaw
 	if _args.has("face"):   # dev: --face=x,z turns the camera toward a point
 		var fc: PackedStringArray = str(_args.face).split(",")
 		var pp: Vector3 = play.game.player.pos
@@ -384,6 +552,9 @@ func _process(delta: float) -> void:
 		else: img.save_png(out)
 		var vrid := get_viewport().get_viewport_rid()
 		print("WORST frame %.1f ms · hitches over 50 ms: %d" % [_worst * 1000.0, _hitches])
+		if play != null:
+			var gp: Vector3 = play.game.player.pos
+			print("PLAYER at %s · ground %.2f · zone %s/%s" % [gp, play.game.zone.height_at(gp.x, gp.z), play.game.zone.id, play.game.current_region()])
 		print("RENDER gpu %.2f ms · cpu %.2f ms" % [RenderingServer.viewport_get_measured_render_time_gpu(vrid), RenderingServer.viewport_get_measured_render_time_cpu(vrid)])
 		if play != null and play.prof_frames > 0:
 			var parts: PackedStringArray = []

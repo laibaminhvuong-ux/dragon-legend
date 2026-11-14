@@ -6,6 +6,7 @@ extends Node3D
 const ORB := preload("res://fx/shaders/orb.gdshader")
 const GLOW := preload("res://fx/shaders/glow_point.gdshader")
 const ENERGY := preload("res://fx/shaders/energy.gdshader")
+const NPC_DRAW_RANGE := 200.0   # metres (times the NPC's scale); people further away are hidden and not animated
 const MARKERS := {"!": ["!", "#ffd23a"], "side": ["!", "#f2f2f2"], "?": ["?", "#ffd23a"], "⚔": ["⚔", "#ff5a4a"], "✈": ["✈", "#7fd3ff"]}
 
 var story: RuleStory
@@ -191,17 +192,24 @@ func update_view(dt: float, player_pos: Vector3) -> void:
 	for e: Dictionary in npcs.values():
 		var n: Dictionary = e.data
 		var d := Vector2(player_pos.x - float(n.x), player_pos.z - float(n.z)).length()
+		# far-away people are neither drawn nor animated (fps check 2026-11-13: Earth's ~130 NPCs were all animated
+		# every frame, 6-7 ms; same range as the enemies' CombatView.DRAW_RANGE). Their quest markers stay up.
+		var near := d < NPC_DRAW_RANGE * maxf(1.0, float(n.get("scale", 1.0)))
+		var model: Node3D = e.model
+		model.visible = near
+		(e.tag as Node3D).visible = near
+		if e.marker != null:
+			(e.marker as Node3D).position.y = float(n.y) + 2.15 * float(n.get("scale", 1.0)) + 1.0 + sin(_t * 3.0) * 0.08
+		if not near:
+			continue
 		var seated: bool = n.get("sit", false)
 		var want := atan2(player_pos.x - float(n.x), player_pos.z - float(n.z)) if d < 7.0 and not seated else float(n.get("rot", 0.0))
 		var diff := fposmod(want - float(e.yaw) + PI, TAU) - PI
 		e.yaw = float(e.yaw) + diff * minf(1.0, dt * 4.0)
-		var model: Node3D = e.model
 		model.rotation.y = e.yaw
 		model.call("update", dt, {"talking": d < 4.0 * float(n.get("scale", 1.0)), "sitting": seated})
 		if model.has_meta("boss_aura"):
 			(model.get_meta("boss_aura") as Aura).update(dt)
-		if e.marker != null:
-			(e.marker as Node3D).position.y = float(n.y) + 2.15 * float(n.get("scale", 1.0)) + 1.0 + sin(_t * 3.0) * 0.08
 	for g: Node3D in pickups.values():
 		g.get_child(0).rotation.y += dt * 1.5
 	var w: Variant = story.waypoint()

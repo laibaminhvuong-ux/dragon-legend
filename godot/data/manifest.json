@@ -47,7 +47,7 @@
     "tools/skill_presentation.mjs": "447b6907ff183affbc451f0cfc6ea987c0e928256f7a3c5f988cc01a5636b322",
     "tools/rift_patrol.mjs": "9a8f75eb2680280575ec3e9ebc89abc47290abb7a979cc945b8eaf5a1594ca20",
     "tools/origins.mjs": "97858b7fdf33c5a81fa201c40e16bd6bc96606f26584eee3347806f7260a6a8e",
-    "tools/godot_additions.mjs": "c5bf4dc3cc546dd62c4f2adb18846ba0a34b9c87588d9baad10c12661f044e29",
+    "tools/godot_additions.mjs": "2f1b70cdb907928ce99bc897dc2c3812b0e00f5dbff37ce72b89e02e1645609a",
     "web/src/core/save.js": "335c3ac043e6cdfdbb75d93cd7b31fbc3f13fa41461dd1cad9b8f3a9028a3336"
   },
   "files": {
@@ -58,20 +58,20 @@
       "entries": 5
     },
     "quests.json": {
-      "sha256": "f4f2e9c8c5f9916eac3c0218c80d31d7778dab23b4778d7a71ff96cbf44341bc",
-      "bytes": 137404,
+      "sha256": "0fbf9d050b9edf4082c96fa74309f2e22b6cf40d7ccb658dcca3f6facac9b376",
+      "bytes": 142152,
       "kind": "array",
-      "entries": 134
+      "entries": 141
     },
     "npcs.json": {
-      "sha256": "cb8a2ec877e5371a03d31ee64fb260d0be0d2f7c52b1e54e9f4bfb987a68cfcb",
-      "bytes": 33429,
+      "sha256": "89501d8612caae8977e5ae4629821c8a1edaadc722a76ceb9631f1f641fce386",
+      "bytes": 38698,
       "kind": "array",
       "entries": 208
     },
     "characters.json": {
-      "sha256": "7aea2eaeaa23a3c31d6511f5454a8d2bc9451d4a5275f9aca6b2729e49206bd1",
-      "bytes": 80698,
+      "sha256": "da5e8a7de98846ec6c6983d8c2a2b9429871b755fc11d10060e34245f71c3f13",
+      "bytes": 80747,
       "kind": "object",
       "entries": 155
     },
@@ -88,16 +88,16 @@
       "entries": 2
     },
     "forms.json": {
-      "sha256": "ebd8d9479f885f3918501a6462fb729813aa93bb03a17eb442ee85da059f19fe",
-      "bytes": 11045,
+      "sha256": "1d91419fc4af10bde35df3779d90c6d499263a865a4fd98cefac535118d5a20c",
+      "bytes": 13578,
       "kind": "object",
-      "entries": 35
+      "entries": 42
     },
     "mastery_evolutions.json": {
-      "sha256": "abb8e8d6c64c931f5988b5b279bfc2a8b1d87407834c12a1f318eb39c8889bf4",
-      "bytes": 605,
+      "sha256": "b800fae5dfe2b995277e368278d0b9ba4f0f27717fb9bffcad0a8dbc835a0ddf",
+      "bytes": 1042,
       "kind": "array",
-      "entries": 6
+      "entries": 10
     },
     "mastery_tuning.json": {
       "sha256": "9afb673d1ca7e1a27c438bbaa8b5c97d05764784f1f83a0373a902130610e740",
@@ -118,8 +118,8 @@
       "entries": 26
     },
     "races.json": {
-      "sha256": "7e25ef6dfece2050e939a8397538c8dfb53db4cec568ec86e3d372da94515b0a",
-      "bytes": 3938,
+      "sha256": "8702fc78a067a66bc4c1f6d364ceeab48b383aa08114caba05d80b57d050ca8c",
+      "bytes": 4150,
       "kind": "object",
       "entries": 6
     },
@@ -304,10 +304,10 @@
       "entries": 5
     },
     "godot_additions.json": {
-      "sha256": "17d45b956375f916515af903727de5a55ab585f128da568e17ec95884865288d",
-      "bytes": 1078,
+      "sha256": "0fb8587478af7450ddf81ebf52775d0dc6c3e8274e4a1109bfc917002439deda",
+      "bytes": 1233,
       "kind": "object",
-      "entries": 2
+      "entries": 3
     },
     "parity.json": {
       "sha256": "f1f651b14d3d60ad3d79bcd510ba2d812bb42922631c70eec6c2cd4195a28ff0",

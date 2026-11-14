@@ -252,6 +252,9 @@ const LANDMARK_INTERIORS := {"capsulecorp": "interior_lab", "kamehouse": "interi
 ## Door point distance from the landmark's centre (local m, times its scale) where `collide` + 1.5 is wrong: the
 ## Ginger domes' porch / door stand out past their collide circle (the point would be inside the porch).
 const LANDMARK_DOOR_AT := {"gingerhouse": 11.7, "gingertower": 6.7}
+## Door point sideways from the landmark's centre line (local x, m, times its scale): Kama House's door is on its porch
+## to the right (in-game check 2026-11-13: the Enter prompt came up 2.6 m left of the drawn door).
+const LANDMARK_DOOR_SIDE := {"kamecottage": 2.6}
 ## Door names for unnamed landmarks (names stay off the data, which would make the baked planet terrain stale).
 const LANDMARK_DOOR_NAMES := {"capsulehouse": "Dome home", "gingerhouse": "Dome house", "gingertower": "Round tower"}
 var _doors: Variant = null
@@ -273,7 +276,8 @@ func doors() -> Array:
 			if LANDMARK_DOOR_AT.has(t):
 				r = float(LANDMARK_DOOR_AT[t]) * float(l.get("scale", 1.0))
 			var rot := float(l.get("rot", 0.0))
-			out.append({"x": float(l.x) + sin(rot) * r, "z": float(l.z) + cos(rot) * r, "yaw": rot, "interior": LANDMARK_INTERIORS[t],
+			var side := float(LANDMARK_DOOR_SIDE.get(t, 0.0)) * float(l.get("scale", 1.0))
+			out.append({"x": float(l.x) + sin(rot) * r + cos(rot) * side, "z": float(l.z) + cos(rot) * r - sin(rot) * side, "yaw": rot, "interior": LANDMARK_INTERIORS[t],
 				"name": str(l.get("name", LANDMARK_DOOR_NAMES.get(t, t.capitalize())))})
 	_doors = out
 	return out

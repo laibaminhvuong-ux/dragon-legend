@@ -5458,5 +5458,221 @@
       "xp": 22150149,
       "zeni": 43800
     }
+  },
+  {
+    "id": "Form_SSJRose",
+    "saga": "Transformations",
+    "title": "Super Saiyar Rosé",
+    "giver": "trunks_future",
+    "level": 1250,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "after": [
+      "m31_zamasu",
+      "Form_SSJGod"
+    ],
+    "offer": "The impostor in the ruined future pushed god ki through a Saiyar body and it burned pink. Learn to do it on purpose.",
+    "done": "Super Saiyar Rosé. Elegant, and every bit as strong as Blue.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "future_earth",
+        "seconds": 45,
+        "text": "Push god ki through your Super Saiyar form (hold Charge)",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SSJRose"
+      ],
+      "xp": 26596109
+    }
+  },
+  {
+    "id": "Form_Wrathful",
+    "saga": "Transformations",
+    "title": "Wrathful",
+    "giver": "broly_after",
+    "level": 1150,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "after": [
+      "m33_broly"
+    ],
+    "offer": "Before the gold, there is the rage of the Great Ape. Let it fill your body without losing your mind.",
+    "done": "Wrathful. Hold on to yourself in there.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "broly_glacier",
+        "seconds": 45,
+        "text": "Call up the Great Ape fury without transforming (hold Charge)",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "Wrathful"
+      ],
+      "xp": 23475397
+    }
+  },
+  {
+    "id": "Form_SSJBroly",
+    "title": "Wrathful Super Saiyar",
+    "giver": "king_kai",
+    "level": 1300,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "Form_Wrathful"
+    ],
+    "offer": "This form evolves automatically through mastery.",
+    "done": "Unlocked Wrathful Super Saiyar.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "text": "Train to unlock Wrathful Super Saiyar",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SSJBroly"
+      ]
+    },
+    "automatic": true
+  },
+  {
+    "id": "Form_SSJBlueEvolved",
+    "title": "Super Saiyar Blue Evolved",
+    "giver": "king_kai",
+    "level": 1400,
+    "races": [
+      "Saiyan",
+      "HalfSaiyan"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "Form_SSJBlue",
+      "m38_granolah"
+    ],
+    "offer": "This form evolves automatically through mastery.",
+    "done": "Unlocked Super Saiyar Blue Evolved.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "text": "Train to unlock Super Saiyar Blue Evolved",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SSJBlueEvolved"
+      ]
+    },
+    "automatic": true
+  },
+  {
+    "id": "Form_FirstForm",
+    "saga": "Transformations",
+    "title": "First Form",
+    "giver": "king_kai",
+    "level": 100,
+    "races": [
+      "FrostDemon"
+    ],
+    "after": [
+      "m04_kaioken"
+    ],
+    "offer": "Your kind keeps its strength locked in shells. Crack the first one open here, where the gravity fights back.",
+    "done": "Horns and all. That is only the first of them.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "text": "Break your first shell (hold Charge)",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "FirstForm"
+      ],
+      "xp": 622701
+    }
+  },
+  {
+    "id": "Form_SecondForm",
+    "title": "Second Form",
+    "giver": "king_kai",
+    "level": 150,
+    "races": [
+      "FrostDemon"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "Form_FirstForm"
+    ],
+    "offer": "This form evolves automatically through mastery.",
+    "done": "Unlocked Second Form.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "text": "Train to unlock Second Form",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "SecondForm"
+      ]
+    },
+    "automatic": true
+  },
+  {
+    "id": "Form_ThirdForm",
+    "title": "Third Form",
+    "giver": "king_kai",
+    "level": 200,
+    "races": [
+      "FrostDemon"
+    ],
+    "saga": "Transformations",
+    "after": [
+      "Form_SecondForm"
+    ],
+    "offer": "This form evolves automatically through mastery.",
+    "done": "Unlocked Third Form.",
+    "steps": [
+      {
+        "type": "train",
+        "zone": "king_kai",
+        "seconds": 45,
+        "text": "Train to unlock Third Form",
+        "mode": "charge"
+      }
+    ],
+    "rewards": {
+      "forms": [
+        "ThirdForm"
+      ]
+    },
+    "automatic": true
   }
 ]

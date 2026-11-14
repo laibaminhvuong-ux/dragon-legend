@@ -51,5 +51,14 @@
     "world_of_void",
     "yardrat"
   ],
-  "note": "Zones changed for the Godot game only; JS parity skips them."
+  "forms": [
+    "SSJRose",
+    "Wrathful",
+    "SSJBroly",
+    "SSJBlueEvolved",
+    "FirstForm",
+    "SecondForm",
+    "ThirdForm"
+  ],
+  "note": "Zones and player forms changed for the Godot game only; JS parity skips them."
 }

@@ -80,6 +80,9 @@ class B extends RefCounted:
 			m.albedo_color.a = float(o.opacity)
 		if bool(o.get("unshaded", false)):
 			m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		if bool(o.get("wrap", false)):   # soft terminator on big smooth pale shapes (King Kae's dome, task C)
+			m.diffuse_mode = BaseMaterial3D.DIFFUSE_LAMBERT_WRAP
+			m.disable_receive_shadows = true   # its own shadow-map edge would cut the wrapped light in a mottled line
 		if bool(o.get("stone", false)):  # photo-scanned rock, tinted by the colour (triplanar: needs no UVs after merge)
 			var rock: Dictionary = WorldMaterials.ground("rock")
 			if rock.albedo != null:

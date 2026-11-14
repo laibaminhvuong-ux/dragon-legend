@@ -42,7 +42,7 @@ func test_hairless_races_grow_no_form_hair() -> void:
 
 func test_hair_fits_hairless_skulls() -> void:
 	var chars: Dictionary = Fighter.Tables().characters
-	for id: String in ["merus", "cheelai", "supreme_kai", "zamasu"]:
+	for id: String in ["whis", "vados", "supreme_kai", "zamasu"]:   # (Meros, Chelai: human heads since task C)
 		var f := Fighter.create(chars[id].look)
 		ok(f.hair != null, "%s has hair" % id)
 		ok(f._hair_fit != Transform3D.IDENTITY, "%s: hair refitted to the race's skull" % id)
@@ -87,20 +87,11 @@ func test_dresses() -> void:
 	ok(Outfits.for_look({"outfit": "TurtleGi"}, 0xc83232).get("skirt") == null, "gi: no skirt")
 	for id: String in ["bulma", "chichi", "bulma_young", "princess_snake", "baba"]:
 		var f := Fighter.create(chars[id].look)
-		eq(f.skirt.size(), 2, "%s: two skirt halves" % id)
-		for i in 3:
-			f.update(1.0 / 30.0, {"speed": 4.0, "onGround": true})   # (Skirt.update runs every frame)
-		var half: MeshInstance3D = (f.skirt[0] as Array)[0]
-		ok(half.transform.origin.is_finite() and absf(half.transform.basis.determinant() - 1.0) < 0.01, "%s: skirt transform sane" % id)
+		eq(f.skirt.size(), 1, "%s: one skinned skirt (task C)" % id)
+		var mi: MeshInstance3D = f.skirt[0]
+		ok(mi.skin != null and mi.get_node_or_null(mi.skeleton) == f.skeleton, "%s: skinned to the fighter's skeleton" % id)
 		f.free()
-	# the swing a half follows: a thigh kicked forward / spread outwards (hips at rest, thigh hanging down)
-	var hr := Basis.IDENTITY
-	var rest := Basis(Vector3.RIGHT, PI)   # the leg bone's +Y points down
-	var fwd := Skirt.angles(hr, Basis(Vector3.RIGHT, -0.6) * rest, rest)
-	ok(fwd.x > 0.5 and absf(fwd.y) < 0.01, "forward kick swings the half forward (%s)" % fwd)
-	var side := Skirt.angles(hr, Basis(Vector3.BACK, 0.3) * rest, rest)
-	ok(side.y > 0.25 and absf(side.x) < 0.01, "spread swings it out (%s)" % side)
-	ok(Skirt.angles(hr, rest, rest).length() < 1e-5, "standing straight: no swing")
+	# (the stride / kick checks on real animation poses are in tests/characters/test_task_c_visuals.gd)
 	var g := Fighter.create({"race": "Human", "outfit": "TurtleGi"})
 	ok(g.skirt.is_empty(), "no skirt on a gi")
 	g.free()

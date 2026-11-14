@@ -121,15 +121,27 @@ static func _foundation(n: Node3D, zone: RefCounted, l: Dictionary, b: Dictionar
 	if str(b.kind) == "lighthouse": w = 4.8; d = 4.8
 	if str(b.kind) == "windmill": w = 6.0; d = 6.0
 	var r := float(b.rot)
+	# round buildings get a round footing: the square one stuck its corners out past a dome house's wall on a slope
+	# (New Nameck, task C 2026-11-13)
+	var round := str(b.kind) in ["dome", "tower", "lighthouse"]
 	var low := INF
-	for cx in [-0.5, 0.0, 0.5]:
-		for cz in [-0.5, 0.0, 0.5]:
-			var lx: float = float(b.x) + float(cx) * w * cos(r) + float(cz) * d * sin(r)
-			var lz: float = float(b.z) - float(cx) * w * sin(r) + float(cz) * d * cos(r)
-			low = minf(low, _ground(zone, l, lx, lz))
+	if round:
+		for i in 12:   # the ground round the wall (and the centre)
+			var a := TAU * i / 12.0
+			low = minf(low, _ground(zone, l, float(b.x) + sin(a) * (w * 0.52 + 0.15), float(b.z) + cos(a) * (w * 0.52 + 0.15)))
+		low = minf(low, _ground(zone, l, float(b.x), float(b.z)))
+	else:
+		for cx in [-0.5, 0.0, 0.5]:
+			for cz in [-0.5, 0.0, 0.5]:
+				var lx: float = float(b.x) + float(cx) * w * cos(r) + float(cz) * d * sin(r)
+				var lz: float = float(b.z) - float(cx) * w * sin(r) + float(cz) * d * cos(r)
+				low = minf(low, _ground(zone, l, lx, lz))
 	var drop := _ground(zone, l, float(b.x), float(b.z)) - low + 0.6
 	var hh := drop + 0.2   # top at +0.02: a low step round the building (RuleTown.surface_at matches)
-	_box(n, Vector3(w + 0.3, hh, d + 0.3), _mat(0x8f8a80, {"rough": 0.95}), Vector3(0, 0.02 - hh * 0.5, 0))
+	if round:
+		_cyl(n, w * 0.52 + 0.15, w * 0.52 + 0.15, hh, _mat(0x8f8a80, {"rough": 0.95}), Vector3(0, 0.02 - hh * 0.5, 0), 24)
+	else:
+		_box(n, Vector3(w + 0.3, hh, d + 0.3), _mat(0x8f8a80, {"rough": 0.95}), Vector3(0, 0.02 - hh * 0.5, 0))
 
 ## Ground height under a town-local point (towns are flattened, but the edges follow the land).
 static func _ground(zone: RefCounted, l: Dictionary, x: float, z: float) -> float:
@@ -231,11 +243,45 @@ static func _dome_house(n: Node3D, b: Dictionary) -> void:
 	_cyl(n, r * 0.18, r * 0.18, 0.4, _mat(0xd84a3a), Vector3(0, 3.4 + r * 0.85, 0), 12)
 
 # --- villages -----------------------------------------------------------------------------------------
+## The four-sided hip roof (same shape as a 4-segment CylinderMesh cone: corners on the axes, height 1, centred),
+## with one flat normal per face. The cone's smooth normals bent each face's shading towards the corners, and the
+## shadow normal bias followed them: acne stripes across the roofs (Harbor Town, task C 2026-11-13). Shared by
+## every house; carries its arrays as meta "unit_shape" so MeshMerge does not read it back from the renderer.
+static var _hip: ArrayMesh
+static var _hip_lock := Mutex.new()
+static func hip_roof() -> ArrayMesh:
+	_hip_lock.lock()
+	if _hip == null:
+		var apex := Vector3(0, 0.5, 0)
+		var c := [Vector3(1, -0.5, 0), Vector3(0, -0.5, 1), Vector3(-1, -0.5, 0), Vector3(0, -0.5, -1)]
+		var v := PackedVector3Array(); var nn := PackedVector3Array(); var ix := PackedInt32Array()
+		var tris: Array = []
+		for i in 4:
+			tris.append([apex, c[(i + 1) % 4], c[i]])
+		tris.append([c[0], c[2], c[1]]); tris.append([c[0], c[3], c[2]])   # the underside
+		for t: Array in tris:
+			var a: Vector3 = t[0]; var b2: Vector3 = t[1]; var d: Vector3 = t[2]
+			var face := (b2 - a).cross(d - a)
+			var mid := (a + b2 + d) / 3.0
+			if face.dot(mid) > 0.0:   # Godot front faces are clockwise: that cross product points inwards
+				var tmp := b2; b2 = d; d = tmp
+				face = -face
+			for p: Vector3 in [a, b2, d]:
+				ix.append(v.size()); v.append(p); nn.append(-face.normalized())
+		var arr := []
+		arr.resize(Mesh.ARRAY_MAX)
+		arr[Mesh.ARRAY_VERTEX] = v; arr[Mesh.ARRAY_NORMAL] = nn; arr[Mesh.ARRAY_INDEX] = ix
+		var m := ArrayMesh.new()
+		m.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr)
+		m.set_meta("unit_shape", [v, nn, ix])
+		_hip = m
+	_hip_lock.unlock()
+	return _hip
+
 static func _house(n: Node3D, b: Dictionary) -> void:
 	var w := float(b.w); var d := float(b.d); var h := float(b.h)
 	_hollow(n, w, d, h, _cut(int(b.color), 0.8), 0x9a7a58)
-	var roof := CylinderMesh.new(); roof.top_radius = 0.0; roof.bottom_radius = 1.0; roof.height = 1.0; roof.radial_segments = 4
-	var mi := _put(n, roof, _cut(0xb0462e, 0.7), Vector3(0, h + d * 0.28, 0))
+	var mi := _put(n, hip_roof(), _cut(0xb0462e, 0.7), Vector3(0, h + d * 0.28, 0))
 	mi.rotation.y = PI / 4
 	mi.scale = Vector3(w * 0.78, d * 0.56, d * 0.78)
 	_box(n, Vector3(1.1, 1.0, 0.15), _cut(0x9fd0f0, 0.1), Vector3(w * 0.32, h * 0.6, d * 0.5 + 0.05))
@@ -254,8 +300,7 @@ static func _cabin(n: Node3D, b: Dictionary) -> void:
 			var lg := _cyl(n, 0.24, 0.24, w + 0.6, cut_logs, Vector3(0, y, d * 0.5), 8); lg.rotation.z = PI / 2
 		var lg2 := _cyl(n, 0.24, 0.24, w + 0.6, cut_logs, Vector3(0, y, -d * 0.5), 8); lg2.rotation.z = PI / 2
 	_hollow(n, w, d, h, cut_logs, 0x8a6a48)
-	var roof := CylinderMesh.new(); roof.top_radius = 0.0; roof.bottom_radius = 1.0; roof.height = 1.0; roof.radial_segments = 4
-	var mi := _put(n, roof, _cut(0xf4f7fb, 0.6), Vector3(0, h + d * 0.3, 0))
+	var mi := _put(n, hip_roof(), _cut(0xf4f7fb, 0.6), Vector3(0, h + d * 0.3, 0))
 	mi.rotation.y = PI / 4
 	mi.scale = Vector3(w * 0.8, d * 0.6, d * 0.8)
 	_box(n, Vector3(0.8, 2.0, 0.8), _cut(0x6a6a6a, 0.9), Vector3(w * 0.3, h + d * 0.4, 0))
@@ -303,8 +348,8 @@ static func _shrine(n: Node3D, b: Dictionary) -> void:
 	var w := float(b.w); var h := float(b.h)
 	var stone := _mat(int(b.color), {"rough": 0.8})
 	_box(n, Vector3(w, h * 0.25, w), stone, Vector3(0, h * 0.125, 0))
-	var top := CylinderMesh.new(); top.top_radius = 0.0; top.bottom_radius = w * 0.62; top.height = h * 0.75; top.radial_segments = 4
-	var mi := _put(n, top, stone, Vector3(0, h * 0.25 + h * 0.375, 0)); mi.rotation.y = PI / 4
+	var mi := _put(n, hip_roof(), stone, Vector3(0, h * 0.25 + h * 0.375, 0)); mi.rotation.y = PI / 4
+	mi.scale = Vector3(w * 0.62, h * 0.75, w * 0.62)
 	_cyl(n, w * 0.08, w * 0.08, 1.0, _mat(0x8f5ad8, {"emissive": 0x6a30c0, "glow": 1.4}), Vector3(0, h + 0.5, 0), 8)
 
 ## West Capital monorail (map batch B2): a glassy tube on pylons above the ring road (15 m) and one crossing the

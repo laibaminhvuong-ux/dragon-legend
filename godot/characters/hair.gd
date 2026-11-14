@@ -11,7 +11,9 @@ const BASE := {"Spiky": "goku", "Wild": "wild", "Swept": "flame", "LongSpiky": "
 	# cast batch B5 (NPC-only too): Tronks' centre part, Bulna's bob, Vidal's twin tails, Mr. Sadan's afro, Serpa's big
 	# curls, a topknot, young Bulna's side ponytail, straight shoulder-length hair, slicked-back hair (Tau)
 	"CenterPart": "centerpart", "Bob": "bob", "TwinTails": "twintails", "Afro": "afro", "BigCurly": "bigcurly",
-	"Topknot": "topknot", "SidePonytail": "sideponytail", "ShoulderStraight": "shoulder", "Slick": "slick"}
+	"Topknot": "topknot", "SidePonytail": "sideponytail", "ShoulderStraight": "shoulder", "Slick": "slick",
+	# task C (2026-11-13): Chelai's short pixie and Meros's rounded bob, both covering the back of the head to the nape
+	"Pixie": "pixie", "RoundBob": "roundbob"}
 const FORM_STYLES := ["ssj1", "ssj2", "ssj3", "ssj4", "grade3", "legendary", "ego", "beast"]
 static var _cache: Dictionary = {}
 
@@ -212,6 +214,8 @@ static func _build(g: Geo, style: String) -> void:
 				g.spike(Vector3(x, 0.115, 0.085), 0.06, 0.02, Vector3(x * 2.5, -1, 0.3))
 		"centerpart", "bob", "twintails", "afro", "bigcurly", "topknot", "sideponytail", "shoulder", "slick":
 			_b5(g, style)
+		"pixie", "roundbob":
+			_short_full(g, style)
 		_:
 			_cap(g, 0.113)
 			_form(g, style)
@@ -306,6 +310,50 @@ static func _b5(g: Geo, style: String) -> void:
 			for i in 7:
 				var x := (i / 6.0 - 0.5) * 0.12
 				g.tube(PackedVector3Array([Vector3(x, 0.15, 0.07), Vector3(x * 1.1, 0.172, -0.01), Vector3(x * 1.1, 0.13, -0.1), Vector3(x, 0.05, -0.128)]), 0.014, 0.008, 12, 6)
+
+## Short hair that covers the whole skull down to the nape (the B5 curtains stop at the sides, which leaves the
+## back of the head as a bare cap rim: on a long neck that read as a hat sitting on top).
+## pixie (Chelai): volume on top, layered locks over the back and above the ears, fringe swept to her left;
+## roundbob (Meros): a rounded bob over the ears to the jaw, straight fringe to the brows.
+static func _short_full(g: Geo, style: String) -> void:
+	if style == "pixie":   # fringe swept across to her left brow, ears clear, layered points at the nape
+		_shell(g, 0.12, PI * 0.43, PI * 0.5, PI * 0.8, 0.03, 0.0, PI * 0.07, 13, 0.12, PI * 0.06)
+	else:   # bob over the ears to the jaw, fringe to the brows
+		_shell(g, 0.117, PI * 0.47, PI * 0.8, PI * 0.84, 0.07, 0.04, PI * 0.04, 26, 0.05)
+
+## A smooth hair shell over the skull (head space, same frame as _cap): polar angle reaches `front` over the face
+## (minus `sweep` on the right, plus on the left: a side-swept fringe), `side` over the ears and `back` at the nape;
+## `flare` widens it below the equator (a bob), `curl` turns the hem back in; the hem is cut into `jags` points
+## `jag` deep (locks, half as deep over the face); `crown` adds volume on top.
+static func _shell(g: Geo, r: float, front: float, side: float, back: float, flare: float, curl: float, jag: float, jags: int, crown: float, sweep := 0.0, rings := 14, segs := 104) -> void:
+	var verts := PackedVector3Array(); var norms := PackedVector3Array(); var idx := PackedInt32Array()
+	var xf := Transform3D(Basis.from_scale(Vector3(1.04, 1.0, 1.1)), Vector3(0, 0.05, -0.008))
+	for ri in rings + 1:
+		var t := float(ri) / rings
+		for si in segs + 1:
+			var a := TAU * float(si) / segs
+			var c := cos(a)   # 1 = the face, -1 = the back
+			var tmax := lerpf(side, front + sweep * sin(a), smoothstep(0.3, 0.85, c)) if c > 0.0 else lerpf(side, back, -c)
+			var saw := absf(fmod(a / TAU * jags + 0.5, 1.0) * 2.0 - 1.0)   # 0..1 zigzag round the head
+			tmax += jag * (saw - 0.5) * (1.0 - 0.5 * smoothstep(0.2, 0.7, c))
+			var th := tmax * t
+			var rr := r * (1.0 + flare * smoothstep(PI * 0.42, PI * 0.85, th) + crown * pow(maxf(cos(th), 0.0), 2.0) - curl * pow(t, 6.0))
+			rr *= 1.0 + 0.022 * t * (absf(saw - 0.5) * 2.0)   # a ridge down each lock (strands catch the light)
+			var d := Vector3(sin(th) * sin(a), cos(th), sin(th) * cos(a))
+			verts.append(d * rr); norms.append(d)
+	for ri in rings:
+		for si in segs:
+			var a0 := ri * (segs + 1) + si
+			var b0 := a0 + segs + 1
+			idx.append_array([a0, a0 + 1, b0, a0 + 1, b0 + 1, b0])   # clockwise seen from outside (Geo.cap's order shows its inside)
+	var arr := []
+	arr.resize(Mesh.ARRAY_MAX)
+	arr[Mesh.ARRAY_VERTEX] = verts; arr[Mesh.ARRAY_INDEX] = idx
+	var fn := Geo._normals(verts, idx)   # from the faces (ridges shade); flipped outwards to match the clockwise winding
+	for k in fn.size():
+		fn[k] = -fn[k] if fn[k].dot(norms[k]) < 0.0 else fn[k]
+	arr[Mesh.ARRAY_NORMAL] = fn
+	g.add_arrays(arr, xf)
 
 ## A scalp cap so no head shows between spikes; it rises at the front to clear the eyes.
 static func _cap(g: Geo, r: float, front := 0.36, back := 0.62) -> void:

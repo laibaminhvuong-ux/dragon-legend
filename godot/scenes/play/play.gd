@@ -146,6 +146,7 @@ func intents() -> Dictionary:
 	for k: String in forced:
 		it[k] = forced[k]
 	forced.erase("boost")   # a press, not a hold (a held boost would toggle off again)
+	forced.erase("interact")   # dev: a press too (held, every step entered the door again)
 	return it
 
 ## One fixed 1/60 s simulation step.
@@ -335,7 +336,8 @@ func _on_rift_failed(d: Dictionary) -> void:
 	Events.emit_named("notify", {"text": "Mission failed: %s. Try again from the Mission Board." % str(d.get("reason", "the timeline collapsed"))})
 
 func _on_rift_phase(d: Dictionary) -> void:
-	Events.emit_named("notify", {"text": "%s — %s!" % [str(d.get("character", d.get("id", "Boss"))).capitalize(), str(d.get("name", "Phase"))]})
+	var text := str(d.get("text", ""))   # story boss phases carry their own announce line (renamed names)
+	Events.emit_named("notify", {"text": text if text != "" else "%s — %s!" % [str(d.get("character", d.get("id", "Boss"))).capitalize(), str(d.get("name", "Phase"))]})
 	Burst.spawn(self, RuleRuntime.vector(d.get("pos", game.player.pos)) + Vector3.UP * 1.5, Color(0.7, 0.3, 1.0), 5.0)
 
 func _on_rift_ally_down(d: Dictionary) -> void:

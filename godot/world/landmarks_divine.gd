@@ -485,10 +485,11 @@ class D extends LandmarksOrigins.B:
 			n.transform = Transform3D(basis_y(up) * Basis(Vector3.UP, ry) * Basis.from_scale(Vector3.ONE * 1.6), up * (r - 0.25))
 			return n
 		var house: Node3D = on_top.call(6.0, 2.0)
-		dome(4, mat(0xf3eadb, {"rough": 0.95}), 0, 0, 0, 32, house)   # matte, no mirrored horizon line (task 4)
+		var plaster := mat(0xe9e0d0, {"rough": 0.95, "wrap": true})   # soft sun terminator (no hard diagonal line, task C)
+		dome(4, plaster, 0, 0, 0, 32, house)
 		torus(4, 0.3, mat(0xc83228), 0, 0.1, 0, house)
 		sphere(0.8, mat(0xc83228), 0, 4, 0, 12, house)
-		box(1.8, 2.5, 1.2, mat(0xf3eadb, {"rough": 0.95}), 0, 1.25, 3.55, 0.0, house)   # entry: the door slab stood off the curve
+		box(1.8, 2.5, 1.2, plaster, 0, 1.25, 3.55, 0.0, house)   # entry: the door slab stood off the curve
 		box(1.4, 2.2, 0.2, mat(0x6a4a2a), 0, 1.1, 4.2, 0.0, house)
 		var car: Node3D = on_top.call(-6.0, 5.0, 1.2)
 		box(3, 0.7, 1.6, mat(0xc8322a, {"metal": 0.5, "rough": 0.3}), 0, 0.4, 0, 0.0, car)   # on the ground (was 0.35 m up)

@@ -60,6 +60,7 @@ func check() -> void:
 	if _checked or choice() != "on" or OS.has_feature("editor") or DisplayServer.get_name() == "headless":
 		return
 	_checked = true
+	print("Updater: asking GitHub for the latest release (the player chose to check)")
 	_http = HTTPRequest.new()
 	add_child(_http)
 	_http.request_completed.connect(_on_release)

@@ -45,6 +45,16 @@ try{
  }
  ok('seven Origins chapters, roster, boss scenes, map references and adult handoff are valid');
 
+ {// player forms added from look-only form_looks (godot_additions.mjs playerFormLines): Godot-only, complete and gated
+  const read=async n=>JSON.parse(await fs.readFile(path.join(temp,n+'.json'),'utf8'));
+  const [gForms,gLooks,gRaces,gAdd,gEdges]=await Promise.all(['forms','form_looks','races','godot_additions','mastery_evolutions'].map(read));
+  assert.deepEqual(gAdd.forms,['SSJRose','Wrathful','SSJBroly','SSJBlueEvolved','FirstForm','SecondForm','ThirdForm']);
+  for(const id of gAdd.forms){const f=gForms[id];assert.ok(f&&gLooks[id]&&!tables.forms[id],id);const q=quests.find(q=>q.id===f.unlockQuest);
+   assert.ok(q&&q.level===f.unlockLevel&&q.rewards.forms[0]===id,id);for(const r of f.races??[f.race])assert.ok(gRaces[r].forms.includes(id),id+' '+r);
+   if(f.mastery)assert.ok(q.automatic&&gEdges.some(e=>e.to===id));else assert.ok(npcs.some(n=>n.id===q.giver),q.giver);
+   assert.ok(!/Saiyan|Goku|Vegeta|Broly|Frieza/.test(f.name),f.name);}
+  assert.ok(gForms.SSJBlueEvolved.multiplier<gForms.LegendarySSJ.multiplier&&gForms.ThirdForm.multiplier<gForms.FinalForm.multiplier);
+  ok('player forms from form_looks are complete, gated, renamed and Godot-only');}
  const presentation=JSON.parse(await fs.readFile(path.join(temp,'skill_presentation.json'),'utf8'));
  assert.equal(Object.keys(presentation.skills).length,28);
  for(const id of Object.keys(tables.moves)){const row=presentation.skills[id];assert.ok(row);assert.ok(presentation.sockets.includes(row.socket));assert.ok(row.phases.prepare.audio);assert.ok(row.phases.impact.audio);assert.ok(Number.isFinite(row.hold_min)&&row.hold_min>=0);assert.ok(row.release_window>0);assert.ok(row.recovery>0);assert.equal(row.recovery,row.phases.recovery.duration);}

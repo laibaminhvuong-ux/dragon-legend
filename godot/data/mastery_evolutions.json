@@ -35,5 +35,30 @@
     "to": "SSJRage",
     "required": 1200,
     "after": "m31_zamasu"
+  },
+  {
+    "from": "Wrathful",
+    "key": "Wrathful",
+    "to": "SSJBroly",
+    "required": 1000
+  },
+  {
+    "from": "SSJBlue",
+    "key": "SSJBlue",
+    "to": "SSJBlueEvolved",
+    "required": 1500,
+    "after": "m38_granolah"
+  },
+  {
+    "from": "FirstForm",
+    "key": "FirstForm",
+    "to": "SecondForm",
+    "required": 500
+  },
+  {
+    "from": "SecondForm",
+    "key": "SecondForm",
+    "to": "ThirdForm",
+    "required": 1000
   }
 ]
