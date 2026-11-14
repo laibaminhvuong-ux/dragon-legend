@@ -182,7 +182,23 @@
     "z": 90,
     "boss": true,
     "after": "m05_saibamen",
-    "before": "m07_vegeta"
+    "before": "m07_vegeta",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.4,
+        "form": "Oozaru",
+        "damage": 1.2,
+        "speed": 1,
+        "name": "Great Ape",
+        "text": "Vegara makes his own moon: Great Ape!"
+      }
+    ]
   },
   {
     "id": "sorbet",
@@ -824,7 +840,24 @@
     "z": -40,
     "boss": true,
     "after": "m21_tournament",
-    "before": "m22_babidi"
+    "before": "m22_babidi",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1,
+        "form": "SSJ"
+      },
+      {
+        "at": 0.5,
+        "form": "SSJ2",
+        "damage": 1.18,
+        "speed": 1.08,
+        "name": "Majinn Super Saiyar 2",
+        "text": "Babido's mark burns: Majinn Vegara goes Super Saiyar 2!"
+      }
+    ]
   },
   {
     "id": "fat_buu",
@@ -1020,15 +1053,23 @@
         "speed": 1
       },
       {
-        "at": 0.66,
+        "at": 0.75,
+        "form": "FrostAssault",
+        "damage": 1.06,
+        "speed": 1.03,
+        "name": "Assault Form",
+        "text": "Frosk grows his crest: Assault Form!"
+      },
+      {
+        "at": 0.5,
         "form": "FinalForm",
-        "damage": 1.1,
-        "speed": 1.05,
+        "damage": 1.14,
+        "speed": 1.06,
         "name": "Final Form",
         "text": "Frosk drops the act: Final Form!"
       },
       {
-        "at": 0.33,
+        "at": 0.25,
         "form": "FullPower",
         "damage": 1.22,
         "speed": 1.1,
@@ -1122,7 +1163,7 @@
       },
       {
         "at": 0.5,
-        "form": "SSJBlue",
+        "form": "SSJRose",
         "damage": 1.18,
         "speed": 1.08,
         "name": "Super Saiyar Rosé",
@@ -1314,20 +1355,36 @@
         "speed": 1
       },
       {
-        "at": 0.7,
+        "at": 0.8,
         "form": "Wrathful",
-        "damage": 1.1,
-        "speed": 1.05,
+        "damage": 1.05,
+        "speed": 1.02,
         "name": "Wrathful",
         "text": "Brolo's rage takes over: Wrathful!"
       },
       {
-        "at": 0.35,
+        "at": 0.6,
+        "form": "SSJRestrained",
+        "damage": 1.1,
+        "speed": 1.04,
+        "name": "Restrained Super Saiyar",
+        "text": "Paragos' control holds: Restrained Super Saiyar!"
+      },
+      {
+        "at": 0.4,
         "form": "SSJ",
-        "damage": 1.25,
-        "speed": 1.1,
+        "damage": 1.17,
+        "speed": 1.07,
         "name": "Super Saiyar Full Power",
         "text": "Brolo explodes into Super Saiyar Full Power!"
+      },
+      {
+        "at": 0.2,
+        "form": "LegendarySSJ",
+        "damage": 1.25,
+        "speed": 1.1,
+        "name": "Legendary Super Saiyar",
+        "text": "Brolo breaks every limit: Legendary Super Saiyar!"
       }
     ]
   },
@@ -2197,6 +2254,30 @@
     "afterStep": [
       "k06_king_piccor",
       11
+    ],
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.6,
+        "form": "NamekFusion",
+        "damage": 1.1,
+        "speed": 1.04,
+        "name": "Rejuvenated",
+        "text": "King Piccor drinks in new youth: Rejuvenated!"
+      },
+      {
+        "at": 0.3,
+        "form": "Giant",
+        "damage": 1.2,
+        "speed": 1,
+        "name": "Giant Form",
+        "text": "King Piccor swells into a giant!"
+      }
     ]
   },
   {
@@ -2212,6 +2293,73 @@
     "afterStep": [
       "k07_piccor_jr",
       7
+    ],
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.6,
+        "form": "Orange",
+        "damage": 1.12,
+        "speed": 1.05,
+        "name": "Orange Form",
+        "text": "Piccor Jr. burns orange!"
+      },
+      {
+        "at": 0.3,
+        "form": "Giant",
+        "damage": 1.22,
+        "speed": 1,
+        "name": "Giant Form",
+        "text": "Piccor Jr. grows into a giant!"
+      }
+    ]
+  },
+  {
+    "id": "gogeta_trial",
+    "who": "gogeta",
+    "zone": "broly_glacier",
+    "x": 40,
+    "z": 60,
+    "rot": 3.141592653589793,
+    "boss": true,
+    "after": "m33_broly",
+    "before": "trial_gogeta",
+    "phases": [
+      {
+        "at": 1,
+        "name": "Opening",
+        "damage": 1,
+        "speed": 1
+      },
+      {
+        "at": 0.75,
+        "form": "SSJ",
+        "damage": 1.08,
+        "speed": 1.03,
+        "name": "Super Saiyar",
+        "text": "Gogeto stops playing: Super Saiyar!"
+      },
+      {
+        "at": 0.5,
+        "form": "SSJBlue",
+        "damage": 1.16,
+        "speed": 1.06,
+        "name": "Super Saiyar Blue",
+        "text": "Gogeto ascends: Super Saiyar Blue!"
+      },
+      {
+        "at": 0.25,
+        "form": "SSJ4",
+        "damage": 1.25,
+        "speed": 1.1,
+        "name": "Super Saiyar 4",
+        "text": "Gogeto's fur turns red: Super Saiyar 4!"
+      }
     ]
   }
 ]

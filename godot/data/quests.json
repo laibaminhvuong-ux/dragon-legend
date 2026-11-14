@@ -5460,6 +5460,34 @@
     }
   },
   {
+    "id": "trial_gogeta",
+    "saga": "Legend Super: Brolo",
+    "title": "The Fusion Trial",
+    "giver": "cheelai",
+    "level": 820,
+    "after": [
+      "m33_broly"
+    ],
+    "offer": "Gokan and Vegara fused out on the ice again, \"just to see\". Now Gogeto wants a real opponent. Up for it?",
+    "done": "Gogeto came apart into two very tired Saiyars. They both say they were holding back.",
+    "steps": [
+      {
+        "type": "defeat",
+        "enemy": "gogeta_trial",
+        "zone": "broly_glacier",
+        "x": 40,
+        "z": 60,
+        "r": 10,
+        "count": 1,
+        "text": "Defeat Gogeto (he will not stay in base form)"
+      }
+    ],
+    "rewards": {
+      "xp": 7057259,
+      "zeni": 20000
+    }
+  },
+  {
     "id": "Form_SSJRose",
     "saga": "Transformations",
     "title": "Super Saiyar Rosé",

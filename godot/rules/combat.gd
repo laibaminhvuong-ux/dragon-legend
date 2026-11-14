@@ -166,6 +166,18 @@ func boss_phase(e: Dictionary) -> void:
 			e.form = str(phases[k].form);break
 	if phase>0:
 		emit("riftBossPhase",{"id":e.id,"character":str(e.get("name",e.key)),"phase":phase,"name":str(ph.get("name","")),"text":str(ph.get("text","")),"pos":e.pos,"form":str(e.get("form","")),"story":true})
+## Body size of a fighter row from its form (data forms `size`: Giant 3, Ohzaru 3.2; 1 otherwise). A boss in a size form
+## (story/Rift phase) reaches further, is reached from further away, and is hit around a chest that sits size x higher.
+const BODY_RADIUS := 0.6
+func body_size(e: Dictionary) -> float:
+	var f: String = str(e.get("form",""))
+	return maxf(1.0,float(forms.forms.get(f,{}).get("size",1.0))) if f!="" else 1.0
+## Extra hit distance for a big body (0 at size 1): its surface is this much nearer than its feet.
+func body_reach(e: Dictionary) -> float:
+	return (body_size(e)-1.0)*BODY_RADIUS
+## Where ki and beams aim at / hit a fighter: the chest (1 m up, size x higher for a giant).
+func body_center(e: Dictionary) -> Vector3:
+	return (e.pos as Vector3)+Vector3.UP*body_size(e)
 ## A boss back at full health after a reset (the player was knocked out) starts its fight again from the first phase.
 func reset_boss_phase(e: Dictionary) -> void:
 	if e.get("phases",[]).is_empty() or str(e.key).begins_with("rift:"):return
@@ -309,25 +321,25 @@ func locked() -> Dictionary:
 	return {}
 func target_in_front(distance: float) -> Dictionary:
 	var lock: Dictionary = locked()
-	if not lock.is_empty() and p.pos.distance_to(lock.pos)<=distance:
+	if not lock.is_empty() and p.pos.distance_to(lock.pos)<=distance+body_reach(lock):
 		return lock
 	var candidates: Array = []
 	for e: Dictionary in enemies:
 		var delta: Vector3 = e.pos-p.pos
 		var planar: float = sqrt(delta.x*delta.x+delta.z*delta.z)
-		if e.health>0 and p.pos.distance_to(e.pos)<=distance and (planar<0.01 or (delta.x*sin(p.yaw)+delta.z*cos(p.yaw))/planar>c.meleeArc):
+		if e.health>0 and p.pos.distance_to(e.pos)<=distance+body_reach(e) and (planar<0.01 or (delta.x*sin(p.yaw)+delta.z*cos(p.yaw))/planar>c.meleeArc):
 			candidates.append(e)
 	candidates.sort_custom(func(x: Dictionary,y: Dictionary) -> bool:return p.pos.distance_to(x.pos)<p.pos.distance_to(y.pos))
 	return candidates[0] if not candidates.is_empty() else {}
 func aim() -> Dictionary:
 	var e: Dictionary = locked()
 	var origin: Vector3 = p.pos+Vector3(0,1.15*forms.forms.get(p.form,{}).get("size",1),0)
-	var delta: Vector3 = e.pos+Vector3.UP-origin if not e.is_empty() else Vector3(sin(p.yaw),0,cos(p.yaw))
+	var delta: Vector3 = body_center(e)-origin if not e.is_empty() else Vector3(sin(p.yaw),0,cos(p.yaw))
 	return {"origin":origin,"dir":delta.normalized()}
 func aim_state() -> Dictionary:
 	var ray: Dictionary = aim()
 	var e: Dictionary = locked()
-	return ray.merged({"locked":not e.is_empty(),"point":e.pos+Vector3.UP if not e.is_empty() else ray.origin+ray.dir*c.beamRange})
+	return ray.merged({"locked":not e.is_empty(),"point":body_center(e) if not e.is_empty() else ray.origin+ray.dir*c.beamRange})
 func fire(id: String,charge: float = 0) -> bool:
 	if id=="Kaioken":
 		var error: Variant = game.kaioken.toggle()
@@ -391,7 +403,7 @@ func fire(id: String,charge: float = 0) -> bool:
 		"beam","ultimate":
 			var end: Vector3 = ray.origin+ray.dir*c.beamRange
 			for e: Dictionary in enemies:
-				if e.health>0 and segment_distance(e.pos+Vector3.UP,ray.origin,end)<c.beamRadius:
+				if e.health>0 and segment_distance(body_center(e),ray.origin,end)<c.beamRadius+body_reach(e):
 					hit(e,damage,p,true)
 			emit("beam",skill_packet(impact_context,"release",{"from":ray.origin,"to":end,"color":RuleRuntime.ki_color(game.slot.appearance)}))
 		_:
@@ -535,7 +547,7 @@ func update(dt: float,it: Dictionary) -> void:
 		b.life -= dt
 		b.pos += b.dir*c.projectileSpeed*dt
 		for target: Dictionary in enemies:
-			if target.health>0 and segment_distance(target.pos+Vector3.UP,old,b.pos)<c.projectileRadius:
+			if target.health>0 and segment_distance(body_center(target),old,b.pos)<c.projectileRadius+body_reach(target):
 				hit(target,b.damage,b.owner,false,b.get("presentation",{}))
 				b.life = 0.0
 				break
@@ -555,6 +567,7 @@ func update(dt: float,it: Dictionary) -> void:
 			continue
 		boss_phase(e)
 		var distance: float = e.pos.distance_to(victim.pos)
+		var reach: float = c.enemyRange*body_size(e)   # a giant (Giant Form / Great Ape boss phase) swings from further away
 		var home_distance: float = e.pos.distance_to(e.home)
 		# trainees (patrols) leave you alone until you hit them (user request 2026-11-04); quest enemies always fight
 		var peaceful: bool = String(e.key).begins_with("patrol_") and not e.get("provoked",false)
@@ -583,17 +596,17 @@ func update(dt: float,it: Dictionary) -> void:
 			e.health = minf(e.maxHealth,e.health+e.maxHealth*dt*c.enemyRegen)
 		if e.windup>0:
 			e.windup -= dt
-			if e.windup<=0 and e.stun<=0 and distance<c.enemyRange+0.5 and not victim.get("invulnerableUntil",0)>clock:
+			if e.windup<=0 and e.stun<=0 and distance<reach+0.5 and not victim.get("invulnerableUntil",0)>clock:
 				e.attackSerial += 1
 				e.attackKind = "cross"
 				var npc_move := RuleStyles.move(e.style,(int(e.attackSerial)-1)%4+1)
-				var npc_context := npc_move.merged({"presentation_version":1,"move_id":"Melee","actor_id":e.id,"action_sequence":e.attackSerial,"started_at":clock,"seed":absi((str(e.id)+str(e.attackSerial)).hash()),"color":0xffdca0,"origin":e.pos+Vector3.UP,"direction":(victim.pos-e.pos).normalized(),"target_id":victim.id,"socket":npc_move.socket,"pose":"melee_combo","charge":0.0},true)
+				var npc_context := npc_move.merged({"presentation_version":1,"move_id":"Melee","actor_id":e.id,"action_sequence":e.attackSerial,"started_at":clock,"seed":absi((str(e.id)+str(e.attackSerial)).hash()),"color":0xffdca0,"origin":body_center(e),"direction":(victim.pos-e.pos).normalized(),"target_id":victim.id,"socket":npc_move.socket,"pose":"melee_combo","charge":0.0},true)
 				emit("attack",skill_packet(npc_context,"release",{"id":e.id,"kind":"melee","pos":e.pos,"combo":npc_move.combo_step}))
 				hit(victim,(c.enemyDamage+(e.level-1)*c.enemyDamagePerLevel)*(c.bossDamage if e.boss else 1)*float(e.get("damageMultiplier",e.get("damageScale",1))),e,false,npc_context)
-		elif not returning and distance<c.enemyRange and e.cooldown==0 and e.stun==0:
+		elif not returning and distance<reach and e.cooldown==0 and e.stun==0:
 			e.windup = c.enemyWindup
 			e.cooldown = c.enemyCooldown
 		var previous: Vector3 = e.pos
-		var moving: bool = (planar>0.5 if returning else distance>c.enemyRange*0.85) and e.windup<=0
+		var moving: bool = (planar>0.5 if returning else distance>reach*0.85) and e.windup<=0
 		movement.step(e,{"move_x":delta.x/planar if moving else 0,"move_z":delta.z/planar if moving else 0},dt,zone)
 		RuleCollision.resolve(e,zone,previous)

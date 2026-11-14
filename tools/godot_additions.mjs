@@ -490,21 +490,48 @@ const BOSS_PHASES = {
     [.5, 'FinalForm', 1.12, 1.05, 'Final Form', 'Frigor reveals his Final Form!'],
     [.25, 'FullPower', 1.25, 1.1, '100% Full Power', 'Frigor unleashes 100% Full Power!']],
   zarbon: [[], [.5, 'ZarbonMonster', 1.15, 1.05, 'Monster Form', 'Zarvon drops his beauty: Monster Form!']],
-  frost: [[], [.66, 'FinalForm', 1.1, 1.05, 'Final Form', 'Frosk drops the act: Final Form!'],
-    [.33, 'FullPower', 1.22, 1.1, '100% Full Power', 'Frosk goes all out: 100% Full Power!']],
+  frost: [[], [.75, 'FrostAssault', 1.06, 1.03, 'Assault Form', 'Frosk grows his crest: Assault Form!'],
+    [.5, 'FinalForm', 1.14, 1.06, 'Final Form', 'Frosk drops the act: Final Form!'],
+    [.25, 'FullPower', 1.22, 1.1, '100% Full Power', 'Frosk goes all out: 100% Full Power!']],
   imperfect_cell: [['CellImperfect'], [.4, 'CellSemiPerfect', 1.15, 1.05, 'Semi-Perfect Form', 'Cel absorbs more energy: Semi-Perfect Form!']],
   perfect_cell: [['CellPerfect'], [.35, 'CellSuperPerfect', 1.2, 1.1, 'Super Perfect Form', 'Cel regenerates: Super Perfect Form!']],
   super_buu: [[], [.4, 'SuperMajin', 1.15, 1.05, 'Super Majinn', 'Super Boo boils over: Super Majinn!']],
   kid_buu: [[], [.35, 'PureMajin', 1.2, 1.1, 'Pure Majinn', 'Kid Boo howls: Pure Majinn!']],
   cabba: [[], [.5, 'SSJ', 1.12, 1.05, 'Super Saiyar', 'Kabba awakens: Super Saiyar!']],
-  goku_black: [[], [.5, 'SSJBlue', 1.18, 1.08, 'Super Saiyar Rosé', 'Gokan Black ascends: Super Saiyar Rosé!']],
+  goku_black: [[], [.5, 'SSJRose', 1.18, 1.08, 'Super Saiyar Rosé', 'Gokan Black ascends: Super Saiyar Rosé!']],
   toppo: [[], [.4, 'ToppoGoD', 1.2, 1.08, 'Destroyer Mode', 'Toppa awakens his Destroyer power!']],
   kefla: [[], [.7, 'SSJ', 1.1, 1.05, 'Super Saiyar', 'Kafla powers up: Super Saiyar!'],
     [.35, 'SSJ2', 1.22, 1.1, 'Super Saiyar 2', 'Kafla pushes further: Super Saiyar 2!']],
   jiren: [[], [.4, 'JirenFullPower', 1.22, 1.1, 'Full Power', 'Jiran stops holding back: Full Power!']],
-  broly: [[], [.7, 'Wrathful', 1.1, 1.05, 'Wrathful', 'Brolo\'s rage takes over: Wrathful!'],
-    [.35, 'SSJ', 1.25, 1.1, 'Super Saiyar Full Power', 'Brolo explodes into Super Saiyar Full Power!']],
+  broly: [[], [.8, 'Wrathful', 1.05, 1.02, 'Wrathful', 'Brolo\'s rage takes over: Wrathful!'],
+    [.6, 'SSJRestrained', 1.1, 1.04, 'Restrained Super Saiyar', 'Paragos\' control holds: Restrained Super Saiyar!'],
+    [.4, 'SSJ', 1.17, 1.07, 'Super Saiyar Full Power', 'Brolo explodes into Super Saiyar Full Power!'],
+    [.2, 'LegendarySSJ', 1.25, 1.1, 'Legendary Super Saiyar', 'Brolo breaks every limit: Legendary Super Saiyar!']],
+  // boss phases for forms no playable race reaches as a boss look (2026-11-13, task E). Size forms (Giant, Ohzaru) also
+  // grow the enemy's reach and hitbox (RuleCombat.body_size).
+  vegeta_gizard: [[], [.4, 'Oozaru', 1.2, 1.0, 'Great Ape', 'Vegara makes his own moon: Great Ape!']],
+  majin_vegeta: [['SSJ'], [.5, 'SSJ2', 1.18, 1.08, 'Majinn Super Saiyar 2', 'Babido\'s mark burns: Majinn Vegara goes Super Saiyar 2!']],
+  king_piccolo: [[], [.6, 'NamekFusion', 1.1, 1.04, 'Rejuvenated', 'King Piccor drinks in new youth: Rejuvenated!'],
+    [.3, 'Giant', 1.2, 1.0, 'Giant Form', 'King Piccor swells into a giant!']],
+  piccolo_jr: [[], [.6, 'Orange', 1.12, 1.05, 'Orange Form', 'Piccor Jr. burns orange!'],
+    [.3, 'Giant', 1.22, 1.0, 'Giant Form', 'Piccor Jr. grows into a giant!']],
+  gogeta_trial: [[], [.75, 'SSJ', 1.08, 1.03, 'Super Saiyar', 'Gogeto stops playing: Super Saiyar!'],
+    [.5, 'SSJBlue', 1.16, 1.06, 'Super Saiyar Blue', 'Gogeto ascends: Super Saiyar Blue!'],
+    [.25, 'SSJ4', 1.25, 1.1, 'Super Saiyar 4', 'Gogeto\'s fur turns red: Super Saiyar 4!']],
 };
+// Optional fusion trial (task E): Gogeto waits on the glacier after Brolo's fight; Chelai offers the fight. He opens in
+// base and climbs to Super Saiyar 4 (his SSJ4Gogeta look through look.formLooks).
+function fusionTrial(npcs, quests) {
+  if (!npcs.some(n => n.id === 'gogeta_trial'))
+    npcs.push({id: 'gogeta_trial', who: 'gogeta', zone: 'broly_glacier', x: 40, z: 60, rot: Math.PI, boss: true, after: 'm33_broly', before: 'trial_gogeta'});
+  if (quests && !quests.some(q => q.id === 'trial_gogeta'))
+    quests.push({id: 'trial_gogeta', saga: 'Legend Super: Brolo', title: 'The Fusion Trial', giver: 'cheelai', level: 820, after: ['m33_broly'],
+      offer: 'Gokan and Vegara fused out on the ice again, "just to see". Now Gogeto wants a real opponent. Up for it?',
+      done: 'Gogeto came apart into two very tired Saiyars. They both say they were holding back.',
+      steps: [{type: 'defeat', enemy: 'gogeta_trial', zone: 'broly_glacier', x: 40, z: 60, r: 10, count: 1,
+        text: 'Defeat Gogeto (he will not stay in base form)'}],
+      rewards: {xp: xpForLevels(820, 3), zeni: 20000}});
+}
 function storyBossPhases(npcs) {
   for (const [id, [[open], ...rest]] of Object.entries(BOSS_PHASES)) {
     const n = npcs.find(v => v.id === id); if (!n) continue;
@@ -537,9 +564,11 @@ export function applyGodotAdditions(tables) {
   }
   // the Oracle Fish (quest giver, now a fish bowl on a stand, B6) stood 1.5 m under Beeros' lake (60,40 r 30): on the shore
   { const n = npcs.find(v => v.id === 'oracle_fish'); if (n) Object.assign(n, {x: 38, z: 14}); }
+  fusionTrial(npcs);   // the trial boss row first, so storyBossPhases gives it its phases
   storyBossPhases(npcs);   // story bosses transform mid-fight (RuleCombat.boss_phase)
   // ...and their quest markers with them (the defeat steps still pointed at the sea; the boss spawns at the NPC)
   const quests = structuredClone(tables.quests);
+  fusionTrial(npcs, quests);
   for (const [qid, enemy, x, z] of [['m09_village', 'dodoria', -46, 21], ['m12_ginyu', 'jeice', 8, -160], ['m12_ginyu', 'burter', 14, -151]]) {
     const s = quests.find(q => q.id === qid)?.steps.find(t => t.type === 'defeat' && t.enemy === enemy); if (s) Object.assign(s, {x, z});
   }

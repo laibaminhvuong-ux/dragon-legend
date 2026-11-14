@@ -206,7 +206,8 @@ func update_view(dt: float) -> void:
 			f.set_form(str(e.form))
 		f.update(dt, {"yaw":e.yaw,"speed": Vector2(vel.x, vel.z).length(), "onGround": e.get("onGround", true), "attackSerial": e.attackSerial,
 			"attackKind": e.attackKind, "hurt": float(e.get("hurtUntil", 0.0)) > combat.clock})
-		var height := 2.2 * float(e.get("scale", 1.0))
+		var form_size := maxf(1.0, float(Data.forms.get(str(e.get("form", "")), {}).get("size", 1.0))) if str(e.get("form", "")) != "" else 1.0
+		var height := 2.2 * float(e.get("scale", 1.0)) * form_size   # name tag and bar above a giant boss (Giant / Great Ape phase)
 		(v.tag as Label3D).position = pos + Vector3(0, height + 0.3, 0)
 		(v.tag as Label3D).modulate = Color("#8cff9c") if str(e.get("kind", "")) == "ally" else (Color("#ff6655") if float(e.get("windup", 0.0)) > 0.0 else (Color("#ffd17c") if e.get("boss", false) else Color("#f3d9d9")))
 		var bar: MeshInstance3D = v.bar
