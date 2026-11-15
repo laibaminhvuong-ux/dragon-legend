@@ -22,13 +22,11 @@
 - Last commit includes the building-by-building audit (30+ fixes), stand-on surfaces (`RuleZone.add_surface/surface_top/ground_at(x,z,reach_y)`, `world/landmark_collision.gd`), King Kae road painted on terrain, planets re-baked, 385 tests passing; that build is installed on the user's PC.
 - Four subagents were launched on the leftovers (see below). Their results are NOT yet integrated unless a later commit says so.
 
-## Where Claude stopped (updated 2026-11-13 evening)
-Everything requested so far is committed and installed: commit 8dd371e (431 tests passing, data check OK). The user said to skip co-op.
+## Where Claude stopped (updated 2026-11-14)
+**0.0.8 is released.** The user said "make the video and release 0.0.8": done. Code pushed to origin/main; GitHub release v0.0.8 created (all 8 download assets built by the "Build downloads" workflow, Windows zip checked: only the exe, no saves); website published (patch notes + update video at https://thedragonlegend.github.io/game-for-free/); videos saved for Instagram in the user's Windows Downloads: The-Dragon-Legend-0.0.8-instagram-vertical-9x16.mp4 and ...-landscape-16x9.mp4.
 Open items (none blocking):
-- King Yemmo's dais steps: in a real game session the player stopped at the foot of the steps twice although the headless test passes (maybe a wrong start point on that road map): verify in game with `--door`/`--at` flags.
-- Gyran looked waist-deep on the Tournament ring in one cutscene frame (unverified).
-- In-game Earth plains runs ~41 fps with ~244 lights and 67 enemies (combat_view 10-12 ms); the world preview alone is ~105 fps. A quiet-machine profile could find savings (light count, enemy updates).
-- Not playable on purpose: Cell stages, Jiren Full Power, Toppo GoD, Zarbon Monster (no Android/Pride Trooper race); SSJ Kefla, SSJ4 Gogeta (fusion only).
-- Known small visuals: Ginger tower has a walk-through fence across its path; hair caps are drawn inside out (darker than locks); skirt stretches between legs in a full stride; Harbor Town roofs shaded faces are dark.
-Only when the user says: 0.0.8 intro video (9:16 + landscape from in-game captures with ffmpeg, to Windows Downloads and the website), release notes, website (`tools/publish_site.sh`), GitHub release/workflow, push.
-VS Code is set up for the user: `code ~/dragon-ball/dragon-legend.code-workspace`.
+- King Yemmo's dais steps in a real session (player stopped at the foot twice; headless test passes); Gyran looks waist-deep on the Tournament ring in one cutscene frame; in-game Earth ~41 fps (244 lights, 67 enemies); small visuals (Ginger tower fence, hair caps drawn inside out, skirt stretch in a full stride).
+- Forms with no boss use: GoldenOozaru, SSJ4Daima, SSJBlueKaioken/Evolved, UI forms, Beast, PotentialUnleashed, etc. (hero-only forms); a sparring quest with Gokan could host them.
+- Next version: bump godot/core/version.gd, godot/project.godot, website/index.html together; release flow = commit, `git push origin main`, `gh release create vX --target main --title "The Dragon Legend" --notes-file <file>` (workflow builds the assets, ~30 min), then `tools/publish_site.sh`.
+Rules still apply: no canon names in UI, user's maxed save never ships, the game must never take files/data from a player's machine, back up the save and check tasklist before installing.
+VS Code: `code ~/dragon-ball/dragon-legend.code-workspace`.
