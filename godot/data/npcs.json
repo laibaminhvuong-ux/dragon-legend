@@ -1162,9 +1162,17 @@
         "speed": 1
       },
       {
-        "at": 0.5,
+        "at": 0.75,
+        "form": "SSJ",
+        "damage": 1.08,
+        "speed": 1.03,
+        "name": "Super Saiyar",
+        "text": "Gokan Black ascends: Super Saiyar!"
+      },
+      {
+        "at": 0.4,
         "form": "SSJRose",
-        "damage": 1.18,
+        "damage": 1.2,
         "speed": 1.08,
         "name": "Super Saiyar Rosé",
         "text": "Gokan Black ascends: Super Saiyar Rosé!"
